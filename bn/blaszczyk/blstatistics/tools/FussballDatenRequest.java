@@ -1,5 +1,7 @@
 package bn.blaszczyk.blstatistics.tools;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -9,55 +11,92 @@ import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
 
 public class FussballDatenRequest {
-
-	private static final String BASE_URL = "http://www.fussballdaten.de/bundesliga";
-
-	private static WebClient webClient;
-	private static HtmlTable crossTable;
-	private static PrintStream muteStream = new PrintStream(new OutputStream() {
-		@Override
-		public void write(int b) throws IOException {
-		}
-	});
-
-	public FussballDatenRequest() {
-	}
-
-	public static void loadPage(int year) {
-		//Mute Error OutpotStream
-		System.setErr(muteStream);	
-		
-		try {
-			webClient = new WebClient();
-			HtmlPage page;
-			page = webClient.getPage(String.format("%s/%4d/", BASE_URL, year));
+	
+	private static final String	BASE_URL	= "http://www.fussballdaten.de/bundesliga";
+											
+	private static HtmlTable	gamesTable;
+								
+	public FussballDatenRequest()
+	{}
+	
+	// request table from www.fussballdaten.de
+	public static void requestTable(int year) // throws some Exception
+	{
+		// Bundesliga Seasons only from 1964 - now
+		Calendar now = new GregorianCalendar();
+		int latestSeason = now.get(Calendar.YEAR);
+		if (now.get(Calendar.MONTH) > 6)
+			latestSeason++;
+		if (year < 1964 || year > latestSeason)
+			return;
+			
+		// Request Table online
+		String url = String.format("%s/%4d/", BASE_URL, year);
+		try
+		{
+			WebClient webClient = new WebClient();
+			HtmlPage page = webClient.getPage(url);
 			HtmlDivision div = (HtmlDivision) page.getElementById("rt_Kreuztabelle");
-			crossTable = (HtmlTable) div.getFirstElementChild();
+			gamesTable = (HtmlTable) div.getFirstElementChild();
 			webClient.close();
-
-		} catch (FailingHttpStatusCodeException | IOException e) {
+		}
+		catch (FailingHttpStatusCodeException | IOException e)
+		{
+			System.out.println("Error loading " + url);
+			setMutedErrStream(false);
 			e.printStackTrace();
 		}
 	}
-
-	public static Stack<String> getGames(){
+	
+	// Creates Stack of Games from Table
+	public static Stack<String> getGames()
+	{
 		Stack<String> games = new Stack<>();
-		if(!(crossTable == null))
-			for (HtmlTableRow row : crossTable.getRows())
+		if (!(gamesTable == null))
+			for (HtmlTableRow row : gamesTable.getRows())
 				for (HtmlTableCell cell : row.getCells())
-					if (cell.getAttribute("class").equals("Gegner") && cell.getFirstElementChild() instanceof HtmlAnchor) {
+					if (cell.getAttribute("class").equals("Gegner")
+							&& cell.getFirstElementChild() instanceof HtmlAnchor)
+					{
 						HtmlAnchor anchor = (HtmlAnchor) cell.getFirstElementChild();
 						games.push(anchor.getAttribute("title"));
-				}
+					}
 		return games;
 	}
 	
-	public static List<String> getTeams(){
+	// Creates List of Teams from Table
+	public static List<String> getTeams()
+	{
 		List<String> teams = new ArrayList<>();
-		if(!(crossTable == null))
-			for(HtmlTableCell cell : crossTable.getRow(0).getCells() )
-				if(cell.getAttribute("class").equals("Gegner"))
+		if (!(gamesTable == null) && gamesTable.getRowCount() > 0)
+			for (HtmlTableCell cell : gamesTable.getRow(0).getCells())
+				if (cell.getAttribute("class").equals("Gegner"))
 					teams.add(cell.getAttribute("title"));
 		return teams;
+	}
+	
+	public static void clearTable()
+	{
+		gamesTable = null;
+		// Garbage Collector does the rest
+	}
+	
+	public static void setMutedErrStream(boolean flag)
+	{
+		if (flag)
+			System.setErr(new PrintStream(new OutputStream() {
+				@Override
+				public void write(int b) throws IOException
+				{}
+			}));
+		else
+			System.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err)));
+	}
+	
+	public static void requestTableMuted(int year)
+	{
+		setMutedErrStream(true);
+		requestTable(year);
+		setMutedErrStream(false);
 	}
 }
