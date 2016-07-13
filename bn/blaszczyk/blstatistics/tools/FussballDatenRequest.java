@@ -1,3 +1,19 @@
+/*
+ * Page Format is:
+ * 
+ * <html> ... <body> ...
+ * <div id="rt_Kreuztabelle" ... >
+ * <table ...>
+ * <tr>
+ *     <th title="FC Köln" class = "Gegner">...</th>
+ * </tr>
+ * <tr> ...
+ *     <td class = "Gegner"><a title="9. Spieltag 26.10.63: FC Köln - Duisburg 3:3" ...></a></td>
+ * </tr>
+ * ...
+ * </div> ... </body></html>
+ */
+
 package bn.blaszczyk.blstatistics.tools;
 
 import java.io.FileDescriptor;
@@ -42,8 +58,8 @@ public class FussballDatenRequest {
 		}
 		catch (FailingHttpStatusCodeException | IOException e)
 		{
-			System.out.println("Error loading " + url);
 			setMutedErrStream(false);
+			System.err.println("Error loading " + url);
 			e.printStackTrace();
 		}
 	}
