@@ -28,7 +28,7 @@ import com.gargoylesoftware.htmlunit.html.*;
 
 public class FussballDatenRequest {
 	
-	private static final String	BASE_URL	= "http://www.fussballdaten.de/bundesliga";
+	private static final String	BASE_URL	= "http://www.fussballdaten.de";
 											
 	private static HtmlTable	gamesTable;
 								
@@ -36,7 +36,7 @@ public class FussballDatenRequest {
 	{}
 	
 	// request table from www.fussballdaten.de
-	public static void requestTable(int year) // throws some Exception
+	public static void requestTable(int year, String league) // throws some Exception
 	{
 		// Bundesliga Seasons only from 1964 - now
 		Calendar now = new GregorianCalendar();
@@ -47,7 +47,7 @@ public class FussballDatenRequest {
 			return;
 			
 		// Request Table online
-		String url = String.format("%s/%4d/", BASE_URL, year);
+		String url = String.format("%s/%s/%4d/", BASE_URL, league, year);
 		try
 		{
 			WebClient webClient = new WebClient();
@@ -80,17 +80,6 @@ public class FussballDatenRequest {
 		return games;
 	}
 	
-	// Creates List of Teams from Table
-	public static List<String> getTeams()
-	{
-		List<String> teams = new ArrayList<>();
-		if (!(gamesTable == null) && gamesTable.getRowCount() > 0)
-			for (HtmlTableCell cell : gamesTable.getRow(0).getCells())
-				if (cell.getAttribute("class").equals("Gegner"))
-					teams.add(cell.getAttribute("title"));
-		return teams;
-	}
-	
 	public static void clearTable()
 	{
 		gamesTable = null;
@@ -109,10 +98,10 @@ public class FussballDatenRequest {
 			System.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err)));
 	}
 	
-	public static void requestTableMuted(int year)
+	public static void requestTableMuted(int year, String league)
 	{
 		setMutedErrStream(true);
-		requestTable(year);
+		requestTable(year,league);
 		setMutedErrStream(false);
 	}
 }

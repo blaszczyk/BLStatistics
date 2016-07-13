@@ -29,6 +29,7 @@ public class TeamResult
 	
 	private String team;
 	private int points=0;
+	private int games=0;
 	private int wins=0;
 	private int draws=0;
 	private int losses=0;
@@ -48,6 +49,11 @@ public class TeamResult
 	public int getPoints()
 	{
 		return points;
+	}
+	
+	public int getGames()
+	{
+		return games;
 	}
 
 	public int getWins()
@@ -87,17 +93,18 @@ public class TeamResult
 			switch(game.getResult())
 			{
 			case Game.WIN:
-				wins += 1;
+				wins++;
 				points += pointsForWin;
 				break;
 			case Game.DRAW:
-				draws += 1;
-				points += 1;
+				draws++;
+				points++;
 				break;
 			case Game.LOSS:
-				losses += 1;
+				losses++;
 				break;
 			}
+			games ++;
 			teamGoals += game.getGoals1();
 			opponentGoals += game.getGoals2();
 		}
@@ -106,17 +113,18 @@ public class TeamResult
 			switch(game.getResult())
 			{
 			case Game.LOSS:
-				wins += 1;
+				wins++;
 				points += pointsForWin;
 				break;
 			case Game.DRAW:
-				draws += 1;
-				points += 1;
+				draws++;
+				points++;
 				break;
 			case Game.WIN:
-				losses += 1;
+				losses++;
 				break;
 			}
+			games++;
 			teamGoals += game.getGoals2();
 			opponentGoals += game.getGoals1();
 		}
@@ -125,7 +133,7 @@ public class TeamResult
 	@Override
 	public String toString()
 	{
-		return String.format("%15s     %2d Punkte   TorDiff.%3d   %2dS%2dU %2dN    %3d:%3d", team, points, getGoalDifference(), wins, draws, losses, teamGoals, opponentGoals );
+		return String.format("%15s     %2d Spl   %2d Pkt  %3d Dif    %2dS %2dU %2dN    %3d:%3d", team, games, points, getGoalDifference(), wins, draws, losses, teamGoals, opponentGoals );
 	}
 
 }

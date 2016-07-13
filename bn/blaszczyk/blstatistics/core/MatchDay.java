@@ -2,7 +2,7 @@ package bn.blaszczyk.blstatistics.core;
 
 import java.util.*;
 
-public class MatchDay
+public class MatchDay implements Iterable<Game>
 {
 	private List<Game> games = new ArrayList<>();
 	/*
@@ -14,11 +14,6 @@ public class MatchDay
 	/*
 	 * Getters and Delegates
 	 */
-
-	public List<Game> getGames()
-	{
-		return games;
-	}
 	
 	public void addGame(Game game)
 	{
@@ -29,15 +24,24 @@ public class MatchDay
 	{
 		return games.get(index);
 	}
+	
+	public Game getGame(String team)
+	{
+		for(Game game:this)
+			if(game.containsTeam(team))
+				return game;
+		return null;
+	}
 
 	public int GamesCount()
 	{
 		return games.size();
 	}
-
-//	public Iterator<Game> getGameIterator()
-//	{
-//		return games.iterator();
-//	}
+	
+	@Override
+	public Iterator<Game> iterator()
+	{
+		return games.iterator();
+	}
 	
 }

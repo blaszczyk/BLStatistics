@@ -5,32 +5,21 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
 import bn.blaszczyk.blstatistics.tools.BLException;
 
-public class Season
+public class Season implements Iterable<MatchDay>
 {
 	private int year;
-	private List<MatchDay> matchDays;
-	private List<String> teams;
-	
-	public Season(int year, List<String> teams)
-	{
-		this.year = year;
-		this.teams = teams;
-		resetMatchDays();
-	}
+	private List<MatchDay> matchDays = new ArrayList<>();
+	private List<String> teams = new ArrayList<>();
 
 	public Season(int year)
 	{
 		this.year = year;
-	}
-
-	public List<MatchDay> getMatchDays()
-	{
-		return matchDays;
 	}
 
 	public MatchDay getMatchDay(int index)
@@ -67,43 +56,27 @@ public class Season
 	public List<Game> getAllGames()
 	{
 		List<Game> gameList = new ArrayList<>();
-		for(MatchDay m : matchDays)
-			gameList.addAll(m.getGames());
+		for(MatchDay matchDay : matchDays)
+			for(Game game : matchDay)
+				gameList.add(game);
 		return gameList;
-	}
-	
-	private void resetMatchDays()
-	{
-		if(teams == null)
-			teams = new ArrayList<>();
-		int matchDayCount= 2*(teams.size()-1);
-		matchDays = new ArrayList<>(matchDayCount);
-		for(int i = 0; i < matchDayCount; i++)
-			matchDays.add(new MatchDay());
 	}
 
 	public boolean addGame(String gameString)
 	{
 		int matchDayIndex = Integer.parseInt( gameString.substring(0, gameString.indexOf('.') ) )-1;
-		if(matchDayIndex >= matchDays.size())
-			return false;
+		while(matchDayIndex >= matchDays.size())
+			matchDays.add(new MatchDay());
 		String gameDetails = gameString.substring( gameString.indexOf('g') + 2  );
 		try
 		{
 			Game game =  new Game(gameDetails);
 			matchDays.get(matchDayIndex).addGame(game);
 			if(!teams.contains(game.getTeam1()))
-			{
-				System.out.println("Added Team '" + game.getTeam1() + "'");
 				teams.add(game.getTeam1());
-			}
 			if(!teams.contains(game.getTeam2()))
-			{
-				System.out.println("Added Team '" + game.getTeam2() + "'");
 				teams.add(game.getTeam2());
-			}
-			return true;
-			
+			return true;			
 		}
 		catch (BLException e)
 		{
@@ -119,17 +92,13 @@ public class Season
 			addGame(gameStack.pop());
 	}
 	
-	public void write( Writer osw )
+	public void write( Writer writer )
 	{
 		try
 		{
-			osw.write("Teams\n");
-			for(String team : teams)
-				osw.write(team+ '\n');
-			osw.write("Games\n");
 			for(int i = 0; i < getMatchDayCount(); i++)
-				for(Game g : getMatchDay(i).getGames())
-					osw.write( (i+1) + ". Spieltag" + g + '\n');
+				for(Game g : getMatchDay(i))
+					writer.write( (i+1) + ". Spieltag" + g + '\n');
 		}
 		catch (IOException e)
 		{
@@ -141,31 +110,23 @@ public class Season
 	public void read( Reader reader )
 	{
 		String line;
-		boolean readTeams = false;
-		boolean readGames = false;
 		BufferedReader br = new BufferedReader(reader);
 		teams = new ArrayList<>();
 		try
 		{
 			while( (line = br.readLine()) != null )
-			{
-				if(line.equalsIgnoreCase("Games"))
-				{
-					readGames = !(readTeams = false);
-					resetMatchDays();
-				}
-				else if(line.equalsIgnoreCase("Teams"))
-					readGames = !(readTeams = true);
-				else if(readTeams)
-					teams.add(line);
-				else if(readGames)
 					addGame(line);
-			}
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public Iterator<MatchDay> iterator()
+	{
+		return matchDays.iterator();
 	}
 	
 //	public Iterator<Game> getGameIterator()

@@ -106,5 +106,12 @@ public class Game
 	{
 		return String.format(" %s: %s - %s %d:%d" , dateFormat.format(date), team1, team2, goals1, goals2);
 	}
+
+	public boolean containsTeam(String team)
+	{
+		if(team != null)	
+			return team.equals(team1) || team.equals(team2);
+		return false;
+	}
 	
 }

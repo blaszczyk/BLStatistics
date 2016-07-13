@@ -5,7 +5,7 @@ import java.util.*;
 public class Table implements Iterable<TeamResult>
 {
 	private List<TeamResult> teamResults = new ArrayList<>();
-	private int pointsForWin = 3;
+	private int pointsForWin = 2;
 	
 	public Table(List<Game> games)
 	{

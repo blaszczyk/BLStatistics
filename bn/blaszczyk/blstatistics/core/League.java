@@ -1,12 +1,15 @@
 package bn.blaszczyk.blstatistics.core;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class League
+
+public class League implements Iterable<Season>
 {
 	private List<Season> seasons = new ArrayList<>();
 	private String name;
@@ -19,11 +22,6 @@ public class League
 	public String getName()
 	{
 		return name;
-	}
-	
-	public List<Season> getSeasons()
-	{
-		return seasons;
 	}
 
 	public boolean addSeason(Season e)
@@ -46,7 +44,7 @@ public class League
 			return;
 		try
 		{
-			FileWriter file = new FileWriter(name + "/" + year + ".bls");
+			FileWriter file = new FileWriter("leagues/"+name + "/" + year + ".bls");
 			season.write( file );
 			file.close();
 		}
@@ -55,24 +53,43 @@ public class League
 			e.printStackTrace();
 		}
 	}
-
-	public void loadFromFile(int year)
+	
+	public boolean loadFromFile(File file)
 	{
-		Season season = getSeason(year);
-		if(season == null)
-		{
-			season = new Season(year);
-			seasons.add(season);
-		}
 		try
 		{
-			FileReader file = new FileReader(name + "/" + year + ".bls");
-			season.read( file );
-			file.close();
+			int year = Integer.parseInt(file.getName().substring(0,4));
+			Season season = getSeason(year);
+			if(season == null)
+			{
+				season = new Season(year);
+				seasons.add(season);
+			}
+			FileReader reader = new FileReader(file);
+			season.read( reader );
+			reader.close();
+			return true;
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
+		catch(NumberFormatException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean loadFromFile(int year)
+	{
+		File file = new File("leagues/" + name + "/" + year + ".bls");
+		return loadFromFile(file);
+	}
+
+	@Override
+	public Iterator<Season> iterator()
+	{
+		return seasons.iterator();
 	}
 }
