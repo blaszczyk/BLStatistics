@@ -105,7 +105,7 @@ public class GameFilter
 		List<Filter<Game>> filters = new ArrayList<>();
 		for(String team : teams)
 			filters.add( getTeamFilter(team) );
-		return LogicalFilterFactory.getORFilter(filters);
+		return LogicalFilter.getORFilter(filters);
 	}
 	
 	public static Filter<Game> getTeamResultFilter(String team, int result) 
@@ -114,10 +114,22 @@ public class GameFilter
 		Filter<Game> isAway = getTeamAwayFilter(team);
 		Filter<Game> homeWinner = getWinnerFilter(result);
 		Filter<Game> awayWinner = getWinnerFilter(-result);
-		Filter<Game> falseFilter = LogicalFilterFactory.getFALSEFilter();
-		Filter<Game> isHomeWinner = LogicalFilterFactory.getIF_THEN_ELSEFilter(isHome, homeWinner, falseFilter);
-		Filter<Game> isAwayWinner = LogicalFilterFactory.getIF_THEN_ELSEFilter(isAway, awayWinner, falseFilter);
-		return LogicalFilterFactory.getORFilter(isHomeWinner,isAwayWinner);
+		Filter<Game> falseFilter = LogicalFilter.getFALSEFilter();
+		Filter<Game> isHomeWinner = LogicalFilter.getIF_THEN_ELSEFilter(isHome, homeWinner, falseFilter);
+		Filter<Game> isAwayWinner = LogicalFilter.getIF_THEN_ELSEFilter(isAway, awayWinner, falseFilter);
+		return LogicalFilter.getORFilter(isHomeWinner,isAwayWinner);
+	}
+	
+	/*
+	 * The thing that a Filter<Game> does best.
+	 */
+	public static List<Game> filterGameList (Iterable<Game> games, Filter<Game> gameFilter)
+	{
+		List<Game> filteredGames = new ArrayList<>();
+		for(Game game : games)
+			if(gameFilter.check(game))
+				filteredGames.add(game);
+		return filteredGames;
 	}
 
 }

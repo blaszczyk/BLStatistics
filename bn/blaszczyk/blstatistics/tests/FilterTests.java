@@ -9,7 +9,7 @@ import bn.blaszczyk.blstatistics.core.TeamResult;
 import bn.blaszczyk.blstatistics.filters.BiFilter;
 import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
-import bn.blaszczyk.blstatistics.filters.TeamResultFilterFactory;
+import bn.blaszczyk.blstatistics.filters.TeamResultFilter;
 
 public class FilterTests
 {
@@ -31,8 +31,8 @@ public class FilterTests
 	
 	public static void teamResultFilterTest(League league)
 	{
-		BiFilter<TeamResult,Game> home = TeamResultFilterFactory.getHomeGameFilter();
-		BiFilter<TeamResult,Game> away = TeamResultFilterFactory.getAwayGameFilter();
+		BiFilter<TeamResult,Game> home = TeamResultFilter.getHomeGameFilter();
+		BiFilter<TeamResult,Game> away = TeamResultFilter.getAwayGameFilter();
 		
 		System.out.println("\nGesamtTabelle:");
 		ConsoleTests.printTotalTable(league);
@@ -50,7 +50,7 @@ public class FilterTests
 	{
 		Filter<Game> cgn_lev = GameFilter.getDuelFilter("FC Köln", "Leverkusen");
 		ConsoleTests.setGameFilter(cgn_lev);
-		List<Game> games = Game.filterGameList( league.getAllGames(), cgn_lev );
+		List<Game> games = GameFilter.filterGameList( league.getAllGames(), cgn_lev );
 		games.sort(Game.DUEL_COMPARATOR);
 		ConsoleTests.printGames(games);
 		ConsoleTests.printTotalTable(league);

@@ -8,7 +8,7 @@ import javax.swing.JTable;
 
 import bn.blaszczyk.blstatistics.core.TeamResult;
 import bn.blaszczyk.blstatistics.filters.Filter;
-import bn.blaszczyk.blstatistics.filters.LogicalFilterFactory;
+import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 
 @SuppressWarnings("serial")
 public class ResultTable extends JTable implements MouseListener{
@@ -16,19 +16,19 @@ public class ResultTable extends JTable implements MouseListener{
 	private List<TeamResult> results;
 	private Filter<TeamResult> filter;
 	private Iterable<TeamResult> source;
-	private Comparator<TeamResult> comparator = TeamResult.COMPARE_LEAGUE;
+	private Comparator<TeamResult> comparator = TeamResult.COMPARE_POSITION;
 //	private boolean compareBackwards = false;
 
 	public ResultTable(Iterable<TeamResult> source)
 	{
-		this(source,LogicalFilterFactory.getTRUEFilter());
+		this(source,LogicalFilter.getTRUEFilter());
 	}
 	
 	public ResultTable(Iterable<TeamResult> source, Filter<TeamResult> filter)
 	{
-		getTableHeader().addMouseListener(this);
 		this.filter = filter;
 		resetSource(source);
+		getTableHeader().addMouseListener(this);
 	}
 	
 	public void resetSource(Iterable<TeamResult> source)
@@ -46,13 +46,9 @@ public class ResultTable extends JTable implements MouseListener{
 	private void resetList()
 	{
 		results = new ArrayList<>();
-		Iterator<TeamResult> iterator = source.iterator();
-		while(iterator.hasNext())
-		{
-			TeamResult result = iterator.next();
+		for(TeamResult result : source)
 			if(filter.check(result))
-				results.add(result);
-		}		
+				results.add(result);	
 		resetModel();
 	}
 	
@@ -61,44 +57,10 @@ public class ResultTable extends JTable implements MouseListener{
 		results.sort(comparator);
 		setModel(new ResultTableModel(results));
 	}
-	
-	
-	
+		
 	private void setComparator(int columnIndex)
 	{
-		switch(columnIndex)
-		{
-		case 0:
-			comparator = TeamResult.COMPARE_LEAGUE;
-			break;
-		case 1:
-			comparator = TeamResult.COMPARE_TEAM;
-			break;
-		case 2:
-			comparator = TeamResult.COMPARE_GAMES;
-			break;
-		case 3:
-			comparator = TeamResult.COMPARE_POINTS;
-			break;
-		case 4:
-			comparator = TeamResult.COMPARE_DIFF;
-			break;
-		case 5:
-			comparator = TeamResult.COMPARE_WINS;
-			break;
-		case 6:
-			comparator = TeamResult.COMPARE_DRAWS;
-			break;
-		case 7:
-			comparator = TeamResult.COMPARE_LOSSOS;
-			break;
-		case 8:
-			comparator = TeamResult.COMPARE_GOALS_TEAM;
-			break;
-		case 9:
-			comparator = TeamResult.COMPARE_GOALS_OPPONENT;
-			break;
-		}
+		comparator = ResultTableModel.getComparator(columnIndex);
 		resetModel();
 	}
 	
@@ -109,8 +71,8 @@ public class ResultTable extends JTable implements MouseListener{
 	public void mouseClicked(MouseEvent e) {
 		if( e.getComponent() == getTableHeader() )
 		{
-			int column = columnAtPoint(e.getPoint());
-			setComparator(column);
+			int columnIndex = columnAtPoint(e.getPoint());
+			setComparator(columnIndex);
 		}
 	}
 	

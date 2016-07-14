@@ -20,10 +20,6 @@ public class MatchDay implements Iterable<Game>
 		games.add(game);
 	}
 
-	public Game getGame(int index)
-	{
-		return games.get(index);
-	}
 	
 	public Game getGame(String team)
 	{
@@ -32,10 +28,13 @@ public class MatchDay implements Iterable<Game>
 				return game;
 		return null;
 	}
-
-	public int GamesCount()
+	
+	public int getGoals()
 	{
-		return games.size();
+		int goals = 0;
+		for(Game game : this)
+			goals += game.getGoals();
+		return goals;		
 	}
 	
 	@Override

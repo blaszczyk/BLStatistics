@@ -5,11 +5,12 @@ import java.util.*;
 import bn.blaszczyk.blstatistics.controller.BasicController;
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.filters.*;
+import bn.blaszczyk.blstatistics.tools.BLException;
 
 public class ConsoleTests
 {
-	private static Filter<Game> gameFilter = LogicalFilterFactory.getTRUEFilter();
-	private static BiFilter<TeamResult,Game> teamResultFilter = LogicalBiFilterFactory.getTRUEBiFilter();
+	private static Filter<Game> gameFilter = LogicalFilter.getTRUEFilter();
+	private static BiFilter<TeamResult,Game> teamResultFilter = LogicalBiFilter.getTRUEBiFilter();
 	
 	public static void printTotalTable(League league)
 	{
@@ -25,24 +26,35 @@ public class ConsoleTests
 
 	public static League generateTestLeague()
 	{	
-		Stack<String> games = new Stack<>();
+		Stack<String> strings = new Stack<>();
 		
-		games.push("1. Spieltag 31.08.63: Duisburg - Frankfurt 3:1");
-		games.push("3. Spieltag 23.11.63: Duisburg - Dortmund 3:3");
-		games.push("5. Spieltag 09.11.63: Duisburg - Hamburg 4:0");
+		strings.push("1. Spieltag 31.08.63: Duisburg - Frankfurt 3:1");
+		strings.push("3. Spieltag 23.11.63: Duisburg - Dortmund 3:3");
+		strings.push("5. Spieltag 09.11.63: Duisburg - Hamburg 4:0");
 		
-		games.push("4. Spieltag 08.02.64: Frankfurt - Duisburg 2:2");
-		games.push("2. Spieltag 22.02.64: Frankfurt - Dortmund 2:1");
-		games.push("6. Spieltag 30.03.64: Frankfurt - Hamburg 2:2");
+		strings.push("4. Spieltag 08.02.64: Frankfurt - Duisburg 2:2");
+		strings.push("2. Spieltag 22.02.64: Frankfurt - Dortmund 2:1");
+		strings.push("6. Spieltag 30.03.64: Frankfurt - Hamburg 2:2");
 		
-		games.push("6. Spieltag 11.04.64: Dortmund - Duisburg 0:0");
-		games.push("5. Spieltag 05.10.63: Dortmund - Frankfurt 3:0");
-		games.push("1. Spieltag 05.05.64: Dortmund - Hamburg 5:2");
+		strings.push("6. Spieltag 11.04.64: Dortmund - Duisburg 0:0");
+		strings.push("5. Spieltag 05.10.63: Dortmund - Frankfurt 3:0");
+		strings.push("1. Spieltag 05.05.64: Dortmund - Hamburg 5:2");
 		
-		games.push("2. Spieltag 21.03.64: Hamburg - Duisburg 3:3");
-		games.push("3. Spieltag 14.09.63: Hamburg - Frankfurt 3:0");
-		games.push("4. Spieltag 21.12.63: Hamburg - Dortmund 2:1");
-
+		strings.push("2. Spieltag 21.03.64: Hamburg - Duisburg 3:3");
+		strings.push("3. Spieltag 14.09.63: Hamburg - Frankfurt 3:0");
+		strings.push("4. Spieltag 21.12.63: Hamburg - Dortmund 2:1");
+		
+		Stack<Game> games = new Stack<>();
+		while(!strings.isEmpty())
+			try
+			{
+				games.push(new Game(strings.pop()));
+			}
+			catch (BLException e)
+			{
+				System.err.println(e.getErrorMessage());
+				e.printStackTrace();
+			}
 		
 		Season season = new Season(1964);
 		season.addGames(games);

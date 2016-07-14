@@ -3,19 +3,15 @@ package bn.blaszczyk.blstatistics.core;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
-
-import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.tools.BLException;
 
 public class Game
 {
 	/*
-	 * Entsprechend der Rückgabe von getResult()
+	 * Entsprechend der Rückgabe von getWinner()
 	 */
 	public static final int HOME = 1;
 	public static final int DRAW = 0;
@@ -48,6 +44,9 @@ public class Game
 	 */
 	private static DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
 	
+	/*
+	 * Object Properties
+	 */
 	private int goals1;
 	private int goals2;
 	private String team1;
@@ -68,7 +67,6 @@ public class Game
 		this.matchDay = matchDay;
 	}
 	
-	//	String testGame = " 14.09.63: Hamburg - Frankfurt 3:0";
 	public Game(String gameString) throws BLException
 	{
 		matchDay = Integer.parseInt( gameString.substring(0, gameString.indexOf('.') ) );
@@ -136,7 +134,11 @@ public class Game
 	{
 		return matchDay;
 	}
+	
 
+	/*
+	 * Specific useful Methods
+	 */
 	public int getWinner()
 	{
 		switch(Integer.signum(goals1-goals2))
@@ -153,29 +155,16 @@ public class Game
 //		return Integer.signum(goals1-goals2);
 	}
 	
-	@Override
-	public String toString()
-	{
-		return String.format( "%2d. Spieltag  %s: %15s - %15s %2d:%d" , matchDay, dateFormat.format(date), team1, team2, goals1, goals2);
-	}
-
-	/*
-	 * Specific useful Methods
-	 */
-	
 	public boolean containsTeam(String team)
 	{
 		if(team != null)	
 			return team.equals(team1) || team.equals(team2);
 		return false;
 	}
-	
-	public static List<Game> filterGameList (Iterable<Game> games, Filter<Game> gameFilter)
+
+	@Override
+	public String toString()
 	{
-		List<Game> filteredGames = new ArrayList<>();
-		for(Game game : games)
-			if(gameFilter.check(game))
-				filteredGames.add(game);
-		return filteredGames;
+		return String.format( "%2d. Spieltag  %s: %15s - %15s %2d:%d" , matchDay, dateFormat.format(date), team1, team2, goals1, goals2);
 	}
 }

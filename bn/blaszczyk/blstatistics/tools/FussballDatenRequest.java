@@ -26,6 +26,8 @@ import java.util.*;
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
 
+import bn.blaszczyk.blstatistics.core.Game;
+
 public class FussballDatenRequest {
 	
 	private static final String	BASE_URL	= "http://www.fussballdaten.de";
@@ -36,7 +38,7 @@ public class FussballDatenRequest {
 	{}
 	
 	// request table from www.fussballdaten.de
-	public static void requestTable(int year, String league) // throws some Exception
+	public static void requestTable(int year, String league) throws BLException
 	{
 		// Bundesliga Seasons only from 1964 - now
 		Calendar now = new GregorianCalendar();
@@ -59,15 +61,14 @@ public class FussballDatenRequest {
 		catch (FailingHttpStatusCodeException | IOException e)
 		{
 			setMutedErrStream(false);
-			System.err.println("Error loading " + url);
-			e.printStackTrace();
+			throw new BLException("Error requesting Season " + year + " of League " + league,e);
 		}
 	}
 	
 	// Creates Stack of Games from Table
-	public static Stack<String> getGames()
+	public static Stack<Game> getGames() throws BLException
 	{
-		Stack<String> games = new Stack<>();
+		Stack<Game> games = new Stack<>();
 		if (gamesTable != null)
 			for (HtmlTableRow row : gamesTable.getRows())
 				for (HtmlTableCell cell : row.getCells())
@@ -75,7 +76,8 @@ public class FussballDatenRequest {
 							&& cell.getFirstElementChild() instanceof HtmlAnchor)
 					{
 						HtmlAnchor anchor = (HtmlAnchor) cell.getFirstElementChild();
-						games.push(anchor.getAttribute("title"));
+						String gameString = anchor.getAttribute("title");
+						games.push(new Game(gameString));
 					}
 		return games;
 	}
@@ -98,7 +100,7 @@ public class FussballDatenRequest {
 			System.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err)));
 	}
 	
-	public static void requestTableMuted(int year, String league)
+	public static void requestTableMuted(int year, String league) throws BLException
 	{
 		setMutedErrStream(true);
 		requestTable(year,league);

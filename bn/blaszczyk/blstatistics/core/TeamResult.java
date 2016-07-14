@@ -9,12 +9,12 @@ public class TeamResult
 	public static final Comparator<TeamResult> COMPARE_GAMES = (tr1,tr2) -> Integer.compare(tr2.getGames(), tr1.getGames());
 	public static final Comparator<TeamResult> COMPARE_WINS = (tr1,tr2) -> Integer.compare(tr2.getWins(), tr1.getWins());
 	public static final Comparator<TeamResult> COMPARE_DRAWS = (tr1,tr2) -> Integer.compare(tr2.getDraws(), tr1.getDraws());
-	public static final Comparator<TeamResult> COMPARE_LOSSOS = (tr1,tr2) -> Integer.compare(tr2.getLosses(), tr1.getLosses());
+	public static final Comparator<TeamResult> COMPARE_LOSSES = (tr1,tr2) -> Integer.compare(tr2.getLosses(), tr1.getLosses());
 	public static final Comparator<TeamResult> COMPARE_DIFF = (tr1,tr2) -> Integer.compare(tr2.getGoalDifference(), tr1.getGoalDifference());
 	public static final Comparator<TeamResult> COMPARE_GOALS_TEAM = (tr1,tr2) -> Integer.compare(tr2.getTeamGoals(), tr1.getTeamGoals());
 	public static final Comparator<TeamResult> COMPARE_GOALS_OPPONENT = (tr1,tr2) -> Integer.compare(tr2.getOpponentGoals(), tr1.getOpponentGoals());
 	
-	public static final Comparator<TeamResult> COMPARE_LEAGUE = (team1,team2) -> {
+	public static final Comparator<TeamResult> COMPARE_POSITION = (team1,team2) -> {
 			int result = 0;
 			result += 4 * COMPARE_POINTS.compare(team1, team2);
 			result += 2 * COMPARE_DIFF.compare(team1, team2);
@@ -30,7 +30,7 @@ public class TeamResult
 	private int losses=0;
 	private int teamGoals=0;
 	private int opponentGoals=0;
-	private int position = 0;
+	private int position=0;
 	
 	public TeamResult(String team)
 	{
@@ -139,7 +139,8 @@ public class TeamResult
 	@Override
 	public String toString()
 	{
-		return String.format("%2d. %15s     %4d Spl   %4d Pkt  %5d Dif      %4d S %4d U %4d N      %4d:%4d", position, team, games, points, getGoalDifference(), wins, draws, losses, teamGoals, opponentGoals );
+		return String.format("%2d. %15s     %4d Spl   %4d Pkt  %5d Dif      %4d S %4d U %4d N      %4d:%4d", 
+				position, team, games, points, getGoalDifference(), wins, draws, losses, teamGoals, opponentGoals );
 	}
 
 }

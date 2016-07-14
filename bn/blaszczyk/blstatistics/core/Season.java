@@ -10,6 +10,9 @@ public class Season implements Iterable<MatchDay>
 	private List<MatchDay> matchDays = new ArrayList<>();
 	private List<String> teams = new ArrayList<>();
 
+	/*
+	 * Constructor
+	 */
 	public Season(int year)
 	{
 		this.year = year;
@@ -24,7 +27,6 @@ public class Season implements Iterable<MatchDay>
 	{
 		return matchDays.size();
 	}
-	
 
 	public List<String> getTeams()
 	{
@@ -55,34 +57,22 @@ public class Season implements Iterable<MatchDay>
 		return gameList;
 	}
 
-	public boolean addGame(String gameString)
+	public void addGame(Game game)
 	{
-		try
-		{
-			Game game =  new Game(gameString);
-			int matchDayIndex = game.getMatchDay() - 1;
-			while(matchDayIndex >= matchDays.size())
-				matchDays.add(new MatchDay());
-			matchDays.get(matchDayIndex).addGame(game);
-			if(!teams.contains(game.getTeam1()))
-				teams.add(game.getTeam1());
-			if(!teams.contains(game.getTeam2()))
-				teams.add(game.getTeam2());
-			return true;			
-		}
-		catch (BLException e)
-		{
-			System.err.println(e.getErrorMessage());
-			e.printStackTrace();
-		}
-		return false;
+		int matchDayIndex = game.getMatchDay() - 1;
+		while(matchDayIndex >= matchDays.size())
+			matchDays.add(new MatchDay());
+		matchDays.get(matchDayIndex).addGame(game);
+		if(!teams.contains(game.getTeam1()))
+			teams.add(game.getTeam1());
+		if(!teams.contains(game.getTeam2()))
+			teams.add(game.getTeam2());
 	}
 	
-	public void addGames(Iterable<String> source)
+	public void addGames(Iterable<Game> source)
 	{
-		Iterator<String> iterator = source.iterator();
-		while(iterator.hasNext())
-			addGame(iterator.next());
+		for(Game game : source)
+			addGame(game);
 	}
 
 	@Override
@@ -91,36 +81,4 @@ public class Season implements Iterable<MatchDay>
 		return matchDays.iterator();
 	}
 	
-//	public Iterator<Game> getGameIterator()
-//	{
-//		if(matchDays.isEmpty())
-//			return new Iterator<Game>(){
-//				@Override
-//				public boolean hasNext(){return false;}
-//				@Override
-//				public Game next(){return null;}		
-//			};
-//		return new Iterator<Game>(){
-//			
-//			private Iterator<MatchDay> matchDayIterator = matchDays.iterator();
-//			private Iterator<Game> innerIterator = matchDayIterator.next().getGameIterator();
-//			
-//			@Override
-//			public boolean hasNext()
-//			{
-//				return innerIterator.hasNext();
-//			}
-//
-//			@Override
-//			public Game next()
-//			{
-//				Game returnGame = null;
-//				if( innerIterator.hasNext() )
-//					returnGame = innerIterator.next();
-//				while(!innerIterator.hasNext() && matchDayIterator.hasNext())
-//					innerIterator = matchDayIterator.next().getGameIterator();
-//				return returnGame;
-//			}
-//		};
-//	}
 }

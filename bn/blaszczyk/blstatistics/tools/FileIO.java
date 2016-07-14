@@ -20,27 +20,28 @@ public class FileIO
 		return String.format("%s/%s/%4d.%s", BASE_FOLDER, league.getName(),year,FILE_EXTENSION);
 	}
 	
-	public static void saveSeason(League league, int year)
+	public static void saveSeason(League league, int year) throws BLException
 	{
 		if(league == null)
 			return;
 		Season season = league.getSeason(year);
 		if(season == null)
 			return;
+		String filename = getFileName(league,year);
 		try
 		{
-			FileWriter file = new FileWriter(getFileName(league,year));
+			FileWriter file = new FileWriter(filename);
 			for(Game game : season.getAllGames())
 				file.write(game.toString() + "\n");
 			file.close();
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			throw new BLException("Error writing " + filename,e);
 		}
 	}
 	
-	public static boolean loadSeason(League league, File file)
+	public static boolean loadSeason(League league, File file) throws BLException
 	{
 		if(league == null || file == null)
 			return false;
@@ -54,24 +55,23 @@ public class FileIO
 				league.addSeason(season);
 			}
 			LineIterator iterator = FileUtils.lineIterator(file);
-			Stack<String> gameStack = new Stack<>();
+			Stack<Game> gameStack = new Stack<>();
 			while(iterator.hasNext())
-				gameStack.push(iterator.nextLine());
+				gameStack.push(new Game(iterator.nextLine()));
 			season.addGames( gameStack );
 			return true;
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			throw new BLException("Error loading " + file.getPath(), e );
 		}
 		catch(NumberFormatException e)
 		{
-			e.printStackTrace();
+			throw new BLException("Wrong Filename " + file.getPath(), e );
 		}
-		return false;
 	}
 
-	public static boolean loadFromFile(League league, int year)
+	public static boolean loadFromFile(League league, int year) throws BLException
 	{
 		File file = new File(getFileName(league,year));
 		return loadSeason(league, file);

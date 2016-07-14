@@ -14,8 +14,8 @@ import bn.blaszczyk.blstatistics.gui.ResultTableModel;
 
 public class GUITests {
 	
-	private static Filter<Game> gameFilter = LogicalFilterFactory.getTRUEFilter();
-	private static BiFilter<TeamResult,Game> teamResultFilter = LogicalBiFilterFactory.getTRUEBiFilter();
+	private static Filter<Game> gameFilter = LogicalFilter.getTRUEFilter();
+	private static BiFilter<TeamResult,Game> teamResultFilter = LogicalBiFilter.getTRUEBiFilter();
 	
 	public static void printTotalTable(League league)
 	{

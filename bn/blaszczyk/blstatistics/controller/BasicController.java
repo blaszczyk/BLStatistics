@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Stack;
 
 import bn.blaszczyk.blstatistics.core.*;
+import bn.blaszczyk.blstatistics.tools.BLException;
 import bn.blaszczyk.blstatistics.tools.FileIO;
 import bn.blaszczyk.blstatistics.tools.FussballDatenRequest;
 
@@ -17,13 +18,20 @@ public class BasicController {
 	
 	public void requestSeason(int year)
 	{		
-		FussballDatenRequest.requestTableMuted(year,league.getName());
-		Stack<String> gameStack = FussballDatenRequest.getGames();
-		FussballDatenRequest.clearTable();
-		
-		Season season = new Season(year);
-		season.addGames(gameStack);
-		league.addSeason(season);
+		try
+		{
+			FussballDatenRequest.requestTableMuted(year,league.getName());
+			Stack<Game> gameStack = FussballDatenRequest.getGames();
+			FussballDatenRequest.clearTable();
+			Season season = new Season(year);
+			season.addGames(gameStack);
+			league.addSeason(season);
+		}
+		catch (BLException e)
+		{
+			System.err.println(e.getErrorMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public void downloadAllSeasons()
@@ -31,7 +39,15 @@ public class BasicController {
 		for(int year = 1964; year < 2017; year++)
 		{
 			requestSeason(year);
-			FileIO.saveSeason(league, year);
+			try
+			{
+				FileIO.saveSeason(league, year);
+			}
+			catch (BLException e)
+			{
+				System.err.println(e.getErrorMessage());
+				e.printStackTrace();
+			}
 		}		
 	}
 
@@ -39,13 +55,29 @@ public class BasicController {
 	{
 		File directory = new File("leagues/" + league.getName() + "/");
 		for(File file : directory.listFiles())
-			FileIO.loadSeason(league, file);
+			try
+			{
+				FileIO.loadSeason(league, file);
+			}
+			catch (BLException e)
+			{
+				System.err.println(e.getErrorMessage());
+				e.printStackTrace();
+			}
 	}
 	
 	public void saveAllSeasons()
 	{
 		for(Season season : league)
-			FileIO.saveSeason(league, season.getYear());
+			try
+			{
+				FileIO.saveSeason(league, season.getYear());
+			}
+			catch (BLException e)
+			{
+				System.err.println(e.getErrorMessage());
+				e.printStackTrace();
+			}
 	}
 	
 }
