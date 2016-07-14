@@ -3,7 +3,6 @@ package bn.blaszczyk.blstatistics.tools;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Stack;
 
 import org.apache.commons.io.FileUtils;
@@ -23,15 +22,16 @@ public class FileIO
 	
 	public static void saveSeason(League league, int year)
 	{
+		if(league == null)
+			return;
 		Season season = league.getSeason(year);
 		if(season == null)
 			return;
-		Iterator<Game> gameIterator = season.getAllGames().iterator();
 		try
 		{
 			FileWriter file = new FileWriter(getFileName(league,year));
-			while(gameIterator.hasNext())
-				file.write(gameIterator.next().toString() + "\n");
+			for(Game game : season.getAllGames())
+				file.write(game.toString() + "\n");
 			file.close();
 		}
 		catch (IOException e)
@@ -40,8 +40,10 @@ public class FileIO
 		}
 	}
 	
-	public static boolean loadFromFile(League league, File file)
+	public static boolean loadSeason(League league, File file)
 	{
+		if(league == null || file == null)
+			return false;
 		try
 		{
 			int year = Integer.parseInt(file.getName().substring(0,4));
@@ -72,6 +74,6 @@ public class FileIO
 	public static boolean loadFromFile(League league, int year)
 	{
 		File file = new File(getFileName(league,year));
-		return loadFromFile(league, file);
+		return loadSeason(league, file);
 	}
 }

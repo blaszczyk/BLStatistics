@@ -39,7 +39,7 @@ public class BasicController {
 	{
 		File directory = new File("leagues/" + league.getName() + "/");
 		for(File file : directory.listFiles())
-			FileIO.loadFromFile(league, file);
+			FileIO.loadSeason(league, file);
 	}
 	
 	public void saveAllSeasons()
