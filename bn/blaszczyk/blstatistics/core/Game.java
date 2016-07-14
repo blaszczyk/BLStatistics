@@ -53,22 +53,28 @@ public class Game
 	private String team1;
 	private String team2;
 	private Date date;
+	private int matchDay;
 	
 	/*
 	 * Constructors
 	 */
-	public Game(int goals1, int goals2, String team1, String team2, Date date)
+	public Game(int goals1, int goals2, String team1, String team2, Date date, int matchDay)
 	{
 		this.goals1 = goals1;
 		this.goals2 = goals2;
 		this.team1 = team1;
 		this.team2 = team2;
 		this.date = date;
+		this.matchDay = matchDay;
 	}
 	
 	//	String testGame = " 14.09.63: Hamburg - Frankfurt 3:0";
-	public Game(String gameDetails) throws BLException
+	public Game(String gameString) throws BLException
 	{
+		matchDay = Integer.parseInt( gameString.substring(0, gameString.indexOf('.') ) );
+		if(matchDay < 1)
+			throw new BLException("Wrong matchDay in '" + gameString + "'" );
+		String gameDetails = gameString.substring( gameString.indexOf('g') + 2  );
 		String[] split = gameDetails.trim().split(":");
 		if(split.length != 3)
 			throw new BLException("Wrong game Format in '" + gameDetails + "'");
@@ -126,6 +132,11 @@ public class Game
 		return date;
 	}
 
+	public int getMatchDay()
+	{
+		return matchDay;
+	}
+
 	public int getWinner()
 	{
 		switch(Integer.signum(goals1-goals2))
@@ -145,7 +156,7 @@ public class Game
 	@Override
 	public String toString()
 	{
-		return String.format(" %s: %15s - %15s %2d:%d" , dateFormat.format(date), team1, team2, goals1, goals2);
+		return String.format( "%2d. Spieltag  %s: %15s - %15s %2d:%d" , matchDay, dateFormat.format(date), team1, team2, goals1, goals2);
 	}
 
 	/*

@@ -57,13 +57,12 @@ public class Season implements Iterable<MatchDay>
 
 	public boolean addGame(String gameString)
 	{
-		int matchDayIndex = Integer.parseInt( gameString.substring(0, gameString.indexOf('.') ) )-1;
-		while(matchDayIndex >= matchDays.size())
-			matchDays.add(new MatchDay());
-		String gameDetails = gameString.substring( gameString.indexOf('g') + 2  );
 		try
 		{
-			Game game =  new Game(gameDetails);
+			Game game =  new Game(gameString);
+			int matchDayIndex = game.getMatchDay() - 1;
+			while(matchDayIndex >= matchDays.size())
+				matchDays.add(new MatchDay());
 			matchDays.get(matchDayIndex).addGame(game);
 			if(!teams.contains(game.getTeam1()))
 				teams.add(game.getTeam1());
@@ -84,15 +83,6 @@ public class Season implements Iterable<MatchDay>
 		Iterator<String> iterator = source.iterator();
 		while(iterator.hasNext())
 			addGame(iterator.next());
-	}
-	
-	public Collection<String> getAllGamesAsString()
-	{
-		Stack<String> gameStack = new Stack<>();
-		for(int i = 0; i < getMatchDayCount(); i++)
-			for(Game g : getMatchDay(i))
-				gameStack.push( (i+1) + ". Spieltag" + g + '\n');
-		return gameStack;
 	}
 
 	@Override

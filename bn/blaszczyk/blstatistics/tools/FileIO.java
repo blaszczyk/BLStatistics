@@ -26,12 +26,12 @@ public class FileIO
 		Season season = league.getSeason(year);
 		if(season == null)
 			return;
-		Iterator<String> gameIterator = season.getAllGamesAsString().iterator();
+		Iterator<Game> gameIterator = season.getAllGames().iterator();
 		try
 		{
 			FileWriter file = new FileWriter(getFileName(league,year));
 			while(gameIterator.hasNext())
-				file.write(gameIterator.next());
+				file.write(gameIterator.next().toString() + "\n");
 			file.close();
 		}
 		catch (IOException e)

@@ -89,16 +89,8 @@ public class ConsoleTests
 	public static void printTable( Table table )
 	{
 		table.sort();
-		int lastPos = 0;
 		for(int i = 0; i < table.getTeamCount(); i++)
-		{
-			int pos = i+1;
-			if(i > 0 && TeamResult.COMPARATOR.compare(table.getTeamResult(i), table.getTeamResult(i-1)) == 0) 
-				pos = lastPos;
-			else
-				lastPos = pos;
-			System.out.printf( "%2d. %s\n" , pos ,table.getTeamResult(i).toString() );
-		}
+			System.out.println( table.getTeamResult(i).toString() );
 	}
 	
 	public static void printGames( Iterable<Game> games )

@@ -40,7 +40,16 @@ public class Table implements Iterable<TeamResult>
 
 	public void sort()
 	{
-		teamResults.sort( TeamResult.COMPARATOR );
+		if(teamResults == null || teamResults.isEmpty())
+			return;
+		teamResults.sort( TeamResult.COMPARE_LEAGUE );
+		int lastPos = 1;
+		teamResults.get(0).setPosition(1);
+		for(int i = 1; i < getTeamCount(); i++)
+			if(TeamResult.COMPARE_LEAGUE.compare(getTeamResult(i), getTeamResult(i-1)) == 0)
+				getTeamResult(i).setPosition(lastPos);
+			else
+				getTeamResult(i).setPosition(lastPos = i + 1);	
 	}
 	
 	public int getTeamCount()
