@@ -2,15 +2,40 @@ package bn.blaszczyk.blstatistics.core;
 
 import java.util.*;
 
+import bn.blaszczyk.blstatistics.filters.*;
+
 public class Table implements Iterable<TeamResult>
 {
 	private List<TeamResult> teamResults = new ArrayList<>();
 	private int pointsForWin = 2;
-	
-	public Table(List<Game> games)
+
+	/*
+	 * Constructors for different sets of Filters
+	 */
+	public Table(Iterable<Game> games)
 	{
+		this(games,null,null);
+	}
+
+	public Table(Iterable<Game> games, Filter<Game> gameFilter)
+	{
+		this(games,gameFilter,null);
+	}
+	
+	public Table(Iterable<Game> games, BiFilter<TeamResult,Game> teamResultFilter)
+	{
+		this(games,null,teamResultFilter);
+	}
+	
+	public Table(Iterable<Game> games, Filter<Game> gameFilter, BiFilter<TeamResult,Game> teamResultFilter)
+	{
+		if(gameFilter == null)
+			gameFilter = LogicalFilterFactory.getTRUEFilter();
+		if(teamResultFilter == null)
+			teamResultFilter = LogicalBiFilterFactory.getTRUEBiFilter();
 		for(Game game : games)
-			consumeGame(game);
+			if(gameFilter.check(game))
+				consumeGame(game,teamResultFilter);
 	}
 
 	public void sort()
@@ -36,14 +61,15 @@ public class Table implements Iterable<TeamResult>
 		return -1;
 	}
 	
-	private void consumeGame(Game game)
+	private void consumeGame(Game game, BiFilter<TeamResult,Game> teamResultFilter)
 	{
 		if(getTeamIndex(game.getTeam1())<0)
 			teamResults.add( new TeamResult(game.getTeam1()));
 		if(getTeamIndex(game.getTeam2())<0)
 			teamResults.add( new TeamResult(game.getTeam2()));
 		for(TeamResult t : teamResults)
-			t.consumeGame(game,pointsForWin);
+			if(teamResultFilter.check(t, game))
+				t.consumeGame(game,pointsForWin);
 	}
 
 	@Override

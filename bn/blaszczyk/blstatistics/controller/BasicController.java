@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Stack;
 
 import bn.blaszczyk.blstatistics.core.*;
+import bn.blaszczyk.blstatistics.tools.FileIO;
 import bn.blaszczyk.blstatistics.tools.FussballDatenRequest;
 
 public class BasicController {
@@ -21,16 +22,16 @@ public class BasicController {
 		FussballDatenRequest.clearTable();
 		
 		Season season = new Season(year);
-		season.consumeGameStack(gameStack);
+		season.addGames(gameStack);
 		league.addSeason(season);
 	}
 
 	public void downloadAllSeasons()
 	{
-		for(int year = 1969; year < 2017; year++)
+		for(int year = 1964; year < 2017; year++)
 		{
 			requestSeason(year);
-			league.saveToFile(year);
+			FileIO.saveSeason(league, year);
 		}		
 	}
 
@@ -38,13 +39,13 @@ public class BasicController {
 	{
 		File directory = new File("leagues/" + league.getName() + "/");
 		for(File file : directory.listFiles())
-			league.loadFromFile(file);
+			FileIO.loadFromFile(league, file);
 	}
 	
 	public void saveAllSeasons()
 	{
 		for(Season season : league)
-			league.saveToFile(season.getYear());
+			FileIO.saveSeason(league, season.getYear());
 	}
 	
 }

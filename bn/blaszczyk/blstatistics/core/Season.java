@@ -1,13 +1,6 @@
 package bn.blaszczyk.blstatistics.core;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 import bn.blaszczyk.blstatistics.tools.BLException;
 
@@ -56,7 +49,7 @@ public class Season implements Iterable<MatchDay>
 	public List<Game> getAllGames()
 	{
 		List<Game> gameList = new ArrayList<>();
-		for(MatchDay matchDay : matchDays)
+		for(MatchDay matchDay : this)
 			for(Game game : matchDay)
 				gameList.add(game);
 		return gameList;
@@ -86,41 +79,20 @@ public class Season implements Iterable<MatchDay>
 		return false;
 	}
 	
-	public void consumeGameStack(Stack<String> gameStack)
+	public void addGames(Iterable<String> source)
 	{
-		while(!gameStack.isEmpty())
-			addGame(gameStack.pop());
+		Iterator<String> iterator = source.iterator();
+		while(iterator.hasNext())
+			addGame(iterator.next());
 	}
 	
-	public void write( Writer writer )
+	public Collection<String> getAllGamesAsString()
 	{
-		try
-		{
-			for(int i = 0; i < getMatchDayCount(); i++)
-				for(Game g : getMatchDay(i))
-					writer.write( (i+1) + ". Spieltag" + g + '\n');
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public void read( Reader reader )
-	{
-		String line;
-		BufferedReader br = new BufferedReader(reader);
-		teams = new ArrayList<>();
-		try
-		{
-			while( (line = br.readLine()) != null )
-					addGame(line);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		Stack<String> gameStack = new Stack<>();
+		for(int i = 0; i < getMatchDayCount(); i++)
+			for(Game g : getMatchDay(i))
+				gameStack.push( (i+1) + ". Spieltag" + g + '\n');
+		return gameStack;
 	}
 
 	@Override

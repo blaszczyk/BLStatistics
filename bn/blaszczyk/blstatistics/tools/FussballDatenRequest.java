@@ -68,7 +68,7 @@ public class FussballDatenRequest {
 	public static Stack<String> getGames()
 	{
 		Stack<String> games = new Stack<>();
-		if (!(gamesTable == null))
+		if (gamesTable != null)
 			for (HtmlTableRow row : gamesTable.getRows())
 				for (HtmlTableCell cell : row.getCells())
 					if (cell.getAttribute("class").equals("Gegner")

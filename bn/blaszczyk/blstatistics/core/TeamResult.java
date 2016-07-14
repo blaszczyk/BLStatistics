@@ -15,12 +15,12 @@ public class TeamResult
 
 			if(team1.getGoalDifference() > team2.getGoalDifference())
 				return -1;
-			if(team1.getGoalDifference() > team2.getGoalDifference())
+			if(team1.getGoalDifference() < team2.getGoalDifference())
 				return 1;
-
+			
 			if(team1.getTeamGoals() > team2.getTeamGoals())
 				return -1;
-			if(team1.getTeamGoals() > team2.getTeamGoals())
+			if(team1.getTeamGoals() < team2.getTeamGoals())
 				return 1;
 			
 			return 0;
@@ -86,13 +86,19 @@ public class TeamResult
 		return teamGoals - opponentGoals;
 	}
 	
+//	public void consumeGame(Game game, Filter<Game> filter, int pointsForWin)
+//	{
+//		if(filter.filter(game))
+//			consumeGame(game, pointsForWin);
+//	}
+	
 	public void consumeGame(Game game, int pointsForWin)
 	{
 		if(team.equals(game.getTeam1()))
 		{
-			switch(game.getResult())
+			switch(game.getWinner())
 			{
-			case Game.WIN:
+			case Game.HOME:
 				wins++;
 				points += pointsForWin;
 				break;
@@ -100,7 +106,7 @@ public class TeamResult
 				draws++;
 				points++;
 				break;
-			case Game.LOSS:
+			case Game.AWAY:
 				losses++;
 				break;
 			}
@@ -110,9 +116,9 @@ public class TeamResult
 		}
 		if(team.equals(game.getTeam2()))
 		{
-			switch(game.getResult())
+			switch(game.getWinner())
 			{
-			case Game.LOSS:
+			case Game.AWAY:
 				wins++;
 				points += pointsForWin;
 				break;
@@ -120,7 +126,7 @@ public class TeamResult
 				draws++;
 				points++;
 				break;
-			case Game.WIN:
+			case Game.HOME:
 				losses++;
 				break;
 			}
@@ -133,7 +139,7 @@ public class TeamResult
 	@Override
 	public String toString()
 	{
-		return String.format("%15s     %2d Spl   %2d Pkt  %3d Dif    %2dS %2dU %2dN    %3d:%3d", team, games, points, getGoalDifference(), wins, draws, losses, teamGoals, opponentGoals );
+		return String.format("%15s     %4d Spl   %4d Pkt  %5d Dif      %4d S %4d U %4d N      %4d:%4d", team, games, points, getGoalDifference(), wins, draws, losses, teamGoals, opponentGoals );
 	}
 
 }
