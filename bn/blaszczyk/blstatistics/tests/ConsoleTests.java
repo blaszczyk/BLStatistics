@@ -52,24 +52,31 @@ public class ConsoleTests
 			}
 			catch (BLException e)
 			{
-				System.err.println(e.getErrorMessage());
 				e.printStackTrace();
 			}
 		
-		Season season = new Season(1964);
-		season.addGames(games);
 		League league = new League("testliga");
+		Season season = new Season(1964,league);
+		season.addGames(games);
 		league.addSeason(season);
 		return league;
 	}
 
 	public static void printLeagueTable(League league, int year)
 	{
-		Season season = league.getSeason(year);
-		Table table = new Table( season.getAllGames(), gameFilter );
-		System.out.println(league.getName() + " Saison " + year);
-		printTable(table);
-		System.out.println();
+		Season season;
+		try
+		{
+			season = league.getSeason(year);
+			Table table = new Table( season.getAllGames(), gameFilter );
+			System.out.println(league.getName() + " Saison " + year);
+			printTable(table);
+			System.out.println();
+		}
+		catch (BLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public static void printAllTables(League league)
@@ -85,9 +92,9 @@ public class ConsoleTests
 		for(Season s : league)
 		{
 			System.out.println( "  Saison: " + s.getYear() );
-			System.out.println( "  " + s.getTeamCount() + " Teams");
-			for(String team : s.getTeams())
-				System.out.println("    '" + team + "'");
+//			System.out.println( "  " + s.getTeamCount() + " Teams");
+//			for(String team : s.getTeams())
+//				System.out.println("    '" + team + "'");
 			System.out.println("  " + s.getMatchDayCount() + " Spieltage");
 			for(int i = 0; i < s.getMatchDayCount(); i++)
 			{

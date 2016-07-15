@@ -26,6 +26,10 @@ public class Game
 	public static final Comparator<Game> DATE_COMPARATOR = (g1,g2) -> g1.getDate().compareTo(g2.getDate());
 	public static final Comparator<Game> DIFF_COMPARATOR = (g1,g2) -> Integer.compare(g2.getDiff(),g1.getDiff());
 	public static final Comparator<Game> GOALS_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoals(),g1.getGoals());
+	public static final Comparator<Game> GOALS1_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoals1(),g1.getGoals1());
+	public static final Comparator<Game> GOALS2_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoals2(),g1.getGoals2());
+	public static final Comparator<Game> TEAM1_COMPARATOR = (g1,g2) -> g1.getTeam1().compareTo(g2.getTeam1());
+	public static final Comparator<Game> TEAM2_COMPARATOR = (g1,g2) -> g1.getTeam2().compareTo(g2.getTeam2());
 	public static final Comparator<Game> DUEL_COMPARATOR = (g1,g2) -> {
 		int result = 0;
 		if( g1.containsTeam(g2.getTeam1()) && g1.containsTeam(g2.getTeam2()))
@@ -42,7 +46,7 @@ public class Game
 	/*
 	 * Standard Date Format
 	 */
-	private static DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
+	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
 	
 	/*
 	 * Object Properties
@@ -78,7 +82,7 @@ public class Game
 			throw new BLException("Wrong game Format in '" + gameDetails + "'");
 		try
 		{
-			date = dateFormat.parse( split[0]);
+			date = DATE_FORMAT.parse( split[0]);
 		}
 		catch (ParseException e)
 		{
@@ -165,6 +169,6 @@ public class Game
 	@Override
 	public String toString()
 	{
-		return String.format( "%2d. Spieltag  %s: %15s - %15s %2d:%d" , matchDay, dateFormat.format(date), team1, team2, goals1, goals2);
+		return String.format( "%2d. Spieltag  %s: %15s - %15s %2d:%d" , matchDay, DATE_FORMAT.format(date), team1, team2, goals1, goals2);
 	}
 }

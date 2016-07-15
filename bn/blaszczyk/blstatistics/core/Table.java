@@ -7,7 +7,7 @@ import bn.blaszczyk.blstatistics.filters.*;
 public class Table implements Iterable<TeamResult>
 {
 	private List<TeamResult> teamResults = new ArrayList<>();
-	private int pointsForWin = 2;
+	private int pointsForWin = 3;
 
 	/*
 	 * Constructors for different sets of Filters

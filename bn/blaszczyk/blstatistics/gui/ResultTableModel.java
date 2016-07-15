@@ -1,6 +1,5 @@
 package bn.blaszczyk.blstatistics.gui;
 
-import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.event.TableModelListener;
@@ -15,34 +14,6 @@ public class ResultTableModel implements TableModel {
 	public ResultTableModel(List<TeamResult> results)
 	{
 		this.results = results;
-	}
-
-	public static Comparator<TeamResult> getComparator(int columnIndex)
-	{
-		switch(columnIndex)
-		{
-		case 1:
-			return TeamResult.COMPARE_TEAM;
-		case 2:
-			return TeamResult.COMPARE_GAMES;
-		case 3:
-			return TeamResult.COMPARE_POINTS;
-		case 4:
-			return TeamResult.COMPARE_DIFF;
-		case 5:
-			return TeamResult.COMPARE_WINS;
-		case 6:
-			return TeamResult.COMPARE_DRAWS;
-		case 7:
-			return TeamResult.COMPARE_LOSSES;
-		case 8:
-			return TeamResult.COMPARE_GOALS_TEAM;
-		case 9:
-			return TeamResult.COMPARE_GOALS_OPPONENT;
-//		case 0: 
-		default:
-			return TeamResult.COMPARE_POSITION;
-		}
 	}
 	
 	/*

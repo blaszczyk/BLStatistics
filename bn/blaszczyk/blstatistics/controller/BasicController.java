@@ -23,13 +23,12 @@ public class BasicController {
 			FussballDatenRequest.requestTableMuted(year,league.getName());
 			Stack<Game> gameStack = FussballDatenRequest.getGames();
 			FussballDatenRequest.clearTable();
-			Season season = new Season(year);
+			Season season = new Season(year,league);
 			season.addGames(gameStack);
 			league.addSeason(season);
 		}
 		catch (BLException e)
 		{
-			System.err.println(e.getErrorMessage());
 			e.printStackTrace();
 		}
 	}
@@ -45,7 +44,6 @@ public class BasicController {
 			}
 			catch (BLException e)
 			{
-				System.err.println(e.getErrorMessage());
 				e.printStackTrace();
 			}
 		}		
@@ -61,7 +59,6 @@ public class BasicController {
 			}
 			catch (BLException e)
 			{
-				System.err.println(e.getErrorMessage());
 				e.printStackTrace();
 			}
 	}
@@ -75,7 +72,6 @@ public class BasicController {
 			}
 			catch (BLException e)
 			{
-				System.err.println(e.getErrorMessage());
 				e.printStackTrace();
 			}
 	}

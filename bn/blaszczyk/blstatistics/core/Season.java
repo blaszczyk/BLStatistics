@@ -2,20 +2,20 @@ package bn.blaszczyk.blstatistics.core;
 
 import java.util.*;
 
-import bn.blaszczyk.blstatistics.tools.BLException;
-
 public class Season implements Iterable<MatchDay>
 {
 	private int year;
+	private League league;
 	private List<MatchDay> matchDays = new ArrayList<>();
-	private List<String> teams = new ArrayList<>();
+//	private List<String> teams = new ArrayList<>();
 
 	/*
 	 * Constructor
 	 */
-	public Season(int year)
+	public Season(int year, League league)
 	{
 		this.year = year;
+		this.league = league;
 	}
 
 	public MatchDay getMatchDay(int index)
@@ -28,24 +28,29 @@ public class Season implements Iterable<MatchDay>
 		return matchDays.size();
 	}
 
-	public List<String> getTeams()
-	{
-		return teams;
-	}
-
-	public String getTeam(int index)
-	{
-		return teams.get(index);
-	}
-
-	public int getTeamCount()
-	{
-		return teams.size();
-	}
+//	public List<String> getTeams()
+//	{
+//		return teams;
+//	}
+//
+//	public String getTeam(int index)
+//	{
+//		return teams.get(index);
+//	}
+//
+//	public int getTeamCount()
+//	{
+//		return teams.size();
+//	}
 	
 	public int getYear()
 	{
 		return year;
+	}
+	
+	public League getLeague()
+	{
+		return league;
 	}
 	
 	public List<Game> getAllGames()
@@ -63,10 +68,12 @@ public class Season implements Iterable<MatchDay>
 		while(matchDayIndex >= matchDays.size())
 			matchDays.add(new MatchDay());
 		matchDays.get(matchDayIndex).addGame(game);
-		if(!teams.contains(game.getTeam1()))
-			teams.add(game.getTeam1());
-		if(!teams.contains(game.getTeam2()))
-			teams.add(game.getTeam2());
+		league.addTeam(game.getTeam1());
+		league.addTeam(game.getTeam2());
+//		if(!teams.contains(game.getTeam1()))
+//			teams.add(game.getTeam1());
+//		if(!teams.contains(game.getTeam2()))
+//			teams.add(game.getTeam2());
 	}
 	
 	public void addGames(Iterable<Game> source)

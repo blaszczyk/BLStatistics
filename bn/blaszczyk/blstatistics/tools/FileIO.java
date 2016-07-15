@@ -47,11 +47,15 @@ public class FileIO
 			return false;
 		try
 		{
-			int year = Integer.parseInt(file.getName().substring(0,4));
-			Season season = league.getSeason(year);
-			if(season == null)
+			int year = Integer.parseInt(file.getName().substring(0,4));			
+			Season season;
+			try
 			{
-				season = new Season(year);
+				season = league.getSeason(year);
+			}
+			catch(BLException e)
+			{
+				season = new Season(year,league);
 				league.addSeason(season);
 			}
 			LineIterator iterator = FileUtils.lineIterator(file);

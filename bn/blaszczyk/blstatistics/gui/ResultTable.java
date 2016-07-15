@@ -1,106 +1,73 @@
 package bn.blaszczyk.blstatistics.gui;
 
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.*;
 
-import javax.swing.JTable;
+import javax.swing.table.TableModel;
 
 import bn.blaszczyk.blstatistics.core.TeamResult;
-import bn.blaszczyk.blstatistics.filters.Filter;
-import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 
 @SuppressWarnings("serial")
-public class ResultTable extends JTable implements MouseListener{
-	
-	private List<TeamResult> results;
-	private Filter<TeamResult> filter;
-	private Iterable<TeamResult> source;
-	private Comparator<TeamResult> comparator = TeamResult.COMPARE_POSITION;
-//	private boolean compareBackwards = false;
+public class ResultTable extends SwingTable<TeamResult>
+{
 
 	public ResultTable(Iterable<TeamResult> source)
 	{
-		this(source,LogicalFilter.getTRUEFilter());
+		super(source);
 	}
-	
-	public ResultTable(Iterable<TeamResult> source, Filter<TeamResult> filter)
-	{
-		this.filter = filter;
-		resetSource(source);
-		getTableHeader().addMouseListener(this);
-	}
-	
-	public void resetSource(Iterable<TeamResult> source)
-	{
-		this.source = source;
-		resetList();
-	}
-	
-	public void resetFilter(Filter<TeamResult> filter)
-	{
-		this.filter = filter;
-		resetList();
-	}
-	
-	private void resetList()
-	{
-		results = new ArrayList<>();
-		for(TeamResult result : source)
-			if(filter.check(result))
-				results.add(result);	
-		resetModel();
-	}
-	
-	private void resetModel()
-	{
-		results.sort(comparator);
-		setModel(new ResultTableModel(results));
-	}
-		
-	private void setComparator(int columnIndex)
-	{
-		comparator = ResultTableModel.getComparator(columnIndex);
-		resetModel();
-	}
-	
-	/*
-	 * Mouse Listener Methods
-	 */
+
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		if( e.getComponent() == getTableHeader() )
+	protected Comparator<TeamResult> comparator(int columnIndex)
+	{
+		switch (columnIndex)
 		{
-			int columnIndex = columnAtPoint(e.getPoint());
-			setComparator(columnIndex);
+		case 1:
+			return TeamResult.COMPARE_TEAM;
+		case 2:
+			return TeamResult.COMPARE_GAMES;
+		case 3:
+			return TeamResult.COMPARE_POINTS;
+		case 4:
+			return TeamResult.COMPARE_DIFF;
+		case 5:
+			return TeamResult.COMPARE_WINS;
+		case 6:
+			return TeamResult.COMPARE_DRAWS;
+		case 7:
+			return TeamResult.COMPARE_LOSSES;
+		case 8:
+			return TeamResult.COMPARE_GOALS_TEAM;
+		case 9:
+			return TeamResult.COMPARE_GOALS_OPPONENT;
+		// case 0:
+		default:
+			return TeamResult.COMPARE_POSITION;
 		}
 	}
-	
+
 	@Override
-	public void mouseEntered(MouseEvent e)
+	protected TableModel tableModel(List<TeamResult> ts)
+	{
+		return new ResultTableModel(ts);
+	}
+
+	@Override
+	protected void doPopup(MouseEvent e)
 	{
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e)
+	protected int columnWidth(int columnIndex)
 	{
+		if( columnIndex == 0)
+			return 50;
+		if( columnIndex < 2)
+			return 200;
+		if( columnIndex < 5)
+			return 100;
+		if( columnIndex < 8)
+			return 75;
+		return 75;
 	}
 
-	@Override
-	public void mousePressed(MouseEvent e)
-	{
-		if(e.isPopupTrigger())
-			doPopup(e);
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e)
-	{
-		if(e.isPopupTrigger())
-			doPopup(e);
-	}
-	private void doPopup(MouseEvent e)
-	{
-	}
-	
 }

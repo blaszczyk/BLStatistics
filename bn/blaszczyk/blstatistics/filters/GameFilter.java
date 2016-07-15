@@ -7,7 +7,7 @@ import java.util.List;
 
 import bn.blaszczyk.blstatistics.core.Game;
 
-public class GameFilter
+public abstract class GameFilter implements Filter<Game>
 {
 	/*
 	 * MatchDay filters

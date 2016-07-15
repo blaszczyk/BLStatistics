@@ -22,6 +22,13 @@ public class BLException extends Exception
 	{
 		return errorMessage;
 	}
+	
+	@Override
+	public void printStackTrace()
+	{
+		super.printStackTrace();
+		System.err.println(getErrorMessage());
+	}
 
 
 }
