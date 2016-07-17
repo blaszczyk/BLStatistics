@@ -7,9 +7,22 @@ public class FilterAdapter
 		BiFilter<T,U> f = (t,u) -> filter.check(t);
 		return f;
 	}
+	
 	public static <T,U> BiFilter<T,U> toBiFilterArg2( Filter<U> filter )
 	{
 		BiFilter<T,U> f = (t,u) -> filter.check(u);
 		return f;
+	}
+
+	public static <T,U> FilterListener<T> getListenerAdapterArg1( BiFilterListener<T,U> bilistener )
+	{
+		FilterListener<T> listener = f -> bilistener.filter( toBiFilterArg1(f) );
+		return listener;
+	}
+	
+	public static <T,U> FilterListener<U> getListenerAdapterArg2( BiFilterListener<T,U> bilistener )
+	{
+		FilterListener<U> listener = f -> bilistener.filter( toBiFilterArg2(f) );
+		return listener;
 	}
 }

@@ -55,7 +55,7 @@ public class League implements Iterable<Season>
 			teams.add(team);
 	}
 
-	public Iterable<String> getTeams()
+	public List<String> getTeams()
 	{
 		Collections.sort(teams);
 		return teams;

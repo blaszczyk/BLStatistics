@@ -8,9 +8,8 @@ import javax.swing.*;
 import bn.blaszczyk.blstatistics.controller.BasicController;
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.filters.*;
-import bn.blaszczyk.blstatistics.gui.GameTable;
-import bn.blaszczyk.blstatistics.gui.ResultTable;
-import bn.blaszczyk.blstatistics.gui.filters.TeamFilterPanel;
+import bn.blaszczyk.blstatistics.gui.*;
+import bn.blaszczyk.blstatistics.gui.filters.*;
 import bn.blaszczyk.blstatistics.tools.BLException;
 
 public class GUITests {
@@ -86,10 +85,10 @@ public class GUITests {
 		return gameTable;
 	}
 
-	public static TeamFilterPanel openDuelPanel( Iterable<String> teams, String title )
+	public static DuelFilterPanel openDuelPanel( Iterable<String> teams, String title )
 	{
 		JFrame frame = new JFrame(title);
-		TeamFilterPanel panel = TeamFilterPanel.getDuelFilterPanel(teams);
+		DuelFilterPanel panel = new DuelFilterPanel(teams);
 		frame.add(panel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
@@ -100,19 +99,32 @@ public class GUITests {
 	public static TeamFilterPanel openTeamPanel( Iterable<String> teams, String title )
 	{
 		JFrame frame = new JFrame(title);
-		TeamFilterPanel panel = TeamFilterPanel.getTeamFilterPanel(teams);
+		TeamFilterPanel panel = new TeamFilterPanel(teams);
 		frame.add(panel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
 		return panel;
 	}
-	
-	public static TeamFilterPanel openSubLeaguePanel( Iterable<String> teams, String title )
+
+	public static SubLeagueFilterPanel openSubLeaguePanel( Iterable<String> teams, String title )
 	{
 		JFrame frame = new JFrame(title);
-		TeamFilterPanel panel = TeamFilterPanel.getSubLeagueFilterPanel(teams);
+		SubLeagueFilterPanel panel = new SubLeagueFilterPanel(teams);
 		frame.add(panel);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
+		return panel;
+	}
+
+	public static BiFilterPanel<Season,Game> openNOTPanel( League league, String title )
+	{
+
+		PanelMenu<Season,Game> panelMenu = new GameFilterPanelPopup(league.getTeams());
+		BiFilterPanel<Season,Game> panel = new UnaryOperatorFilterPanel<>(panelMenu);
+		JFrame frame = new JFrame(title);
+		frame.add(panel.getPanel());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
@@ -145,7 +157,7 @@ public class GUITests {
 	{
 		GameTable table = openGameTable(league.getAllGames(), "Spiele");
 //		TeamFilterPanel duelPanel = openDuelPanel(league.getTeams(), "Filter1");
-		TeamFilterPanel subLeaguePanel = openSubLeaguePanel(league.getTeams(), "Filter3");
+		SubLeagueFilterPanel subLeaguePanel = openSubLeaguePanel(league.getTeams(), "Filter3");
 //		TeamFilterPanel teamPanel = openTeamPanel(league.getTeams(), "Filter2");
 //		duelPanel.addFilterListener(table);
 //		teamPanel.addFilterListener(table);
@@ -157,12 +169,32 @@ public class GUITests {
 		
 	}
 	
+	public static void adapterTest(League league, int year)
+	{
+		Season season;
+		try
+		{
+			season = league.getSeason(year);
+			GameTable table = openGameTable(season.getAllGames(), "Spiele");
+			BiFilterPanel<Season, Game> adapter = openNOTPanel(league,"Adapter");
+			adapter.addFilterListener( f -> {
+				table.filter( g -> f.check(season, g)  );
+			});						
+		}
+		catch (BLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args)
 	{
 		League bundesliga = new League("bundesliga");
 		BasicController controller = new BasicController(bundesliga);
 		controller.loadAllSeasons();
-		filterPanelTest(bundesliga);
+		adapterTest(bundesliga, 1978);
+//		filterPanelTest(bundesliga);
 //		gameFilterTest(bundesliga);
 //		duelFilterTest(bundesliga);
 //		printAllTables(bundesliga);

@@ -15,7 +15,7 @@ import bn.blaszczyk.blstatistics.filters.FilterListener;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 
 @SuppressWarnings("serial")
-public abstract class AbstractFilterPanel<T> extends JPanel implements Filter<T>
+public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPanel<T>
 {
 	private static final Border activeBorder = BorderFactory.createLoweredBevelBorder();
 	private static final Border deactiveBorder = BorderFactory.createRaisedBevelBorder();
@@ -26,7 +26,7 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements Filter<T>
 	
 	private JPopupMenu popup;
 	
-	private Filter<T> filter;
+	private Filter<T> filter = LogicalFilter.getTRUEFilter();
 	private List<FilterListener<T>> listeners = new ArrayList<>();
 	
 	/*
@@ -39,10 +39,8 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements Filter<T>
 	
 	public AbstractFilterPanel( Filter<T> filter)
 	{
-		onload();
 		createPopupMenu();
 		setActive(true);
-		paint();
 	}
 
 	
@@ -80,14 +78,20 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements Filter<T>
 		setComponentPopupMenu(popup);
 	}
 	
-	protected void paint()
+	@Override 
+	public JPanel getPanel()
+	{
+		return this;
+	}
+	
+	@Override
+	public void paint()
 	{
 		removeAll();
 		addComponents();
 		revalidate();
 	}
 	
-	protected abstract void onload();
 	protected abstract void addComponents();
 
 	/*
@@ -116,7 +120,7 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements Filter<T>
 			listeners.remove(i);
 	}
 	
-	protected void notifyListeners()
+	public void notifyListeners()
 	{
 		for(FilterListener<T> listener : listeners)
 			listener.filter(this);

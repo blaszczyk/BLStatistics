@@ -15,7 +15,7 @@ import bn.blaszczyk.blstatistics.filters.BiFilterListener;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 
 @SuppressWarnings("serial")
-public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFilter<T,U>
+public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFilterPanel<T,U>
 {
 	private static final Border activeBorder = BorderFactory.createLoweredBevelBorder();
 	private static final Border deactiveBorder = BorderFactory.createRaisedBevelBorder();
@@ -36,9 +36,8 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	
 	public AbstractBiFilterPanel( BiFilter<T,U> filter)
 	{
-		setActive(true);
 		createPopupMenu();
-		paint();
+		setActive(true);
 	}
 
 	
@@ -61,10 +60,12 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 			this.isActive = false;
 			setActive.setText("aktivieren");
 		}
+		notifyListeners();
 	}
 	
 	private void createPopupMenu()
 	{
+		setActive = new JMenuItem("deaktivieren");
 		setActive.addActionListener( e -> 
 			setActive(!isActive)
 		);
@@ -74,8 +75,23 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		setComponentPopupMenu(popup);
 	}
 	
-	protected abstract void paint();
+	@Override
+	public JPanel getPanel()
+	{
+		return this;
+	}
 
+	@Override
+	public void paint()
+	{
+		removeAll();
+		addComponents();
+		revalidate();
+	}
+
+	protected abstract void addComponents();
+	
+	
 	@Override
 	public boolean check(T t, U u)
 	{
@@ -86,21 +102,30 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	 * FilterListener Methods
 	 */
 
+	@Override
 	public void addFilterListener(BiFilterListener<T,U> listener)
 	{
 		listeners.add(listener);
 	}
-	
+
+	@Override
 	public void removeFilterListener(BiFilterListener<T,U> listener)
 	{
 		int i = listeners.indexOf(listener);
 		if( i >= 0 )
 			listeners.remove(i);
 	}
-	
-	protected void notifyListeners()
+
+	@Override
+	public void notifyListeners()
 	{
 		for(BiFilterListener<T,U> listener : listeners)
-			listener.filter(filter);
+			listener.filter(this);
 	}
+	
+	protected void addPopupMenuItem(JMenuItem item)
+	{
+		popup.add(item);
+	}
+
 }

@@ -25,7 +25,7 @@ public class LogicalBiFilter
 	/*
 	 * NOT
 	 */
-	public static <T, U> BiFilter<T, U> getFALSEBiFilter(BiFilter<T, U> filter)
+	public static <T, U> BiFilter<T, U> getNOTBiFilter(BiFilter<T, U> filter)
 	{
 		BiFilter<T, U> f = (t, u) -> filter != null ? !filter.check(t, u) : false;
 		return f;
@@ -40,7 +40,7 @@ public class LogicalBiFilter
 		return getANDBiFilter(Arrays.asList(filters));
 
 	}
-	public static <T, U> BiFilter<T, U> getANDBiFilter(Iterable<BiFilter<T, U>> filters)
+	public static <T, U, V extends BiFilter<T,U>> BiFilter<T, U> getANDBiFilter(Iterable<V> filters)
 	{
 		BiFilter<T, U> f = (t, u) ->
 		{
@@ -61,12 +61,12 @@ public class LogicalBiFilter
 		return getANDBiFilter(Arrays.asList(filters));
 
 	}
-	public static <T, U> BiFilter<T, U> getORBiFilter(Iterable<BiFilter<T, U>> filters)
+	public static <T, U, V extends BiFilter<T,U>> BiFilter<T, U> getORBiFilter(Iterable<V> filters)
 	{
 		BiFilter<T, U> f = (t, u) ->
 		{
 			for (BiFilter<T, U> filter : filters)
-				if (filter != null && !filter.check(t, u))
+				if (filter != null && filter.check(t, u))
 					return true;
 			return false;
 		};
