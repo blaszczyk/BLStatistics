@@ -31,6 +31,9 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 			}
 		});
 		
+		if(!value)
+			toggleFilter();
+		
 		setFilter(LogicalBiFilter.getTRUEBiFilter());
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		paint();
@@ -56,5 +59,11 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 	protected void addComponents()
 	{
 		add(label);
+	}
+
+	@Override
+	public String toString()
+	{
+		return label.getText();
 	}
 }

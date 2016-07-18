@@ -64,6 +64,12 @@ public class FilterPanelAdapter {
 			panel.notifyListeners();
 		}
 		
+		@Override
+		public String toString()
+		{
+			return panel.toString();
+		}
+		
 	}
 
 	
@@ -112,7 +118,12 @@ public class FilterPanelAdapter {
 		{
 			panel.notifyListeners();
 		}
-		
+
+		@Override
+		public String toString()
+		{
+			return panel.toString();
+		}
 	}
 
 }

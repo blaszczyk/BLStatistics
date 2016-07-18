@@ -8,7 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import bn.blaszczyk.blstatistics.filters.BiFilter;
 import bn.blaszczyk.blstatistics.filters.BiFilterListener;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 
@@ -18,6 +17,13 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	private BiFilterPanel<T,U> originalPanel;
 	private JLabel label = new JLabel("NOT");
 	private boolean isNot = true;
+	
+	public UnaryOperatorFilterPanel(PanelMenu<T,U> panelMenu, boolean isNot)
+	{
+		this(panelMenu,new AbsoluteOperatorFilterPanel<>(true));
+		if(!isNot)
+			toggleFilter();	
+	}
 	
 	public UnaryOperatorFilterPanel(PanelMenu<T,U> panelMenu)
 	{
@@ -51,13 +57,16 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		setOriginalPanel(originalPanel);
 		label.setAlignmentX(LEFT_ALIGNMENT);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		
-		paint();
 	}
 	
 	private void toggleFilter()
 	{
 		isNot = !isNot;
+		setOperator();
+	}
+	
+	private void setOperator()
+	{
 		if(isNot)
 		{
 			setFilter(LogicalBiFilter.getNOTBiFilter(originalPanel));
@@ -79,20 +88,15 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	}
 
 
-	public BiFilterPanel<T,U> getOriginalPanel()
-	{
-		return originalPanel;
-	}
 
-
-	public void setOriginalPanel(BiFilterPanel<T,U> originalPanel)
+	private void setOriginalPanel(BiFilterPanel<T,U> originalPanel)
 	{
 		if(this.originalPanel != null)
 			this.originalPanel.removeFilterListener(this);
 		this.originalPanel = originalPanel;
 		originalPanel.addFilterListener(this);
 		originalPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
-		setFilter(LogicalBiFilter.getNOTBiFilter(originalPanel));
+		setOperator();
 	}
 
 	@Override
@@ -103,10 +107,14 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	}
 
 	@Override
-	public void filter(BiFilter<T, U> filter)
+	public void filter()
 	{
 		notifyListeners();
-		paint(); //TODO: REMOVE
 	}
-	
+
+	@Override
+	public String toString()
+	{
+		return label.getText() + " " + originalPanel;
+	}
 }

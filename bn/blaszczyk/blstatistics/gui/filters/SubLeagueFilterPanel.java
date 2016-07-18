@@ -71,5 +71,10 @@ public class SubLeagueFilterPanel extends AbstractTeamFilterPanel {
 			add(box);
 		add(more);			
 	}
-	
+
+	@Override
+	public String toString()
+	{
+		return "Direkter Vergleich " + teamBoxes.size() + " Teams";
+	}
 }

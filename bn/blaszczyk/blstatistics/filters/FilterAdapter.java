@@ -16,13 +16,13 @@ public class FilterAdapter
 
 	public static <T,U> FilterListener<T> getListenerAdapterArg1( BiFilterListener<T,U> bilistener )
 	{
-		FilterListener<T> listener = f -> bilistener.filter( toBiFilterArg1(f) );
+		FilterListener<T> listener = () -> bilistener.filter();
 		return listener;
 	}
 	
 	public static <T,U> FilterListener<U> getListenerAdapterArg2( BiFilterListener<T,U> bilistener )
 	{
-		FilterListener<U> listener = f -> bilistener.filter( toBiFilterArg2(f) );
+		FilterListener<U> listener = () -> bilistener.filter();
 		return listener;
 	}
 }

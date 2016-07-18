@@ -50,4 +50,9 @@ public class DuelFilterPanel extends AbstractTeamFilterPanel {
 		add(team2Box);
 	}
 
+	@Override
+	public String toString()
+	{
+		return team1Box.getSelectedItem() + " VS " + team2Box.getSelectedItem();
+	}
 }

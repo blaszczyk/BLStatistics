@@ -16,6 +16,11 @@ public class GameTable extends SwingTable<Game>
 	{
 		super(source);
 	}
+	
+	public GameTable()
+	{
+		super();
+	}
 
 	@Override
 	protected Comparator<Game> comparator(int columnIndex)

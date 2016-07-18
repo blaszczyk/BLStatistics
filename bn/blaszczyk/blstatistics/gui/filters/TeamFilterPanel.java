@@ -28,23 +28,26 @@ public class TeamFilterPanel extends AbstractTeamFilterPanel
 		homeBox = new JCheckBox("Heim",true);
 		awayBox = new JCheckBox("Auswärts",true);
 		
-		ActionListener listener = e -> {
-			String team = teamBox.getSelectedItem().toString();
-			Filter<Game> filter = LogicalFilter.getFALSEFilter();
-			if(homeBox.isSelected())
-				if(awayBox.isSelected())
-					filter = GameFilter.getTeamFilter(team);
-				else
-					filter = GameFilter.getTeamHomeFilter(team);
-			else
-				if(awayBox.isSelected())
-					filter = GameFilter.getTeamAwayFilter(team);
-			setFilter(filter);
-			notifyListeners();
-		};
+		ActionListener listener = e -> resetFilter();
 		teamBox.addActionListener(listener);
 		homeBox.addActionListener(listener);
 		awayBox.addActionListener(listener);
+	}
+	
+	private void resetFilter()
+	{
+		String team = teamBox.getSelectedItem().toString();
+		Filter<Game> filter = LogicalFilter.getFALSEFilter();
+		if(homeBox.isSelected())
+			if(awayBox.isSelected())
+				filter = GameFilter.getTeamFilter(team);
+			else
+				filter = GameFilter.getTeamHomeFilter(team);
+		else
+			if(awayBox.isSelected())
+				filter = GameFilter.getTeamAwayFilter(team);
+		setFilter(filter);
+		notifyListeners();
 	}
 	
 	public TeamFilterPanel(List<String> allTeams, String team, boolean home, boolean away)
@@ -65,5 +68,11 @@ public class TeamFilterPanel extends AbstractTeamFilterPanel
 		add(homeBox);
 		add(awayBox);
 	}	
+
+	@Override
+	public String toString()
+	{
+		return "Team " + teamBox.getSelectedItem();
+	}
 	
 }

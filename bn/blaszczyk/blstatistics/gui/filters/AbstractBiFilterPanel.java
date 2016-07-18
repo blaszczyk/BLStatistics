@@ -52,20 +52,20 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		{
 			setBorder(activeBorder);
 			this.isActive = true;
-			setActive.setText("deaktivieren");
+			setActive.setText("Deaktivieren");
 		}
 		else
 		{
 			setBorder(deactiveBorder);
 			this.isActive = false;
-			setActive.setText("aktivieren");
+			setActive.setText("Aktivieren");
 		}
 		notifyListeners();
 	}
 	
 	private void createPopupMenu()
 	{
-		setActive = new JMenuItem("deaktivieren");
+		setActive = new JMenuItem("Deaktivieren");
 		setActive.addActionListener( e -> 
 			setActive(!isActive)
 		);
@@ -120,7 +120,7 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	public void notifyListeners()
 	{
 		for(BiFilterListener<T,U> listener : listeners)
-			listener.filter(this);
+			listener.filter();
 	}
 	
 	protected void addPopupMenuItem(JMenuItem item)

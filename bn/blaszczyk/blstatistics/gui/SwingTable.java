@@ -9,28 +9,22 @@ import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
-import bn.blaszczyk.blstatistics.filters.Filter;
-import bn.blaszczyk.blstatistics.filters.FilterListener;
-import bn.blaszczyk.blstatistics.filters.LogicalFilter;
-
 @SuppressWarnings("serial")
-public abstract class SwingTable<T> extends JTable implements FilterListener<T>, MouseListener
+public abstract class SwingTable<T> extends JTable implements MouseListener
 {
 	private List<T> tList;
-	private Filter<T> filter;
-	private Iterable<T> source;
 	private Comparator<T> comparator;
 //	private boolean compareBackwards = false;
 
+	
 	public SwingTable(Iterable<T> source)
 	{
-		this(source,LogicalFilter.getTRUEFilter());
+		this();
+		setSource(source);
 	}
 	
-	public SwingTable(Iterable<T> source, Filter<T> filter)
+	public SwingTable()
 	{
-		this.filter = filter;
-		setSource(source);
 		for(int i = 0 ; i < this.getColumnCount(); i++)
 		{
 			int width = columnWidth(i);
@@ -39,18 +33,15 @@ public abstract class SwingTable<T> extends JTable implements FilterListener<T>,
 		}
 		getTableHeader().addMouseListener(this);
 	}
-	
+
 	public void setSource(Iterable<T> source)
 	{
-		this.source = source;
-		resetList();
+		tList = new ArrayList<>();
+		for(T t : source)
+			tList.add(t);	
+		resetModel();
 	}
 	
-	public void setFilter(Filter<T> filter)
-	{
-		this.filter = filter;
-		resetList();
-	}
 	
 	public void setComparator(Comparator<T> comparator)
 	{
@@ -59,14 +50,6 @@ public abstract class SwingTable<T> extends JTable implements FilterListener<T>,
 	}
 	
 	
-	private void resetList()
-	{
-		tList = new ArrayList<>();
-		for(T t : source)
-			if(filter.check(t))
-				tList.add(t);	
-		resetModel();
-	}
 	
 	private void resetModel()
 	{
@@ -80,15 +63,6 @@ public abstract class SwingTable<T> extends JTable implements FilterListener<T>,
 	protected abstract TableModel tableModel(List<T> tList);
 	protected abstract void doPopup(MouseEvent e);
 	protected abstract int columnWidth(int columnIndex);
-	
-	/*
-	 * Filter Listener Methods
-	 */
-	@Override
-	public void filter(Filter<T> filter)
-	{
-		setFilter(filter);
-	}
 	
 	
 	/*

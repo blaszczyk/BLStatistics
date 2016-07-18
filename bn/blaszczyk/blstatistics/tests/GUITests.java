@@ -1,6 +1,7 @@
 package bn.blaszczyk.blstatistics.tests;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.*;
@@ -107,28 +108,14 @@ public class GUITests {
 		return panel;
 	}
 
-	public static SubLeagueFilterPanel openSubLeaguePanel( Iterable<String> teams, String title )
+
+	public static void openFilteredGameTable( List<League> leagues, String title )
 	{
 		JFrame frame = new JFrame(title);
-		SubLeagueFilterPanel panel = new SubLeagueFilterPanel(teams);
-		frame.add(panel);
+		frame.add( new FilteredGameTable(leagues));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
-		return panel;
-	}
-
-	public static BiFilterPanel<Season,Game> openNOTPanel( League league, String title )
-	{
-
-		PanelMenu<Season,Game> panelMenu = new GameFilterPanelPopup(league.getTeams());
-		BiFilterPanel<Season,Game> panel = new UnaryOperatorFilterPanel<>(panelMenu);
-		JFrame frame = new JFrame(title);
-		frame.add(panel.getPanel());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
-		return panel;
 	}
 	
 	
@@ -153,52 +140,15 @@ public class GUITests {
 		printTotalTable(league);
 	}
 	
-	public static void filterPanelTest(League league)
-	{
-		GameTable table = openGameTable(league.getAllGames(), "Spiele");
-//		TeamFilterPanel duelPanel = openDuelPanel(league.getTeams(), "Filter1");
-		SubLeagueFilterPanel subLeaguePanel = openSubLeaguePanel(league.getTeams(), "Filter3");
-//		TeamFilterPanel teamPanel = openTeamPanel(league.getTeams(), "Filter2");
-//		duelPanel.addFilterListener(table);
-//		teamPanel.addFilterListener(table);
-		subLeaguePanel.addFilterListener(table);
-		subLeaguePanel.addFilterListener( f -> {
-			openTable(new Table( GameFilter.filterGameList(league.getAllGames(),f) ), "Tabelle");
-		});
-		
-		
-	}
 	
-	public static void adapterTest(League league, int year)
-	{
-		Season season;
-		try
-		{
-			season = league.getSeason(year);
-			GameTable table = openGameTable(season.getAllGames(), "Spiele");
-			BiFilterPanel<Season, Game> adapter = openNOTPanel(league,"Adapter");
-			adapter.addFilterListener( f -> {
-				table.filter( g -> f.check(season, g)  );
-			});						
-		}
-		catch (BLException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	public static void main(String[] args)
 	{
 		League bundesliga = new League("bundesliga");
 		BasicController controller = new BasicController(bundesliga);
 		controller.loadAllSeasons();
-		adapterTest(bundesliga, 1978);
-//		filterPanelTest(bundesliga);
-//		gameFilterTest(bundesliga);
-//		duelFilterTest(bundesliga);
-//		printAllTables(bundesliga);
-//  		printTotalTable(bundesliga);
+		League[] leagues = {bundesliga};
+		openFilteredGameTable(Arrays.asList(leagues),"Bundesliga Spiele");
 	}
 	
 }

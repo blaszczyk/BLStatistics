@@ -58,7 +58,7 @@ public class LogicalBiFilter
 	@SafeVarargs
 	public static <T, U> BiFilter<T, U> getORBiFilter(BiFilter<T, U>... filters)
 	{
-		return getANDBiFilter(Arrays.asList(filters));
+		return getORBiFilter(Arrays.asList(filters));
 
 	}
 	public static <T, U, V extends BiFilter<T,U>> BiFilter<T, U> getORBiFilter(Iterable<V> filters)
@@ -69,6 +69,28 @@ public class LogicalBiFilter
 				if (filter != null && filter.check(t, u))
 					return true;
 			return false;
+		};
+		return f;
+	}
+
+	/*
+	 * XOR
+	 */
+	@SafeVarargs
+	public static <T, U> BiFilter<T, U> getXORBiFilter(BiFilter<T, U>... filters)
+	{
+		return getXORBiFilter(Arrays.asList(filters));
+
+	}
+	public static <T, U, V extends BiFilter<T,U>> BiFilter<T, U> getXORBiFilter(Iterable<V> filters)
+	{
+		BiFilter<T, U> f = (t, u) ->
+		{
+			boolean retValue = false;
+			for (BiFilter<T, U> filter : filters)
+				if (filter != null)
+					retValue ^= filter.check(t, u);
+			return retValue;
 		};
 		return f;
 	}

@@ -123,7 +123,7 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	public void notifyListeners()
 	{
 		for(FilterListener<T> listener : listeners)
-			listener.filter(this);
+			listener.filter();
 	}
 
 }
