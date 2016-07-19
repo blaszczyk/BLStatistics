@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import bn.blaszczyk.blstatistics.core.*;
-import bn.blaszczyk.blstatistics.filters.BiFilterListener;
+import bn.blaszczyk.blstatistics.gui.corefilters.GameFilterPanelMenu;
 import bn.blaszczyk.blstatistics.gui.filters.*;
 
 @SuppressWarnings("serial")
@@ -35,22 +35,39 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 		Collections.sort(teams);
 		panelMenu = new GameFilterPanelMenu(teams);
 		
-		filterPanel = new UnaryOperatorFilterPanel<>(panelMenu, false);
-		filterPanel.addFilterListener(this);
-		filterPanel.getPanel().setPreferredSize(new Dimension(300,1000));
-		filterPanel.paint();
-		resetTable();
+		setFilterPanel(new BlankFilterPanel<Season, Game>(panelMenu));
 		
 		setLayout(new BorderLayout(5,5));
 		add(new JScrollPane(gameTable), BorderLayout.CENTER);
 		add(filterPanel.getPanel(), BorderLayout.WEST);
+		resetTable();
 	}
 
-	@Override
-	public void filter()
+	private void setFilterPanel(BiFilterPanel<Season,Game> panel)
 	{
-		resetTable();
+		this.filterPanel = panel;
+		panel.addFilterListener(this);
+		filterPanel.getPanel().setPreferredSize(new Dimension(300,1000));
+		paint();
+	}
+	
+	private void paint()
+	{
 		filterPanel.paint();
+		removeAll();
+		add(new JScrollPane(gameTable), BorderLayout.CENTER);
+		add(filterPanel.getPanel(), BorderLayout.WEST);
+		revalidate();
+	}
+	
+	@Override
+	public void filter(BiFilterEvent<Season,Game> e)
+	{
+		if(e.getType() == BiFilterEvent.RESET_PANEL)
+			setFilterPanel(e.getPanel());
+		else
+			filterPanel.paint();
+		resetTable();
 	}
 	
 	private void resetTable()

@@ -11,7 +11,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.border.Border;
 
 import bn.blaszczyk.blstatistics.filters.Filter;
-import bn.blaszczyk.blstatistics.filters.FilterListener;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 
 @SuppressWarnings("serial")
@@ -39,14 +38,25 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	
 	public AbstractFilterPanel( Filter<T> filter)
 	{
-		createPopupMenu();
+		setActive = new JMenuItem("Deaktivieren");
+		setActive.addActionListener( e -> setActive(!isActive));
+		
+		popup = new JPopupMenu();
+		popup.add(setActive);
+		setComponentPopupMenu(popup);
+		
 		setActive(true);
 	}
 
-	
+
 	protected void setFilter(Filter<T> filter)
 	{
 		this.filter = filter;
+	}
+	
+	protected Filter<T> getFilter()
+	{
+		return filter;
 	}
 	
 	private void setActive(boolean active)
@@ -55,27 +65,15 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 		{
 			setBorder(activeBorder);
 			this.isActive = true;
-			setActive.setText("deaktivieren");
+			setActive.setText("Deaktivieren");
 		}
 		else
 		{
 			setBorder(deactiveBorder);
 			this.isActive = false;
-			setActive.setText("aktivieren");
+			setActive.setText("Aktivieren");
 		}
-		notifyListeners();
-	}
-	
-	private void createPopupMenu()
-	{
-		setActive = new JMenuItem("deaktivieren");
-		setActive.addActionListener( e -> 
-			setActive(!isActive)
-		);
-		
-		popup = new JPopupMenu();
-		popup.add(setActive);
-		setComponentPopupMenu(popup);
+		notifyListeners(new FilterEvent<T>(this, getFilter(), FilterEvent.RESET_FILTER));
 	}
 	
 	@Override 
@@ -108,22 +106,36 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	 * FilterListener Methods
 	 */
 
+	@Override
 	public void addFilterListener(FilterListener<T> listener)
 	{
 		listeners.add(listener);
 	}
-	
+
+	@Override
 	public void removeFilterListener(FilterListener<T> listener)
 	{
 		int i = listeners.indexOf(listener);
 		if( i >= 0 )
 			listeners.remove(i);
 	}
-	
-	public void notifyListeners()
+
+	public void notifyListeners(FilterEvent<T> e)
 	{
 		for(FilterListener<T> listener : listeners)
-			listener.filter();
+			listener.filter(e);
 	}
 
+	@Override
+	public void addPopupMenuItem(JMenuItem item)
+	{
+		popup.add(item);
+	}
+
+	@Override
+	public void removePopupMenuItem(JMenuItem item)
+	{
+		popup.remove(item);
+	}
+	
 }

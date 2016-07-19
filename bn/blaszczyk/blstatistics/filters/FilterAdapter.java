@@ -13,16 +13,5 @@ public class FilterAdapter
 		BiFilter<T,U> f = (t,u) -> filter.check(u);
 		return f;
 	}
-
-	public static <T,U> FilterListener<T> getListenerAdapterArg1( BiFilterListener<T,U> bilistener )
-	{
-		FilterListener<T> listener = () -> bilistener.filter();
-		return listener;
-	}
 	
-	public static <T,U> FilterListener<U> getListenerAdapterArg2( BiFilterListener<T,U> bilistener )
-	{
-		FilterListener<U> listener = () -> bilistener.filter();
-		return listener;
-	}
 }

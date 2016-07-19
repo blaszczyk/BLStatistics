@@ -46,7 +46,9 @@ public abstract class GameFilter implements Filter<Game>
 		Filter<Game> f = g -> g.getGoals() <= maxGoals;
 		return f;
 	}
-	
+	/*
+	 * Home Goal Filters
+	 */
 	public static Filter<Game> getGoal1Filter(int goals)
 	{
 		Filter<Game> f = g -> g.getGoals1() == goals;
@@ -62,7 +64,9 @@ public abstract class GameFilter implements Filter<Game>
 		Filter<Game> f = g -> g.getGoals1() <= maxGoals;
 		return f;
 	}
-	
+	/*
+	 * Away Goal Filters
+	 */
 	public static Filter<Game> getGoal2Filter(int goals)
 	{
 		Filter<Game> f = g -> g.getGoals2() == goals;
@@ -76,6 +80,24 @@ public abstract class GameFilter implements Filter<Game>
 	public static Filter<Game> getGoal2MaxFilter(int maxGoals)
 	{
 		Filter<Game> f = g -> g.getGoals2() <= maxGoals;
+		return f;
+	}
+	/*
+	 * Goal Difference Filters
+	 */
+	public static Filter<Game> getGoalDiffFilter(int goals)
+	{
+		Filter<Game> f = g -> g.getDiff() == goals;
+		return f;
+	}
+	public static Filter<Game> getGoalDiffMinFilter(int minGoals)
+	{
+		Filter<Game> f = g -> g.getDiff() >= minGoals;
+		return f;
+	}
+	public static Filter<Game> getGoalDiffMaxFilter(int maxGoals)
+	{
+		Filter<Game> f = g -> g.getDiff() <= maxGoals;
 		return f;
 	}
 	

@@ -4,7 +4,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 
-import bn.blaszczyk.blstatistics.filters.BiFilterListener;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 
 @SuppressWarnings("serial")
@@ -16,9 +15,10 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	
 	public IfThenElseFilterPanel(PanelMenu<T,U> panelMenu)
 	{
-		setIfFilter(new AbsoluteOperatorFilterPanel<>(true));
-		setThenFilter(new AbsoluteOperatorFilterPanel<>(true));
-		setElseFilter(new AbsoluteOperatorFilterPanel<>(false));
+		super(panelMenu);
+		setIfFilter(new BlankFilterPanel<T, U>(panelMenu));
+		setThenFilter(new BlankFilterPanel<T, U>(panelMenu));
+		setElseFilter(new BlankFilterPanel<T, U>(panelMenu));
 		
 		JMenu setIf = new JMenu("Setze IF Filter");
 		panelMenu.addMenuItems(setIf, e -> setIfFilter(panelMenu.getPanel()));
@@ -31,6 +31,8 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 		JMenu setElse = new JMenu("Setze ELSE Filter");
 		panelMenu.addMenuItems(setElse, e -> setElseFilter(panelMenu.getPanel()));
 		addPopupMenuItem(setElse);
+
+		addPopupMenuItem(setActive);
 		
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		setOperator();
@@ -39,8 +41,6 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	
 	private void setIfFilter(BiFilterPanel<T,U> panel)
 	{
-		if(ifFilter != null)
-			ifFilter.removeFilterListener(this);
 		ifFilter = panel;
 		panel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
 		panel.addFilterListener(this);
@@ -49,8 +49,6 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	
 	private void setThenFilter(BiFilterPanel<T,U> panel)
 	{
-		if(thenFilter != null)
-			thenFilter.removeFilterListener(this);
 		thenFilter = panel;
 		panel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
 		panel.addFilterListener(this);
@@ -59,8 +57,6 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	
 	private void setElseFilter(BiFilterPanel<T,U> panel)
 	{
-		if(elseFilter != null)
-			elseFilter.removeFilterListener(this);
 		elseFilter = panel;
 		panel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
 		panel.addFilterListener(this);
@@ -70,7 +66,7 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	private void setOperator()
 	{
 		setFilter( LogicalBiFilter.getIF_THEN_ELSEBiFilter(ifFilter, thenFilter, elseFilter));
-		notifyListeners();
+		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
 	}
 	
 
@@ -101,9 +97,24 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	}
 
 	@Override
-	public void filter()
+	public void filter(BiFilterEvent<T, U> e)
 	{
-		notifyListeners();
+		if(e.getType() == BiFilterEvent.RESET_PANEL)
+		{
+			if(e.getSource().equals(ifFilter))
+				setIfFilter(e.getPanel());
+			if(e.getSource().equals(thenFilter))
+				setThenFilter(e.getPanel());
+			if(e.getSource().equals(elseFilter))
+				setElseFilter(e.getPanel());
+		}
+		else
+			notifyListeners(e);
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "IF_THEN_ELSE";
+	}
 }
