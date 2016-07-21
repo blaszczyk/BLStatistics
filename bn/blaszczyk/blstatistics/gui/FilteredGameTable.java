@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.gui.filters.*;
@@ -40,9 +41,10 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 		resetTable();
 		
 		setLayout(new BorderLayout(5,5));
+		
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,new JScrollPane(gameTable),new JScrollPane(resultTable));		
 		add(filterPanel, BorderLayout.WEST);
-		add(new JScrollPane(gameTable), BorderLayout.CENTER);
-		add(new JScrollPane(resultTable),BorderLayout.EAST);
+		add(split, BorderLayout.CENTER);
 	}
 	
 	

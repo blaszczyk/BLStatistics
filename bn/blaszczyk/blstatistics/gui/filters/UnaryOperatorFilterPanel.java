@@ -125,6 +125,6 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	@Override
 	public String toString()
 	{
-		return "NOT" + (hashCode()%10) + " " + innerPanel;
+		return "NOT " + innerPanel;
 	}
 }

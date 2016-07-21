@@ -29,13 +29,17 @@ import bn.blaszczyk.blstatistics.gui.filters.*;
 
 public class FilterIO
 {
+	
 	private static final String FOLDER = "filters";
 	private static final String EXTENSION = "flt";
 	
 	private BiFilterPanel<Season,Game> panel;
+	
 	private StringBuilder outerBuilder;
 	private int panelCount;
+	
 	private Map<String,BiFilterPanel<Season,Game>> filters;
+	
 	private FilterPanelManager<Season, Game> manager;
 	private List<String> teams;
 	
@@ -56,8 +60,10 @@ public class FilterIO
 		panelCount = 0;
 		saveSubFilter(filter);
 		String name = null;
-		while(name == null || name == "")
+		while(name == null)
 			name = JOptionPane.showInputDialog(null, "Namen für den Filter eingeben:", "Filter Speichern", JOptionPane.QUESTION_MESSAGE );
+		if(name == "")
+			return;
 		String path = String.format("%s/%s.%s", FOLDER, name, EXTENSION  );
 		try
 		{
@@ -69,7 +75,6 @@ public class FilterIO
 		{
 			e.printStackTrace();
 		}
-//		return builder.toString();
 	}
 	
 	private int saveSubFilter(BiFilterPanel<Season,Game> filter)
@@ -163,6 +168,11 @@ public class FilterIO
 		JFrame frame = new JFrame("Wähle Gespeicherten Filter");
 		
 		File[] files = new File(FOLDER + "/").listFiles();
+		if(files == null || files.length == 0)
+		{
+			JOptionPane.showMessageDialog(null, "Keine Filter gespeichert", "Fehler", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		JComboBox<File> fileBox = new JComboBox<>(files);
 		fileBox.addActionListener( e -> {
 			frame.dispose();
@@ -233,9 +243,6 @@ public class FilterIO
 			panel = new AbsoluteOperatorFilterPanel<>(false, manager);
 			break;
 		case "Runde":
-			System.out.println(in);
-			System.out.println(getBool(split[2]));
-			System.out.println(getBool(split[3]));
 			panel = new RoundFilterPanel(manager, getBool(split[2]), getBool(split[3]));
 			break;
 		case "Saison":
