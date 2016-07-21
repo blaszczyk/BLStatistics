@@ -10,18 +10,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import bn.blaszczyk.blstatistics.core.*;
-import bn.blaszczyk.blstatistics.gui.corefilters.GameFilterPanelMenu;
 import bn.blaszczyk.blstatistics.gui.filters.*;
 
 @SuppressWarnings("serial")
 public class FilteredGameTable extends JPanel implements BiFilterListener<Season,Game>
 {
 
-	private BiFilterPanel<Season,Game> filterPanel;
+	private FunctionalFilterPanel filterPanel;
 	private GameTable gameTable = new GameTable();
+	private ResultTable resultTable = new ResultTable();
 	private List<Game> gameList;
 	private Iterable<League> leagues;
-	private PanelMenu<Season,Game> panelMenu;
 	
 	public FilteredGameTable(Iterable<League> leagues)
 	{
@@ -33,40 +32,23 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 				if(!teams.contains(team))
 					teams.add(team);
 		Collections.sort(teams);
-		panelMenu = new GameFilterPanelMenu(teams);
-		
-		setFilterPanel(new BlankFilterPanel<Season, Game>(panelMenu));
+
+		filterPanel = new FunctionalFilterPanel(teams);
+		filterPanel.addFilterListener(this);
+		filterPanel.setMinimumSize(new Dimension(300,700));
+
+		resetTable();
 		
 		setLayout(new BorderLayout(5,5));
+		add(filterPanel, BorderLayout.WEST);
 		add(new JScrollPane(gameTable), BorderLayout.CENTER);
-		add(filterPanel.getPanel(), BorderLayout.WEST);
-		resetTable();
-	}
-
-	private void setFilterPanel(BiFilterPanel<Season,Game> panel)
-	{
-		this.filterPanel = panel;
-		panel.addFilterListener(this);
-		filterPanel.getPanel().setPreferredSize(new Dimension(300,1000));
-		paint();
+		add(new JScrollPane(resultTable),BorderLayout.EAST);
 	}
 	
-	private void paint()
-	{
-		filterPanel.paint();
-		removeAll();
-		add(new JScrollPane(gameTable), BorderLayout.CENTER);
-		add(filterPanel.getPanel(), BorderLayout.WEST);
-		revalidate();
-	}
 	
 	@Override
 	public void filter(BiFilterEvent<Season,Game> e)
 	{
-		if(e.getType() == BiFilterEvent.RESET_PANEL)
-			setFilterPanel(e.getPanel());
-		else
-			filterPanel.paint();
 		resetTable();
 	}
 	
@@ -79,7 +61,15 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 					if(filterPanel.check(season, game))
 						gameList.add(game);
 		gameTable.setSource(gameList);
+		Table table = new Table(gameList);
+		table.sort();
+		resultTable.setSource(table);
 	}
 
 
+	@Override
+	public String toString()
+	{
+		return "FilteredGamePanel";
+	}
 }

@@ -11,17 +11,18 @@ import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 @SuppressWarnings("serial")
 public class BlankFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>
 {
-	public BlankFilterPanel(PanelMenu<T,U> panelMenu)
+	public BlankFilterPanel(FilterPanelManager<T,U> filterManager)
 	{
-		super(LogicalBiFilter.getTRUEBiFilter(),panelMenu);
+		super(LogicalBiFilter.getTRUEBiFilter(),filterManager);
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		JMenu setPanel = new JMenu("Setzte Filter");
-		panelMenu.addMenuItems(setPanel, e -> {
-			notifyListeners(new BiFilterEvent<T, U>(this,panelMenu.getPanel(),BiFilterEvent.RESET_PANEL));
+		filterManager.addMenuItems(setPanel, e -> {
+			notifyListeners(new BiFilterEvent<T, U>(this,filterManager.getPanel(),BiFilterEvent.RESET_PANEL));
 		});
 		addPopupMenuItem(setPanel);
 		removePopupMenuItem(replace);
 		removePopupMenuItem(setActive);
+		removePopupMenuItem(negate);
 	}
 
 	@Override

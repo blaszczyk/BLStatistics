@@ -46,9 +46,9 @@ public class SubLeagueFilterPanel extends AbstractTeamFilterPanel {
 		addTeamBox();
 	}
 	
-	public SubLeagueFilterPanel(List<String> allTeams, String...teams)
+	public SubLeagueFilterPanel(List<String> allTeams, Iterable<String> teams)
 	{
-		super(allTeams);
+		this(allTeams);
 		teamBoxes.clear();
 		int index;
 		for(String team : teams)
@@ -65,6 +65,16 @@ public class SubLeagueFilterPanel extends AbstractTeamFilterPanel {
 		return box;
 	}
 	
+	public int getTeamCount()
+	{
+		return teamBoxes.size();
+	}
+	
+	public String getTeam(int index)
+	{
+		return (String) teamBoxes.get(index).getSelectedItem();
+	}
+	
 	@Override
 	protected void addComponents()
 	{
@@ -77,6 +87,6 @@ public class SubLeagueFilterPanel extends AbstractTeamFilterPanel {
 	@Override
 	public String toString()
 	{
-		return "Direkter Vergleich " + teamBoxes.size() + " Teams";
+		return "Direkter Vergleich " + getTeamCount() + " Teams";
 	}
 }

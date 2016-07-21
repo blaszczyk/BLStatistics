@@ -35,6 +35,16 @@ public class TeamFilterPanel extends AbstractTeamFilterPanel
 		awayBox.addActionListener(listener);
 	}
 	
+	public TeamFilterPanel(List<String> allTeams, String team, boolean home, boolean away)
+	{
+		this(allTeams);
+		int index = allTeams.indexOf(team);
+		if(index >= 0)
+			teamBox.setSelectedIndex(index);
+		homeBox.setSelected(home);
+		awayBox.setSelected(away);		
+	}
+
 	private void resetFilter()
 	{
 		String team = teamBox.getSelectedItem().toString();
@@ -51,14 +61,19 @@ public class TeamFilterPanel extends AbstractTeamFilterPanel
 		notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
 	}
 	
-	public TeamFilterPanel(List<String> allTeams, String team, boolean home, boolean away)
+	public String getTeam()
 	{
-		this(allTeams);
-		int index = allTeams.indexOf(team);
-		if(index >= 0)
-			teamBox.setSelectedIndex(index);
-		homeBox.setSelected(home);
-		awayBox.setSelected(away);		
+		return (String) teamBox.getSelectedItem();
+	}
+
+	public boolean getHome()
+	{
+		return homeBox.isSelected();
+	}
+	
+	public boolean getAway()
+	{
+		return awayBox.isSelected();
 	}
 	
 	@Override

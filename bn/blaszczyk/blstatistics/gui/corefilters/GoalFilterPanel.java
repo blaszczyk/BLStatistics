@@ -13,9 +13,9 @@ public class GoalFilterPanel
 {
 
 	@SuppressWarnings("serial")
-	public static FilterPanel<Game> getGoalFilterPanel()
+	public static FilterPanel<Game> getGoalFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>("Tore",0)
+		return new IntegerValueFilterPanel<Game>("Tore",operator,refInt)
 		{
 			@Override
 			protected void setOperator()
@@ -43,9 +43,9 @@ public class GoalFilterPanel
 		};
 	}
 	@SuppressWarnings("serial")
-	public static FilterPanel<Game> getHomeGoalFilterPanel()
+	public static FilterPanel<Game> getHomeGoalFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>("Heimtore",0)
+		return new IntegerValueFilterPanel<Game>("Heimtore",operator,refInt)
 		{
 			@Override
 			protected void setOperator()
@@ -73,9 +73,9 @@ public class GoalFilterPanel
 		};
 	}
 	@SuppressWarnings("serial")
-	public static FilterPanel<Game> getAwayGoalFilterPanel()
+	public static FilterPanel<Game> getAwayGoalFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>("Auswärtstore",0)
+		return new IntegerValueFilterPanel<Game>("Auswärtstore",operator,refInt)
 		{
 			@Override
 			protected void setOperator()
@@ -103,9 +103,9 @@ public class GoalFilterPanel
 		};
 	}
 	@SuppressWarnings("serial")
-	public static FilterPanel<Game> getGoalDiffFilterPanel()
+	public static FilterPanel<Game> getGoalDiffFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>("Tordifferenz",0)
+		return new IntegerValueFilterPanel<Game>("Tordifferenz",operator,refInt)
 		{
 			@Override
 			protected void setOperator()

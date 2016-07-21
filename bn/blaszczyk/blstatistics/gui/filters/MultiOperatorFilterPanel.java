@@ -2,6 +2,7 @@ package bn.blaszczyk.blstatistics.gui.filters;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.Box;
@@ -15,22 +16,22 @@ import javax.swing.JPanel;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 
 @SuppressWarnings("serial")
-public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> implements BiFilterListener<T,U> {
+public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> implements BiFilterListener<T,U>, Iterable<BiFilterPanel<T,U>> {
 
 	public static final String AND = "AND";
 	public static final String OR = "OR";
 	public static final String XOR = "XOR";
 	
-	private List<BiFilterPanel<T,U>> panels = new ArrayList<>();
+	private List<BiFilterPanel<T,U>> panels;
 	private String[] operators = {AND,OR,XOR};
 	private JComboBox<String> operatorBox;
 	private JPanel top = new JPanel();
 	
 	private JMenu removePanel = new JMenu("Entferne Feld");
 
-	public MultiOperatorFilterPanel(PanelMenu<T,U> panelMenu, List<BiFilterPanel<T, U>> panels, String operator) 
+	public MultiOperatorFilterPanel(FilterPanelManager<T,U> filterManager, List<BiFilterPanel<T, U>> panels, String operator) 
 	{
-		super(panelMenu);
+		super(filterManager);
 		this.panels = panels;
 		operatorBox = new JComboBox<>(operators);
 		operatorBox.setAlignmentX(LEFT_ALIGNMENT);
@@ -53,16 +54,17 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
 		JMenu addPanel = new JMenu("Neues Feld");
-		panelMenu.addMenuItems(addPanel, e -> addPanel(panelMenu.getPanel()));
+		filterManager.addMenuItems(addPanel, e -> addPanel(filterManager.getPanel()));
 		addPopupMenuItem(addPanel);
 		addPopupMenuItem(removePanel);
 		addPopupMenuItem(setActive);
 	}
 
-	
-	public MultiOperatorFilterPanel(PanelMenu<T,U> panelMenu) 
+	public MultiOperatorFilterPanel(FilterPanelManager<T,U> filterManager) 
 	{
-		this(panelMenu,new ArrayList<>(),AND);
+		this(filterManager,new ArrayList<>(),AND);
+		addPanel(new BlankFilterPanel<>(filterManager));
+		addPanel(new BlankFilterPanel<>(filterManager));
 	}
 
 	private void addPanel(BiFilterPanel<T,U> panel)
@@ -103,9 +105,14 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		}
 	}
 	
+	public String getOperator()
+	{
+		return (String)operatorBox.getSelectedItem();
+	}
+	
 	private void setOperator()
 	{
-		switch((String)operatorBox.getSelectedItem())
+		switch(getOperator())
 		{
 		case AND:
 			setFilter(LogicalBiFilter.getANDBiFilter(panels));
@@ -164,6 +171,13 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	public String toString()
 	{
 		return operatorBox.getSelectedItem().toString() + " " + panels.size() + " Komponenten";
+	}
+
+
+	@Override
+	public Iterator<BiFilterPanel<T, U>> iterator()
+	{
+		return panels.iterator();
 	}
 
 }

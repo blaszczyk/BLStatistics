@@ -7,61 +7,67 @@ import bn.blaszczyk.blstatistics.filters.FilterAdapter;
 
 public class FilterPanelAdapter {
 
-	public static <T,U> BiFilterPanel<T, U> getFirstArgAdapter(FilterPanel<T> panel,PanelMenu<T,U> panelMenu )
+	public static <T,U> BiFilterPanel<T, U> getFirstArgAdapter(FilterPanel<T> panel,FilterPanelManager<T,U> filterFactory )
 	{
-		return new FirstArgAdapter<T,U>(panel,panelMenu);
+		return new FirstArgAdapter<T,U>(panel,filterFactory);
 	}
 
-	public static <T,U> BiFilterPanel<T, U> getSecondArgAdapter(FilterPanel<U> panel,PanelMenu<T,U> panelMenu )
+	public static <T,U> BiFilterPanel<T, U> getSecondArgAdapter(FilterPanel<U> panel,FilterPanelManager<T,U> filterFactory )
 	{
-		return new SecondArgAdapter<T,U>(panel,panelMenu);
+		return new SecondArgAdapter<T,U>(panel,filterFactory);
 	}
 
 	@SuppressWarnings("serial")
 	public static class FirstArgAdapter<T, U> extends AbstractBiFilterPanel<T, U> implements FilterListener<T>
 	{
 		
-		private FilterPanel<T> panel;
-		private PanelMenu<T,U> panelMenu;
+		private FilterPanel<T> innerPanel;
+		private FilterPanelManager<T,U> filterFactory;
 		
-		public FirstArgAdapter(FilterPanel<T> panel,PanelMenu<T,U> panelMenu )
+		public FirstArgAdapter(FilterPanel<T> panel,FilterPanelManager<T,U> filterFactory )
 		{
-			super(panelMenu);
-			this.panelMenu = panelMenu;
-			this.panel = panel;
+			super(filterFactory);
+			this.filterFactory = filterFactory;
+			this.innerPanel = panel;
 			panel.addPopupMenuItem(replace);
+			panel.addPopupMenuItem(negate);
 			panel.addFilterListener(this);
 		}
 
+		public FilterPanel<T> getInnerPanel()
+		{
+			return innerPanel;
+		}
+		
 		@Override
 		public void paint()
 		{
-			panel.paint();
+			innerPanel.paint();
 		}
 
 		@Override
 		public boolean check(T t, U u)
 		{
-			return panel.check(t);
+			return innerPanel.check(t);
 		}
 
 		@Override
 		public JPanel getPanel()
 		{
-			return panel.getPanel();
+			return innerPanel.getPanel();
 		}
 		
 		@Override
 		public String toString()
 		{
-			return panel.toString();
+			return innerPanel.toString();
 		}
 
 		@Override
 		public void filter(FilterEvent<T> e)
 		{
 			if(e.getType() == FilterEvent.RESET_PANEL)
-				notifyListeners(new BiFilterEvent<T,U>(this,getFirstArgAdapter(e.getPanel(),panelMenu),BiFilterEvent.RESET_PANEL));
+				notifyListeners(new BiFilterEvent<T,U>(this,getFirstArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
 			else
 				notifyListeners(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg1(e.getFilter()),e.getType()));
 		}
@@ -70,53 +76,76 @@ public class FilterPanelAdapter {
 		protected void addComponents()
 		{
 		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (!(obj instanceof FirstArgAdapter))
+				return false;
+			FirstArgAdapter<T,U> other = (FirstArgAdapter<T,U>) obj;
+			return innerPanel.equals(other.innerPanel);
+		}
+
+		
+		
 		
 	}
 	@SuppressWarnings("serial")
 	public static class SecondArgAdapter<T, U> extends AbstractBiFilterPanel<T, U> implements FilterListener<U>
 	{
 		
-		private FilterPanel<U> panel;
-		private PanelMenu<T,U> panelMenu;
+		private FilterPanel<U> innerPanel;
+		private FilterPanelManager<T,U> filterFactory;
 		
-		public SecondArgAdapter(FilterPanel<U> panel,PanelMenu<T,U> panelMenu )
+		public SecondArgAdapter(FilterPanel<U> panel,FilterPanelManager<T,U> filterFactory )
 		{
-			super(panelMenu);
-			this.panelMenu = panelMenu;
-			this.panel = panel;
+			super(filterFactory);
+			this.filterFactory = filterFactory;
+			this.innerPanel = panel;
 			panel.addPopupMenuItem(replace);
+			panel.addPopupMenuItem(negate);
 			panel.addFilterListener(this);
+		}
+		
+		public FilterPanel<U> getInnerPanel()
+		{
+			return innerPanel;
 		}
 
 		@Override
 		public void paint()
 		{
-			panel.paint();
+			innerPanel.paint();
 		}
 
 		@Override
 		public boolean check(T t, U u)
 		{
-			return panel.check(u);
+			return innerPanel.check(u);
 		}
 
 		@Override
 		public JPanel getPanel()
 		{
-			return panel.getPanel();
+			return innerPanel.getPanel();
 		}
 		
 		@Override
 		public String toString()
 		{
-			return panel.toString();
+			return innerPanel.toString();
 		}
 
 		@Override
 		public void filter(FilterEvent<U> e)
 		{
 			if(e.getType() == FilterEvent.RESET_PANEL)
-				notifyListeners(new BiFilterEvent<T,U>(this,getSecondArgAdapter(e.getPanel(),panelMenu),BiFilterEvent.RESET_PANEL));
+				notifyListeners(new BiFilterEvent<T,U>(this,getSecondArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
 			else
 				notifyListeners(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg2(e.getFilter()),e.getType()));
 		}
@@ -125,7 +154,20 @@ public class FilterPanelAdapter {
 		protected void addComponents()
 		{
 		}
-		
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (!(obj instanceof SecondArgAdapter))
+				return false;
+			SecondArgAdapter<T,U> other = (SecondArgAdapter<T,U>) obj;
+			return innerPanel.equals(other.innerPanel);
+		}
 	}
 
 

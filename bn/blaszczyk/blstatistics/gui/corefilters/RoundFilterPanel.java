@@ -13,7 +13,7 @@ import bn.blaszczyk.blstatistics.filters.SeasonFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractBiFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterEvent;
 import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
-import bn.blaszczyk.blstatistics.gui.filters.PanelMenu;
+import bn.blaszczyk.blstatistics.gui.filters.FilterPanelManager;
 
 @SuppressWarnings("serial")
 public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
@@ -22,29 +22,47 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 	private JCheckBox first = new JCheckBox("Hinrunde",true);
 	private JCheckBox second = new JCheckBox("Rückrunde",true);
 
-	public RoundFilterPanel(PanelMenu<Season,Game> panelMenu)
+	public RoundFilterPanel(FilterPanelManager<Season,Game> filterFactory)
 	{
-		super(panelMenu);
+		super(filterFactory);
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		ActionListener listener = e -> resetFilter();
 		first.addActionListener(listener);
 		second.addActionListener(listener);
 		resetFilter();
 	}
+
+	public RoundFilterPanel(FilterPanelManager<Season,Game> filterFactory, boolean firstRound, boolean secondRound)
+	{
+		this(filterFactory);
+		first.setSelected(firstRound);
+		second.setSelected(secondRound);
+		resetFilter();
+	}
 	
 	private void resetFilter()
 	{
-		if(first.isSelected())
-			if(second.isSelected())
+		if(isFirstRound())
+			if(isSecondRound())
 				setFilter(LogicalBiFilter.getTRUEBiFilter());
 			else
 				setFilter(SeasonFilter.getFirstRoundFilter());
 		else
-			if(second.isSelected())
+			if(isSecondRound())
 				setFilter(SeasonFilter.getSecondRoundFilter());
 			else
 				setFilter(LogicalBiFilter.getFALSEBiFilter());
 		notifyListeners(new BiFilterEvent<Season,Game>(this, getFilter(), FilterEvent.RESET_FILTER));
+	}
+
+	public boolean isFirstRound()
+	{
+		return first.isSelected();
+	}
+	
+	public boolean isSecondRound()
+	{
+		return second.isSelected();
 	}
 	
 	@Override

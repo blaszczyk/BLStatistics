@@ -23,7 +23,8 @@ public abstract class AbstractTeamFilterPanel extends AbstractFilterPanel<Game> 
 		JComboBox<String> teamBox = new JComboBox<String>();
 		for(String team : allTeams)
 			teamBox.addItem(team);
-		teamBox.setMaximumSize(new Dimension(100,30));
+		teamBox.setMaximumSize(new Dimension(110,30));
+		teamBox.setMinimumSize(new Dimension(110,30));
 		teamBox.setEditable(true);
 		return teamBox;
 	}

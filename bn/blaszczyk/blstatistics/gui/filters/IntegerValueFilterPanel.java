@@ -23,7 +23,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T>
 	private JTextField valueField;
 	private int defaultValue;
 
-	protected IntegerValueFilterPanel(String labelText, int defaultValue)
+	private IntegerValueFilterPanel(String labelText, int defaultValue)
 	{
 		this.defaultValue = defaultValue;
 		
@@ -42,6 +42,12 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T>
 		setOperator();
 	}
 	
+	protected IntegerValueFilterPanel(String labelText, String operator, int defaultValue)
+	{
+		this(labelText,defaultValue);
+		operatorBox.setSelectedItem(operator);
+	}
+
 	@Override
 	protected void addComponents()
 	{
@@ -50,12 +56,13 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T>
 		add(valueField);
 	}
 	
-	protected String getSelectedOperator()
+	
+	public String getSelectedOperator()
 	{
 		return operatorBox.getSelectedItem().toString();
 	}
 	
-	protected int getReferenceInt()
+	public int getReferenceInt()
 	{
 		int result = defaultValue;
 		try
@@ -70,12 +77,17 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T>
 		return result;
 	}
 	
+	public String getLabel()
+	{
+		return label.getText();
+	}
+	
 	protected abstract void setOperator();	
 
 	@Override
 	public String toString()
 	{
-		return label.getText() + " " + getSelectedOperator() + " " + getReferenceInt();
+		return getLabel() + " " + getSelectedOperator() + " " + getReferenceInt();
 	}
 	
 }

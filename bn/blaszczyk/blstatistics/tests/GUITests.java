@@ -10,6 +10,7 @@ import bn.blaszczyk.blstatistics.controller.BasicController;
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.gui.*;
 import bn.blaszczyk.blstatistics.tools.BLException;
+import bn.blaszczyk.blstatistics.tools.FussballDatenRequest;
 
 public class GUITests {
 	
@@ -61,6 +62,7 @@ public class GUITests {
 		frame.add( new FilteredGameTable(leagues));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 	
@@ -68,6 +70,7 @@ public class GUITests {
 	
 	public static void main(String[] args)
 	{
+//		FussballDatenRequest.setMutedErrStream(true);
 		League bundesliga = new League("bundesliga");
 		BasicController controller = new BasicController(bundesliga);
 		controller.loadAllSeasons();

@@ -24,9 +24,7 @@ public class DuelFilterPanel extends AbstractTeamFilterPanel {
 		team1Box = createTeamBox(allTeams);
 		team2Box = createTeamBox(allTeams);
 		ActionListener listener = e -> {
-			String team1 = team1Box.getSelectedItem().toString();
-			String team2 = team2Box.getSelectedItem().toString();
-			setFilter(GameFilter.getDuelFilter(team1, team2));
+			setFilter(GameFilter.getDuelFilter(getTeam1(), getTeam2()));
 			notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
 		};
 		team1Box.addActionListener(listener);
@@ -43,6 +41,16 @@ public class DuelFilterPanel extends AbstractTeamFilterPanel {
 		if(index>=0)
 			team2Box.setSelectedIndex(index);
 	}
+
+	public String getTeam1()
+	{
+		return (String) team1Box.getSelectedItem();
+	}
+	
+	public String getTeam2()
+	{
+		return (String) team2Box.getSelectedItem();
+	}
 	
 	@Override
 	protected void addComponents()
@@ -55,6 +63,6 @@ public class DuelFilterPanel extends AbstractTeamFilterPanel {
 	@Override
 	public String toString()
 	{
-		return team1Box.getSelectedItem() + " VS " + team2Box.getSelectedItem();
+		return getTeam1() + " VS " + getTeam2();
 	}
 }

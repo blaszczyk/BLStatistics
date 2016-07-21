@@ -42,4 +42,10 @@ public class BiFilterEvent<T,U>
 		return (BiFilterPanel<T, U>) filter;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "typ" + type + " ; src " + source + " ; flt " + filter;
+	}
+
 }

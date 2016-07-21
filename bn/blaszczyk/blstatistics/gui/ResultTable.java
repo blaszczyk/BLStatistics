@@ -15,6 +15,11 @@ public class ResultTable extends SwingTable<TeamResult>
 	{
 		super(source);
 	}
+	
+	public ResultTable()
+	{
+		super();
+	}
 
 	@Override
 	protected Comparator<TeamResult> comparator(int columnIndex)

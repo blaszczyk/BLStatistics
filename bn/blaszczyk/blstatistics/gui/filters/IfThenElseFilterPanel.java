@@ -13,23 +13,23 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	private BiFilterPanel<T,U> thenFilter;
 	private BiFilterPanel<T,U> elseFilter;
 	
-	public IfThenElseFilterPanel(PanelMenu<T,U> panelMenu)
+	public IfThenElseFilterPanel(FilterPanelManager<T,U> filterManager)
 	{
-		super(panelMenu);
-		setIfFilter(new BlankFilterPanel<T, U>(panelMenu));
-		setThenFilter(new BlankFilterPanel<T, U>(panelMenu));
-		setElseFilter(new BlankFilterPanel<T, U>(panelMenu));
+		super(filterManager);
+		setIfFilter(new BlankFilterPanel<T, U>(filterManager));
+		setThenFilter(new BlankFilterPanel<T, U>(filterManager));
+		setElseFilter(new BlankFilterPanel<T, U>(filterManager));
 		
 		JMenu setIf = new JMenu("Setze IF Filter");
-		panelMenu.addMenuItems(setIf, e -> setIfFilter(panelMenu.getPanel()));
+		filterManager.addMenuItems(setIf, e -> setIfFilter(filterManager.getPanel()));
 		addPopupMenuItem(setIf);
 		
 		JMenu setThen = new JMenu("Setze THEN Filter");
-		panelMenu.addMenuItems(setThen, e -> setThenFilter(panelMenu.getPanel()));
+		filterManager.addMenuItems(setThen, e -> setThenFilter(filterManager.getPanel()));
 		addPopupMenuItem(setThen);
 		
 		JMenu setElse = new JMenu("Setze ELSE Filter");
-		panelMenu.addMenuItems(setElse, e -> setElseFilter(panelMenu.getPanel()));
+		filterManager.addMenuItems(setElse, e -> setElseFilter(filterManager.getPanel()));
 		addPopupMenuItem(setElse);
 
 		addPopupMenuItem(setActive);
@@ -38,6 +38,13 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 		setOperator();
 	}
 
+	public IfThenElseFilterPanel(FilterPanelManager<T,U> filterManager, BiFilterPanel<T,U> ifFilter, BiFilterPanel<T,U> thenFilter, BiFilterPanel<T,U> elseFilter)
+	{
+		this(filterManager);
+		setIfFilter(ifFilter);
+		setThenFilter(thenFilter);
+		setElseFilter(elseFilter);
+	}
 	
 	private void setIfFilter(BiFilterPanel<T,U> panel)
 	{
@@ -68,7 +75,24 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 		setFilter( LogicalBiFilter.getIF_THEN_ELSEBiFilter(ifFilter, thenFilter, elseFilter));
 		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
 	}
-	
+
+	public BiFilterPanel<T, U> getIfFilter()
+	{
+		return ifFilter;
+	}
+
+
+	public BiFilterPanel<T, U> getThenFilter()
+	{
+		return thenFilter;
+	}
+
+
+	public BiFilterPanel<T, U> getElseFilter()
+	{
+		return elseFilter;
+	}
+
 
 	@Override
 	protected void addComponents()
