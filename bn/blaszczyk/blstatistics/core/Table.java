@@ -7,35 +7,23 @@ import bn.blaszczyk.blstatistics.filters.*;
 public class Table implements Iterable<TeamResult>
 {
 	private List<TeamResult> teamResults = new ArrayList<>();
-	private int pointsForWin = 3;
+	private int pointsForWin = 2;
 
 	/*
 	 * Constructors for different sets of Filters
 	 */
-	public Table(Iterable<Game> games)
+	public Table(Iterable<Game> games, int pointsForWin)
 	{
-		this(games,null,null);
-	}
-
-	public Table(Iterable<Game> games, Filter<Game> gameFilter)
-	{
-		this(games,gameFilter,null);
+		this(games,null,pointsForWin);
 	}
 	
-	public Table(Iterable<Game> games, BiFilter<TeamResult,Game> teamResultFilter)
+	public Table(Iterable<Game> games,BiFilter<TeamResult,Game> teamResultFilter, int pointsForWin)
 	{
-		this(games,null,teamResultFilter);
-	}
-	
-	public Table(Iterable<Game> games, Filter<Game> gameFilter, BiFilter<TeamResult,Game> teamResultFilter)
-	{
-		if(gameFilter == null)
-			gameFilter = LogicalFilter.getTRUEFilter();
+		this.pointsForWin = pointsForWin;
 		if(teamResultFilter == null)
 			teamResultFilter = LogicalBiFilter.getTRUEBiFilter();
 		for(Game game : games)
-			if(gameFilter.check(game))
-				consumeGame(game,teamResultFilter);
+			consumeGame(game,teamResultFilter);
 	}
 
 	public void sort()

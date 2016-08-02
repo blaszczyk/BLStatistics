@@ -1,12 +1,12 @@
 package bn.blaszczyk.blstatistics.tools;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.Stack;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.LineIterator;
 
 import bn.blaszczyk.blstatistics.core.*;
 
@@ -58,14 +58,15 @@ public class FileIO
 				season = new Season(year,league);
 				league.addSeason(season);
 			}
-			LineIterator iterator = FileUtils.lineIterator(file);
 			Stack<Game> gameStack = new Stack<>();
-			while(iterator.hasNext())
-				gameStack.push(new Game(iterator.nextLine()));
+			Scanner scanner = new Scanner(new FileInputStream(file));
+			while (scanner.hasNextLine())
+				gameStack.push(new Game( scanner.nextLine() ));
+			scanner.close();
 			season.addGames( gameStack );
 			return true;
 		}
-		catch (IOException e)
+		catch (FileNotFoundException e)
 		{
 			throw new BLException("Error loading " + file.getPath(), e );
 		}

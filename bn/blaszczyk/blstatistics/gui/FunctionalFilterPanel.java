@@ -2,7 +2,6 @@ package bn.blaszczyk.blstatistics.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -24,27 +23,29 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	
 	private BiFilterPanel<Season,Game> filterPanel;
 	private JButton saveFilter = new JButton("Filter Speichern");
-	private JButton loadFilter = new JButton("Filter Laden");
 	
-	private JPanel buttonPanel = new JPanel(new GridLayout(2,1));
 	
 	public FunctionalFilterPanel(List<String> teams)
 	{
 		super(new BorderLayout(5,5));
-		GameFilterPanelManager manager = new GameFilterPanelManager(teams);
+		setPreferredSize(new Dimension(300,700));
+		
+		FilterIO filterIO = new FilterIO();
+		GameFilterPanelManager manager = new GameFilterPanelManager(teams,filterIO);
+		
 		filterPanel = new BlankFilterPanel<>(manager);
 		filterPanel.addFilterListener(this);
-		FilterIO filterIO = new FilterIO(manager);
+		
+		filterIO.setManager(manager);
 		saveFilter.addActionListener( e -> filterIO.saveFilter(filterPanel));
-		loadFilter.addActionListener( e -> filterIO.loadFilter(f -> setFilterPanel( filterIO.getPanel())));
-		buttonPanel.add(saveFilter);
-		buttonPanel.add(loadFilter);
 		paint();
 	}
 	
 
 	private void setFilterPanel(BiFilterPanel<Season,Game> panel)
 	{
+		if(panel == null)
+			return;
 		if(this.filterPanel != null)
 			this.filterPanel.removeFilterListener(this);
 		this.filterPanel = panel;
@@ -58,7 +59,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	@Override
 	public void filter(BiFilterEvent<Season, Game> e)
 	{
-		if(e.getType() == BiFilterEvent.RESET_PANEL)
+		if(e.getType() == BiFilterEvent.RESET_PANEL && e.getSource().equals(filterPanel))
 			setFilterPanel(e.getPanel());
 		else
 			filterPanel.paint();
@@ -78,7 +79,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		filterPanel.paint();
 		removeAll();
 		add(filterPanel.getPanel(), BorderLayout.CENTER);
-		add(buttonPanel, BorderLayout.SOUTH);
+		add(saveFilter, BorderLayout.SOUTH);
 		revalidate();
 	}
 	

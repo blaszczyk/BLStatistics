@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 
 @SuppressWarnings("serial")
-public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> implements BiFilterListener<T, U>
+public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 {
 	private BiFilterPanel<T,U> ifFilter;
 	private BiFilterPanel<T,U> thenFilter;
@@ -48,25 +48,19 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	
 	private void setIfFilter(BiFilterPanel<T,U> panel)
 	{
-		ifFilter = panel;
-		panel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
-		panel.addFilterListener(this);
+		ifFilter = replaceFilterPanel(panel, ifFilter);
 		setOperator();
 	}
 	
 	private void setThenFilter(BiFilterPanel<T,U> panel)
 	{
-		thenFilter = panel;
-		panel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
-		panel.addFilterListener(this);
+		thenFilter = replaceFilterPanel(panel, thenFilter);
 		setOperator();
 	}
 	
 	private void setElseFilter(BiFilterPanel<T,U> panel)
 	{
-		elseFilter = panel;
-		panel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
-		panel.addFilterListener(this);
+		elseFilter = replaceFilterPanel(panel, elseFilter);
 		setOperator();
 	}
 	

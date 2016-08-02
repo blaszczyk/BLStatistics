@@ -42,7 +42,7 @@ public class GameTable extends SwingTable<Game>
 	}
 
 	@Override
-	protected TableModel tableModel(List<Game> tList)
+	protected TableModel createTableModel(List<Game> tList)
 	{
 		return new GameTableModel(tList);
 	}
@@ -59,7 +59,7 @@ public class GameTable extends SwingTable<Game>
 		if(columnIndex == 0)
 			return 100;
 		if( columnIndex < 3)
-			return 200;
+			return 150;
 		return 100;
 	}
 

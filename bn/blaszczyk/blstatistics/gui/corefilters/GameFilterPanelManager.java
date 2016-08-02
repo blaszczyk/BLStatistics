@@ -17,18 +17,19 @@ import bn.blaszczyk.blstatistics.gui.filters.IfThenElseFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.MultiOperatorFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.FilterPanelManager;
 import bn.blaszczyk.blstatistics.gui.filters.UnaryOperatorFilterPanel;
+import bn.blaszczyk.blstatistics.tools.FilterIO;
 
 public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 	
 	private BiFilterPanel<Season,Game> panel;
 	private List<String> teams;
+	private FilterIO filterIO;
 	
-//	private Map<String,BiFilterPanel<Season,Game>> filters;
 	
-	public GameFilterPanelManager(List<String> teams)
+	public GameFilterPanelManager(List<String> teams, FilterIO filterIO)
 	{
 		this.teams = teams;
-//		filters = new HashMap<>();
+		this.filterIO = filterIO;
 	}
 	
 	@Override
@@ -116,22 +117,18 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 			listener.actionPerformed(e);
 		});
 		
-//		/*
-//		 * saved Filters
-//		 */
-//		
-//		JMenu savedFilters = new JMenu("Gespeicherte Filter");
-//		for(String key : filters.keySet())
-//			addMenuItem(savedFilters, key).addActionListener( e -> {
-//				setPanel( filters.get(key) );
-//				listener.actionPerformed(e);
-//			});
+
 
 		menu.add(goalFilters);
 		menu.add(gameFilters);
 		menu.add(seasonFilters);
 		menu.add(logicalFilters);
-//		menu.add(savedFilters);
+		
+		
+		addMenuItem(menu,"Lade Filter").addActionListener( e -> {
+			setPanel( filterIO.loadFilter() );
+			listener.actionPerformed(e);
+		});
 	}
 	
 	@Override

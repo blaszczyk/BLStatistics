@@ -19,7 +19,7 @@ public class ConsoleTests
 			for(MatchDay m: s)
 				for( Game g: m)
 					allGames.add(g);
-		Table table = new Table(allGames,gameFilter,teamResultFilter);
+		Table table = new Table(allGames,teamResultFilter,3);
 		printTable(table);
 	}
 	
@@ -68,7 +68,7 @@ public class ConsoleTests
 		try
 		{
 			season = league.getSeason(year);
-			Table table = new Table( season.getAllGames(), gameFilter );
+			Table table = new Table( season.getAllGames(),3);
 			System.out.println(league.getName() + " Saison " + year);
 			printTable(table);
 			System.out.println();

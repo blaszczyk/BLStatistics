@@ -16,15 +16,16 @@ import bn.blaszczyk.blstatistics.gui.filters.*;
 @SuppressWarnings("serial")
 public class FilteredGameTable extends JPanel implements BiFilterListener<Season,Game>
 {
-
 	private FunctionalFilterPanel filterPanel;
 	private GameTable gameTable = new GameTable();
-	private ResultTable resultTable = new ResultTable();
+	private FunctionalResultTable functionalResultTable = new FunctionalResultTable();
+	
 	private List<Game> gameList;
 	private Iterable<League> leagues;
 	
 	public FilteredGameTable(Iterable<League> leagues)
 	{
+		super(new BorderLayout(5,5));
 		this.leagues = leagues;
 		
 		List<String> teams = new ArrayList<>();
@@ -36,15 +37,14 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 
 		filterPanel = new FunctionalFilterPanel(teams);
 		filterPanel.addFilterListener(this);
-		filterPanel.setMinimumSize(new Dimension(300,700));
-
-		resetTable();
+		filterPanel.setMinimumSize(new Dimension(400,700));
 		
-		setLayout(new BorderLayout(5,5));
-		
-		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,new JScrollPane(gameTable),new JScrollPane(resultTable));		
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, new JScrollPane(gameTable));
+		splitPane.setDividerLocation(1100);
 		add(filterPanel, BorderLayout.WEST);
-		add(split, BorderLayout.CENTER);
+		add(splitPane, BorderLayout.CENTER);
+		
+		resetTable();
 	}
 	
 	
@@ -63,9 +63,7 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 					if(filterPanel.check(season, game))
 						gameList.add(game);
 		gameTable.setSource(gameList);
-		Table table = new Table(gameList);
-		table.sort();
-		resultTable.setSource(table);
+		functionalResultTable.setSource(gameList);
 	}
 
 

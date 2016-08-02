@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 
 @SuppressWarnings("serial")
-public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> implements BiFilterListener<T,U>, Iterable<BiFilterPanel<T,U>> {
+public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> implements Iterable<BiFilterPanel<T,U>> {
 
 	public static final String AND = "AND";
 	public static final String OR = "OR";
@@ -69,9 +69,7 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 
 	private void addPanel(BiFilterPanel<T,U> panel)
 	{
-		panel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
-		panel.addFilterListener(this);
-		panels.add(panel);
+		panels.add(replaceFilterPanel(panel, null) );
 		resetDeleteMenu();
 		setOperator();
 	}
@@ -80,9 +78,8 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	{
 		if(index < 0 || index >= panels.size())
 			return;
-		panel.addFilterListener(this);
-		panel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
-		panels.set(index, panel);
+		
+		panels.set(index, replaceFilterPanel(panel, panels.get(index)));
 		resetDeleteMenu();
 		setOperator();
 	}

@@ -1,5 +1,8 @@
 package bn.blaszczyk.blstatistics.gui;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -7,13 +10,31 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
 public abstract class SwingTable<T> extends JTable implements MouseListener
 {
+	private static final Color ODD_COLOR = new Color(247,247,247);
+	private static final Color EVEN_COLOR = Color.WHITE;
+	private static final Color SELECTED_COLOR = new Color(255,192,192);
+
+	private static final Font ODD_FONT = new Font("Arial",Font.PLAIN,16);
+	private static final Font EVEN_FONT = new Font("Arial",Font.PLAIN,16);
+	private static final Font SELECTED_FONT = new Font("Arial",Font.BOLD,16);
+	
+	private static final Color ODD_FONT_COLOR = Color.BLACK;
+	private static final Color EVEN_FONT_COLOR = Color.BLACK;
+	private static final Color SELECTED_FONT_COLOR = Color.BLACK;
+
+	private static final Font HEADER_FONT = new Font("Arial",Font.BOLD,16);
+	
 	private List<T> tList;
 	private Comparator<T> comparator;
+
+	private int selectedRow = -1;
 //	private boolean compareBackwards = false;
 
 	
@@ -32,6 +53,12 @@ public abstract class SwingTable<T> extends JTable implements MouseListener
 				getColumnModel().getColumn(i).setPreferredWidth(width);
 		}
 		getTableHeader().addMouseListener(this);
+		getTableHeader().setFont(HEADER_FONT);
+		setRowHeight(ODD_FONT.getSize() + 10 );
+		getSelectionModel().addListSelectionListener( e -> 	{
+			selectedRow = e.getLastIndex();
+			setModel();
+		});
 	}
 
 	public void setSource(Iterable<T> source)
@@ -39,28 +66,68 @@ public abstract class SwingTable<T> extends JTable implements MouseListener
 		tList = new ArrayList<>();
 		for(T t : source)
 			tList.add(t);	
-		resetModel();
+		selectedRow = -1;
+		setModel();
 	}
 	
 	
 	public void setComparator(Comparator<T> comparator)
 	{
 		this.comparator = comparator;
-		resetModel();
+		setModel();
+	}
+	
+	private void setCellRenderer()
+	{
+		for(int columnIndex = 0; columnIndex < getColumnCount(); columnIndex++)
+			getColumnModel().getColumn(columnIndex).setCellRenderer( new DefaultTableCellRenderer(){
+				@Override
+				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+						boolean hasFocus, int row, int column) {
+					Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+					
+					if( row == selectedRow )
+					{
+						c.setBackground(SELECTED_COLOR);
+						c.setFont( SELECTED_FONT );
+						c.setForeground(SELECTED_FONT_COLOR);
+					}
+					else if( (row % 2) == 1)
+					{
+						c.setBackground(ODD_COLOR);
+						c.setFont( ODD_FONT );
+						c.setForeground(ODD_FONT_COLOR);
+					}
+					else
+					{
+						c.setBackground(EVEN_COLOR);
+						c.setFont( EVEN_FONT );
+						c.setForeground(EVEN_FONT_COLOR);
+					}
+					return c;
+				}
+				@Override
+				public void setHorizontalAlignment( int alignment )
+				{
+					super.setHorizontalAlignment( SwingConstants.CENTER );
+				}
+			});
 	}
 	
 	
 	
-	private void resetModel()
+	private void setModel()
 	{
 		if(comparator != null)
 			tList.sort(comparator);
-		setModel(tableModel(tList));
+		setModel(createTableModel(tList));
+		setCellRenderer();
+		repaint();
 	}
 		
 	
 	protected abstract Comparator<T> comparator(int columnIndex);
-	protected abstract TableModel tableModel(List<T> tList);
+	protected abstract TableModel createTableModel(List<T> tList);
 	protected abstract void doPopup(MouseEvent e);
 	protected abstract int columnWidth(int columnIndex);
 	
@@ -74,7 +141,7 @@ public abstract class SwingTable<T> extends JTable implements MouseListener
 		{
 			int columnIndex = columnAtPoint(e.getPoint());
 			comparator = comparator(columnIndex);
-			resetModel();
+			setModel();
 		}
 	}
 	

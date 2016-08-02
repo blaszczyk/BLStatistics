@@ -21,9 +21,10 @@ public class ResultTable extends SwingTable<TeamResult>
 		super();
 	}
 
+	
 	@Override
 	protected Comparator<TeamResult> comparator(int columnIndex)
-	{
+	{	
 		switch (columnIndex)
 		{
 		case 1:
@@ -51,9 +52,10 @@ public class ResultTable extends SwingTable<TeamResult>
 	}
 
 	@Override
-	protected TableModel tableModel(List<TeamResult> ts)
+	protected TableModel createTableModel(List<TeamResult> ts)
 	{
 		return new ResultTableModel(ts);
+//		return new RelativeResultTableModel(ts); // sort Function does not work properly
 	}
 
 	@Override

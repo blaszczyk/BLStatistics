@@ -1,6 +1,11 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -9,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T>
+public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> implements MouseWheelListener, KeyListener
 {
 	protected static final String EQ = "=";
 	protected static final String NEQ = "!=";
@@ -36,7 +41,9 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T>
 		
 		valueField = new JTextField(Integer.toString(defaultValue));
 		valueField.setMaximumSize(new Dimension(70,30));
-		valueField.addActionListener(e -> setOperator());
+//		valueField.addActionListener(e -> setOperator());
+		valueField.addKeyListener(this);
+		valueField.addMouseWheelListener(this);
 
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		setOperator();
@@ -67,6 +74,8 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T>
 		int result = defaultValue;
 		try
 		{
+			if(valueField.getText() == null)
+				valueField.setText("0");
 			result = Integer.parseInt(valueField.getText());
 		}
 		catch(NumberFormatException e)
@@ -88,6 +97,52 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T>
 	public String toString()
 	{
 		return getLabel() + " " + getSelectedOperator() + " " + getReferenceInt();
+	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e)
+	{
+		int diff = (int) (4 * e.getPreciseWheelRotation());
+		if (e.getSource() instanceof JTextField)
+		{
+			JTextField tf = (JTextField) e.getSource();
+			int newVal = diff + Integer.parseInt(tf.getText());
+			tf.setText("" + newVal);
+			setOperator();
+		}
+		
+	}
+	
+
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+		if (e.getSource() instanceof JTextField)
+		{
+			setOperator();
+			((JTextField)e.getSource()).requestFocusInWindow();
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e)
+	{
+		if (e.getSource() instanceof JTextField)
+		{
+			JTextField tf = (JTextField) e.getSource();
+			tf.replaceSelection(null);
+			char c = e.getKeyChar();
+			if (!Character.isISOControl(c) && !Character.isDigit(c) )
+			{
+				Toolkit.getDefaultToolkit().beep();
+				e.consume();
+			}
+		}
 	}
 	
 }

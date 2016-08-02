@@ -11,11 +11,11 @@ import javax.swing.JMenu;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 
 @SuppressWarnings("serial")
-public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> implements BiFilterListener<T,U> {
+public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
+{
 
 	private BiFilterPanel<T,U> innerPanel;
 	private JLabel label = new JLabel("NOT");
-//	private boolean isNot = true;
 	
 	public UnaryOperatorFilterPanel(FilterPanelManager<T,U> filterManager)
 	{
@@ -25,9 +25,6 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	public UnaryOperatorFilterPanel(FilterPanelManager<T,U> filterManager, BiFilterPanel<T, U> originalPanel) 
 	{
 		super(filterManager);
-//		JMenuItem toggle = new JMenuItem("Umschalten");
-//		toggle.addActionListener( e -> toggleFilter());
-//		addPopupMenuItem(toggle);
 		
 		JMenu setPanel = new JMenu("Setze Filter");
 		filterManager.addMenuItems(setPanel, e -> {
@@ -36,38 +33,14 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		addPopupMenuItem(setPanel);		
 		addPopupMenuItem(setActive);
 		
-//		addMouseListener( new MouseAdapter(){
-//			@Override
-//			public void mouseClicked(MouseEvent e)
-//			{
-//				if(e.getClickCount() == 2)
-//					toggleFilter();
-//			}
-//		});
-		
 		setInnerPanel(originalPanel);
 		label.setAlignmentX(LEFT_ALIGNMENT);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
 	
-//	private void toggleFilter()
-//	{
-//		isNot = !isNot;
-//		setOperator();
-//	}
-	
-	private void setOperator()
+	protected void setOperator()
 	{
-//		if(isNot)
-//		{
-			setFilter(LogicalBiFilter.getNOTBiFilter(innerPanel));
-//			label.setText("NOT");
-//		}
-//		else
-//		{
-//			setFilter(innerPanel);
-//			label.setText("ID");
-//		}
+		setFilter(LogicalBiFilter.getNOTBiFilter(innerPanel));
 		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
 	}
 
@@ -82,17 +55,12 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 
 	private void setInnerPanel(BiFilterPanel<T,U> innerPanel)
 	{
-		if(this.innerPanel != null)
-			this.innerPanel.removeFilterListener(this);
 		if(innerPanel instanceof UnaryOperatorFilterPanel)
 		{
-//			System.out.println("Replace " + this.innerPanel + " by "+innerPanel + " in " + this);
 			notifyListeners(new BiFilterEvent<T, U>(this, ((UnaryOperatorFilterPanel<T, U>)innerPanel).getInnerPanel(), BiFilterEvent.RESET_PANEL));
 			return;
 		}
-		this.innerPanel = innerPanel;
-		innerPanel.addFilterListener(this);
-		innerPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
+		this.innerPanel = replaceFilterPanel(innerPanel, this.innerPanel);
 		setOperator();
 	}
 	
@@ -125,6 +93,6 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	@Override
 	public String toString()
 	{
-		return "NOT " + innerPanel;
+		return "NOT" + (hashCode()%10) + " " + innerPanel;
 	}
 }
