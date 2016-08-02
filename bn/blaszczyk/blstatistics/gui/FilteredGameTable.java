@@ -16,12 +16,15 @@ import bn.blaszczyk.blstatistics.gui.filters.*;
 @SuppressWarnings("serial")
 public class FilteredGameTable extends JPanel implements BiFilterListener<Season,Game>
 {
-	private FunctionalFilterPanel filterPanel;
+	private FunctionalFilterPanel functionalFilterPanel;
 	private FunctionalGameTable functionalGameTable = new FunctionalGameTable();
 	private FunctionalResultTable functionalResultTable = new FunctionalResultTable();
 	
 	private List<Game> gameList;
 	private Iterable<League> leagues;
+	
+	//	TODO: implement highlightedTeam in GameTable
+//	private String highlightedTeam;
 	
 	public FilteredGameTable(Iterable<League> leagues)
 	{
@@ -35,13 +38,20 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 					teams.add(team);
 		Collections.sort(teams);
 
-		filterPanel = new FunctionalFilterPanel(teams);
-		filterPanel.addFilterListener(this);
-		filterPanel.setMinimumSize(new Dimension(400,700));
+		functionalFilterPanel = new FunctionalFilterPanel(teams);
+		functionalFilterPanel.addFilterListener(this);
+		functionalFilterPanel.setMinimumSize(new Dimension(400,700));
+		
+		functionalResultTable.getResultTable().addListSelectionListener( e -> {
+			String team = functionalResultTable.getResultTable().getSelectedTeam();
+			functionalGameTable.getGameTable().setSelectedTeam(team);
+		});
+		
+		
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, new JScrollPane(functionalGameTable));
 		splitPane.setDividerLocation(1100);
-		add(filterPanel, BorderLayout.WEST);
+		add(functionalFilterPanel, BorderLayout.WEST);
 		add(splitPane, BorderLayout.CENTER);
 		
 		resetTable();
@@ -60,7 +70,7 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 		for(League league : leagues)
 			for(Season season : league)
 				for(Game game : season.getAllGames())
-					if(filterPanel.check(season, game))
+					if(functionalFilterPanel.check(season, game))
 						gameList.add(game);
 		functionalGameTable.setGameList(gameList);
 		functionalResultTable.setSource(gameList);

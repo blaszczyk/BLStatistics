@@ -61,6 +61,11 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		add(new JScrollPane(resultTable),BorderLayout.CENTER);
 	}
 
+	public ResultTable getResultTable()
+	{
+		return resultTable;
+	}
+
 	public void setSource(Iterable<Game> games)
 	{
 		this.games = games;

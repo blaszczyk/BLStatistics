@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
@@ -36,9 +37,9 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 	private List<T> tList;
 	private Comparator<T> comparator;
 	private boolean isCompareBackwards = true;
+	private int sortingColumn = -1;
 
 	private int selectedRow = -1;
-//	private boolean compareBackwards = false;
 
 	
 	public SwingTable(Iterable<T> source)
@@ -81,7 +82,7 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 		setModel();
 	}
 	
-	private void setCellRenderer()
+	protected void setCellRenderer()
 	{
 		for(int columnIndex = 0; columnIndex < getColumnCount(); columnIndex++)
 			getColumnModel().getColumn(columnIndex).setCellRenderer( new DefaultTableCellRenderer(){
@@ -90,7 +91,7 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 						boolean hasFocus, int row, int column) {
 					Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 					
-					if( row == selectedRow )
+					if( isThisRowSelected(row) )
 					{
 						c.setBackground(SELECTED_COLOR);
 						c.setFont( SELECTED_FONT );
@@ -129,11 +130,27 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 		repaint();
 	}
 
+	public void addListSelectionListener(ListSelectionListener l)
+	{
+		getSelectionModel().addListSelectionListener(l);
+	}
+	
+	public void removeListSelectionListener(ListSelectionListener l)
+	{
+		getSelectionModel().removeListSelectionListener(l);
+	}
+
 	
 	private Comparator<T> reverseComparator(Comparator<T> comparator)
 	{
 		return (t1,t2) -> comparator.compare(t2, t1);
 	}	
+	
+	
+	protected boolean isThisRowSelected(int rowIndex)
+	{
+		return rowIndex == selectedRow;
+	}
 	
 	protected abstract Comparator<T> comparator(int columnIndex);
 	protected abstract TableModel createTableModel(List<T> tList);
@@ -149,7 +166,13 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 		if( e.getComponent() == getTableHeader() )
 		{
 			int columnIndex = columnAtPoint(e.getPoint());
-			isCompareBackwards = !isCompareBackwards;
+			if(columnIndex == sortingColumn)
+				isCompareBackwards = !isCompareBackwards;
+			else
+			{
+				sortingColumn = columnIndex;
+				isCompareBackwards = false;
+			}
 			comparator = comparator(columnIndex);
 			if(isCompareBackwards)
 				comparator = reverseComparator(comparator);
@@ -209,9 +232,6 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 	public void keyReleased(KeyEvent e)
 	{
 		e.consume();
-		
 	}
-	
-	
 	
 }

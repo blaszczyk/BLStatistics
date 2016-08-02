@@ -12,6 +12,8 @@ import bn.blaszczyk.blstatistics.core.Game;
 public class GameTable extends SwingTable<Game>
 {
 
+	private String selectedTeam;
+	
 	public GameTable(Iterable<Game> source)
 	{
 		super(source);
@@ -20,6 +22,20 @@ public class GameTable extends SwingTable<Game>
 	public GameTable()
 	{
 		super();
+	}
+	
+	public void setSelectedTeam(String team)
+	{
+		this.selectedTeam = team;
+		setCellRenderer();
+		repaint();
+	}
+
+	@Override
+	protected boolean isThisRowSelected(int rowIndex)
+	{
+		return // super.isThisRowSelected(rowIndex) || 
+				getModel().getValueAt(rowIndex, 1).equals(selectedTeam) || getModel().getValueAt(rowIndex, 2).equals(selectedTeam);
 	}
 
 	@Override

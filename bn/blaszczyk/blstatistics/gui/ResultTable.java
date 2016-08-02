@@ -11,6 +11,7 @@ import bn.blaszczyk.blstatistics.core.TeamResult;
 public class ResultTable extends SwingTable<TeamResult>
 {
 	private boolean isRelativeTable = false;
+	private String selectedTeam;
 	
 	public ResultTable(Iterable<TeamResult> source)
 	{
@@ -20,6 +21,14 @@ public class ResultTable extends SwingTable<TeamResult>
 	public ResultTable()
 	{
 		super();
+		getSelectionModel().addListSelectionListener( e -> {
+			selectedTeam = getModel().getValueAt(e.getLastIndex(), 1).toString() ;
+		});
+	}
+
+	public String getSelectedTeam()
+	{
+		return selectedTeam;
 	}
 	
 	public void setRelativeTable(boolean isRelativeTable)
@@ -62,6 +71,12 @@ public class ResultTable extends SwingTable<TeamResult>
 		if( columnIndex < 8)
 			return 75;
 		return 75;
+	}
+
+	@Override
+	protected boolean isThisRowSelected(int rowIndex)
+	{
+		return getModel().getValueAt(rowIndex, 1).equals(selectedTeam);
 	}
 
 }

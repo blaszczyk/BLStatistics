@@ -3,7 +3,6 @@ package bn.blaszczyk.blstatistics.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.LayoutManager;
 import java.text.NumberFormat;
 
 import javax.swing.JLabel;
@@ -13,7 +12,8 @@ import javax.swing.SwingConstants;
 
 import bn.blaszczyk.blstatistics.core.Game;
 
-public class FunctionalGameTable extends JPanel 
+@SuppressWarnings("serial")
+public class FunctionalGameTable extends JPanel
 {
 	private static final int ROW_HEIGHT = 25;
 	private static final int ROW_BORDER = 10;
@@ -21,9 +21,8 @@ public class FunctionalGameTable extends JPanel
 	private static final Font FONT = new Font("Arial",Font.BOLD,16);
 	private JPanel summaryPanel = new JPanel();
 	private GameTable gameTable = new GameTable();
-
-	private int summaryRowCount = 0;
 	
+	private int summaryRowCount = 0;
 	private int nrGames;
 	private int nrGoals;
 	private int nrHomeGoals;
@@ -42,6 +41,11 @@ public class FunctionalGameTable extends JPanel
 				
 		add(summaryPanel, BorderLayout.NORTH);
 		add( new JScrollPane(gameTable), BorderLayout.CENTER);
+	}
+
+	public GameTable getGameTable()
+	{
+		return gameTable;
 	}
 
 	private void clearStatistics()
@@ -111,6 +115,11 @@ public class FunctionalGameTable extends JPanel
 		summaryPanel.add(valueLabel);
 		
 		summaryRowCount++;
+		
 	}
+	
+	
+
+	
 	
 }

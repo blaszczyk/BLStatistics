@@ -1,14 +1,12 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.JComboBox;
-import javax.swing.JTextField;
 
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
