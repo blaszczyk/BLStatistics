@@ -10,7 +10,8 @@ import bn.blaszczyk.blstatistics.core.TeamResult;
 @SuppressWarnings("serial")
 public class ResultTable extends SwingTable<TeamResult>
 {
-
+	private boolean isRelativeTable = false;
+	
 	public ResultTable(Iterable<TeamResult> source)
 	{
 		super(source);
@@ -20,42 +21,28 @@ public class ResultTable extends SwingTable<TeamResult>
 	{
 		super();
 	}
+	
+	public void setRelativeTable(boolean isRelativeTable)
+	{
+		this.isRelativeTable = isRelativeTable;
+	}
 
 	
 	@Override
 	protected Comparator<TeamResult> comparator(int columnIndex)
 	{	
-		switch (columnIndex)
-		{
-		case 1:
-			return TeamResult.COMPARE_TEAM;
-		case 2:
-			return TeamResult.COMPARE_GAMES;
-		case 3:
-			return TeamResult.COMPARE_POINTS;
-		case 4:
-			return TeamResult.COMPARE_DIFF;
-		case 5:
-			return TeamResult.COMPARE_WINS;
-		case 6:
-			return TeamResult.COMPARE_DRAWS;
-		case 7:
-			return TeamResult.COMPARE_LOSSES;
-		case 8:
-			return TeamResult.COMPARE_GOALS_TEAM;
-		case 9:
-			return TeamResult.COMPARE_GOALS_OPPONENT;
-		// case 0:
-		default:
-			return TeamResult.COMPARE_POSITION;
-		}
+		if(getModel() instanceof RelativeResultTableModel)
+			return RelativeResultTableModel.comparator(columnIndex);
+		return ResultTableModel.comparator(columnIndex);
 	}
 
 	@Override
 	protected TableModel createTableModel(List<TeamResult> ts)
 	{
-		return new ResultTableModel(ts);
-//		return new RelativeResultTableModel(ts); // sort Function does not work properly
+		if(isRelativeTable)
+			return new RelativeResultTableModel(ts); 
+		else
+			return new ResultTableModel(ts);
 	}
 
 	@Override

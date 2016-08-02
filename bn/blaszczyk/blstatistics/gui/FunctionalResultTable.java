@@ -24,6 +24,8 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	private JLabel label = new JLabel("Punkte pro Sieg:",SwingConstants.RIGHT);
 	private JComboBox<Integer> pointsForWinBox = new JComboBox<>(POINTS_FOR_WIN_OPTIONS);
 	
+	private JCheckBox relativeTable = new JCheckBox("Nach Spielen gewichtet",false);
+	
 
 	private Iterable<Game> games;
 	private BiFilter<TeamResult, Game> filter = null;
@@ -32,16 +34,19 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	{
 		super(new BorderLayout(5, 5));		
 		
-		home.setBounds(10, 10, 150, 30);
+		home.setBounds(10, 10, 110, 30);
 		home.addItemListener(this);
 		
-		away.setBounds(170, 10, 150, 30);
+		away.setBounds(130, 10, 120, 30);
 		away.addItemListener(this);
 		
 		label.setBounds(340, 10, 100, 30);
 		
 		pointsForWinBox.setBounds(450, 10, 70, 30);
 		pointsForWinBox.addItemListener(this);
+		
+		relativeTable.setBounds(600,10,170,30);
+		relativeTable.addItemListener(this);
 		
 		optionsPanel = new JPanel();
 		optionsPanel.setLayout(null);
@@ -50,6 +55,7 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		optionsPanel.add(away);
 		optionsPanel.add(label);
 		optionsPanel.add(pointsForWinBox);
+		optionsPanel.add(relativeTable);
 		
 		add(optionsPanel,BorderLayout.NORTH);
 		add(new JScrollPane(resultTable),BorderLayout.CENTER);
@@ -82,6 +88,7 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	{
 		Table table = new Table(games, filter,(Integer)pointsForWinBox.getSelectedItem());
 		table.sort();	
+		resultTable.setRelativeTable(relativeTable.isSelected());
 		resultTable.setSource(table);
 	}
 

@@ -116,7 +116,7 @@ public abstract class SwingTable<T> extends JTable implements MouseListener
 	
 	
 	
-	private void setModel()
+	public void setModel()
 	{
 		if(comparator != null)
 			tList.sort(comparator);

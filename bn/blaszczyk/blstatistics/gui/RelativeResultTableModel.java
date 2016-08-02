@@ -1,15 +1,12 @@
 package bn.blaszczyk.blstatistics.gui;
 
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import bn.blaszczyk.blstatistics.core.TeamResult;
-
-/*
- * TODO: implement proper sorting
- */
 
 
 public class RelativeResultTableModel implements TableModel {
@@ -20,6 +17,37 @@ public class RelativeResultTableModel implements TableModel {
 	{
 		this.results = results;
 	}
+	
+	
+
+	public static Comparator<TeamResult> comparator(int columnIndex)
+	{	
+		switch (columnIndex)
+		{
+		case 1:
+			return TeamResult.COMPARE_TEAM;
+		case 2:
+			return TeamResult.COMPARE_GAMES;
+		case 3:
+			return TeamResult.COMPARE_POINTS_REL;
+		case 4:
+			return TeamResult.COMPARE_DIFF_REL;
+		case 5:
+			return TeamResult.COMPARE_WINS_REL;
+		case 6:
+			return TeamResult.COMPARE_DRAWS_REL;
+		case 7:
+			return TeamResult.COMPARE_LOSSES_REL;
+		case 8:
+			return TeamResult.COMPARE_GOALS_TEAM_REL;
+		case 9:
+			return TeamResult.COMPARE_GOALS_OPPONENT_REL;
+		// case 0:
+		default:
+			return TeamResult.COMPARE_POSITION;
+		}
+	}
+	
 	
 	/*
 	 * Table Model Methods
