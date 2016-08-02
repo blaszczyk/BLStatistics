@@ -3,8 +3,6 @@ package bn.blaszczyk.blstatistics.gui;
 import java.awt.event.MouseEvent;
 import java.util.*;
 
-import javax.swing.table.TableModel;
-
 import bn.blaszczyk.blstatistics.core.TeamResult;
 
 @SuppressWarnings("serial")
@@ -46,7 +44,7 @@ public class ResultTable extends SwingTable<TeamResult>
 	}
 
 	@Override
-	protected TableModel createTableModel(List<TeamResult> ts)
+	protected MyTableModel<TeamResult> createTableModel(List<TeamResult> ts)
 	{
 		if(isRelativeTable)
 			return new RelativeResultTableModel(ts); 

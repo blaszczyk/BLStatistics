@@ -4,8 +4,6 @@ import java.awt.event.MouseEvent;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.swing.table.TableModel;
-
 import bn.blaszczyk.blstatistics.core.Game;
 
 @SuppressWarnings("serial")
@@ -58,7 +56,7 @@ public class GameTable extends SwingTable<Game>
 	}
 
 	@Override
-	protected TableModel createTableModel(List<Game> tList)
+	protected MyTableModel<Game> createTableModel(List<Game> tList)
 	{
 		return new GameTableModel(tList);
 	}

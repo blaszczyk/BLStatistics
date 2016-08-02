@@ -2,26 +2,15 @@ package bn.blaszczyk.blstatistics.gui;
 
 import java.util.List;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
-
 import bn.blaszczyk.blstatistics.core.Game;
 
-public class GameTableModel implements TableModel
-{
-	private List<Game> games;
-	
+public class GameTableModel extends MyTableModel<Game>
+{	
 	public GameTableModel(List<Game> games)
 	{
-		this.games = games;
+		super(games);
 	}
 
-	@Override
-	public void addTableModelListener(TableModelListener l)
-	{
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex)
@@ -57,15 +46,8 @@ public class GameTableModel implements TableModel
 	}
 
 	@Override
-	public int getRowCount()
+	protected Object getColumnValue(Game game, int columnIndex)
 	{
-		return games.size();
-	}
-
-	@Override
-	public Object getValueAt(int rowIndex, int columnIndex)
-	{
-		Game game = games.get(rowIndex);
 		switch(columnIndex)
 		{
 		case 0:
@@ -81,22 +63,5 @@ public class GameTableModel implements TableModel
 		}
 		return "";
 	}
-
-	@Override
-	public boolean isCellEditable(int rowIndex, int columnIndex)
-	{
-		return false;
-	}
-
-	@Override
-	public void removeTableModelListener(TableModelListener l)
-	{
-	}
-
-	@Override
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
-	{
-	}
-
 
 }

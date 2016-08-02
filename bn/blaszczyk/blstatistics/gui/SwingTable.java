@@ -15,7 +15,6 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
 public abstract class SwingTable<T> extends JTable implements MouseListener, KeyListener
@@ -141,7 +140,7 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 	}
 
 	
-	private Comparator<T> reverseComparator(Comparator<T> comparator)
+	protected Comparator<T> reverseComparator(Comparator<T> comparator)
 	{
 		return (t1,t2) -> comparator.compare(t2, t1);
 	}	
@@ -152,8 +151,23 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 		return rowIndex == selectedRow;
 	}
 	
+	// TODO: Use this in GameTableModel and ResultTableModelS
+	@SuppressWarnings("unchecked")
+	protected Comparator<T> createDefaultComparator(int columnIndex)
+	{
+		if(Comparable.class.isAssignableFrom( getModel().getColumnClass(columnIndex) ) )
+		{
+			MyTableModel<T> tableModel = ((MyTableModel<T>) getModel());
+			// TODO: Type argument T is wrong here. Fix before continuing
+			return (t1,t2) -> ((Comparable<T>)tableModel.getColumnValue(t1, columnIndex)).compareTo((T) tableModel.getColumnValue(t2, columnIndex));
+		}
+		return null;
+	}
+	
+	//TODO: To replace this:
 	protected abstract Comparator<T> comparator(int columnIndex);
-	protected abstract TableModel createTableModel(List<T> tList);
+	
+	protected abstract MyTableModel<T> createTableModel(List<T> tList);
 	protected abstract void doPopup(MouseEvent e);
 	protected abstract int columnWidth(int columnIndex);
 	
@@ -223,6 +237,7 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 			selectedRow-=2; 	//Fallthrough
 		case KeyEvent.VK_DOWN:
 			selectedRow++;
+			getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
 			setCellRenderer();
 			repaint();
 		}

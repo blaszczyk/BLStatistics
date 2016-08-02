@@ -3,19 +3,15 @@ package bn.blaszczyk.blstatistics.gui;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
-
 import bn.blaszczyk.blstatistics.core.TeamResult;
 
 
-public class RelativeResultTableModel implements TableModel {
-	
-	private List<TeamResult> results;
+public class RelativeResultTableModel extends MyTableModel<TeamResult> 
+{
 
 	public RelativeResultTableModel(List<TeamResult> results)
 	{
-		this.results = results;
+		super(results);
 	}
 	
 	
@@ -52,11 +48,6 @@ public class RelativeResultTableModel implements TableModel {
 	/*
 	 * Table Model Methods
 	 */
-	@Override
-	public int getRowCount()
-	{
-		return results.size();
-	}
 	
 	@Override
 	public int getColumnCount()
@@ -96,21 +87,12 @@ public class RelativeResultTableModel implements TableModel {
 	@Override
 	public Class<?> getColumnClass(int columnIndex)
 	{
-//		if(columnIndex == 1)
-			return String.class;
-//		return Double.class;
+		return String.class;
 	}
 	
 	@Override
-	public boolean isCellEditable(int rowIndex, int columnIndex)
+	public Object getColumnValue(TeamResult result, int columnIndex)
 	{
-		return false;
-	}
-	
-	@Override
-	public Object getValueAt(int rowIndex, int columnIndex)
-	{
-		TeamResult result = results.get(rowIndex);
 		double value = 0;
 		switch(columnIndex)
 		{
@@ -147,20 +129,6 @@ public class RelativeResultTableModel implements TableModel {
 		return String.format("%3.3f", value / result.getGames() );
 	}
 	
-	@Override
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
-	{
-	}
-	
-	@Override
-	public void addTableModelListener(TableModelListener l)
-	{
-	}
-	
-	@Override
-	public void removeTableModelListener(TableModelListener l)
-	{
-	}
 	
 }
 
