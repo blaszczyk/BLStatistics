@@ -142,6 +142,8 @@ public class RelativeResultTableModel implements TableModel {
 			value =  result.getOpponentGoals();	
 			break;	
 		}
+		if(result.getGames() == 0)
+			return "0";
 		return String.format("%3.3f", value / result.getGames() );
 	}
 	

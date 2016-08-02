@@ -117,6 +117,18 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
+		if(e.getSource() == valueField)
+		{
+			switch(e.getKeyCode())
+			{
+			case KeyEvent.VK_UP:
+				valueField.setText( Integer.parseInt(valueField.getText()) + 1 + ""  );
+				break;
+			case KeyEvent.VK_DOWN:
+				valueField.setText( Integer.parseInt(valueField.getText()) - 1 + ""  );
+				break;
+			}
+		}			
 	}
 
 	@Override

@@ -17,7 +17,7 @@ import bn.blaszczyk.blstatistics.gui.filters.*;
 public class FilteredGameTable extends JPanel implements BiFilterListener<Season,Game>
 {
 	private FunctionalFilterPanel filterPanel;
-	private GameTable gameTable = new GameTable();
+	private FunctionalGameTable functionalGameTable = new FunctionalGameTable();
 	private FunctionalResultTable functionalResultTable = new FunctionalResultTable();
 	
 	private List<Game> gameList;
@@ -39,7 +39,7 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 		filterPanel.addFilterListener(this);
 		filterPanel.setMinimumSize(new Dimension(400,700));
 		
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, new JScrollPane(gameTable));
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, new JScrollPane(functionalGameTable));
 		splitPane.setDividerLocation(1100);
 		add(filterPanel, BorderLayout.WEST);
 		add(splitPane, BorderLayout.CENTER);
@@ -62,7 +62,7 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 				for(Game game : season.getAllGames())
 					if(filterPanel.check(season, game))
 						gameList.add(game);
-		gameTable.setSource(gameList);
+		functionalGameTable.setGameList(gameList);
 		functionalResultTable.setSource(gameList);
 	}
 
