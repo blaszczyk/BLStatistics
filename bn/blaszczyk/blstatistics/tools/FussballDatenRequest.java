@@ -30,9 +30,9 @@ import bn.blaszczyk.blstatistics.core.Game;
 
 public class FussballDatenRequest {
 	
-	private static final String	BASE_URL	= "http://www.fussballdaten.de";
+	private static final String	BASE_URL = "http://www.fussballdaten.de";
 											
-	private static HtmlTable	gamesTable;
+	private static HtmlTable gamesTable;
 								
 	public FussballDatenRequest()
 	{}

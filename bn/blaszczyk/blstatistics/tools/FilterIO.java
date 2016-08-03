@@ -27,7 +27,6 @@ public class FilterIO
 	private static final String FOLDER = "filters";
 	private static final String EXTENSION = "flt";
 
-	private BiFilterPanel<Season, Game> panel;
 	private StringBuilder outerBuilder;
 	private int panelCount;
 	private Map<String, BiFilterPanel<Season, Game>> filters;
@@ -224,7 +223,7 @@ public class FilterIO
 			panel = new AbsoluteOperatorFilterPanel<>(false, manager);
 			break;
 		case "Runde":
-			panel = new RoundFilterPanel(manager, getBool(split[2]), getBool(split[3]));
+			panel = new RoundFilterPanel(manager, Boolean.parseBoolean(split[2]), Boolean.parseBoolean(split[3]));
 			break;
 		case "Saison":
 			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[2], Integer.parseInt(split[3])), manager);
@@ -245,7 +244,7 @@ public class FilterIO
 			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalDiffFilterPanel(split[2], Integer.parseInt(split[3])), manager);
 			break;
 		case "Team":
-			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(teams, split[2], getBool(split[3]), getBool(split[4])), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(teams, split[2], Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4])), manager);
 			break;
 		case "Duell":
 			panel = FilterPanelAdapter.getSecondArgAdapter(new DuelFilterPanel(teams, split[2], split[3]), manager);
@@ -256,19 +255,6 @@ public class FilterIO
 		}
 		filters.put(split[0], panel);
 		panel.getPanel().setAlignmentX(Component.LEFT_ALIGNMENT);
-		return panel;
-	}
-
-	private boolean getBool(String in)
-	{
-		if (in.equals("true"))
-			return true;
-		else
-			return false;
-	}
-
-	public BiFilterPanel<Season, Game> getPanel()
-	{
 		return panel;
 	}
 

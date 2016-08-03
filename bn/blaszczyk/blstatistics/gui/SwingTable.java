@@ -12,9 +12,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 @SuppressWarnings("serial")
 public abstract class SwingTable<T> extends JTable implements MouseListener, KeyListener
@@ -33,12 +34,43 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 
 	private static final Font HEADER_FONT = new Font("Arial",Font.BOLD,16);
 	
+	private final TableCellRenderer renderer = new DefaultTableCellRenderer(){
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+				boolean hasFocus, int row, int column) {
+			Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			
+			if( isThisRowSelected(row) )
+			{
+				c.setBackground(SELECTED_COLOR);
+				c.setFont( SELECTED_FONT );
+				c.setForeground(SELECTED_FONT_COLOR);
+			}
+			else if( (row % 2) == 1)
+			{
+				c.setBackground(ODD_COLOR);
+				c.setFont( ODD_FONT );
+				c.setForeground(ODD_FONT_COLOR);
+			}
+			else
+			{
+				c.setBackground(EVEN_COLOR);
+				c.setFont( EVEN_FONT );
+				c.setForeground(EVEN_FONT_COLOR);
+			}
+			return c;
+		}
+		@Override
+		public void setHorizontalAlignment( int alignment )
+		{
+			super.setHorizontalAlignment( SwingConstants.CENTER );
+		}
+	};
+	
 	private List<T> tList;
 	private Comparator<T> comparator;
 	private boolean isCompareBackwards = true;
 	private int sortingColumn = -1;
-
-	private int selectedRow = -1;
 
 	
 	public SwingTable(Iterable<T> source)
@@ -55,14 +87,23 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 			if( width >= 0 )
 				getColumnModel().getColumn(i).setPreferredWidth(width);
 		}
-		getTableHeader().addMouseListener(this);
-		addKeyListener(this);
 		getTableHeader().setFont(HEADER_FONT);
 		setRowHeight(ODD_FONT.getSize() + 10 );
+
+		addKeyListener(this);
+		addMouseListener(this);
+		getTableHeader().addMouseListener(this);
+		getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		getSelectionModel().addListSelectionListener( e -> 	{
-			selectedRow = e.getLastIndex();
-			setModel();
+			if(!e.getValueIsAdjusting())
+				repaint();
 		});
+	}
+	
+	@Override
+	public int getSelectedRow()
+	{
+		return getSelectionModel().getAnchorSelectionIndex();
 	}
 
 	public void setSource(Iterable<T> source)
@@ -70,7 +111,6 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 		tList = new ArrayList<>();
 		for(T t : source)
 			tList.add(t);	
-		selectedRow = -1;
 		setModel();
 	}
 	
@@ -84,38 +124,7 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 	protected void setCellRenderer()
 	{
 		for(int columnIndex = 0; columnIndex < getColumnCount(); columnIndex++)
-			getColumnModel().getColumn(columnIndex).setCellRenderer( new DefaultTableCellRenderer(){
-				@Override
-				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-						boolean hasFocus, int row, int column) {
-					Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-					
-					if( isThisRowSelected(row) )
-					{
-						c.setBackground(SELECTED_COLOR);
-						c.setFont( SELECTED_FONT );
-						c.setForeground(SELECTED_FONT_COLOR);
-					}
-					else if( (row % 2) == 1)
-					{
-						c.setBackground(ODD_COLOR);
-						c.setFont( ODD_FONT );
-						c.setForeground(ODD_FONT_COLOR);
-					}
-					else
-					{
-						c.setBackground(EVEN_COLOR);
-						c.setFont( EVEN_FONT );
-						c.setForeground(EVEN_FONT_COLOR);
-					}
-					return c;
-				}
-				@Override
-				public void setHorizontalAlignment( int alignment )
-				{
-					super.setHorizontalAlignment( SwingConstants.CENTER );
-				}
-			});
+			getColumnModel().getColumn(columnIndex).setCellRenderer( renderer );
 	}
 	
 	
@@ -128,17 +137,18 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 		setCellRenderer();
 		repaint();
 	}
-
-	public void addListSelectionListener(ListSelectionListener l)
-	{
-		getSelectionModel().addListSelectionListener(l);
-	}
 	
-	public void removeListSelectionListener(ListSelectionListener l)
+	private void moveSelection(int nrRows)
 	{
-		getSelectionModel().removeListSelectionListener(l);
+		int selectedRow = getSelectionModel().getAnchorSelectionIndex();
+		selectedRow += nrRows;
+		if(selectedRow < 0)
+			selectedRow = 0;
+		else if(selectedRow >= getRowCount())
+			selectedRow = getRowCount() - 1;
+		getSelectionModel().setAnchorSelectionIndex(selectedRow);
+		scrollRectToVisible( getCellRect(selectedRow, 0, false));
 	}
-
 	
 	protected Comparator<T> reverseComparator(Comparator<T> comparator)
 	{
@@ -146,10 +156,6 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 	}	
 	
 	
-	protected boolean isThisRowSelected(int rowIndex)
-	{
-		return rowIndex == selectedRow;
-	}
 	
 	// TODO: Use this in GameTableModel and ResultTableModelS
 	@SuppressWarnings("unchecked")
@@ -166,7 +172,8 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 	
 	//TODO: To replace this:
 	protected abstract Comparator<T> comparator(int columnIndex);
-	
+
+	protected abstract boolean isThisRowSelected(int rowIndex);
 	protected abstract MyTableModel<T> createTableModel(List<T> tList);
 	protected abstract void doPopup(MouseEvent e);
 	protected abstract int columnWidth(int columnIndex);
@@ -176,7 +183,9 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 	 * Mouse Listener Methods
 	 */
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) 
+	{
+		e.consume();
 		if( e.getComponent() == getTableHeader() )
 		{
 			int columnIndex = columnAtPoint(e.getPoint());
@@ -197,16 +206,19 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 	@Override
 	public void mouseEntered(MouseEvent e)
 	{
+		e.consume();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e)
 	{
+		e.consume();
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e)
 	{
+		e.consume();
 		if(e.isPopupTrigger())
 			doPopup(e);
 	}
@@ -214,6 +226,7 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 	@Override
 	public void mouseReleased(MouseEvent e)
 	{
+		e.consume();
 		if(e.isPopupTrigger())
 			doPopup(e);
 	}
@@ -234,12 +247,17 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 		switch(e.getKeyCode())
 		{
 		case KeyEvent.VK_UP:
-			selectedRow-=2; 	//Fallthrough
+			moveSelection(-1);
+			break;
 		case KeyEvent.VK_DOWN:
-			selectedRow++;
-			getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
-			setCellRenderer();
-			repaint();
+			moveSelection(1);
+			break;
+		case KeyEvent.VK_PAGE_UP:
+			moveSelection(-5);
+			break;
+		case KeyEvent.VK_PAGE_DOWN:
+			moveSelection(5);
+			break;
 		}
 	}
 

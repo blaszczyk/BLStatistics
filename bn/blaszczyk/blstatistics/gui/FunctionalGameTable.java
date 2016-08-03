@@ -42,10 +42,10 @@ public class FunctionalGameTable extends JPanel
 		add(summaryPanel, BorderLayout.NORTH);
 		add( new JScrollPane(gameTable), BorderLayout.CENTER);
 	}
-
-	public GameTable getGameTable()
+	
+	public void setSelectedTeam(String team)
 	{
-		return gameTable;
+		gameTable.setSelectedTeam(team);
 	}
 
 	private void clearStatistics()

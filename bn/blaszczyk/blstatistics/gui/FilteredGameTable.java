@@ -23,9 +23,6 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 	private List<Game> gameList;
 	private Iterable<League> leagues;
 	
-	//	TODO: implement highlightedTeam in GameTable
-//	private String highlightedTeam;
-	
 	public FilteredGameTable(Iterable<League> leagues)
 	{
 		super(new BorderLayout(5,5));
@@ -39,12 +36,14 @@ public class FilteredGameTable extends JPanel implements BiFilterListener<Season
 		Collections.sort(teams);
 
 		functionalFilterPanel = new FunctionalFilterPanel(teams);
-		functionalFilterPanel.addFilterListener(this);
 		functionalFilterPanel.setMinimumSize(new Dimension(400,700));
-		
-		functionalResultTable.getResultTable().addListSelectionListener( e -> {
-			String team = functionalResultTable.getResultTable().getSelectedTeam();
-			functionalGameTable.getGameTable().setSelectedTeam(team);
+		functionalFilterPanel.addFilterListener(this);
+		functionalResultTable.addListSelectionListener( e -> {
+			if(!e.getValueIsAdjusting())
+			{
+				String team = functionalResultTable.getSelectedTeam();
+				functionalGameTable.setSelectedTeam(team);
+			}
 		});
 		
 		

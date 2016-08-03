@@ -25,15 +25,13 @@ public class GameTable extends SwingTable<Game>
 	public void setSelectedTeam(String team)
 	{
 		this.selectedTeam = team;
-		setCellRenderer();
 		repaint();
 	}
 
 	@Override
 	protected boolean isThisRowSelected(int rowIndex)
 	{
-		return // super.isThisRowSelected(rowIndex) || 
-				getModel().getValueAt(rowIndex, 1).equals(selectedTeam) || getModel().getValueAt(rowIndex, 2).equals(selectedTeam);
+		return getModel().getValueAt(rowIndex, 1).equals(selectedTeam) || getModel().getValueAt(rowIndex, 2).equals(selectedTeam);
 	}
 
 	@Override

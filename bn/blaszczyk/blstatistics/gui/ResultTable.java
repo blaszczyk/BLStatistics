@@ -19,13 +19,13 @@ public class ResultTable extends SwingTable<TeamResult>
 	public ResultTable()
 	{
 		super();
-		getSelectionModel().addListSelectionListener( e -> {
-			selectedTeam = getModel().getValueAt(e.getLastIndex(), 1).toString() ;
-		});
 	}
 
 	public String getSelectedTeam()
 	{
+		int row = getSelectedRow();
+		if(row >= 0 && row < getRowCount())
+			selectedTeam = getModel().getValueAt( row  , 1).toString();
 		return selectedTeam;
 	}
 	
@@ -74,7 +74,7 @@ public class ResultTable extends SwingTable<TeamResult>
 	@Override
 	protected boolean isThisRowSelected(int rowIndex)
 	{
-		return getModel().getValueAt(rowIndex, 1).equals(selectedTeam);
+		return getModel().getValueAt(rowIndex, 1).equals(getSelectedTeam());
 	}
 
 }

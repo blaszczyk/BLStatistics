@@ -6,6 +6,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
 
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.filters.*;
@@ -60,12 +61,22 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		add(optionsPanel,BorderLayout.NORTH);
 		add(new JScrollPane(resultTable),BorderLayout.CENTER);
 	}
-
-	public ResultTable getResultTable()
+	
+	public String getSelectedTeam()
 	{
-		return resultTable;
+		return resultTable.getSelectedTeam();
 	}
 
+	public void addListSelectionListener(ListSelectionListener l)
+	{
+		resultTable.getSelectionModel().addListSelectionListener(l);
+	}
+	
+	public void removeListSelectionListener(ListSelectionListener l)
+	{
+		resultTable.getSelectionModel().removeListSelectionListener(l);
+	}
+	
 	public void setSource(Iterable<Game> games)
 	{
 		this.games = games;
