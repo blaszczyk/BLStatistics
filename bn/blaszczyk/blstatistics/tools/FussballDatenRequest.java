@@ -40,19 +40,15 @@ public class FussballDatenRequest {
 	// request table from www.fussballdaten.de
 	public static void requestTable(int year, String league) throws BLException
 	{
-		// Bundesliga Seasons only from 1964 - now
-		Calendar now = new GregorianCalendar();
-		int latestSeason = now.get(Calendar.YEAR);
-		if (now.get(Calendar.MONTH) > 6)
-			latestSeason++;
-		if (year < 1964 || year > latestSeason)
-			return;
-			
-		// Request Table online
 		String url = String.format("%s/%s/%4d/", BASE_URL, league, year);
 		try
 		{
 			WebClient webClient = new WebClient();
+			webClient.getOptions().setAppletEnabled(false);
+			webClient.getOptions().setCssEnabled(false);
+			webClient.getOptions().setJavaScriptEnabled(false);
+			webClient.getOptions().setPopupBlockerEnabled(true);
+			webClient.getOptions().setRedirectEnabled(false);
 			HtmlPage page = webClient.getPage(url);
 			HtmlDivision div = (HtmlDivision) page.getElementById("rt_Kreuztabelle");
 			gamesTable = (HtmlTable) div.getFirstElementChild();

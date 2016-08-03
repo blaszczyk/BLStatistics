@@ -73,7 +73,7 @@ public class Game
 	
 	public Game(String gameString) throws BLException
 	{
-		matchDay = Integer.parseInt( gameString.substring(0, gameString.indexOf('.') ) );
+		matchDay = Integer.parseInt( gameString.substring(0, gameString.indexOf('.') ).trim() );
 		if(matchDay < 1)
 			throw new BLException("Wrong matchDay in '" + gameString + "'" );
 		String gameDetails = gameString.substring( gameString.indexOf('g') + 2  );
@@ -91,11 +91,13 @@ public class Game
 		goals1 = Integer.parseInt( split[1].substring(split[1].lastIndexOf(' ')+1) );
 		goals2 = Integer.parseInt(split[2]);
 		String teams = split[1].substring(0, split[1].lastIndexOf(' '));
-		split = teams.split("-");
-		if(split.length != 2)
+		int splitIntex = teams.indexOf(" - ");
+//		split = teams.split(" - ",2);
+//		if(split.length != 2)
+		if(splitIntex < 0)
 			throw new BLException("Wrong game Format in '" + gameDetails + "'");
-		team1 = split[0].trim();
-		team2 = split[1].trim();
+		team1 = teams.substring(0, splitIntex) .trim();
+		team2 = teams.substring(splitIntex + 3).trim();
 	}
 	
 	/*

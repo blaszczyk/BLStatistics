@@ -1,6 +1,9 @@
 package bn.blaszczyk.blstatistics;
 
+import java.awt.Font;
 import java.util.Arrays;
+
+import javax.swing.UIManager;
 
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.gui.LeagueManager;
@@ -10,18 +13,56 @@ import bn.blaszczyk.blstatistics.tools.FileIO;
 public class BLStatistics
 {
 
-	public static void main(String[] args)
+	private static void initUIManager()
+	{
+		Font plainFont = new Font("Arial",Font.PLAIN,16);
+		Font boldFont = new Font("Arial",Font.BOLD,16);
+		Font tableFont = new Font("Arial",Font.PLAIN,14);
+		
+		UIManager.put("Table.font", tableFont);
+		
+		UIManager.put("TableHeader.font", boldFont);
+		UIManager.put("Label.font", boldFont);
+		UIManager.put("Button.font", boldFont);
+		UIManager.put("ProgressBar.font", boldFont);
+		UIManager.put("ObtionPane.buttonFont", boldFont);
+		UIManager.put("CheckBox.font", boldFont);
+
+		UIManager.put("PopupMenu.font", plainFont);
+		UIManager.put("TextPane.font", plainFont);
+		UIManager.put("OptionPane.messageFont", plainFont);
+		UIManager.put("MenuBar.font", plainFont);
+		UIManager.put("Menu.font", plainFont);
+		UIManager.put("MenuItem.font", plainFont);
+		UIManager.put("List.font", plainFont);
+		UIManager.put("ComboBox.font", plainFont);
+		UIManager.put("PopupMenu.font", plainFont);
+
+//		UIManager.put("JTree.font", plainFont);
+//		UIManager.put("TabbedPane.font", plainFont);
+//		UIManager.put("Tree.font", plainFont);
+//		UIManager.put("RadioButton.font", plainFont);
+//		UIManager.put("RadioButtonMenuItem.font", plainFont);
+//		UIManager.put("TextField.font", plainFont);
+	}
+	
+	private static League[] initLeagues()
 	{
 		League bundesliga = new League("bundesliga",1964,2016);
-		FileIO.loadAllSeasons(bundesliga);
-
 		League zweiteliga = new League("zweiteliga",1975,2016);
-		FileIO.loadAllSeasons(zweiteliga);
-		
 		League dritteliga = new League("dritteliga",2009,2016);
-		FileIO.loadAllSeasons(dritteliga);
-		
+
 		League[] leagues = {bundesliga,zweiteliga,dritteliga};
+		
+		return leagues;
+	}
+	
+	
+	public static void main(String[] args)
+	{
+		initUIManager();
+		League[] leagues = initLeagues();
+		FileIO.loadLeagues(leagues);
 		
 		MainFrame mf = new MainFrame(Arrays.asList(leagues));
 		mf.showFrame();

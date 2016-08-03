@@ -20,12 +20,12 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	private ResultTable resultTable = new ResultTable();	
 	private JPanel optionsPanel;
 
-	private JCheckBox home = new JCheckBox("Heimspiele",true);
-	private JCheckBox away = new JCheckBox("Auswärtsspiele",true);
-	private JLabel label = new JLabel("Punkte pro Sieg:",SwingConstants.RIGHT);
-	private JComboBox<Integer> pointsForWinBox = new JComboBox<>(POINTS_FOR_WIN_OPTIONS);
+	private JCheckBox cboHome = new JCheckBox("Heimspiele",true);
+	private JCheckBox cboAway = new JCheckBox("Auswärtsspiele",true);
+	private JLabel lblWinPoints = new JLabel("Punkte pro Sieg:",SwingConstants.RIGHT);
+	private JComboBox<Integer> boxWinPoints = new JComboBox<>(POINTS_FOR_WIN_OPTIONS);
 	
-	private JCheckBox relativeTable = new JCheckBox("Nach Spielen gewichtet",false);
+	private JCheckBox cboRelative = new JCheckBox("Nach Spielen gewichtet",false);
 	
 
 	private Iterable<Game> games;
@@ -35,28 +35,28 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	{
 		super(new BorderLayout(5, 5));		
 		
-		home.setBounds(10, 10, 110, 30);
-		home.addItemListener(this);
+		cboHome.setBounds(10, 10, 150, 30);
+		cboHome.addItemListener(this);
 		
-		away.setBounds(130, 10, 120, 30);
-		away.addItemListener(this);
+		cboAway.setBounds(160, 10, 150, 30);
+		cboAway.addItemListener(this);
 		
-		label.setBounds(340, 10, 100, 30);
+		lblWinPoints.setBounds(370, 10, 150, 30);
 		
-		pointsForWinBox.setBounds(450, 10, 70, 30);
-		pointsForWinBox.addItemListener(this);
+		boxWinPoints.setBounds(530, 10, 70, 30);
+		boxWinPoints.addItemListener(this);
 		
-		relativeTable.setBounds(600,10,170,30);
-		relativeTable.addItemListener(this);
+		cboRelative.setBounds(650,10,250,30);
+		cboRelative.addItemListener(this);
 		
 		optionsPanel = new JPanel();
 		optionsPanel.setLayout(null);
-		optionsPanel.setPreferredSize(new Dimension(600, 50));
-		optionsPanel.add(home);
-		optionsPanel.add(away);
-		optionsPanel.add(label);
-		optionsPanel.add(pointsForWinBox);
-		optionsPanel.add(relativeTable);
+		optionsPanel.setPreferredSize(new Dimension(900, 50));
+		optionsPanel.add(cboHome);
+		optionsPanel.add(cboAway);
+		optionsPanel.add(lblWinPoints);
+		optionsPanel.add(boxWinPoints);
+		optionsPanel.add(cboRelative);
 		
 		add(optionsPanel,BorderLayout.NORTH);
 		add(new JScrollPane(resultTable),BorderLayout.CENTER);
@@ -86,13 +86,13 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	
 	private void setFilter()
 	{
-		if(home.isSelected())
-			if(away.isSelected())
+		if(cboHome.isSelected())
+			if(cboAway.isSelected())
 				filter = LogicalBiFilter.getTRUEBiFilter();
 			else
 				filter = TeamResultFilter.getHomeGameFilter();
 		else
-			if(away.isSelected())
+			if(cboAway.isSelected())
 				filter = TeamResultFilter.getAwayGameFilter();
 			else
 				filter = LogicalBiFilter.getFALSEBiFilter();
@@ -102,9 +102,9 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	
 	private void createTable()
 	{
-		Table table = new Table(games, filter,(Integer)pointsForWinBox.getSelectedItem());
+		Table table = new Table(games, filter,(Integer)boxWinPoints.getSelectedItem());
 		table.sort();	
-		resultTable.setRelativeTable(relativeTable.isSelected());
+		resultTable.setRelativeTable(cboRelative.isSelected());
 		resultTable.setSource(table);
 	}
 

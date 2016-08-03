@@ -4,7 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -13,12 +14,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import bn.blaszczyk.blstatistics.core.Game;
+import bn.blaszczyk.blstatistics.DownloadDialog;
 import bn.blaszczyk.blstatistics.core.League;
 import bn.blaszczyk.blstatistics.core.Season;
 import bn.blaszczyk.blstatistics.tools.BLException;
 import bn.blaszczyk.blstatistics.tools.FileIO;
-import bn.blaszczyk.blstatistics.tools.FussballDatenRequest;
 
 @SuppressWarnings("serial")
 public class LeagueManager extends JDialog implements ListSelectionListener, ActionListener
@@ -30,8 +30,8 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	private JPanel actionPanel;
 
 	private JButton btnClose = new JButton("Schlieﬂen");
-	private JButton btnSelect = new JButton("Markiere Ungeladene");
-	private JButton btnSeasonRequest = new JButton("Saisons Downloaden");
+	private JButton btnSelect = new JButton("Markieren");
+	private JButton btnSeasonRequest = new JButton("Download");
 	
 	
 	/*
@@ -126,28 +126,28 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	
 	private void requestSeasons()
 	{
-		for( int i : seasonTable.getSelectedRows() )
+		try
 		{
-			int year = (int) seasonTable.getModel().getValueAt(i, 0);
-			try
+			if(seasonTable.getSelectedRows().length == 0)
 			{
-				requestSeason(leagueList.getSelectedValue().getSeason(year));
+				JOptionPane.showMessageDialog(this, "Keine Saisons markiert", "Fehler", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
-			catch (BLException e)
+			List<Season> seasons = new ArrayList<>();
+			for( int i : seasonTable.getSelectedRows() )
 			{
-				e.printStackTrace();
+				int year = (int) seasonTable.getModel().getValueAt(i, 0);
+				seasons.add( leagueList.getSelectedValue().getSeason(year) );
 			}
+			DownloadDialog dlDialog = new DownloadDialog(this, seasons);
+			dlDialog.showDialog();
+		}
+		catch (BLException e)
+		{
+			e.printStackTrace();
 		}
 	}
 	
-	private void requestSeason(Season season) throws BLException
-	{		
-		FussballDatenRequest.requestTableMuted(season.getYear(),season.getLeague().getName());
-		Stack<Game> gameStack = FussballDatenRequest.getGames();
-		FussballDatenRequest.clearTable();
-		season.addGames(gameStack);
-		FileIO.saveSeason(season);
-	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e)
@@ -167,7 +167,10 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		else if(e.getSource() == btnSelect)
 			selectUnloaded();
 		else if(e.getSource() == btnSeasonRequest)
+		{
 			requestSeasons();
+			setSeasonTable( leagueList.getSelectedValue() );
+		}
 	}
 
 

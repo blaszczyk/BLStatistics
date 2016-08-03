@@ -15,21 +15,12 @@ public class FileIO
 	private static final String BASE_FOLDER = "leagues";
 	private static final String FILE_EXTENSION = "bls";
 	
-	public static void loadAllSeasons(League league)
+	public static void loadLeagues(League[] leagues)
 	{
-		File directory = new File("leagues/" + league.getName() + "/");
-		if(!directory.exists())
-			directory.mkdirs();
-		for(File file : directory.listFiles())
-			try
-			{
-				loadSeason(league, file);
-			}
-			catch (BLException e)
-			{
-				e.printStackTrace();
-			}
+		for(League league : leagues)
+			loadSeasons(league);
 	}
+	
 	
 	public static void saveAllSeasons(League league)
 	{
@@ -65,6 +56,23 @@ public class FileIO
 	public static boolean isSeasonSaved(Season season)
 	{
 		return new File(getFileName(season)).exists();
+	}
+	
+
+	private static void loadSeasons(League league)
+	{
+		File directory = new File("leagues/" + league.getName() + "/");
+		if(!directory.exists())
+			directory.mkdirs();
+		for(File file : directory.listFiles())
+			try
+			{
+				loadSeason(league, file);
+			}
+			catch (BLException e)
+			{
+				e.printStackTrace();
+			}
 	}
 	
 	private static boolean loadSeason(League league, File file) throws BLException
