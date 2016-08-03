@@ -29,6 +29,11 @@ public class MatchDay implements Iterable<Game>
 		return null;
 	}
 	
+	public int getGameCount()
+	{
+		return games.size();
+	}
+	
 	public int getGoals()
 	{
 		int goals = 0;
@@ -42,5 +47,6 @@ public class MatchDay implements Iterable<Game>
 	{
 		return games.iterator();
 	}
+
 	
 }

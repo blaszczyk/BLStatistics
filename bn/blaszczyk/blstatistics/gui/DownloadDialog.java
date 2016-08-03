@@ -69,7 +69,7 @@ public class DownloadDialog extends JDialog implements ActionListener {
 		setSize(606, 180);
 		setResizable(false);
 		
-		lblInfo.setBounds(10, 10, 300, 30);
+		lblInfo.setBounds(10, 10, 580, 30);
 		
 		prograssBar = new JProgressBar(0, seasons.size());
 		prograssBar.setStringPainted(true);
@@ -100,7 +100,7 @@ public class DownloadDialog extends JDialog implements ActionListener {
 		FussballDatenRequest.requestTable(season);
 		Stack<Game> gameStack = FussballDatenRequest.getGames();
 		FussballDatenRequest.clearTable();
-		season.addGames(gameStack);
+		season.consumeGames(gameStack);
 		FileIO.saveSeason(season);
 	}
 

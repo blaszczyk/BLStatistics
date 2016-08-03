@@ -99,7 +99,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	
 	private void setSeasonTable(League league)
 	{
-		Object[] columnNames = {"Saison","Daten Vorhanden"};
+		Object[] columnNames = {"Saison","Vorhanden", "Teams", "Spiele"};
 		DefaultTableModel tm = new DefaultTableModel(columnNames,0){
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
@@ -109,7 +109,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		for(Season season : league)
 		{
 			String isSaved = FileIO.isSeasonSaved(season)? "Ja": "Nein";
-			Object[] rowData = {season.getYear(), isSaved};
+			Object[] rowData = {season.getYear(), isSaved, season.getTeamCount(), season.getGameCount()};
 			tm.addRow(rowData);
 		}
 		seasonTable.setModel(tm);

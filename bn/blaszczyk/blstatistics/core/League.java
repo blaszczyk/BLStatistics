@@ -11,13 +11,25 @@ public class League implements Iterable<Season>
 	private List<String> teams = new ArrayList<>();
 	private String pathName;
 	private String name;
-	
-	public League(String name, String pathName, int minSeason, int maxSeason)
+
+	public League(String name, String pathName, int[] yearBounds)
 	{
 		this.name = name;
 		this.pathName = pathName;
-		for(int year = minSeason; year <= maxSeason; year++)
-			seasons.add( new Season(year,this));
+		
+		Date today = new Date();
+		@SuppressWarnings("deprecation")
+		int thisYear = 1900 + today.getYear() + ( (today.getMonth() > 6) ? 1 : 0  );		 
+		int nrBounds = yearBounds.length;
+		
+		for(int i = 0; i < nrBounds; i+=2)
+		{
+			int endYear = thisYear;
+			if( i+1 < nrBounds) 
+				endYear = yearBounds[i+1];
+			for(int year = yearBounds[i]; year <= endYear; year++)
+				seasons.add( new Season(year,this));				
+		}
 	}
 
 	public String getName()

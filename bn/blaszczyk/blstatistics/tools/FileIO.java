@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
@@ -19,8 +18,6 @@ public class FileIO
 	private static final String FILE_EXTENSION = "bls";
 	private static final String LEAGUES_FILE = "leagues";
 	
-	
-	@SuppressWarnings("deprecation")
 	public static List<League> loadLeagues()
 	{
 		String path = String.format("%s/%s.%s", BASE_FOLDER, LEAGUES_FILE, FILE_EXTENSION);
@@ -33,12 +30,12 @@ public class FileIO
 				String props[] = scanner.nextLine().split(";");
 				if(props.length < 3)
 					break;
-				Date today = new Date();
-				int minSeason = Integer.parseInt(props[2]);
-				int maxSeason = 1900 + today.getYear() + ( (today.getMonth() > 6) ? 1 : 0  );
-				if(props.length > 3)
-					maxSeason = Integer.parseInt(props[3]);
-				League league = new League(props[0], props[1], minSeason, maxSeason);
+				int[] yearBounds = new int[props.length - 2];
+				for(int i = 0; i < yearBounds.length; i++)
+					yearBounds[i] = Integer.parseInt( props[i+2].trim() );
+				
+				
+				League league = new League(props[0].trim(), props[1].trim(), yearBounds);
 				loadSeasons(league);
 				leagues.add( league );
 			}
@@ -126,7 +123,7 @@ public class FileIO
 			while (scanner.hasNextLine())
 				gameStack.push(new Game( scanner.nextLine() ));
 			scanner.close();
-			season.addGames( gameStack );
+			season.consumeGames( gameStack );
 			return true;
 		}
 		catch (FileNotFoundException e)

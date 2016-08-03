@@ -7,7 +7,7 @@ public class Season implements Iterable<MatchDay>
 	private int year;
 	private League league;
 	private List<MatchDay> matchDays = new ArrayList<>();
-//	private List<String> teams = new ArrayList<>();
+	private List<String> teams = new ArrayList<>();
 
 	/*
 	 * Constructor
@@ -38,10 +38,10 @@ public class Season implements Iterable<MatchDay>
 //		return teams.get(index);
 //	}
 //
-//	public int getTeamCount()
-//	{
-//		return teams.size();
-//	}
+	public int getTeamCount()
+	{
+		return teams.size();
+	}
 	
 	public int getYear()
 	{
@@ -52,7 +52,15 @@ public class Season implements Iterable<MatchDay>
 	{
 		return league;
 	}
-	
+
+
+	public int getGameCount()
+	{
+		int count = 0;
+		for(MatchDay matchDay : this)
+			count += matchDay.getGameCount();
+		return count;
+	}	
 	public List<Game> getAllGames()
 	{
 		List<Game> gameList = new ArrayList<>();
@@ -70,14 +78,15 @@ public class Season implements Iterable<MatchDay>
 		matchDays.get(matchDayIndex).addGame(game);
 		league.addTeam(game.getTeam1());
 		league.addTeam(game.getTeam2());
-//		if(!teams.contains(game.getTeam1()))
-//			teams.add(game.getTeam1());
-//		if(!teams.contains(game.getTeam2()))
-//			teams.add(game.getTeam2());
+		if(!teams.contains(game.getTeam1()))
+			teams.add(game.getTeam1());
+		if(!teams.contains(game.getTeam2()))
+			teams.add(game.getTeam2());
 	}
 	
-	public void addGames(Iterable<Game> source)
+	public void consumeGames(Iterable<Game> source)
 	{
+		matchDays = new ArrayList<>();
 		for(Game game : source)
 			addGame(game);
 	}
@@ -87,5 +96,6 @@ public class Season implements Iterable<MatchDay>
 	{
 		return matchDays.iterator();
 	}
+
 	
 }

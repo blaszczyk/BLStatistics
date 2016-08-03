@@ -110,7 +110,7 @@ public class FunctionalGameTable extends JPanel
 		summaryPanel.add(textLabel);
 		
 		JLabel valueLabel = new JLabel( NumberFormat.getIntegerInstance().format(value), SwingConstants.RIGHT);
-		valueLabel.setBounds(270, ROW_BORDER + summaryRowCount * ROW_HEIGHT, 50, ROW_HEIGHT);
+		valueLabel.setBounds(270, ROW_BORDER + summaryRowCount * ROW_HEIGHT, 80, ROW_HEIGHT);
 		valueLabel.setFont(FONT);
 		summaryPanel.add(valueLabel);
 		
