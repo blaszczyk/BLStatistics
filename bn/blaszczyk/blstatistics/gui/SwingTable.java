@@ -93,7 +93,7 @@ public abstract class SwingTable<T> extends JTable implements MouseListener, Key
 		addKeyListener(this);
 		addMouseListener(this);
 		getTableHeader().addMouseListener(this);
-		getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	
 	@Override

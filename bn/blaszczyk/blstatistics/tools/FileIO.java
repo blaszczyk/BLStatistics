@@ -15,19 +15,40 @@ public class FileIO
 	private static final String BASE_FOLDER = "leagues";
 	private static final String FILE_EXTENSION = "bls";
 	
-	private static String getFileName(League league, int year)
+	public static void loadAllSeasons(League league)
 	{
-		return String.format("%s/%s/%4d.%s", BASE_FOLDER, league.getName(),year,FILE_EXTENSION);
+		File directory = new File("leagues/" + league.getName() + "/");
+		if(!directory.exists())
+			directory.mkdirs();
+		for(File file : directory.listFiles())
+			try
+			{
+				loadSeason(league, file);
+			}
+			catch (BLException e)
+			{
+				e.printStackTrace();
+			}
 	}
 	
-	public static void saveSeason(League league, int year) throws BLException
+	public static void saveAllSeasons(League league)
 	{
-		if(league == null)
-			return;
-		Season season = league.getSeason(year);
+		for(Season season : league)
+			try
+			{
+				saveSeason(season);
+			}
+			catch (BLException e)
+			{
+				e.printStackTrace();
+			}
+	}
+	
+	public static void saveSeason(Season season) throws BLException
+	{
 		if(season == null)
 			return;
-		String filename = getFileName(league,year);
+		String filename = getFileName(season);
 		try
 		{
 			FileWriter file = new FileWriter(filename);
@@ -41,7 +62,12 @@ public class FileIO
 		}
 	}
 	
-	public static boolean loadSeason(League league, File file) throws BLException
+	public static boolean isSeasonSaved(Season season)
+	{
+		return new File(getFileName(season)).exists();
+	}
+	
+	private static boolean loadSeason(League league, File file) throws BLException
 	{
 		if(league == null || file == null)
 			return false;
@@ -55,8 +81,8 @@ public class FileIO
 			}
 			catch(BLException e)
 			{
-				season = new Season(year,league);
-				league.addSeason(season);
+				e.printStackTrace();
+				return false;
 			}
 			Stack<Game> gameStack = new Stack<>();
 			Scanner scanner = new Scanner(new FileInputStream(file));
@@ -76,9 +102,15 @@ public class FileIO
 		}
 	}
 
-	public static boolean loadFromFile(League league, int year) throws BLException
+//	private static boolean loadFromFile(League league, int year) throws BLException
+//	{
+//		File file = new File(getFileName(league,year));
+//		return loadSeason(league, file);
+//	}
+	
+
+	private static String getFileName(Season season)
 	{
-		File file = new File(getFileName(league,year));
-		return loadSeason(league, file);
+		return String.format("%s/%s/%4d.%s", BASE_FOLDER, season.getLeague(),season.getYear(),FILE_EXTENSION);
 	}
 }

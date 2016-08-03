@@ -10,20 +10,17 @@ public class League implements Iterable<Season>
 	private List<Season> seasons = new ArrayList<>();
 	private List<String> teams = new ArrayList<>();
 	private String name;
-
-	public League(String name)
+	
+	public League(String name, int minSeason, int maxSeason)
 	{
 		this.name = name;
+		for(int year = minSeason; year <= maxSeason; year++)
+			seasons.add( new Season(year,this));
 	}
 
 	public String getName()
 	{
 		return name;
-	}
-
-	public boolean addSeason(Season e)
-	{
-		return seasons.add(e);
 	}
 	
 	public Season getSeason(int year) throws BLException
@@ -42,12 +39,6 @@ public class League implements Iterable<Season>
 		return games;
 	}
 	
-
-	@Override
-	public Iterator<Season> iterator()
-	{
-		return seasons.iterator();
-	}
 	
 	public void addTeam(String team)
 	{
@@ -59,5 +50,22 @@ public class League implements Iterable<Season>
 	{
 		Collections.sort(teams);
 		return teams;
+	}
+
+	public int getSeasonCount()
+	{
+		return seasons.size();
+	}
+
+	@Override
+	public Iterator<Season> iterator()
+	{
+		return seasons.iterator();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 }
