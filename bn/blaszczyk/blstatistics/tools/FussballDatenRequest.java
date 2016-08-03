@@ -27,6 +27,7 @@ import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
 
 import bn.blaszczyk.blstatistics.core.Game;
+import bn.blaszczyk.blstatistics.core.Season;
 
 public class FussballDatenRequest {
 	
@@ -38,9 +39,9 @@ public class FussballDatenRequest {
 	{}
 	
 	// request table from www.fussballdaten.de
-	public static void requestTable(int year, String league) throws BLException
+	public static void requestTable(Season season) throws BLException
 	{
-		String url = String.format("%s/%s/%4d/", BASE_URL, league, year);
+		String url = String.format("%s/%s/%4d/", BASE_URL, season.getLeague().getPathName(), season.getYear());
 		try
 		{
 			WebClient webClient = new WebClient();
@@ -57,7 +58,7 @@ public class FussballDatenRequest {
 		catch (FailingHttpStatusCodeException | IOException e)
 		{
 			setMutedErrStream(false);
-			throw new BLException("Error requesting Season " + year + " of League " + league,e);
+			throw new BLException("Fehler beim Download von Saison " + season.getLeague() + " - "+ season.getYear(),e);
 		}
 	}
 	
@@ -96,10 +97,10 @@ public class FussballDatenRequest {
 			System.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err)));
 	}
 	
-	public static void requestTableMuted(int year, String league) throws BLException
+	public static void requestTableMuted(Season season) throws BLException
 	{
 		setMutedErrStream(true);
-		requestTable(year,league);
+		requestTable(season);
 		setMutedErrStream(false);
 	}
 }

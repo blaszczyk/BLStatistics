@@ -9,11 +9,13 @@ public class League implements Iterable<Season>
 {
 	private List<Season> seasons = new ArrayList<>();
 	private List<String> teams = new ArrayList<>();
+	private String pathName;
 	private String name;
 	
-	public League(String name, int minSeason, int maxSeason)
+	public League(String name, String pathName, int minSeason, int maxSeason)
 	{
 		this.name = name;
+		this.pathName = pathName;
 		for(int year = minSeason; year <= maxSeason; year++)
 			seasons.add( new Season(year,this));
 	}
@@ -21,6 +23,11 @@ public class League implements Iterable<Season>
 	public String getName()
 	{
 		return name;
+	}
+	
+	public String getPathName()
+	{
+		return pathName;
 	}
 	
 	public Season getSeason(int year) throws BLException

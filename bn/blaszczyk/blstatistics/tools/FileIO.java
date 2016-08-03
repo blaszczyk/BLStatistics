@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -14,13 +17,39 @@ public class FileIO
 {
 	private static final String BASE_FOLDER = "leagues";
 	private static final String FILE_EXTENSION = "bls";
+	private static final String LEAGUES_FILE = "leagues";
 	
-	public static void loadLeagues(League[] leagues)
+	
+	@SuppressWarnings("deprecation")
+	public static List<League> loadLeagues()
 	{
-		for(League league : leagues)
-			loadSeasons(league);
+		String path = String.format("%s/%s.%s", BASE_FOLDER, LEAGUES_FILE, FILE_EXTENSION);
+		List<League> leagues = new ArrayList<>();
+		try
+		{
+			Scanner scanner = new Scanner( new FileInputStream(path) );
+			while(scanner.hasNextLine())
+			{
+				String props[] = scanner.nextLine().split(";");
+				if(props.length < 3)
+					break;
+				Date today = new Date();
+				int minSeason = Integer.parseInt(props[2]);
+				int maxSeason = 1900 + today.getYear() + ( (today.getMonth() > 6) ? 1 : 0  );
+				if(props.length > 3)
+					maxSeason = Integer.parseInt(props[3]);
+				League league = new League(props[0], props[1], minSeason, maxSeason);
+				loadSeasons(league);
+				leagues.add( league );
+			}
+			scanner.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		return leagues;
 	}
-	
 	
 	public static void saveAllSeasons(League league)
 	{
@@ -61,7 +90,7 @@ public class FileIO
 
 	private static void loadSeasons(League league)
 	{
-		File directory = new File("leagues/" + league.getName() + "/");
+		File directory = new File("leagues/" + league.getPathName() + "/");
 		if(!directory.exists())
 			directory.mkdirs();
 		for(File file : directory.listFiles())
@@ -119,6 +148,6 @@ public class FileIO
 
 	private static String getFileName(Season season)
 	{
-		return String.format("%s/%s/%4d.%s", BASE_FOLDER, season.getLeague(),season.getYear(),FILE_EXTENSION);
+		return String.format("%s/%s/%4d.%s", BASE_FOLDER, season.getLeague().getPathName(),season.getYear(),FILE_EXTENSION);
 	}
 }

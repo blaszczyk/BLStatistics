@@ -1,7 +1,7 @@
 package bn.blaszczyk.blstatistics;
 
 import java.awt.Font;
-import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.UIManager;
 
@@ -44,27 +44,15 @@ public class BLStatistics
 //		UIManager.put("RadioButton.font", plainFont);
 //		UIManager.put("RadioButtonMenuItem.font", plainFont);
 //		UIManager.put("TextField.font", plainFont);
-	}
-	
-	private static League[] initLeagues()
-	{
-		League bundesliga = new League("bundesliga",1964,2016);
-		League zweiteliga = new League("zweiteliga",1975,2016);
-		League dritteliga = new League("dritteliga",2009,2016);
-
-		League[] leagues = {bundesliga,zweiteliga,dritteliga};
-		
-		return leagues;
-	}
-	
+	}	
 	
 	public static void main(String[] args)
 	{
 		initUIManager();
-		League[] leagues = initLeagues();
-		FileIO.loadLeagues(leagues);
 		
-		MainFrame mf = new MainFrame(Arrays.asList(leagues));
+		List<League> leagues = FileIO.loadLeagues();
+		
+		MainFrame mf = new MainFrame(leagues);
 		mf.showFrame();
 		
 		LeagueManager lm = new LeagueManager(mf, leagues);

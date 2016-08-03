@@ -14,7 +14,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import bn.blaszczyk.blstatistics.DownloadDialog;
 import bn.blaszczyk.blstatistics.core.League;
 import bn.blaszczyk.blstatistics.core.Season;
 import bn.blaszczyk.blstatistics.tools.BLException;
@@ -36,18 +35,19 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	
 	/*
 	 * TODO:
-	 * - Implement nice Download Dialog
 	 * - Find nice way to open on Request in MainFrame
 	 */
 	
-	public LeagueManager(JFrame owner, League[] leagues)
+	public LeagueManager(JFrame owner, List<League> leagues)
 	{
 		super(owner, "Liga Manager", true);
 		this.owner = owner;
 		setLayout(new BorderLayout(5,5));
 		setResizable(false);
 		
-		leagueList = new JList<>(leagues);
+		League[] leagueArray = new League[leagues.size()];
+		leagues.toArray(leagueArray);
+		leagueList = new JList<>(leagueArray);
 		leagueList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		leagueList.addListSelectionListener( this );
 		leagueList.setPreferredSize(new Dimension(150, 300));
