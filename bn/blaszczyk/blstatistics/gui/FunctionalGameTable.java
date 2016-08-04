@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.text.NumberFormat;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,9 +44,9 @@ public class FunctionalGameTable extends JPanel
 		add( new JScrollPane(gameTable), BorderLayout.CENTER);
 	}
 	
-	public void setSelectedTeam(String team)
+	public void setSelectedTeams(List<String> teams)
 	{
-		gameTable.setSelectedTeam(team);
+		gameTable.setSelectedTeams(teams);
 	}
 
 	private void clearStatistics()
@@ -117,9 +118,4 @@ public class FunctionalGameTable extends JPanel
 		summaryRowCount++;
 		
 	}
-	
-	
-
-	
-	
 }

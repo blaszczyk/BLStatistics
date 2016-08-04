@@ -6,7 +6,6 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.Filter;
@@ -25,13 +24,17 @@ public class TeamFilterPanel extends AbstractTeamFilterPanel
 	{
 		super(allTeams);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-		teamBox = createTeamBox(allTeams);
-		homeBox = new JCheckBox("Heim",true);
-		awayBox = new JCheckBox("Auswärts",true);
-		
 		ActionListener listener = e -> resetFilter();
+		
+		teamBox = createTeamBox(allTeams);
 		teamBox.addActionListener(listener);
+		
+		homeBox = new JCheckBox("H",true);
+		homeBox.setInheritsPopupMenu(true);
 		homeBox.addActionListener(listener);
+		
+		awayBox = new JCheckBox("A",true);
+		awayBox.setInheritsPopupMenu(true);
 		awayBox.addActionListener(listener);
 	}
 	
@@ -79,7 +82,6 @@ public class TeamFilterPanel extends AbstractTeamFilterPanel
 	@Override
 	protected void addComponents()
 	{
-		add(new JLabel("Team"));
 		add(teamBox);
 		add(homeBox);
 		add(awayBox);

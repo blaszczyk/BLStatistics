@@ -1,13 +1,13 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.event.ActionListener;
+//import java.util.ArrayList;
+//import java.util.Collections;
 import java.util.List;
-//import java.util.HashMap;
 //import java.util.Map;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-//import javax.swing.JOptionPane;
 
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.gui.filters.AbsoluteOperatorFilterPanel;
@@ -65,10 +65,6 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		
 		addMenuItem(gameFilters,"Team").addActionListener( e -> {
 			setPanel( FilterPanelAdapter.getSecondArgAdapter( new TeamFilterPanel(teams),this ) );
-			listener.actionPerformed(e);
-		});
-		addMenuItem(gameFilters,"Duell").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getSecondArgAdapter( new DuelFilterPanel(teams),this ) );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(gameFilters,"Direkter Vergleich").addActionListener( e -> {
@@ -154,12 +150,6 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		return teams;
 	}
 
-//	@Override
-//	public void savePanel(BiFilterPanel<Season, Game> panel)
-//	{
-//		String name = JOptionPane.showInputDialog("Bitte Namen eingeben.", "Filter");
-//		filters.put(name,panel);
-//	}
 
 
 }

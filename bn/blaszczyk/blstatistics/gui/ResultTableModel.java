@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import bn.blaszczyk.blstatistics.core.TeamResult;
+import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class ResultTableModel extends MyTableModel<TeamResult> 
 {	
@@ -24,6 +25,7 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 		case 3:
 			return TeamResult.COMPARE_POINTS;
 		case 4:
+		case 9:
 			return TeamResult.COMPARE_DIFF;
 		case 5:
 			return TeamResult.COMPARE_WINS;
@@ -33,7 +35,7 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 			return TeamResult.COMPARE_LOSSES;
 		case 8:
 			return TeamResult.COMPARE_GOALS_TEAM;
-		case 9:
+		case 10:
 			return TeamResult.COMPARE_GOALS_OPPONENT;
 		// case 0:
 		default:
@@ -49,7 +51,7 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 	@Override
 	public int getColumnCount()
 	{
-		return 10;
+		return 11;
 	}
 	
 	@Override
@@ -68,15 +70,11 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 		case 4:
 			return "Tordifferenz";
 		case 5:
-			return "Siege";
+			return "S";
 		case 6:
-			return "Unentschieden";
+			return "U";
 		case 7:
-			return "Niederlagen";
-		case 8:
-			return "Tore";
-		case 9:
-			return "Gegentore";		
+			return "N";
 		}
 		return null;
 	}
@@ -84,7 +82,7 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 	@Override
 	public Class<?> getColumnClass(int columnIndex)
 	{
-		if(columnIndex == 1)
+		if(columnIndex == 1 || columnIndex == 9)
 			return String.class;
 		return Integer.class;
 	}
@@ -97,7 +95,7 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 		case 0:
 			return result.getPosition();
 		case 1:
-			return result.getTeam();
+			return TeamAlias.getAlias(result.getTeam());
 		case 2:
 			return result.getGames();
 		case 3:
@@ -111,8 +109,10 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 		case 7:
 			return result.getLosses();
 		case 8:
-			return result.getTeamGoals();
+			return result.getTeamGoals();		
 		case 9:
+			return " : ";		
+		case 10:
 			return result.getOpponentGoals();		
 		}
 		return null;

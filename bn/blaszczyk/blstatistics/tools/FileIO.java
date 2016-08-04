@@ -28,6 +28,8 @@ public class FileIO
 			while(scanner.hasNextLine())
 			{
 				String props[] = scanner.nextLine().split(";");
+				if(props[0].startsWith("//"))
+					continue;
 				if(props.length < 3)
 					break;
 				int[] yearBounds = new int[props.length - 2];
@@ -91,14 +93,16 @@ public class FileIO
 		if(!directory.exists())
 			directory.mkdirs();
 		for(File file : directory.listFiles())
-			try
-			{
-				loadSeason(league, file);
-			}
-			catch (BLException e)
-			{
-				e.printStackTrace();
-			}
+			if(file.getName().endsWith(FILE_EXTENSION))
+				try
+				{
+					loadSeason(league, file);
+				}
+				catch (BLException e)
+				{
+					//TODO: NotifyUser
+					e.printStackTrace();
+				}
 	}
 	
 	private static boolean loadSeason(League league, File file) throws BLException
@@ -109,15 +113,7 @@ public class FileIO
 		{
 			int year = Integer.parseInt(file.getName().substring(0,4));			
 			Season season;
-			try
-			{
-				season = league.getSeason(year);
-			}
-			catch(BLException e)
-			{
-				e.printStackTrace();
-				return false;
-			}
+			season = league.getSeason(year);
 			Stack<Game> gameStack = new Stack<>();
 			Scanner scanner = new Scanner(new FileInputStream(file));
 			while (scanner.hasNextLine())
@@ -135,12 +131,6 @@ public class FileIO
 			throw new BLException("Wrong Filename " + file.getPath(), e );
 		}
 	}
-
-//	private static boolean loadFromFile(League league, int year) throws BLException
-//	{
-//		File file = new File(getFileName(league,year));
-//		return loadSeason(league, file);
-//	}
 	
 
 	private static String getFileName(Season season)

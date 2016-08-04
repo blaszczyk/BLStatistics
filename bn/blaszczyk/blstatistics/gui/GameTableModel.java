@@ -3,6 +3,7 @@ package bn.blaszczyk.blstatistics.gui;
 import java.util.List;
 
 import bn.blaszczyk.blstatistics.core.Game;
+import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class GameTableModel extends MyTableModel<Game>
 {	
@@ -15,7 +16,7 @@ public class GameTableModel extends MyTableModel<Game>
 	@Override
 	public Class<?> getColumnClass(int columnIndex)
 	{
-		if(columnIndex > 2)
+		if(columnIndex == 2 || columnIndex == 4)
 			return Integer.class;
 		return String.class;
 	}
@@ -23,7 +24,7 @@ public class GameTableModel extends MyTableModel<Game>
 	@Override
 	public int getColumnCount()
 	{
-		return 5;
+		return 6;
 	}
 
 	@Override
@@ -35,12 +36,8 @@ public class GameTableModel extends MyTableModel<Game>
 			return "Datum";
 		case 1:
 			return "Heim";
-		case 2:
+		case 5:
 			return "Gast";
-		case 3:
-			return "Tore Heim";
-		case 4:
-			return "Tore Gast";
 		}
 		return null;
 	}
@@ -53,13 +50,15 @@ public class GameTableModel extends MyTableModel<Game>
 		case 0:
 			return Game.DATE_FORMAT.format(game.getDate());
 		case 1:
-			return game.getTeam1();
+			return TeamAlias.getAlias(game.getTeam1());
 		case 2:
-			return game.getTeam2();
-		case 3:
 			return game.getGoals1();
+		case 3:
+			return " : ";
 		case 4:
 			return game.getGoals2();
+		case 5:
+			return TeamAlias.getAlias(game.getTeam2());
 		}
 		return "";
 	}

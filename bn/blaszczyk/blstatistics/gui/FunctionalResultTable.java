@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -51,7 +52,7 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		
 		optionsPanel = new JPanel();
 		optionsPanel.setLayout(null);
-		optionsPanel.setPreferredSize(new Dimension(900, 50));
+		optionsPanel.setPreferredSize(new Dimension(1000, 50));
 		optionsPanel.add(cboHome);
 		optionsPanel.add(cboAway);
 		optionsPanel.add(lblWinPoints);
@@ -62,9 +63,9 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		add(new JScrollPane(resultTable),BorderLayout.CENTER);
 	}
 	
-	public String getSelectedTeam()
+	public List<String> getSelectedTeams()
 	{
-		return resultTable.getSelectedTeam();
+		return resultTable.getSelectedTeams();
 	}
 
 	public void addListSelectionListener(ListSelectionListener l)

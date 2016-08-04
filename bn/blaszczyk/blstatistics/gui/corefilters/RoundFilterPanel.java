@@ -4,7 +4,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.core.Season;
@@ -18,7 +17,6 @@ import bn.blaszczyk.blstatistics.gui.filters.FilterPanelManager;
 @SuppressWarnings("serial")
 public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 {
-	private JLabel label = new JLabel("Runden ");
 	private JCheckBox first = new JCheckBox("Hinrunde",true);
 	private JCheckBox second = new JCheckBox("Rückrunde",true);
 
@@ -68,7 +66,6 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 	@Override
 	protected void addComponents()
 	{
-		add(label);
 		add(first);
 		add(second);
 	}

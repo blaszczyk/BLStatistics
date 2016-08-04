@@ -97,7 +97,7 @@ public class DownloadDialog extends JDialog implements ActionListener {
 
 	private void requestSeason(Season season) throws BLException
 	{		
-		FussballDatenRequest.requestTable(season);
+		FussballDatenRequest.requestData(season);
 		Stack<Game> gameStack = FussballDatenRequest.getGames();
 		FussballDatenRequest.clearTable();
 		season.consumeGames(gameStack);

@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 import bn.blaszczyk.blstatistics.tools.BLException;
+import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class Game
 {
@@ -92,12 +93,10 @@ public class Game
 		goals2 = Integer.parseInt(split[2]);
 		String teams = split[1].substring(0, split[1].lastIndexOf(' '));
 		int splitIntex = teams.indexOf(" - ");
-//		split = teams.split(" - ",2);
-//		if(split.length != 2)
 		if(splitIntex < 0)
 			throw new BLException("Wrong game Format in '" + gameDetails + "'");
-		team1 = teams.substring(0, splitIntex) .trim();
-		team2 = teams.substring(splitIntex + 3).trim();
+		team1 = TeamAlias.getAlias( teams.substring(0, splitIntex) .trim() );
+		team2 = TeamAlias.getAlias( teams.substring(splitIntex + 3).trim() );
 	}
 	
 	/*

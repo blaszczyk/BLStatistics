@@ -6,9 +6,9 @@ import java.util.List;
 import javax.swing.UIManager;
 
 import bn.blaszczyk.blstatistics.core.*;
-import bn.blaszczyk.blstatistics.gui.LeagueManager;
 import bn.blaszczyk.blstatistics.gui.MainFrame;
 import bn.blaszczyk.blstatistics.tools.FileIO;
+import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class BLStatistics
 {
@@ -27,15 +27,15 @@ public class BLStatistics
 		UIManager.put("ProgressBar.font", boldFont);
 		UIManager.put("ObtionPane.buttonFont", boldFont);
 		UIManager.put("CheckBox.font", boldFont);
-
-		UIManager.put("PopupMenu.font", plainFont);
+		UIManager.put("MenuBar.font", boldFont);
+		UIManager.put("Menu.font", boldFont);
+		UIManager.put("MenuItem.font", boldFont);
+		UIManager.put("ComboBox.font", boldFont);
+		UIManager.put("PopupMenu.font", boldFont);
+		
 		UIManager.put("TextPane.font", plainFont);
 		UIManager.put("OptionPane.messageFont", plainFont);
-		UIManager.put("MenuBar.font", plainFont);
-		UIManager.put("Menu.font", plainFont);
-		UIManager.put("MenuItem.font", plainFont);
 		UIManager.put("List.font", plainFont);
-		UIManager.put("ComboBox.font", plainFont);
 		UIManager.put("PopupMenu.font", plainFont);
 
 //		UIManager.put("JTree.font", plainFont);
@@ -49,14 +49,10 @@ public class BLStatistics
 	public static void main(String[] args)
 	{
 		initUIManager();
-		
+		TeamAlias.loadAliases();
 		List<League> leagues = FileIO.loadLeagues();
-		
 		MainFrame mf = new MainFrame(leagues);
 		mf.showFrame();
-		
-		LeagueManager lm = new LeagueManager(mf, leagues);
-		lm.showDialog();
 	}
 
 }

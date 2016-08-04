@@ -57,10 +57,12 @@ public class FilterIO
 		String name = null;
 		while (name == null || name == "")
 			name = JOptionPane.showInputDialog(null, "Namen für den Filter eingeben:", "Filter Speichern", JOptionPane.QUESTION_MESSAGE);
-		String path = String.format("%s/%s.%s", FOLDER, name, EXTENSION);
+		File directory = new File(String.format("%s/", FOLDER)  );
+		if(!directory.exists())
+			directory.mkdir();
 		try
 		{
-			FileWriter file = new FileWriter(path);
+			FileWriter file = new FileWriter(String.format("%s/%s.%s", FOLDER, name, EXTENSION));
 			file.write(outerBuilder.toString());
 			file.close();
 		}
@@ -129,11 +131,6 @@ public class FilterIO
 			{
 				TeamFilterPanel tFilter = (TeamFilterPanel) gFilter;
 				innerBuilder.append("Team;" + tFilter.getTeam() + ";" + tFilter.getHome() + ";" + tFilter.getAway());
-			}
-			else if (gFilter instanceof DuelFilterPanel)
-			{
-				DuelFilterPanel dFilter = (DuelFilterPanel) gFilter;
-				innerBuilder.append("Duell;" + dFilter.getTeam1() + ";" + dFilter.getTeam2());
 			}
 			else if (gFilter instanceof SubLeagueFilterPanel)
 			{
@@ -245,9 +242,6 @@ public class FilterIO
 			break;
 		case "Team":
 			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(teams, split[2], Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4])), manager);
-			break;
-		case "Duell":
-			panel = FilterPanelAdapter.getSecondArgAdapter(new DuelFilterPanel(teams, split[2], split[3]), manager);
 			break;
 		case "DirekterVergleich":
 			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(teams, Arrays.asList(split).subList(2, split.length)), manager);

@@ -32,12 +32,6 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	private JButton btnSelect = new JButton("Markieren");
 	private JButton btnSeasonRequest = new JButton("Download");
 	
-	
-	/*
-	 * TODO:
-	 * - Find nice way to open on Request in MainFrame
-	 */
-	
 	public LeagueManager(JFrame owner, List<League> leagues)
 	{
 		super(owner, "Liga Manager", true);
@@ -50,7 +44,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		leagueList = new JList<>(leagueArray);
 		leagueList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		leagueList.addListSelectionListener( this );
-		leagueList.setPreferredSize(new Dimension(150, 300));
+		leagueList.setPreferredSize(new Dimension(200, 300));
 		
 		seasonTable = new JTable() {
 		    DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
@@ -83,6 +77,8 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		actionPanel.add(btnSelect);
 		actionPanel.add(btnClose);
 		
+		
+		
 		add(new JScrollPane(leagueList),BorderLayout.WEST);
 		add(new JScrollPane(seasonTable),BorderLayout.CENTER);
 		add(actionPanel,BorderLayout.SOUTH);
@@ -97,7 +93,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		repaint();
 	}
 	
-	private void setSeasonTable(League league)
+	private void populateSeasonTable(League league)
 	{
 		Object[] columnNames = {"Saison","Vorhanden", "Teams", "Spiele"};
 		DefaultTableModel tm = new DefaultTableModel(columnNames,0){
@@ -155,7 +151,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		if(!e.getValueIsAdjusting())
 		{
 			if(e.getSource() == leagueList)
-				setSeasonTable( leagueList.getSelectedValue() );
+				populateSeasonTable( leagueList.getSelectedValue() );
 		}
 	}
 
@@ -169,7 +165,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		else if(e.getSource() == btnSeasonRequest)
 		{
 			requestSeasons();
-			setSeasonTable( leagueList.getSelectedValue() );
+			populateSeasonTable( leagueList.getSelectedValue() );
 		}
 	}
 

@@ -1,12 +1,14 @@
 package bn.blaszczyk.blstatistics.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
@@ -16,48 +18,43 @@ import bn.blaszczyk.blstatistics.gui.filters.*;
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 {
+	private JMenuBar menuBar = new JMenuBar();
+	
 	private FunctionalFilterPanel functionalFilterPanel;
 	private FunctionalGameTable functionalGameTable = new FunctionalGameTable();
 	private FunctionalResultTable functionalResultTable = new FunctionalResultTable();
 	
 	private List<Game> gameList;
-	private Iterable<League> leagues;
+	private List<League> leagues;
+	private List<String> teams = new ArrayList<>();
 	
-	public MainFrame(Iterable<League> leagues)
+	public MainFrame(List<League> leagues)
 	{
 		super("Fussball Statistiken");
-		getContentPane().setLayout(new BorderLayout(5,5));
+		this.leagues = leagues;
+		
+		populateMenuBar();
+		initTeams();
+		
+		setJMenuBar(menuBar);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		this.leagues = leagues;
-		List<String> teams = new ArrayList<>();
-		for(League league : leagues)
-			for(String team : league.getTeams())
-				if(!teams.contains(team))
-					teams.add(team);
-		Collections.sort(teams);
+		
 
 		functionalFilterPanel = new FunctionalFilterPanel(teams);
-		functionalFilterPanel.setMinimumSize(new Dimension(400,700));
 		functionalFilterPanel.addFilterListener(this);
 		
 		functionalResultTable.addListSelectionListener( e -> {
 			if(!e.getValueIsAdjusting())
-			{
-				String team = functionalResultTable.getSelectedTeam();
-				functionalGameTable.setSelectedTeam(team);
-			}
+				functionalGameTable.setSelectedTeams(functionalResultTable.getSelectedTeams());
 		});
 		
-		
-		
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, new JScrollPane(functionalGameTable));
-		splitPane.setDividerLocation(1100);
-		add(functionalFilterPanel, BorderLayout.WEST);
-		add(splitPane, BorderLayout.CENTER);
-		
+		JSplitPane spInner = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, new JScrollPane(functionalGameTable));
+		JSplitPane spOuter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalFilterPanel, spInner );
+		add(spOuter);
 		resetTable();
 	}
+	
 	
 	public void showFrame()
 	{
@@ -66,6 +63,60 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 		setVisible(true);
 	}
 	
+
+	private void showLeagueManager()
+	{
+		LeagueManager lm = new LeagueManager(this, leagues);
+		lm.showDialog();
+		resetTable();
+	}
+
+
+
+	
+	private void initTeams()
+	{
+		for(League league : leagues)
+			for(String team : league.getTeams())
+				if(!teams.contains(team))
+					teams.add(team);
+		Collections.sort(teams);
+	}
+	
+	private void populateMenuBar()
+	{
+		JMenuItem loadFilter = new JMenuItem("Filter Laden");
+		JMenuItem saveFilter = new JMenuItem("Filter Speichern");
+		JMenuItem showLeagueManager = new JMenuItem("Liga Manager");
+		JMenuItem exit = new JMenuItem("Beenden");
+		
+		ActionListener listener = e -> {
+			if(e.getSource() == loadFilter)
+				functionalFilterPanel.loadFilter();
+			else if(e.getSource() == saveFilter)
+				functionalFilterPanel.saveFilter();
+			else if(e.getSource() == showLeagueManager)
+				showLeagueManager();
+			else if(e.getSource() == exit)
+				System.exit(0);
+		};
+		loadFilter.addActionListener(listener);
+		
+		saveFilter.addActionListener(listener);
+		
+		showLeagueManager.addActionListener(listener);
+		
+		exit.addActionListener(listener);
+		
+		JMenu mainMenu = new JMenu("Fussball Statistiken");
+		mainMenu.add(loadFilter);
+		mainMenu.add(saveFilter);
+		mainMenu.add(showLeagueManager);
+		mainMenu.add(exit);
+		
+		menuBar.add(mainMenu);
+	}
+
 	private void resetTable()
 	{
 		gameList = new ArrayList<>();

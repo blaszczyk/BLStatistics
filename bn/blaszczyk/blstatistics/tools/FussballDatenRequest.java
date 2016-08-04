@@ -32,14 +32,11 @@ import bn.blaszczyk.blstatistics.core.Season;
 public class FussballDatenRequest {
 	
 	private static final String	BASE_URL = "http://www.fussballdaten.de";
-											
+
 	private static HtmlTable gamesTable;
-								
-	public FussballDatenRequest()
-	{}
 	
-	// request table from www.fussballdaten.de
-	public static void requestTable(Season season) throws BLException
+	// request html table from www.fussballdaten.de
+	public static void requestData(Season season) throws BLException
 	{
 		String url = String.format("%s/%s/%4d/", BASE_URL, season.getLeague().getPathName(), season.getYear());
 		try
@@ -100,7 +97,7 @@ public class FussballDatenRequest {
 	public static void requestTableMuted(Season season) throws BLException
 	{
 		setMutedErrStream(true);
-		requestTable(season);
+		requestData(season);
 		setMutedErrStream(false);
 	}
 }

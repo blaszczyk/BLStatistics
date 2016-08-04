@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import bn.blaszczyk.blstatistics.core.TeamResult;
+import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 
 public class RelativeResultTableModel extends MyTableModel<TeamResult> 
@@ -27,6 +28,7 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 		case 3:
 			return TeamResult.COMPARE_POINTS_REL;
 		case 4:
+		case 9:
 			return TeamResult.COMPARE_DIFF_REL;
 		case 5:
 			return TeamResult.COMPARE_WINS_REL;
@@ -36,7 +38,7 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 			return TeamResult.COMPARE_LOSSES_REL;
 		case 8:
 			return TeamResult.COMPARE_GOALS_TEAM_REL;
-		case 9:
+		case 10:
 			return TeamResult.COMPARE_GOALS_OPPONENT_REL;
 		// case 0:
 		default:
@@ -52,7 +54,7 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 	@Override
 	public int getColumnCount()
 	{
-		return 10;
+		return 11;
 	}
 	
 	@Override
@@ -71,15 +73,11 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 		case 4:
 			return "Tordifferenz";
 		case 5:
-			return "Siege";
+			return "S";
 		case 6:
-			return "Unentschieden";
+			return "U";
 		case 7:
-			return "Niederlagen";
-		case 8:
-			return "Tore";
-		case 9:
-			return "Gegentore";		
+			return "N";	
 		}
 		return null;
 	}
@@ -99,9 +97,11 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 		case 0:
 			return result.getPosition();
 		case 1:
-			return result.getTeam();
+			return TeamAlias.getAlias(result.getTeam());
 		case 2:
 			return "" + result.getGames();
+		case 9:
+			return " : ";		
 		case 3:
 			value =  result.getPoints();
 			break;
@@ -120,7 +120,7 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 		case 8:
 			value =  result.getTeamGoals();
 			break;
-		case 9:
+		case 10:
 			value =  result.getOpponentGoals();	
 			break;	
 		}
