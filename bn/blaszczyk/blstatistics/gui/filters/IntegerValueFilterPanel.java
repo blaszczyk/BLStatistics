@@ -37,11 +37,12 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		String[] operators = {EQ,NEQ,GG,GEQ,LL,LEQ};
 		operatorBox = new JComboBox<>(operators);
 		operatorBox.setMaximumSize(new Dimension(50,30));
+		operatorBox.setInheritsPopupMenu(true);
 		operatorBox.addActionListener(e -> setOperator());
 		
 		valueField = new JTextField(Integer.toString(defaultValue));
 		valueField.setMaximumSize(new Dimension(70,30));
-//		valueField.addActionListener(e -> setOperator());
+		valueField.setInheritsPopupMenu(true);
 		valueField.addKeyListener(this);
 		valueField.addMouseWheelListener(this);
 

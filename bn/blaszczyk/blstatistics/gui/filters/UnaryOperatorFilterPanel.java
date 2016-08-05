@@ -25,13 +25,7 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	public UnaryOperatorFilterPanel(FilterPanelManager<T,U> filterManager, BiFilterPanel<T, U> originalPanel) 
 	{
 		super(filterManager);
-		
-		JMenu setPanel = new JMenu("Setze Filter");
-		filterManager.addMenuItems(setPanel, e -> {
-			setInnerPanel( filterManager.getPanel());
-		});
-		addPopupMenuItem(setPanel);		
-		addPopupMenuItem(setActive);
+			
 		
 		setInnerPanel(originalPanel);
 		label.setAlignmentX(LEFT_ALIGNMENT);
@@ -42,6 +36,19 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	{
 		setFilter(LogicalBiFilter.getNOTBiFilter(innerPanel));
 		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
+	}
+
+	
+	
+	@Override
+	protected void addPopupMenuItems()
+	{
+		JMenu setPanel = new JMenu("Setze Inneren Filter");
+		filterManager.addMenuItems(setPanel, e -> {
+			setInnerPanel( filterManager.getPanel());
+		});
+		addPopupMenuItem(setPanel);	
+		super.addPopupMenuItems();
 	}
 
 	@Override

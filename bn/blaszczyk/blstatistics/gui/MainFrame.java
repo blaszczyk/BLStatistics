@@ -52,7 +52,9 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 		});
 		
 		JSplitPane spInner = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, new JScrollPane(functionalGameTable));
+		spInner.setDividerLocation(940);
 		JSplitPane spOuter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalFilterPanel, spInner );
+		spOuter.setDividerLocation(355);
 		add(spOuter);
 		resetTable();
 	}

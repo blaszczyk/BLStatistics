@@ -6,9 +6,9 @@ import bn.blaszczyk.blstatistics.filters.BiFilter;
 public abstract class LogicalBiFilterPanel<T, U> extends AbstractBiFilterPanel<T, U> implements BiFilterListener<T, U>
 {
 
-	public LogicalBiFilterPanel(FilterPanelManager<T, U> filterFactory)
+	public LogicalBiFilterPanel(FilterPanelManager<T, U> filterManager)
 	{
-		super(filterFactory);
+		super(filterManager);
 	}
 
 	public LogicalBiFilterPanel(BiFilter<T, U> filter, FilterPanelManager<T, U> filterManager)

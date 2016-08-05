@@ -24,14 +24,13 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	private boolean isActive = true;
 	protected JMenuItem setActive;
 	protected JMenuItem negate;
-//	protected JMenuItem save;
 	protected JMenu replace;
 	
 	private JPopupMenu popup;
 	
 	private BiFilter<T,U> filter;
 	private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
-	private FilterPanelManager<T, U> filterManager;
+	protected FilterPanelManager<T, U> filterManager;
 	
 	public AbstractBiFilterPanel(FilterPanelManager<T, U> filterFactory)
 	{
@@ -55,17 +54,9 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		negate = new JMenuItem("Verneinen");
 		negate.addActionListener( e -> negate() );
 		
-//		save = new JMenuItem("Speichern");
-//		save.addActionListener( e -> filterManager.savePanel(this));
-		
-		
 		popup = new JPopupMenu();
-		popup.add(setActive);
-		popup.add(replace);
-		popup.add(negate);
-//		popup.add(save);
+		addPopupMenuItems();
 		setComponentPopupMenu(popup);
-		
 	}
 
 	protected void negate()
@@ -105,7 +96,12 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		notifyListeners(new BiFilterEvent<T, U>(this,this,BiFilterEvent.RESET_FILTER));
 	}
 	
-	
+	protected void addPopupMenuItems()
+	{
+		popup.add(negate);
+		popup.add(setActive);
+		popup.add(replace);
+	}
 
 	protected abstract void addComponents();
 	
@@ -137,14 +133,12 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	@Override
 	public void addFilterListener(BiFilterListener<T,U> listener)
 	{
-//		System.out.println( listener + " listens to " + this);
 		listeners.add(listener);
 	}
 
 	@Override
 	public void removeFilterListener(BiFilterListener<T,U> listener)
 	{
-//		System.out.println( listener + " does no longer listen to " + this);
 		int i = listeners.indexOf(listener);
 		if( i >= 0 )
 			listeners.remove(i);

@@ -27,24 +27,25 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	private JComboBox<String> operatorBox;
 	private JPanel top = new JPanel();
 	
-	private JMenu removePanel = new JMenu("Entferne Feld");
+	private JMenu removeMenu;
 
 	public MultiOperatorFilterPanel(FilterPanelManager<T,U> filterManager, List<BiFilterPanel<T, U>> panels, String operator) 
 	{
 		super(filterManager);
 		this.panels = panels;
+		
 		operatorBox = new JComboBox<>(operators);
 		operatorBox.setAlignmentX(LEFT_ALIGNMENT);
-		operatorBox.addActionListener( e -> {
-			setOperator();
-		});
+		operatorBox.addActionListener( e -> setOperator() );
 		operatorBox.setSelectedItem(operator);
 		operatorBox.setMaximumSize(new Dimension(50,30));
+		operatorBox.setInheritsPopupMenu(true);
 		
 
 		top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
 		top.add(operatorBox);
 		top.add(Box.createRigidArea(new Dimension(150,30)));
+		top.setInheritsPopupMenu(true);
 		top.setAlignmentX(LEFT_ALIGNMENT);
 		
 		for(BiFilterPanel<T, U> panel : panels)
@@ -53,11 +54,6 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
-		JMenu addPanel = new JMenu("Neues Feld");
-		filterManager.addMenuItems(addPanel, e -> addPanel(filterManager.getPanel()));
-		addPopupMenuItem(addPanel);
-		addPopupMenuItem(removePanel);
-		addPopupMenuItem(setActive);
 	}
 
 	public MultiOperatorFilterPanel(FilterPanelManager<T,U> filterManager) 
@@ -93,12 +89,12 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	
 	private void resetDeleteMenu()
 	{
-		removePanel.removeAll();
+		removeMenu.removeAll();
 		for(BiFilterPanel<T, U> panel : panels)
 		{
 			JMenuItem remove = new JMenuItem(panel.toString());
 			remove.addActionListener( e -> removePanel(panel));
-			removePanel.add(remove);
+			removeMenu.add(remove);
 		}
 	}
 	
@@ -122,6 +118,19 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 			break;
 		}		
 		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
+	}
+
+	
+	
+	@Override
+	protected void addPopupMenuItems()
+	{
+		JMenu addMenu = new JMenu("Neues Feld");
+		filterManager.addMenuItems(addMenu, e -> addPanel(filterManager.getPanel()));
+		addPopupMenuItem(addMenu);
+		removeMenu = new JMenu("Entferne Feld");
+		addPopupMenuItem(removeMenu);
+		super.addPopupMenuItems();
 	}
 
 	@Override

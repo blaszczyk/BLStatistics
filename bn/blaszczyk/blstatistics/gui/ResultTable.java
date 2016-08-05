@@ -66,11 +66,11 @@ public class ResultTable extends MyTable<TeamResult>
 		if( columnIndex == 0)	//Position
 			return 50;
 		if( columnIndex == 1)	//Team
-			return 250;
+			return 230;
 		if( columnIndex < 5)	//Games,Points,Diff
-			return 100;
+			return 90;
 		if( columnIndex < 8)	// S U N
-			return 80;
+			return 70;
 		if( columnIndex == 9)	// " : "
 			return 20;
 		return 70;				//Goals
@@ -79,7 +79,7 @@ public class ResultTable extends MyTable<TeamResult>
 	@Override
 	protected int columnAlignment(int columnIndex)
 	{
-		if(columnIndex == 9 || (columnIndex > 4 && columnIndex< 8 ) )	// " : "
+		if(columnIndex == 9 )	// " : "
 			return SwingConstants.CENTER;
 		if(columnIndex == 10)	// OpponentGoals
 			return SwingConstants.LEFT;

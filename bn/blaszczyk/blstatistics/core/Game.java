@@ -95,8 +95,8 @@ public class Game
 		int splitIntex = teams.indexOf(" - ");
 		if(splitIntex < 0)
 			throw new BLException("Wrong game Format in '" + gameDetails + "'");
-		team1 = TeamAlias.getAlias( teams.substring(0, splitIntex) .trim() );
-		team2 = TeamAlias.getAlias( teams.substring(splitIntex + 3).trim() );
+		team1 = teams.substring(0, splitIntex) .trim();
+		team2 = teams.substring(splitIntex + 3).trim();
 	}
 	
 	/*

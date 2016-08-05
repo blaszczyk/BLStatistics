@@ -30,6 +30,7 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 
 		boxRecursive.setMinimumSize(new Dimension(60, 30));
 		boxRecursive.setMinimumSize(new Dimension(60, 30));
+		boxRecursive.setInheritsPopupMenu(true);
 		boxRecursive.addActionListener(e -> resetFilter());
 	}
 

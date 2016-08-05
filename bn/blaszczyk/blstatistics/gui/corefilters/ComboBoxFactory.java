@@ -11,6 +11,7 @@ import javax.swing.JComboBox;
 import javax.swing.UIManager;
 
 import bn.blaszczyk.blstatistics.core.League;
+import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class ComboBoxFactory implements MouseWheelListener, KeyListener
 {
@@ -22,6 +23,27 @@ public class ComboBoxFactory implements MouseWheelListener, KeyListener
 	private Iterable<? extends Object> allObjects;
 	private int mode;
 
+	public class Team
+	{
+		private String name;
+		private String alias;
+		public Team(String name)
+		{
+			this.name = name;
+			alias = TeamAlias.getAlias(name);
+		}
+		public String getName()
+		{
+			return name;
+		}
+		@Override
+		public String toString()
+		{
+			return alias;
+		}
+	}
+	
+	
 	public ComboBoxFactory(Iterable<? extends Object> allObjects, int mode)
 	{
 		this.allObjects = allObjects;
@@ -30,14 +52,14 @@ public class ComboBoxFactory implements MouseWheelListener, KeyListener
 	
 
 
-	public JComboBox<String> createTeamBox()
+	public JComboBox<Team> createTeamBox()
 	{
 		if(mode != TEAM)
 			throw new UnsupportedOperationException("This Factory cannot create TeamBox.");
-		JComboBox<String> teamBox = new JComboBox<>();
+		JComboBox<Team> teamBox = new JComboBox<>();
 		for(Object team : allObjects)
 		{
-			teamBox.addItem((String) team);
+			teamBox.addItem(new Team((String)team));
 		}
 		teamBox.setMaximumSize(new Dimension(250,30));
 		teamBox.setMinimumSize(new Dimension(250,30));

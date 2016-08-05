@@ -20,20 +20,6 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 		setThenFilter(new BlankFilterPanel<T, U>(filterManager));
 		setElseFilter(new BlankFilterPanel<T, U>(filterManager));
 		
-		JMenu setIf = new JMenu("Setze IF Filter");
-		filterManager.addMenuItems(setIf, e -> setIfFilter(filterManager.getPanel()));
-		addPopupMenuItem(setIf);
-		
-		JMenu setThen = new JMenu("Setze THEN Filter");
-		filterManager.addMenuItems(setThen, e -> setThenFilter(filterManager.getPanel()));
-		addPopupMenuItem(setThen);
-		
-		JMenu setElse = new JMenu("Setze ELSE Filter");
-		filterManager.addMenuItems(setElse, e -> setElseFilter(filterManager.getPanel()));
-		addPopupMenuItem(setElse);
-
-		addPopupMenuItem(setActive);
-		
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		setOperator();
 	}
@@ -87,6 +73,24 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 		return elseFilter;
 	}
 
+	
+
+	@Override
+	protected void addPopupMenuItems()
+	{
+		JMenu setIf = new JMenu("Setze IF Filter");
+		filterManager.addMenuItems(setIf, e -> setIfFilter(filterManager.getPanel()));
+		addPopupMenuItem(setIf);
+		
+		JMenu setThen = new JMenu("Setze THEN Filter");
+		filterManager.addMenuItems(setThen, e -> setThenFilter(filterManager.getPanel()));
+		addPopupMenuItem(setThen);
+		
+		JMenu setElse = new JMenu("Setze ELSE Filter");
+		filterManager.addMenuItems(setElse, e -> setElseFilter(filterManager.getPanel()));
+		addPopupMenuItem(setElse);
+		super.addPopupMenuItems();
+	}
 
 	@Override
 	protected void addComponents()

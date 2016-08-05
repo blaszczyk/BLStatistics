@@ -1,5 +1,6 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.swing.JLabel;
 
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
+import bn.blaszczyk.blstatistics.gui.corefilters.ComboBoxFactory.Team;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 
@@ -18,9 +20,9 @@ import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 
 	private ComboBoxFactory cbf;
-	private List<JComboBox<String>> teamBoxes;
+	private List<JComboBox<Team>> teamBoxes;
 	private JButton more;
-	private ActionListener listener;
+	private ActionListener listener = e -> setTeams();
 	private JLabel label = new JLabel("Direkter Vergleich");
 	
 	public SubLeagueFilterPanel(Iterable<String> allTeams)
@@ -29,16 +31,11 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		teamBoxes = new ArrayList<>();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		listener = e -> {
-				List<String> teams = new ArrayList<>();
-				for(JComboBox<String> box : teamBoxes)
-					teams.add(box.getSelectedItem().toString());
-				setFilter(GameFilter.getSubLeagueFilter(teams));
-				notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
-			};
 		label.setAlignmentX(LEFT_ALIGNMENT);
 		
 		more = new JButton("Neues Team");
+		more.setMaximumSize(new Dimension(250,30));
+		more.setMinimumSize(new Dimension(250,30));
 		more.addActionListener( e -> {
 			addTeamBox();
 			paint();
@@ -46,6 +43,15 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		more.setAlignmentX(LEFT_ALIGNMENT);
 		addTeamBox();
 		addTeamBox();
+	}
+	
+	private void setTeams()
+	{
+		List<String> teams = new ArrayList<>();
+		for(JComboBox<Team> box : teamBoxes)
+			teams.add(box.getSelectedItem().toString());
+		setFilter(GameFilter.getSubLeagueFilter(teams));
+		notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
 	}
 	
 	public SubLeagueFilterPanel(List<String> allTeams, Iterable<String> teams)
@@ -58,9 +64,9 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 				addTeamBox().setSelectedIndex(index);
 	}
 	
-	private JComboBox<String> addTeamBox()
+	private JComboBox<Team> addTeamBox()
 	{
-		JComboBox<String> box = cbf.createTeamBox();
+		JComboBox<Team> box = cbf.createTeamBox();
 		box.addActionListener(listener);
 		box.setAlignmentX(LEFT_ALIGNMENT);
 		teamBoxes.add(box);
@@ -81,7 +87,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	protected void addComponents()
 	{
 		add(label);
-		for(JComboBox<String> box : teamBoxes)
+		for(JComboBox<Team> box : teamBoxes)
 			add(box);
 		add(more);			
 	}

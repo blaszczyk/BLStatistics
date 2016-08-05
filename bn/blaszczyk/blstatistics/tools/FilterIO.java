@@ -78,7 +78,6 @@ public class FilterIO
 	private int saveSubFilter(BiFilterPanel<Season, Game> filter)
 	{
 		StringBuilder innerBuilder = new StringBuilder();
-		innerBuilder.append("F" + (++panelCount) + ";");
 		if (filter instanceof MultiOperatorFilterPanel)
 		{
 			MultiOperatorFilterPanel<Season, Game> mFilter = (MultiOperatorFilterPanel<Season, Game>) filter;
@@ -92,7 +91,7 @@ public class FilterIO
 			int ifInt = saveSubFilter(iteFilter.getIfFilter());
 			int thenInt = saveSubFilter(iteFilter.getThenFilter());
 			int elseInt = saveSubFilter(iteFilter.getElseFilter());
-			innerBuilder.append("IfThenElse;F" + ifInt + ";F" + thenInt + ";F" + elseInt);
+			innerBuilder.append(String.format("IfThenElse;F%d;F%d;F%d",ifInt, thenInt, elseInt));
 		}
 		else if (filter instanceof UnaryOperatorFilterPanel)
 		{
@@ -156,9 +155,8 @@ public class FilterIO
 		{
 			System.err.println("Unknown Filter" + filter);
 		}
-		innerBuilder.append("\n");
-		outerBuilder.append(innerBuilder.toString());
-		return panelCount;
+		outerBuilder.append(String.format("F%d;%s\n", panelCount, innerBuilder.toString()));
+		return panelCount++;
 	}
 
 	public BiFilterPanel<Season, Game> loadFilter()
