@@ -24,12 +24,12 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	private FilterIO filterIO = new FilterIO();
 	
 	
-	public FunctionalFilterPanel(List<String> teams)
+	public FunctionalFilterPanel(List<String> teams, List<League> leagues)
 	{
 		super(new BorderLayout(5,5));
 		setPreferredSize(new Dimension(300,700));
 		
-		GameFilterPanelManager manager = new GameFilterPanelManager(teams,filterIO);
+		GameFilterPanelManager manager = new GameFilterPanelManager(teams,leagues,filterIO);
 		
 		filterPanel = new BlankFilterPanel<>(manager);
 		filterPanel.addFilterListener(this);		

@@ -23,12 +23,14 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 	
 	private BiFilterPanel<Season,Game> panel;
 	private List<String> teams;
+	private List<League> leagues;
 	private FilterIO filterIO;
 	
 	
-	public GameFilterPanelManager(List<String> teams, FilterIO filterIO)
+	public GameFilterPanelManager(List<String> teams, List<League> leagues, FilterIO filterIO)
 	{
 		this.teams = teams;
+		this.leagues = leagues;
 		this.filterIO = filterIO;
 	}
 	
@@ -76,7 +78,11 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		 * Season Filters
 		 */
 		JMenu seasonFilters = new JMenu("Spieltag Filter");
-		
+
+		addMenuItem(seasonFilters,"Liga").addActionListener( e -> {
+			setPanel( FilterPanelAdapter.getFirstArgAdapter( new SingleLeagueFilterPanel(leagues),this) );
+			listener.actionPerformed(e);
+		});
 		addMenuItem(seasonFilters,"Saison").addActionListener( e -> {
 			setPanel( FilterPanelAdapter.getFirstArgAdapter( new SeasonFilterPanel(),this) );
 			listener.actionPerformed(e);
@@ -148,6 +154,11 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 	public List<String> getTeams()
 	{
 		return teams;
+	}
+
+	public List<League> getLeagues()
+	{
+		return leagues;
 	}
 
 

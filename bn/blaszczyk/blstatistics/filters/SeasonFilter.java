@@ -36,6 +36,12 @@ public class SeasonFilter
 		Filter<Season> f = s -> s.getLeague().equals(league);
 		return f;
 	}
+
+	public static Filter<Season> getLeagueRecursiveFilter(League league)
+	{
+		Filter<Season> f = s -> s.getLeague().getPathName().startsWith(league.getPathName());
+		return f;
+	}
 	
 	/*
 	 * Hin- und Rückrunde

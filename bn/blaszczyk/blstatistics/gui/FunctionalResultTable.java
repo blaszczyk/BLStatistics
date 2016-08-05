@@ -45,6 +45,7 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		lblWinPoints.setBounds(370, 10, 150, 30);
 		
 		boxWinPoints.setBounds(530, 10, 70, 30);
+		boxWinPoints.setSelectedIndex(1);
 		boxWinPoints.addItemListener(this);
 		
 		cboRelative.setBounds(650,10,250,30);

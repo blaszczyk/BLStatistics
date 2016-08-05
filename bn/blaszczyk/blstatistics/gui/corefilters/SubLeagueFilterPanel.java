@@ -11,11 +11,13 @@ import javax.swing.JLabel;
 
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
+import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 
 @SuppressWarnings("serial")
-public class SubLeagueFilterPanel extends AbstractTeamFilterPanel {
+public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 
+	private ComboBoxFactory cbf;
 	private List<JComboBox<String>> teamBoxes;
 	private JButton more;
 	private ActionListener listener;
@@ -23,7 +25,7 @@ public class SubLeagueFilterPanel extends AbstractTeamFilterPanel {
 	
 	public SubLeagueFilterPanel(Iterable<String> allTeams)
 	{
-		super(allTeams);
+		cbf = new ComboBoxFactory(allTeams, ComboBoxFactory.TEAM);
 		teamBoxes = new ArrayList<>();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -58,7 +60,7 @@ public class SubLeagueFilterPanel extends AbstractTeamFilterPanel {
 	
 	private JComboBox<String> addTeamBox()
 	{
-		JComboBox<String> box = createTeamBox(allTeams);
+		JComboBox<String> box = cbf.createTeamBox();
 		box.addActionListener(listener);
 		box.setAlignmentX(LEFT_ALIGNMENT);
 		teamBoxes.add(box);

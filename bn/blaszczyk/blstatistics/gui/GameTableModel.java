@@ -3,7 +3,6 @@ package bn.blaszczyk.blstatistics.gui;
 import java.util.List;
 
 import bn.blaszczyk.blstatistics.core.Game;
-import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class GameTableModel extends MyTableModel<Game>
 {	
@@ -50,7 +49,7 @@ public class GameTableModel extends MyTableModel<Game>
 		case 0:
 			return Game.DATE_FORMAT.format(game.getDate());
 		case 1:
-			return TeamAlias.getAlias(game.getTeam1());
+			return game.getTeam1();
 		case 2:
 			return game.getGoals1();
 		case 3:
@@ -58,7 +57,7 @@ public class GameTableModel extends MyTableModel<Game>
 		case 4:
 			return game.getGoals2();
 		case 5:
-			return TeamAlias.getAlias(game.getTeam2());
+			return game.getTeam2();
 		}
 		return "";
 	}

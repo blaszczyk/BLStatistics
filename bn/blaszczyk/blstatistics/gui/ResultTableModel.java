@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import bn.blaszczyk.blstatistics.core.TeamResult;
-import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class ResultTableModel extends MyTableModel<TeamResult> 
 {	
@@ -95,7 +94,7 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 		case 0:
 			return result.getPosition();
 		case 1:
-			return TeamAlias.getAlias(result.getTeam());
+			return result.getTeam();
 		case 2:
 			return result.getGames();
 		case 3:

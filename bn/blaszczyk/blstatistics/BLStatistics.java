@@ -37,13 +37,13 @@ public class BLStatistics
 		UIManager.put("OptionPane.messageFont", plainFont);
 		UIManager.put("List.font", plainFont);
 		UIManager.put("PopupMenu.font", plainFont);
+		UIManager.put("TextField.font", plainFont);
 
 //		UIManager.put("JTree.font", plainFont);
 //		UIManager.put("TabbedPane.font", plainFont);
 //		UIManager.put("Tree.font", plainFont);
 //		UIManager.put("RadioButton.font", plainFont);
 //		UIManager.put("RadioButtonMenuItem.font", plainFont);
-//		UIManager.put("TextField.font", plainFont);
 	}	
 	
 	public static void main(String[] args)

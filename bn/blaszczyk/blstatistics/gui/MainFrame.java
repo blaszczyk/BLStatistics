@@ -41,7 +41,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 		
 		
 
-		functionalFilterPanel = new FunctionalFilterPanel(teams);
+		functionalFilterPanel = new FunctionalFilterPanel(teams,leagues);
 		functionalFilterPanel.addFilterListener(this);
 		
 		functionalResultTable.addListSelectionListener( e -> {

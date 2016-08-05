@@ -40,11 +40,9 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	{
 		setActive = new JMenuItem("Deaktivieren");
 		setActive.addActionListener( e -> setActive(!isActive));
-		
 		popup = new JPopupMenu();
 		popup.add(setActive);
 		setComponentPopupMenu(popup);
-		
 		setActive(true);
 	}
 

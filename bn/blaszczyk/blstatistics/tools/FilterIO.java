@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import bn.blaszczyk.blstatistics.core.Game;
+import bn.blaszczyk.blstatistics.core.League;
 import bn.blaszczyk.blstatistics.core.Season;
 import bn.blaszczyk.blstatistics.gui.corefilters.*;
 import bn.blaszczyk.blstatistics.gui.filters.*;
@@ -33,6 +34,7 @@ public class FilterIO
 	private FilterPanelManager<Season, Game> manager = null;
 
 	private List<String> teams;
+	private List<League> leagues;
 
 	public FilterIO()
 	{
@@ -42,6 +44,7 @@ public class FilterIO
 	{
 		this.manager = manager;
 		teams = manager.getTeams();
+		leagues = manager.getLeagues();
 	}
 
 	public void saveFilter(BiFilterPanel<Season, Game> filter)
@@ -113,6 +116,11 @@ public class FilterIO
 			{
 				IntegerValueFilterPanel<Season> iPanel = (IntegerValueFilterPanel<Season>) sFilter;
 				innerBuilder.append(iPanel.getLabel() + ";" + iPanel.getSelectedOperator() + ";" + iPanel.getReferenceInt());
+			}
+			else if(sFilter instanceof SingleLeagueFilterPanel)
+			{
+				SingleLeagueFilterPanel iPanel =  (SingleLeagueFilterPanel) sFilter;
+				innerBuilder.append( "Liga;" + iPanel.getSelectedLeague() + ";" + iPanel.isRecursive());
 			}
 			else
 			{
@@ -224,6 +232,9 @@ public class FilterIO
 			break;
 		case "Saison":
 			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[2], Integer.parseInt(split[3])), manager);
+			break;
+		case "Liga":
+			panel = FilterPanelAdapter.getFirstArgAdapter(new SingleLeagueFilterPanel(leagues, split[2], Boolean.parseBoolean(split[3])), manager);
 			break;
 		case "Spieltag":
 			panel = FilterPanelAdapter.getSecondArgAdapter(new MatchDayFilterPanel(split[2], Integer.parseInt(split[3])), manager);
