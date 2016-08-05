@@ -1,6 +1,7 @@
 package bn.blaszczyk.blstatistics.gui;
 
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.gui.filters.*;
@@ -86,9 +88,17 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 	private void populateMenuBar()
 	{
 		JMenuItem loadFilter = new JMenuItem("Filter Laden");
+		loadFilter.setMnemonic('l');
+		loadFilter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK));
 		JMenuItem saveFilter = new JMenuItem("Filter Speichern");
+		saveFilter.setMnemonic('s');
+		saveFilter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
 		JMenuItem showLeagueManager = new JMenuItem("Liga Manager");
+		showLeagueManager.setMnemonic('m');
+		showLeagueManager.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_MASK));
 		JMenuItem exit = new JMenuItem("Beenden");
+		exit.setMnemonic('b');
+		exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK));
 		
 		ActionListener listener = e -> {
 			if(e.getSource() == loadFilter)
@@ -109,6 +119,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 		exit.addActionListener(listener);
 		
 		JMenu mainMenu = new JMenu("Fussball Statistiken");
+		mainMenu.setMnemonic('f');
 		mainMenu.add(loadFilter);
 		mainMenu.add(saveFilter);
 		mainMenu.add(showLeagueManager);

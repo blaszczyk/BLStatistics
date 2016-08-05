@@ -63,12 +63,15 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		
 		btnSeasonRequest.addActionListener(this);
 		btnSeasonRequest.setBounds(10, 10, 190, 30);
+		btnSeasonRequest.setMnemonic('d');
 		
 		btnSelect.addActionListener(this);
 		btnSelect.setBounds(220, 10, 190, 30);
+		btnSelect.setMnemonic('m');
 		
 		btnClose.addActionListener(this);
 		btnClose.setBounds(430, 10, 190, 30);
+		btnClose.setMnemonic('s');
 		
 		actionPanel = new JPanel();
 		actionPanel.setLayout(null);

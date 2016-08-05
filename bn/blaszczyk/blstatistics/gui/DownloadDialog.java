@@ -29,13 +29,31 @@ public class DownloadDialog extends JDialog implements ActionListener {
 	private long initTimeStamp = System.currentTimeMillis();
 	int counter = 0;
 	
+	private Thread timeThread = new Thread(()->{
+		while(true)
+		{
+			SwingUtilities.invokeLater(() -> {
+				lblTimeLeft.setText(String.format( "geschätzte Restzeit: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n"));
+			});
+			if(secsLeft > 0)
+				secsLeft--;
+			try
+			{
+				Thread.sleep(1000);
+			}
+			catch (InterruptedException e)
+			{
+				return;
+			}
+		}
+	});
+	
 	private Thread dlThread = new Thread(() -> {
 		for(Season season : seasons)
 		{
 			SwingUtilities.invokeLater( () -> {
 				prograssBar.setValue(counter);
 				lblInfo.setText(String.format("aktueller Download: %s - %4d",season.getLeague(),season.getYear()));
-				lblTimeLeft.setText(String.format( "geschätzte Restzeit: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n"));
 			});
 			try
 			{
@@ -48,6 +66,7 @@ public class DownloadDialog extends JDialog implements ActionListener {
 			counter++;
 			secsLeft = (int)( (System.currentTimeMillis() - initTimeStamp) * (seasons.size() - counter) / counter )/1000;
 		}
+		timeThread.interrupt();
 		secsLeft = (int) (System.currentTimeMillis() - initTimeStamp)/1000;
 		SwingUtilities.invokeLater( () -> {
 			prograssBar.setValue(counter);
@@ -79,6 +98,7 @@ public class DownloadDialog extends JDialog implements ActionListener {
 		
 		btnCancel.setBounds(440, 100, 150, 30);
 		btnCancel.addActionListener(this);
+		btnCancel.setMnemonic('r');
 		
 		add(lblInfo);
 		add(prograssBar);
@@ -112,6 +132,8 @@ public class DownloadDialog extends JDialog implements ActionListener {
 				return;
 		if(!dlThread.isInterrupted())
 			dlThread.interrupt();
+		if(!timeThread.isInterrupted())
+			timeThread.interrupt();
 		dispose();			
 	}
 	

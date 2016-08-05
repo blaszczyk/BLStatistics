@@ -57,9 +57,9 @@ public class FilterIO
 		outerBuilder = new StringBuilder();
 		panelCount = 0;
 		saveSubFilter(filter);
-		String name = null;
-		while (name == null || name == "")
-			name = JOptionPane.showInputDialog(null, "Namen für den Filter eingeben:", "Filter Speichern", JOptionPane.QUESTION_MESSAGE);
+		String name = JOptionPane.showInputDialog(null, "Namen für den Filter eingeben:", "Filter Speichern", JOptionPane.QUESTION_MESSAGE);
+		if(name == null || name == "")
+			return;
 		File directory = new File(String.format("%s/", FOLDER)  );
 		if(!directory.exists())
 			directory.mkdir();
