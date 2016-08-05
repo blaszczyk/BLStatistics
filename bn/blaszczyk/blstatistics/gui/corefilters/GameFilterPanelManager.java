@@ -61,23 +61,39 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		});
 		
 		/*
-		 * Game Filters
+		 * Team Filters
 		 */
-		JMenu gameFilters = new JMenu("Team Filter");
+		JMenu teamFilters = new JMenu("Team Filter");
 		
-		addMenuItem(gameFilters,"Team").addActionListener( e -> {
+		addMenuItem(teamFilters,"Team").addActionListener( e -> {
 			setPanel( FilterPanelAdapter.getSecondArgAdapter( new TeamFilterPanel(teams),this ) );
 			listener.actionPerformed(e);
 		});
-		addMenuItem(gameFilters,"Direkter Vergleich").addActionListener( e -> {
+		addMenuItem(teamFilters,"Direkter Vergleich").addActionListener( e -> {
 			setPanel( FilterPanelAdapter.getSecondArgAdapter( new SubLeagueFilterPanel(teams),this ) );
+			listener.actionPerformed(e);
+		});
+		
+		/*
+		 * Date Filters
+		 */
+		JMenu dateFilters = new JMenu("Spieltag Filter");
+
+		addMenuItem(dateFilters, "Datum").addActionListener( e -> {
+			setPanel(FilterPanelAdapter.getSecondArgAdapter(new DateFilterPanel(), this));
+			listener.actionPerformed(e);
+		});
+		
+		addMenuItem(dateFilters,"Spieltag").addActionListener( e -> {
+			setPanel(FilterPanelAdapter.getSecondArgAdapter( new MatchDayFilterPanel(),this));
 			listener.actionPerformed(e);
 		});
 		
 		/*
 		 * Season Filters
 		 */
-		JMenu seasonFilters = new JMenu("Spieltag Filter");
+		
+		JMenu seasonFilters = new JMenu("Saison Filter");
 
 		addMenuItem(seasonFilters,"Liga").addActionListener( e -> {
 			setPanel( FilterPanelAdapter.getFirstArgAdapter( new SingleLeagueFilterPanel(leagues),this) );
@@ -89,10 +105,6 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		});
 		addMenuItem(seasonFilters,"Hin-/Rückrunde").addActionListener( e -> {
 			setPanel( new RoundFilterPanel(this) );
-			listener.actionPerformed(e);
-		});
-		addMenuItem(seasonFilters,"Spieltag").addActionListener( e -> {
-			setPanel(FilterPanelAdapter.getSecondArgAdapter( new MatchDayFilterPanel(),this));
 			listener.actionPerformed(e);
 		});
 		
@@ -122,7 +134,8 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 
 
 		menu.add(goalFilters);
-		menu.add(gameFilters);
+		menu.add(teamFilters);
+		menu.add(dateFilters);
 		menu.add(seasonFilters);
 		menu.add(logicalFilters);
 		

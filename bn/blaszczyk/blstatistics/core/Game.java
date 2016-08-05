@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Date;
 
 import bn.blaszczyk.blstatistics.tools.BLException;
-import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class Game
 {

@@ -72,13 +72,17 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		notifyListeners(new FilterEvent<Season>(this, getFilter(), FilterEvent.RESET_FILTER));
 	}
 
-
-
 	@Override
 	protected void addComponents()
 	{
 		add(cboLeagues);
 		add(boxRecursive);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getSelectedLeague().toString();
 	}
 
 }
