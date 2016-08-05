@@ -47,7 +47,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		valueField.addMouseWheelListener(this);
 
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
-//		setOperator();
+		setOperator();
 	}
 	
 	protected IntegerValueFilterPanel(String labelText, String operator, int defaultValue)
