@@ -30,7 +30,6 @@ public class FilterPanelAdapter {
 			this.filterFactory = filterFactory;
 			this.innerPanel = panel;
 			panel.addPopupMenuItem(negate);
-			panel.addPopupMenuItem(setActive);
 			panel.addPopupMenuItem(replace);
 			panel.addFilterListener(this);
 		}
@@ -61,7 +60,7 @@ public class FilterPanelAdapter {
 		@Override
 		public String toString()
 		{
-			return innerPanel.toString();
+			return String.valueOf(innerPanel);
 		}
 
 		@Override
@@ -78,7 +77,6 @@ public class FilterPanelAdapter {
 		{
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public boolean equals(Object obj)
 		{
@@ -88,7 +86,7 @@ public class FilterPanelAdapter {
 				return false;
 			if (!(obj instanceof FirstArgAdapter))
 				return false;
-			FirstArgAdapter<T,U> other = (FirstArgAdapter<T,U>) obj;
+			FirstArgAdapter<?,?> other = (FirstArgAdapter<?,?>) obj;
 			return innerPanel.equals(other.innerPanel);
 		}
 
@@ -109,7 +107,6 @@ public class FilterPanelAdapter {
 			this.filterFactory = filterFactory;
 			this.innerPanel = panel;
 			panel.addPopupMenuItem(negate);
-			panel.addPopupMenuItem(setActive);
 			panel.addPopupMenuItem(replace);
 			panel.addFilterListener(this);
 		}
@@ -140,7 +137,7 @@ public class FilterPanelAdapter {
 		@Override
 		public String toString()
 		{
-			return innerPanel.toString();
+			return String.valueOf(innerPanel);
 		}
 
 		@Override
@@ -157,7 +154,6 @@ public class FilterPanelAdapter {
 		{
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public boolean equals(Object obj)
 		{
@@ -167,7 +163,7 @@ public class FilterPanelAdapter {
 				return false;
 			if (!(obj instanceof SecondArgAdapter))
 				return false;
-			SecondArgAdapter<T,U> other = (SecondArgAdapter<T,U>) obj;
+			SecondArgAdapter<?,?> other = (SecondArgAdapter<?,?>) obj;
 			return innerPanel.equals(other.innerPanel);
 		}
 	}

@@ -12,25 +12,24 @@ import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
-import bn.blaszczyk.blstatistics.gui.corefilters.ComboBoxFactory.Team;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 
 @SuppressWarnings({"serial"})
 public class TeamFilterPanel extends AbstractFilterPanel<Game>
 {
-	private JComboBox<Team> teamBox;
+	private JComboBox<String> teamBox;
 	private JCheckBox homeBox;
 	private JCheckBox awayBox;
 	
-	public TeamFilterPanel(Iterable<String> allTeams)
+	public TeamFilterPanel(List<String> allTeams)
 	{
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		ActionListener listener = e -> resetFilter();
 		
-		ComboBoxFactory cbf = new ComboBoxFactory(allTeams, ComboBoxFactory.TEAM);
+		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(allTeams);
 		
-		teamBox = cbf.createTeamBox();
+		teamBox = cbf.createComboBox();
 		teamBox.addActionListener(listener);
 		
 		homeBox = new JCheckBox("H",true);
@@ -62,7 +61,7 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 
 	private void resetFilter()
 	{
-		String team = teamBox.getSelectedItem().toString();
+		String team = (String) teamBox.getSelectedItem();
 		Filter<Game> filter = LogicalFilter.getFALSEFilter();
 		if(homeBox.isSelected())
 			if(awayBox.isSelected())

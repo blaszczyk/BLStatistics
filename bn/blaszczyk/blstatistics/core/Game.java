@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 import bn.blaszczyk.blstatistics.tools.BLException;
+import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class Game
 {
@@ -61,15 +62,6 @@ public class Game
 	/*
 	 * Constructors
 	 */
-	public Game(int goals1, int goals2, String team1, String team2, Date date, int matchDay)
-	{
-		this.goals1 = goals1;
-		this.goals2 = goals2;
-		this.team1 = team1;
-		this.team2 = team2;
-		this.date = date;
-		this.matchDay = matchDay;
-	}
 	
 	public Game(String gameString) throws BLException
 	{
@@ -82,14 +74,21 @@ public class Game
 			throw new BLException("Wrong game Format in '" + gameDetails + "'");
 		try
 		{
-			date = DATE_FORMAT.parse( split[0]);
+			date = DATE_FORMAT.parse( split[0].trim());
 		}
 		catch (ParseException e)
 		{
 			throw new BLException("Wrong date Format in '" + gameDetails + "'",e);
 		} 
-		goals1 = Integer.parseInt( split[1].substring(split[1].lastIndexOf(' ')+1) );
-		goals2 = Integer.parseInt(split[2]);
+		try
+		{
+			goals1 = Integer.parseInt( split[1].substring(split[1].lastIndexOf(' ')+1).trim() );
+			goals2 = Integer.parseInt(split[2].trim());
+		}
+		catch( NumberFormatException e)
+		{
+			throw new BLException("Wrong goal Format in '" + gameDetails + "'",e);
+		}
 		String teams = split[1].substring(0, split[1].lastIndexOf(' '));
 		int splitIntex = teams.indexOf(" - ");
 		if(splitIntex < 0)
@@ -122,11 +121,11 @@ public class Game
 	
 	public String getTeam1()
 	{
-		return team1;
+		return TeamAlias.getAlias(team1);
 	}
 	public String getTeam2()
 	{
-		return team2;
+		return TeamAlias.getAlias(team2);
 	}
 	
 	public Date getDate()
@@ -162,7 +161,7 @@ public class Game
 	public boolean containsTeam(String team)
 	{
 		if(team != null)	
-			return team.equals(team1) || team.equals(team2);
+			return team.equals(getTeam1()) || team.equals(getTeam2());
 		return false;
 	}
 

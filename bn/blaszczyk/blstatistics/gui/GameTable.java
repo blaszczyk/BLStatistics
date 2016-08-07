@@ -1,9 +1,11 @@
 package bn.blaszczyk.blstatistics.gui;
 
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import bn.blaszczyk.blstatistics.core.Game;
@@ -14,19 +16,27 @@ public class GameTable extends MyTable<Game>
 
 	private List<String> selectedTeams;
 	
-	public GameTable(Iterable<Game> source)
-	{
-		super(source);
-	}
-	
 	public GameTable()
 	{
-		super();
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		getSelectionModel().addListSelectionListener( e -> repaint());
+	}
+
+	public List<String> getSelectedTeams()
+	{
+		int selectedIndex = getSelectionModel().getAnchorSelectionIndex();
+		if(selectedIndex < 0)
+			return selectedTeams;
+		selectedTeams = new ArrayList<>();
+		selectedTeams.add( (String)getModel().getValueAt(selectedIndex, 1) );
+		selectedTeams.add( (String)getModel().getValueAt(selectedIndex, 5) );
+		return selectedTeams;
 	}
 	
 	public void setSelectedTeams(List<String> teams)
 	{
 		this.selectedTeams = teams;
+		getSelectionModel().setAnchorSelectionIndex(-1);
 		repaint();
 	}
 
@@ -73,13 +83,20 @@ public class GameTable extends MyTable<Game>
 	@Override
 	protected int columnWidth(int columnIndex)
 	{
-		if(columnIndex == 0)							//Date
+		switch(columnIndex)
+		{
+		case 0:
 			return 100;
-		if( columnIndex == 2 || columnIndex == 4)		//Goals
+		case 1:
+			return 200;
+		case 2:
+		case 4:
 			return 30;
-		if( columnIndex == 3)							// " : "
+		case 3:
 			return 20;
-		return 200;										//Teams
+		default:
+			return 230;	
+		}								//Teams
 	}
 
 	@Override
@@ -99,5 +116,6 @@ public class GameTable extends MyTable<Game>
 		}
 		return 0;
 	}
+
 
 }

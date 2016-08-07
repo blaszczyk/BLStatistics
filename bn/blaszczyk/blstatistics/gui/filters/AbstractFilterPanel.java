@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -22,7 +23,8 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	
 	private boolean isActive = true;
 	private JMenuItem setActive;
-	
+
+	private JLabel title = new JLabel("Filter");
 	private JPopupMenu popup;
 	
 	private Filter<T> filter = LogicalFilter.getTRUEFilter();
@@ -41,9 +43,12 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 		setActive = new JMenuItem("Deaktivieren");
 		setActive.addActionListener( e -> setActive(!isActive));
 		popup = new JPopupMenu();
-//		popup.add(setActive);
+		popup.add(title);
+		popup.addSeparator();
+		popup.add(setActive);
 		setComponentPopupMenu(popup);
 		setActive(true);
+		addFilterListener(e -> title.setText(this.toString()));
 	}
 
 

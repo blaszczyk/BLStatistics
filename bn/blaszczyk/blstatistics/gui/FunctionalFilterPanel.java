@@ -2,38 +2,46 @@ package bn.blaszczyk.blstatistics.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.gui.corefilters.GameFilterPanelManager;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterEvent;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterListener;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.BlankFilterPanel;
 import bn.blaszczyk.blstatistics.tools.FilterIO;
 
 @SuppressWarnings("serial")
 public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Season,Game>, BiFilterPanel<Season,Game>
 {
 	
-	private BiFilterListener<Season,Game> listener = null;
+	public static final String LAST_FILTER = "last";
+	
 	private BiFilterPanel<Season,Game> filterPanel;
+	private JLabel header = new JLabel("Filter", SwingConstants.CENTER);
+	
+	private BiFilterListener<Season,Game> listener = null;
 	private FilterIO filterIO = new FilterIO();
 	
 	
-	public FunctionalFilterPanel(List<String> teams, List<League> leagues)
+	public FunctionalFilterPanel(List<String> teams, List<String> leagues)
 	{
 		super(new BorderLayout(5,5));
-		setPreferredSize(new Dimension(300,700));
+		
+		header.setPreferredSize(new Dimension(355, 50));
+		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
 		GameFilterPanelManager manager = new GameFilterPanelManager(teams,leagues,filterIO);
-		
-		filterPanel = new BlankFilterPanel<>(manager);
-		filterPanel.addFilterListener(this);		
 		filterIO.setManager(manager);
+
+		setPreferredSize(new Dimension(300,700));		
+		setFilterPanel(filterIO.loadFilter(LAST_FILTER));	
 		paint();
 	}
 
@@ -47,6 +55,14 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	{
 		filterIO.saveFilter(filterPanel);
 	}
+	
+
+	public void saveFilter(String string)
+	{
+		filterIO.saveFilter(filterPanel,"last");
+	}
+
+
 
 	private void setFilterPanel(BiFilterPanel<Season,Game> panel)
 	{
@@ -84,7 +100,8 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	{
 		filterPanel.paint();
 		removeAll();
-		add(filterPanel.getPanel());
+		add(header, BorderLayout.NORTH);
+		add(filterPanel.getPanel(),BorderLayout.CENTER);
 		revalidate();
 	}
 	
@@ -116,6 +133,5 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	public void removePopupMenuItem(JMenuItem item)
 	{
 	}
-
 
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -25,6 +26,7 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	protected JMenuItem setActive;
 	protected JMenuItem negate;
 	protected JMenu replace;
+	private JLabel title = new JLabel("Filter");
 	
 	private JPopupMenu popup;
 	
@@ -48,15 +50,19 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 			setActive(!isActive)
 		);
 
-		replace = new JMenu("Ersetzten durch");
+		replace = new JMenu("Ersetzten");
 		filterManager.addMenuItems(replace, e -> notifyListeners(new BiFilterEvent<>(this, filterManager.getPanel(), BiFilterEvent.RESET_PANEL)));
 
-		negate = new JMenuItem("Verneinen");
+		negate = new JMenuItem("Invertieren");
 		negate.addActionListener( e -> negate() );
 		
+		
 		popup = new JPopupMenu();
+		popup.add(title);
+		popup.addSeparator();
 		addPopupMenuItems();
 		setComponentPopupMenu(popup);
+		addFilterListener(e -> title.setText(this.toString()));
 	}
 
 	protected void negate()
@@ -98,8 +104,8 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	
 	protected void addPopupMenuItems()
 	{
-		popup.add(negate);
 		popup.add(setActive);
+		popup.add(negate);
 		popup.add(replace);
 	}
 

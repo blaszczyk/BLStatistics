@@ -18,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import bn.blaszczyk.blstatistics.core.Game;
-import bn.blaszczyk.blstatistics.core.League;
 import bn.blaszczyk.blstatistics.core.Season;
 import bn.blaszczyk.blstatistics.gui.corefilters.*;
 import bn.blaszczyk.blstatistics.gui.filters.*;
@@ -34,7 +33,7 @@ public class FilterIO
 	private FilterPanelManager<Season, Game> manager = null;
 
 	private List<String> teams;
-	private List<League> leagues;
+	private List<String> leagues;
 
 	public FilterIO()
 	{
@@ -54,18 +53,22 @@ public class FilterIO
 			JOptionPane.showMessageDialog(null, "No Filter to save.", "Save Error!", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
+		String name = JOptionPane.showInputDialog(null, "Namen für den Filter eingeben:", "Filter Speichern", JOptionPane.QUESTION_MESSAGE);
+		if(name != null && name != "")
+			saveFilter(filter, name);	
+	}
+
+	public void saveFilter(BiFilterPanel<Season, Game> filter, String fileName)
+	{
 		outerBuilder = new StringBuilder();
 		panelCount = 0;
 		saveSubFilter(filter);
-		String name = JOptionPane.showInputDialog(null, "Namen für den Filter eingeben:", "Filter Speichern", JOptionPane.QUESTION_MESSAGE);
-		if(name == null || name == "")
-			return;
 		File directory = new File(String.format("%s/", FOLDER)  );
 		if(!directory.exists())
 			directory.mkdir();
 		try
 		{
-			FileWriter file = new FileWriter(String.format("%s/%s.%s", FOLDER, name, EXTENSION));
+			FileWriter file = new FileWriter(String.format("%s/%s.%s", FOLDER, fileName, EXTENSION));
 			file.write(outerBuilder.toString());
 			file.close();
 		}
@@ -74,7 +77,7 @@ public class FilterIO
 			e.printStackTrace();
 		}
 	}
-
+	
 	private int saveSubFilter(BiFilterPanel<Season, Game> filter)
 	{
 		StringBuilder innerBuilder = new StringBuilder();
@@ -108,6 +111,10 @@ public class FilterIO
 			RoundFilterPanel rFilter = (RoundFilterPanel) filter;
 			innerBuilder.append("Runde;" + rFilter.isFirstRound() + ";" + rFilter.isSecondRound());
 		}
+		else if (filter instanceof BlankFilterPanel)
+		{
+			innerBuilder.append("Blank");
+		}
 		else if (filter instanceof FilterPanelAdapter.FirstArgAdapter)
 		{
 			FilterPanel<Season> sFilter = ((FilterPanelAdapter.FirstArgAdapter<Season, Game>) filter).getInnerPanel();
@@ -123,7 +130,7 @@ public class FilterIO
 			}
 			else
 			{
-				System.err.println("Unknown Filter" + sFilter);
+				System.err.println("Unknown Filter " + sFilter);
 			}
 		}
 		else if (filter instanceof FilterPanelAdapter.SecondArgAdapter)
@@ -148,12 +155,12 @@ public class FilterIO
 			}
 			else
 			{
-				System.err.println("Unknown Filter" + gFilter);
+				System.err.println("Unknown Filter " + gFilter);
 			}
 		}
 		else
 		{
-			System.err.println("Unknown Filter" + filter);
+			System.err.println("Unknown Filter " + filter);
 		}
 		outerBuilder.append(String.format("F%d;%s\n", panelCount, innerBuilder.toString()));
 		return panelCount++;
@@ -181,8 +188,15 @@ public class FilterIO
 		return null;
 	}
 
+
+	public BiFilterPanel<Season, Game> loadFilter(String filterName)
+	{
+		return loadFilter(new File(String.format("%s/%s.%s", FOLDER, filterName, EXTENSION)));
+	}
 	private BiFilterPanel<Season, Game> loadFilter(File file)
 	{
+		if(!file.exists())
+			return new BlankFilterPanel<>(manager);
 		filters = new HashMap<>();
 		BiFilterPanel<Season, Game> lastPanel = new BlankFilterPanel<>(manager);
 		try
@@ -227,6 +241,9 @@ public class FilterIO
 			break;
 		case "Runde":
 			panel = new RoundFilterPanel(manager, Boolean.parseBoolean(split[2]), Boolean.parseBoolean(split[3]));
+			break;
+		case "Blank":
+			panel = new BlankFilterPanel<Season, Game>(manager);
 			break;
 		case "Saison":
 			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[2], Integer.parseInt(split[3])), manager);

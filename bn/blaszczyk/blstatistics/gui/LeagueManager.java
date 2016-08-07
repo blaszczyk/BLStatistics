@@ -1,7 +1,5 @@
 package bn.blaszczyk.blstatistics.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -36,15 +34,17 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	{
 		super(owner, "Liga Manager", true);
 		this.owner = owner;
-		setLayout(new BorderLayout(5,5));
-		setResizable(false);
+		setSize(654,405);
+		setLayout(null);
 		
 		League[] leagueArray = new League[leagues.size()];
 		leagues.toArray(leagueArray);
 		leagueList = new JList<>(leagueArray);
 		leagueList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		leagueList.addListSelectionListener( this );
-		leagueList.setPreferredSize(new Dimension(200, 300));
+		
+		JScrollPane leaguePane = new JScrollPane(leagueList);
+		leaguePane.setBounds(10,10,210, 300);
 		
 		seasonTable = new JTable() {
 		    DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
@@ -61,6 +61,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		seasonTable.setRowSelectionAllowed(true);
 		seasonTable.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		
+		JScrollPane seasonPane = new JScrollPane(seasonTable);
+		seasonPane.setBounds(230, 10, 410, 300);
+		
 		btnSeasonRequest.addActionListener(this);
 		btnSeasonRequest.setBounds(10, 10, 190, 30);
 		btnSeasonRequest.setMnemonic('d');
@@ -75,17 +78,17 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		
 		actionPanel = new JPanel();
 		actionPanel.setLayout(null);
-		actionPanel.setPreferredSize(new Dimension(630, 50));
+		actionPanel.setBounds(10,320,630, 50);
 		actionPanel.add(btnSeasonRequest);
 		actionPanel.add(btnSelect);
 		actionPanel.add(btnClose);
 		
 		
 		
-		add(new JScrollPane(leagueList),BorderLayout.WEST);
-		add(new JScrollPane(seasonTable),BorderLayout.CENTER);
-		add(actionPanel,BorderLayout.SOUTH);
-		pack();
+		add(leaguePane);
+		add(seasonPane);
+		add(actionPanel);
+		setResizable(false);
 			
 	}
 

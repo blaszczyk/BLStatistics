@@ -11,9 +11,8 @@ import java.util.Scanner;
 
 public class TeamAlias
 {
-	private static final String BASE_FOLDER = "leagues";
 	private static final String FILE_EXTENSION = "bls";
-	private static final String LEAGUES_FILE = "teamAliases";
+	private static final String ALIAS_FILE = "teamAliases";
 	
 	private static Map<String,String> aliasMap = new HashMap<>();
 	
@@ -21,7 +20,7 @@ public class TeamAlias
 	
 	public static void loadAliases()
 	{
-		String path = String.format("%s/%s.%s", BASE_FOLDER, LEAGUES_FILE, FILE_EXTENSION);
+		String path = String.format("%s/%s.%s", FileIO.getPathName(), ALIAS_FILE, FILE_EXTENSION);
 		try
 		{
 			Scanner scanner = new Scanner( new FileInputStream(path) );
@@ -44,8 +43,8 @@ public class TeamAlias
 
 	public static String getAlias(String team)
 	{
-		if(aliasMap.containsKey(team))
-			return aliasMap.get(team);
+//		if(aliasMap.containsKey(team))
+//			return aliasMap.get(team);
 //		if(aliasList.contains(team))
 //			return team;
 //		aliasList.add(team);

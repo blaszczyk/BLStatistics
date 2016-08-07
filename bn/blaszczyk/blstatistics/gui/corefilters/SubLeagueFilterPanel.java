@@ -12,22 +12,21 @@ import javax.swing.JLabel;
 
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
-import bn.blaszczyk.blstatistics.gui.corefilters.ComboBoxFactory.Team;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 
 @SuppressWarnings("serial")
 public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 
-	private ComboBoxFactory cbf;
-	private List<JComboBox<Team>> teamBoxes;
+	private ComboBoxFactory<String> cbf;
+	private List<JComboBox<String>> teamBoxes;
 	private JButton more;
 	private ActionListener listener = e -> setTeams();
 	private JLabel label = new JLabel("Direkter Vergleich");
 	
-	public SubLeagueFilterPanel(Iterable<String> allTeams)
+	public SubLeagueFilterPanel(List<String> allTeams)
 	{
-		cbf = new ComboBoxFactory(allTeams, ComboBoxFactory.TEAM);
+		cbf = new ComboBoxFactory<>(allTeams);
 		teamBoxes = new ArrayList<>();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -48,7 +47,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	private void setTeams()
 	{
 		List<String> teams = new ArrayList<>();
-		for(JComboBox<Team> box : teamBoxes)
+		for(JComboBox<String> box : teamBoxes)
 			teams.add(box.getSelectedItem().toString());
 		setFilter(GameFilter.getSubLeagueFilter(teams));
 		notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
@@ -64,9 +63,9 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 				addTeamBox().setSelectedIndex(index);
 	}
 	
-	private JComboBox<Team> addTeamBox()
+	private JComboBox<String> addTeamBox()
 	{
-		JComboBox<Team> box = cbf.createTeamBox();
+		JComboBox<String> box = cbf.createComboBox();
 		box.addActionListener(listener);
 		box.setAlignmentX(LEFT_ALIGNMENT);
 		teamBoxes.add(box);
@@ -87,7 +86,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	protected void addComponents()
 	{
 		add(label);
-		for(JComboBox<Team> box : teamBoxes)
+		for(JComboBox<String> box : teamBoxes)
 			add(box);
 		add(more);			
 	}

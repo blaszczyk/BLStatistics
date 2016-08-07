@@ -10,11 +10,13 @@ public class League implements Iterable<Season>
 	private List<Season> seasons = new ArrayList<>();
 	private List<String> teams = new ArrayList<>();
 	private String pathName;
+	private String wbfURL;
 	private String name;
 
-	public League(String name, String pathName, int[] yearBounds)
+	public League(String name, String wbfURL, String pathName, int[] yearBounds)
 	{
 		this.name = name;
+		this.wbfURL = wbfURL;
 		this.pathName = pathName;
 		
 		Date today = new Date();
@@ -40,6 +42,11 @@ public class League implements Iterable<Season>
 	public String getPathName()
 	{
 		return pathName;
+	}
+	
+	public String getURLFormat()
+	{
+		return wbfURL;
 	}
 	
 	public Season getSeason(int year) throws BLException
@@ -87,4 +94,5 @@ public class League implements Iterable<Season>
 	{
 		return name;
 	}
+
 }

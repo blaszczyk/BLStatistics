@@ -12,6 +12,15 @@ import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class BLStatistics
 {
+	public static final String  WELT_FUSSBALL= "wfb";
+	public static final String  FUSSBALL_DATEN = "fbd";
+	
+	private static String requestSource = FUSSBALL_DATEN;
+
+	public static String getRequestSource()
+	{
+		return requestSource;
+	}
 
 	private static void initUIManager()
 	{

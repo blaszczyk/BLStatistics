@@ -6,91 +6,57 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.UIManager;
 
-import bn.blaszczyk.blstatistics.core.League;
-import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
-public class ComboBoxFactory implements MouseWheelListener, KeyListener
+public class ComboBoxFactory<T> implements MouseWheelListener, KeyListener
 {
-	public static final int TEAM = 0;
-	public static final int LEAGUE = 1;
 
 	private int charCounter = 0;
 	private char selectChar = '1';
-	private Iterable<? extends Object> allObjects;
-	private int mode;
+	private int boxWidth = 250;
+	private T[] allObjects;
 
-	public class Team
+	@SuppressWarnings("unchecked")
+	public ComboBoxFactory(List<T> allObjects)
 	{
-		private String name;
-		private String alias;
-		public Team(String name)
-		{
-			this.name = name;
-			alias = TeamAlias.getAlias(name);
-		}
-		public String getName()
-		{
-			return name;
-		}
-		@Override
-		public String toString()
-		{
-			return alias;
-		}
+		this.allObjects = (T[]) new Object[allObjects.size()];
+		allObjects.toArray(this.allObjects);
 	}
 	
+	public ComboBoxFactory(T[] allObjects)
+	{
+		setArray(allObjects);
+	}
 	
-	public ComboBoxFactory(Iterable<? extends Object> allObjects, int mode)
+	public void setArray(T[] allObjects)
 	{
 		this.allObjects = allObjects;
-		this.mode = mode;
 	}
 	
-
-
-	public JComboBox<Team> createTeamBox()
+	public void setBoxWidth(int width)
 	{
-		if(mode != TEAM)
-			throw new UnsupportedOperationException("This Factory cannot create TeamBox.");
-		JComboBox<Team> teamBox = new JComboBox<>();
-		for(Object team : allObjects)
-		{
-			teamBox.addItem(new Team((String)team));
-		}
-		teamBox.setMaximumSize(new Dimension(250,30));
-		teamBox.setMinimumSize(new Dimension(250,30));
-		teamBox.addMouseWheelListener(this);
-		teamBox.addKeyListener(this);
-		teamBox.setInheritsPopupMenu(true);
-		teamBox.setFont( UIManager.getFont("ComboBox.font").deriveFont(Font.PLAIN) );
-		return teamBox;
+		if( width > 0)
+			boxWidth = width;
 	}
 
-
-	public JComboBox<League> createLeagueBox()
+	
+	public JComboBox<T> createComboBox()
 	{
-		if(mode != LEAGUE)
-			throw new UnsupportedOperationException("This Factory cannot create LeagueBox.");
-		JComboBox<League> leagueBox = new JComboBox<>();
-		for(Object team : allObjects)
-		{
-			leagueBox.addItem((League) team);
-		}
-		leagueBox.setMaximumSize(new Dimension(250,30));
-		leagueBox.setMinimumSize(new Dimension(250,30));
-		leagueBox.addMouseWheelListener(this);
-		leagueBox.addKeyListener(this);
-		leagueBox.setInheritsPopupMenu(true);
-		leagueBox.setFont( UIManager.getFont("ComboBox.font").deriveFont(Font.PLAIN) );
-		return leagueBox;
+		JComboBox<T> box = new JComboBox<>(allObjects);
+		box.setMaximumSize(new Dimension(boxWidth,30));
+		box.setMinimumSize(new Dimension(boxWidth,30));
+		box.addMouseWheelListener(this);
+		box.addKeyListener(this);
+		box.setInheritsPopupMenu(true);
+		box.setFont( UIManager.getFont("ComboBox.font").deriveFont(Font.PLAIN) );
+		return box;
 	}
-
-
-	private void selectByChar(char c, JComboBox<String> box)
+	
+	private void selectByChar(char c, JComboBox<?> box)
 	{
 		boolean hasChar = false;
 		if( c == selectChar )
@@ -102,7 +68,10 @@ public class ComboBoxFactory implements MouseWheelListener, KeyListener
 		}
 		int charCounterTmp = charCounter;
 		for(int i = 0; i < box.getItemCount(); i++)
-			if(box.getItemAt(i).toLowerCase().startsWith( "" + Character.toLowerCase(c) ))
+		{
+			Object o = box.getItemAt(i);
+			String name = o.toString();
+			if(name.toLowerCase().startsWith( "" + Character.toLowerCase(c) ))
 			{
 				hasChar = true;
 				if(charCounterTmp > 0)
@@ -113,19 +82,19 @@ public class ComboBoxFactory implements MouseWheelListener, KeyListener
 				box.setSelectedIndex(i);
 				return;
 			}
+		}
 		charCounter = charCounterTmp - 1;
 		if(hasChar)
 			selectByChar(c, box);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
 		int diff = (int) (4 * e.getPreciseWheelRotation());
 		if( e.getSource() instanceof JComboBox)
 		{
-			JComboBox<String> box = (JComboBox<String>) e.getSource();
+			JComboBox<?> box = (JComboBox<?>) e.getSource();
 			int newIndex = box.getSelectedIndex() + diff;
 			if( newIndex >= 0 && newIndex < box.getItemCount())
 				box.setSelectedIndex( newIndex );
@@ -134,24 +103,27 @@ public class ComboBoxFactory implements MouseWheelListener, KeyListener
 
 
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
 		e.consume();
 		if(e.getSource() instanceof JComboBox)
 		{
-			JComboBox<String> box = (JComboBox<String>) e.getSource();
+			JComboBox<?> box = (JComboBox<?>) e.getSource();
 			int selectedIndex = box.getSelectedIndex();
 			switch(e.getKeyCode())
 			{
 			case KeyEvent.VK_DOWN:
 				if(selectedIndex < box.getItemCount() - 1)
-					box.setSelectedIndex(selectedIndex + 1); 
+					box.setSelectedIndex(selectedIndex + 1);
+				else
+					box.setSelectedIndex(0);
 				break;
 			case KeyEvent.VK_UP:
 				if(selectedIndex > 0)
 					box.setSelectedIndex(selectedIndex  - 1); 
+				else
+					box.setSelectedIndex( box.getItemCount() - 1);
 				break;
 			}
 			box.requestFocusInWindow();
@@ -164,14 +136,13 @@ public class ComboBoxFactory implements MouseWheelListener, KeyListener
 		e.consume();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void keyTyped(KeyEvent e)
 	{
 		e.consume();
 		if(e.getSource() instanceof JComboBox)
 		{
-			JComboBox<String> box = (JComboBox<String>) e.getSource();
+			JComboBox<?> box = (JComboBox<?>) e.getSource();
 			char keyChar = e.getKeyChar();
 			if(Character.isAlphabetic(keyChar) || Character.isDigit(keyChar))
 				selectByChar(Character.toLowerCase(keyChar), box);

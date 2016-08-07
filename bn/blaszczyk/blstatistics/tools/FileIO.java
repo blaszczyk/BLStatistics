@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
+import bn.blaszczyk.blstatistics.BLStatistics;
 import bn.blaszczyk.blstatistics.core.*;
 
 public class FileIO
@@ -20,7 +21,7 @@ public class FileIO
 	
 	public static List<League> loadLeagues()
 	{
-		String path = String.format("%s/%s.%s", BASE_FOLDER, LEAGUES_FILE, FILE_EXTENSION);
+		String path = String.format("%s/%s.%s", getPathName(), LEAGUES_FILE, FILE_EXTENSION);
 		List<League> leagues = new ArrayList<>();
 		try
 		{
@@ -32,12 +33,11 @@ public class FileIO
 					continue;
 				if(props.length < 3)
 					break;
-				int[] yearBounds = new int[props.length - 2];
+				int[] yearBounds = new int[props.length - 3];
 				for(int i = 0; i < yearBounds.length; i++)
-					yearBounds[i] = Integer.parseInt( props[i+2].trim() );
+					yearBounds[i] = Integer.parseInt( props[i+3].trim() );
 				
-				
-				League league = new League(props[0].trim(), props[1].trim(), yearBounds);
+				League league = new League(props[0].trim(), props[1].trim(),props[2].trim(), yearBounds);
 				loadSeasons(league);
 				leagues.add( league );
 			}
@@ -89,31 +89,30 @@ public class FileIO
 
 	private static void loadSeasons(League league)
 	{
-		File directory = new File("leagues/" + league.getPathName() + "/");
+		File directory = new File(getPathName() + "/" + league.getPathName() + "/");
 		if(!directory.exists())
 			directory.mkdirs();
-		for(File file : directory.listFiles())
-			if(file.getName().endsWith(FILE_EXTENSION))
-				try
-				{
-					loadSeason(league, file);
-				}
-				catch (BLException e)
-				{
-					//TODO: NotifyUser
-					e.printStackTrace();
-				}
+		for(Season season : league)
+ 			try
+			{
+				loadSeason(season);
+			}
+			catch (BLException e)
+			{
+				//TODO: NotifyUser
+				e.printStackTrace();
+			}
 	}
 	
-	private static boolean loadSeason(League league, File file) throws BLException
+	private static boolean loadSeason(Season season) throws BLException
 	{
-		if(league == null || file == null)
+		if(season == null)
+			return false;
+		String file = getFileName(season);
+		if(!isSeasonSaved(season))
 			return false;
 		try
 		{
-			int year = Integer.parseInt(file.getName().substring(0,4));			
-			Season season;
-			season = league.getSeason(year);
 			Stack<Game> gameStack = new Stack<>();
 			Scanner scanner = new Scanner(new FileInputStream(file));
 			while (scanner.hasNextLine())
@@ -124,17 +123,22 @@ public class FileIO
 		}
 		catch (FileNotFoundException e)
 		{
-			throw new BLException("Error loading " + file.getPath(), e );
+			throw new BLException("Error loading " + file, e );
 		}
 		catch(NumberFormatException e)
 		{
-			throw new BLException("Wrong Filename " + file.getPath(), e );
+			throw new BLException("Wrong Filename " + file, e );
 		}
 	}
 	
 
+	public static String getPathName()
+	{
+		return String.format("%s-%s", BASE_FOLDER, BLStatistics.getRequestSource());
+	}
+	
 	private static String getFileName(Season season)
 	{
-		return String.format("%s/%s/%4d.%s", BASE_FOLDER, season.getLeague().getPathName(),season.getYear(),FILE_EXTENSION);
+		return String.format("%s/%s/%4d.%s", getPathName(), season.getLeague().getPathName(),season.getYear(),FILE_EXTENSION);
 	}
 }

@@ -1,12 +1,12 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.Dimension;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
-import bn.blaszczyk.blstatistics.core.League;
 import bn.blaszczyk.blstatistics.core.Season;
 import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
@@ -17,33 +17,35 @@ import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 @SuppressWarnings("serial")
 public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 {
-	private JComboBox<League> cboLeagues;
+	private JComboBox<String> cboLeagues;
 	private JCheckBox boxRecursive = new JCheckBox("Alle",true);
 
-	public SingleLeagueFilterPanel(Iterable<League> allLeagues)
+	public SingleLeagueFilterPanel(List<String> allLeagues)
 	{
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		ComboBoxFactory cbf = new ComboBoxFactory(allLeagues, ComboBoxFactory.LEAGUE);
-		cboLeagues = cbf.createLeagueBox();
+		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(allLeagues);
+		cboLeagues = cbf.createComboBox();
 		cboLeagues.addActionListener(e -> resetFilter());
 
 		boxRecursive.setMinimumSize(new Dimension(60, 30));
 		boxRecursive.setMinimumSize(new Dimension(60, 30));
 		boxRecursive.setInheritsPopupMenu(true);
 		boxRecursive.addActionListener(e -> resetFilter());
+		
+		resetFilter();
 	}
 
-	public SingleLeagueFilterPanel(Iterable<League> allLeagues, String league, boolean isRecursive)
+	public SingleLeagueFilterPanel(List<String> allLeagues, String league, boolean isRecursive)
 	{
 		this(allLeagues);
-		cboLeagues.setSelectedItem(findLeague(allLeagues, league));
+		cboLeagues.setSelectedItem(league);
 		boxRecursive.setSelected(isRecursive);
 	}
 	
-	public League getSelectedLeague()
+	public String getSelectedLeague()
 	{
-		return (League) cboLeagues.getSelectedItem();
+		return (String) cboLeagues.getSelectedItem();
 	}
 
 	public boolean isRecursive()
@@ -51,16 +53,9 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		return boxRecursive.isSelected();
 	}
 	
-	private League findLeague(Iterable<League> leagues, String name)
-	{
-		for(League l : leagues)
-			if(l.getName().equals(name))
-				return l;
-		return null;
-	}
 	private void resetFilter()
 	{
-		League league = (League) cboLeagues.getSelectedItem();
+		String league = (String) cboLeagues.getSelectedItem();
 		Filter<Season> filter;
 		if(league == null)
 			filter = LogicalFilter.getTRUEFilter();

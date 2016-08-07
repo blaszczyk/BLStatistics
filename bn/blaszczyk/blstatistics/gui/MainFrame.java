@@ -2,6 +2,8 @@ package bn.blaszczyk.blstatistics.gui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +30,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 	
 	private List<Game> gameList;
 	private List<League> leagues;
+	private List<String> leagueNames = new ArrayList<>();
 	private List<String> teams = new ArrayList<>();
 	
 	public MainFrame(List<League> leagues)
@@ -36,19 +39,24 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 		this.leagues = leagues;
 		
 		populateMenuBar();
-		initTeams();
+		initLists();
 		
 		setJMenuBar(menuBar);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
 
-		functionalFilterPanel = new FunctionalFilterPanel(teams,leagues);
+		functionalFilterPanel = new FunctionalFilterPanel(teams,leagueNames);
 		functionalFilterPanel.addFilterListener(this);
-		
+
 		functionalResultTable.addListSelectionListener( e -> {
 			if(!e.getValueIsAdjusting())
 				functionalGameTable.setSelectedTeams(functionalResultTable.getSelectedTeams());
+		});
+
+		functionalGameTable.addListSelectionListener( e -> {
+			if(!e.getValueIsAdjusting())
+				functionalResultTable.setSelectedTeams(functionalGameTable.getSelectedTeams());
 		});
 		
 		JSplitPane spInner = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, new JScrollPane(functionalGameTable));
@@ -56,6 +64,14 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 		JSplitPane spOuter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalFilterPanel, spInner );
 		spOuter.setDividerLocation(355);
 		add(spOuter);
+		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e)
+			{
+				exit();
+			}
+		});
 		resetTable();
 	}
 	
@@ -78,12 +94,16 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 
 
 	
-	private void initTeams()
+	private void initLists()
 	{
 		for(League league : leagues)
+		{
 			for(String team : league.getTeams())
 				if(!teams.contains(team))
 					teams.add(team);
+			if(!leagueNames.contains(league.getName()))
+				leagueNames.add(league.getName());
+		}
 		Collections.sort(teams);
 	}
 	
@@ -110,7 +130,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 			else if(e.getSource() == showLeagueManager)
 				showLeagueManager();
 			else if(e.getSource() == exit)
-				System.exit(0);
+				exit();
 		};
 		loadFilter.addActionListener(listener);
 		
@@ -142,6 +162,12 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>
 		functionalResultTable.setSource(gameList);
 	}
 
+	private void exit()
+	{
+		functionalFilterPanel.saveFilter("last");
+		System.exit(0);
+	}
+	
 	@Override
 	public void filter(BiFilterEvent<Season,Game> e)
 	{

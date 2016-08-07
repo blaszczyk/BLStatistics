@@ -28,7 +28,7 @@ public class BlankFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>
 	@Override
 	protected void addComponents()
 	{
-		add(Box.createRigidArea(new Dimension(100,30)));
+		add(Box.createRigidArea(new Dimension(300,50)));
 	}
 	
 	@Override

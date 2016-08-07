@@ -32,12 +32,15 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 	private static final String GG = ">";
 	private static final String LL = "<";
 	
+	private static final String[] OPERATORS = {EQ,NEQ,GG,GEQ,LL,LEQ};
+	
 	private static final Date TODAY = new Date();
-	private static final String[] MONTH_NAME =
+	private static final String[] MONTH_NAMES =
 		{"Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"};
 
 	private JLabel label = new JLabel("Datum");
-	private JComboBox<String> operatorBox;
+	
+	private JComboBox<String> operatorBox = new JComboBox<>(OPERATORS);
 	private JComboBox<Integer> dateBox;
 	private JComboBox<String> monthBox;
 	private JComboBox<Integer> yearBox;
@@ -49,21 +52,23 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 	
 	public DateFilterPanel(String operator, Date referenceDate)
 	{
-		String[] operators = {EQ,NEQ,GG,GEQ,LL,LEQ};
-		operatorBox = new JComboBox<>(operators);
 		operatorBox.setMaximumSize(new Dimension(50,30));
 		operatorBox.setInheritsPopupMenu(true);
 		operatorBox.addActionListener(e -> setOperator());
 
-		yearBox = new JComboBox<Integer>( intSequence( TODAY.getYear()+1900, 1964 ) );
-		yearBox.setMaximumSize(new Dimension(80,30));
-		yearBox.setInheritsPopupMenu(true);
-		monthBox = new JComboBox<String>( MONTH_NAME );
-		monthBox.setMaximumSize(new Dimension(150,30));
-		monthBox.setInheritsPopupMenu(true);
-		dateBox = new JComboBox<Integer>( intSequence( 1, getNrOfDays(referenceDate.getMonth(), referenceDate.getYear()) ) );
-		dateBox.setMaximumSize(new Dimension(50,30));
-		dateBox.setInheritsPopupMenu(true);
+		
+		ComboBoxFactory<Integer> yearFactory = new ComboBoxFactory<>( intSequence( TODAY.getYear()+1900, 1964 ) );
+		yearFactory.setBoxWidth(80);
+		yearBox = yearFactory.createComboBox();
+		
+		ComboBoxFactory<String> monthFactory = new ComboBoxFactory<>(MONTH_NAMES);
+		monthFactory.setBoxWidth(150);
+		monthBox = monthFactory.createComboBox();
+		
+
+		ComboBoxFactory<Integer> dateFactory = new ComboBoxFactory<>( intSequence( 1, getNrOfDays(referenceDate.getMonth(), referenceDate.getYear()) ) );
+		dateFactory.setBoxWidth(50);
+		dateBox = dateFactory.createComboBox();
 		
 		setDate( referenceDate );
 		
@@ -79,7 +84,7 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 		yearBox.addActionListener(refreshDateBox);
 		monthBox.addActionListener(refreshDateBox);
 		dateBox.addActionListener( e -> setOperator());
-		
+		setOperator();
 		setLayout( new BoxLayout(this, BoxLayout.LINE_AXIS));
 	}
 
@@ -167,4 +172,9 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 		}
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "Datum " + Game.DATE_FORMAT.format(getDate());
+	}
 }

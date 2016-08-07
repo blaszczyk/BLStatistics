@@ -16,11 +16,7 @@
 
 package bn.blaszczyk.blstatistics.tools;
 
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.*;
 
 import com.gargoylesoftware.htmlunit.*;
@@ -29,75 +25,85 @@ import com.gargoylesoftware.htmlunit.html.*;
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.core.Season;
 
-public class FussballDatenRequest {
+public class FussballDatenRequest implements SeasonRequest {
 	
 	private static final String	BASE_URL = "http://www.fussballdaten.de";
 
-	private static HtmlTable gamesTable;
+	private WebClient webClient = new WebClient();
+	private HtmlTable gamesTable;
 	
-	// request html table from www.fussballdaten.de
-	public static void requestData(Season season) throws BLException
+	public FussballDatenRequest()
 	{
-		String url = String.format("%s/%s/%4d/", BASE_URL, season.getLeague().getPathName(), season.getYear());
+		webClient.getOptions().setAppletEnabled(false);
+		webClient.getOptions().setCssEnabled(false);
+		webClient.getOptions().setJavaScriptEnabled(false);
+		webClient.getOptions().setPopupBlockerEnabled(true);
+		webClient.getOptions().setRedirectEnabled(false);
+	}
+	
+	@Override
+	public void requestData(Season season) throws BLException
+	{
+		String url = String.format("%s/%s/%4d/", BASE_URL, season.getLeague().getURLFormat(), season.getYear());
 		try
 		{
-			WebClient webClient = new WebClient();
-			webClient.getOptions().setAppletEnabled(false);
-			webClient.getOptions().setCssEnabled(false);
-			webClient.getOptions().setJavaScriptEnabled(false);
-			webClient.getOptions().setPopupBlockerEnabled(true);
-			webClient.getOptions().setRedirectEnabled(false);
 			HtmlPage page = webClient.getPage(url);
 			HtmlDivision div = (HtmlDivision) page.getElementById("rt_Kreuztabelle");
 			gamesTable = (HtmlTable) div.getFirstElementChild();
-			webClient.close();
 		}
-		catch (FailingHttpStatusCodeException | IOException e)
+		catch (FailingHttpStatusCodeException | IOException | NullPointerException e)
 		{
-			setMutedErrStream(false);
+//			setMutedErrStream(false);
 			throw new BLException("Fehler beim Download von Saison " + season.getLeague() + " - "+ season.getYear(),e);
 		}
 	}
 	
-	// Creates Stack of Games from Table
-	public static Stack<Game> getGames() throws BLException
+	@Override
+	public Iterable<Game> getGames() throws BLException
 	{
 		Stack<Game> games = new Stack<>();
 		if (gamesTable != null)
 			for (HtmlTableRow row : gamesTable.getRows())
 				for (HtmlTableCell cell : row.getCells())
-					if (cell.getAttribute("class").equals("Gegner")
+					if (cell.getAttribute("class").startsWith("Gegner")
 							&& cell.getFirstElementChild() instanceof HtmlAnchor)
 					{
-						HtmlAnchor anchor = (HtmlAnchor) cell.getFirstElementChild();
-						String gameString = anchor.getAttribute("title");
+						String gameString;
+						gameString = cell.getFirstElementChild().getAttribute("title");
 						games.push(new Game(gameString));
+						if( cell.getChildElementCount() > 1)
+						{
+							gameString = cell.getLastElementChild().getAttribute("title");
+							games.push(new Game(gameString));
+						}
 					}
 		return games;
 	}
-	
-	public static void clearTable()
+
+	@Override
+	protected void finalize() throws Throwable
 	{
-		gamesTable = null;
-		// Garbage Collector does the rest
+		webClient.close();
 	}
 	
-	public static void setMutedErrStream(boolean flag)
-	{
-		if (flag)
-			System.setErr(new PrintStream(new OutputStream() {
-				@Override
-				public void write(int b) throws IOException
-				{}
-			}));
-		else
-			System.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err)));
-	}
 	
-	public static void requestTableMuted(Season season) throws BLException
-	{
-		setMutedErrStream(true);
-		requestData(season);
-		setMutedErrStream(false);
-	}
+	
+//	public static void setMutedErrStream(boolean flag)
+//	{
+//		if (flag)
+//			System.setErr(new PrintStream(new OutputStream() {
+//				@Override
+//				public void write(int b) throws IOException
+//				{}
+//			}));
+//		else
+//			System.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err)));
+//	}
+//	
+//	public void requestTableMuted(Season season) throws BLException
+//	{
+//		setMutedErrStream(true);
+//		requestData(season);
+//		setMutedErrStream(false);
+//	}
 }

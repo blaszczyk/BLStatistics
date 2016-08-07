@@ -3,43 +3,52 @@ package bn.blaszczyk.blstatistics.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.Stack;
 
 import javax.swing.*;
 
-
+import bn.blaszczyk.blstatistics.BLStatistics;
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.core.Season;
 import bn.blaszczyk.blstatistics.tools.BLException;
 import bn.blaszczyk.blstatistics.tools.FileIO;
 import bn.blaszczyk.blstatistics.tools.FussballDatenRequest;
+import bn.blaszczyk.blstatistics.tools.SeasonRequest;
+import bn.blaszczyk.blstatistics.tools.WeltFussballRequest;
 
 @SuppressWarnings("serial")
 public class DownloadDialog extends JDialog implements ActionListener {
 
 	private JDialog owner;
 	
-	private JLabel lblInfo = new JLabel("Starte Downloads");
+	private JTextArea infoArea = new JTextArea();
 	private JProgressBar prograssBar;
 	private JLabel lblTimeLeft = new JLabel("geschätzte Restzeit: unbekannt");
 	private JButton btnCancel = new JButton("Abbrechen");
 	
+	private SeasonRequest request;
 	private List<Season> seasons;
 	private int secsLeft = 10;
 	private long initTimeStamp = System.currentTimeMillis();
 	int counter = 0;
 	
 	private Thread timeThread = new Thread(()->{
+		int cnt = 5;
 		while(true)
 		{
-			SwingUtilities.invokeLater(() -> {
-				lblTimeLeft.setText(String.format( "geschätzte Restzeit: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n"));
-			});
-			if(secsLeft > 0)
-				secsLeft--;
+			SwingUtilities.invokeLater(() -> { infoArea.append("."); } );
+			cnt--;
+			if(cnt == 0)
+			{
+				if(secsLeft > 0)
+					secsLeft--;
+				cnt = 5;
+				SwingUtilities.invokeLater(() -> {
+					lblTimeLeft.setText(String.format( "geschätzte Restzeit: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n"));
+				});
+			}
 			try
 			{
-				Thread.sleep(1000);
+				Thread.sleep(200);
 			}
 			catch (InterruptedException e)
 			{
@@ -53,7 +62,8 @@ public class DownloadDialog extends JDialog implements ActionListener {
 		{
 			SwingUtilities.invokeLater( () -> {
 				prograssBar.setValue(counter);
-				lblInfo.setText(String.format("aktueller Download: %s - %4d",season.getLeague(),season.getYear()));
+				infoArea.append(String.format("\nLade Saison %s - %4d", season.getLeague().toString(), season.getYear() ) );
+				infoArea.setCaretPosition(infoArea.getDocument().getLength());
 			});
 			try
 			{
@@ -61,7 +71,8 @@ public class DownloadDialog extends JDialog implements ActionListener {
 			}
 			catch (BLException e)
 			{
-				e.printStackTrace();
+				infoArea.append("\n" + e.getErrorMessage());
+				infoArea.setCaretPosition(infoArea.getDocument().getLength());
 			}
 			counter++;
 			secsLeft = (int)( (System.currentTimeMillis() - initTimeStamp) * (seasons.size() - counter) / counter )/1000;
@@ -70,7 +81,8 @@ public class DownloadDialog extends JDialog implements ActionListener {
 		secsLeft = (int) (System.currentTimeMillis() - initTimeStamp)/1000;
 		SwingUtilities.invokeLater( () -> {
 			prograssBar.setValue(counter);
-			lblInfo.setText(String.format("Download Beendet"));
+			infoArea.append("\nDownload beendet");
+			infoArea.setCaretPosition(infoArea.getDocument().getLength());
 			lblTimeLeft.setText(String.format( "Dauer: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n"));
 			btnCancel.setText("Fertig");
 		});
@@ -82,25 +94,40 @@ public class DownloadDialog extends JDialog implements ActionListener {
 		this.owner = owner;
 		this.seasons = seasons;
 		
+		switch (BLStatistics.getRequestSource())
+		{
+		case BLStatistics.FUSSBALL_DATEN:
+			request = new FussballDatenRequest();
+			break;
+		case BLStatistics.WELT_FUSSBALL:
+			request = new WeltFussballRequest();
+			break;
+		}
+		
 		secsLeft = seasons.size();
 		
 		setLayout(null);
-		setSize(606, 180);
+		setSize(606, 340);
 		setResizable(false);
-		
-		lblInfo.setBounds(10, 10, 580, 30);
+
+		infoArea.setEditable(false);
+		infoArea.setWrapStyleWord(true);
+		infoArea.append("Starte Download");
+
+		JScrollPane infoPane = new JScrollPane(infoArea);
+		infoPane.setBounds(10, 10, 580, 200);
 		
 		prograssBar = new JProgressBar(0, seasons.size());
 		prograssBar.setStringPainted(true);
-		prograssBar.setBounds(10, 50, 580, 40);
+		prograssBar.setBounds(10, 210, 580, 40);
 		
-		lblTimeLeft.setBounds(10, 100, 300, 30);
+		lblTimeLeft.setBounds(10, 260, 300, 30);
 		
-		btnCancel.setBounds(440, 100, 150, 30);
+		btnCancel.setBounds(440, 260, 150, 30);
 		btnCancel.addActionListener(this);
 		btnCancel.setMnemonic('r');
 		
-		add(lblInfo);
+		add(infoPane);
 		add(prograssBar);
 		add(lblTimeLeft);
 		add(btnCancel);
@@ -110,17 +137,17 @@ public class DownloadDialog extends JDialog implements ActionListener {
 	public void showDialog()
 	{
 		dlThread.start();
+		timeThread.start();
 		setLocationRelativeTo(owner);
 		setVisible(true);	
 	}
 	
-
+	
 	private void requestSeason(Season season) throws BLException
 	{		
-		FussballDatenRequest.requestData(season);
-		Stack<Game> gameStack = FussballDatenRequest.getGames();
-		FussballDatenRequest.clearTable();
-		season.consumeGames(gameStack);
+		request.requestData(season);
+		Iterable<Game> games = request.getGames();
+		season.consumeGames(games);
 		FileIO.saveSeason(season);
 	}
 

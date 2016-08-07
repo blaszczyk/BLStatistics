@@ -22,9 +22,11 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	protected static final String LEQ = "<=";
 	protected static final String GG = ">";
 	protected static final String LL = "<";
+
+	private static final String[] OPERATORS = {EQ,NEQ,GG,GEQ,LL,LEQ};
 	
 	private JLabel label;
-	private JComboBox<String> operatorBox;
+	private JComboBox<String> operatorBox = new JComboBox<>(OPERATORS);
 	private JTextField valueField;
 	private int defaultValue;
 
@@ -34,8 +36,6 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		
 		label = new JLabel(labelText);
 		
-		String[] operators = {EQ,NEQ,GG,GEQ,LL,LEQ};
-		operatorBox = new JComboBox<>(operators);
 		operatorBox.setMaximumSize(new Dimension(50,30));
 		operatorBox.setInheritsPopupMenu(true);
 		operatorBox.addActionListener(e -> setOperator());
