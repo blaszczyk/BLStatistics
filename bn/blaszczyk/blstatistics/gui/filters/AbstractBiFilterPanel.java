@@ -23,54 +23,41 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	
 	
 	private boolean isActive = true;
-	protected JMenuItem setActive;
-	protected JMenuItem negate;
-	protected JMenu replace;
+	protected JMenuItem popupSetActive;
+	protected JMenuItem popupNegate;
+	protected JMenu popupReplace;
 	private JLabel title = new JLabel("Filter");
 	
 	private JPopupMenu popup;
 	
-	private BiFilter<T,U> filter;
+	private BiFilter<T,U> filter = LogicalBiFilter.getTRUEBiFilter();
 	private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
 	protected FilterPanelManager<T, U> filterManager;
 	
-	public AbstractBiFilterPanel(FilterPanelManager<T, U> filterFactory)
-	{
-		this( LogicalBiFilter.getTRUEBiFilter(),filterFactory);
-	}
-	
-	public AbstractBiFilterPanel( BiFilter<T,U> filter, FilterPanelManager<T, U> filterManager)
+	public AbstractBiFilterPanel(FilterPanelManager<T, U> filterManager)
 	{
 		this.filterManager = filterManager;
-		setFilter(filter);
-		setBorder(activeBorder);
 		
-		setActive = new JMenuItem("Deaktivieren");
-		setActive.addActionListener( e -> setActive(!isActive) );
+		popupSetActive = new JMenuItem("Deaktivieren");
+		popupSetActive.addActionListener( e -> setActive(!isActive) );
 
-		replace = new JMenu("Ersetzten");
-		filterManager.addMenuItems(replace, e -> replaceMe( filterManager.getPanel() ));
+		popupReplace = new JMenu("Ersetzten");
+		filterManager.addMenuItems(popupReplace, e -> replaceMe( filterManager.getPanel() ));
 
-		negate = new JMenuItem("Invertieren");
-		negate.addActionListener( e -> negate() );
+		popupNegate = new JMenuItem("Invertieren");
+		popupNegate.addActionListener( e -> negate() );
 		
 		popup = new JPopupMenu();
 		popup.add(title);
 		popup.addSeparator();
 		addPopupMenuItems();
 		setComponentPopupMenu(popup);
+		
+		setActive(true);
 		addFilterListener(e -> title.setText(this.toString()));
 	}
 
 	protected abstract void addComponents();
-	
-	protected void negate()
-	{
-		if(this instanceof UnaryOperatorFilterPanel)
-			replaceMe( ((UnaryOperatorFilterPanel<T, U>)this).getInnerPanel() );
-		else
-			replaceMe(new UnaryOperatorFilterPanel<T,U>(filterManager,this) );
-	}
 	
 	protected void setFilter(BiFilter<T,U> filter)
 	{
@@ -86,6 +73,21 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	protected void passFilterEvent(BiFilterEvent<T, U> e)
 	{
 		notifyListeners(e);
+	}	
+
+	protected void addPopupMenuItems()
+	{
+		popup.add(popupSetActive);
+		popup.add(popupNegate);
+		popup.add(popupReplace);
+	}
+	
+	private void negate()
+	{
+		if(this instanceof UnaryOperatorFilterPanel)
+			replaceMe( ((UnaryOperatorFilterPanel<T, U>)this).getInnerPanel() );
+		else
+			replaceMe(new UnaryOperatorFilterPanel<T,U>(filterManager,this) );
 	}
 	
 	private void setActive(boolean active)
@@ -94,22 +96,15 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		{
 			setBorder(activeBorder);
 			this.isActive = true;
-			setActive.setText("Deaktivieren");
+			popupSetActive.setText("Deaktivieren");
 		}
 		else
 		{
 			setBorder(deactiveBorder);
 			this.isActive = false;
-			setActive.setText("Aktivieren");
+			popupSetActive.setText("Aktivieren");
 		}
 		notifyListeners(new BiFilterEvent<T, U>(this,this,BiFilterEvent.RESET_FILTER));
-	}
-	
-	protected void addPopupMenuItems()
-	{
-		popup.add(setActive);
-		popup.add(negate);
-		popup.add(replace);
 	}
 
 	private void notifyListeners(BiFilterEvent<T,U> e)
@@ -125,6 +120,9 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 //			listener.filter(e);
 	}	
 	
+	/*
+	 * BiFilter Methods
+	 */
 	@Override
 	public boolean check(T t, U u)
 	{

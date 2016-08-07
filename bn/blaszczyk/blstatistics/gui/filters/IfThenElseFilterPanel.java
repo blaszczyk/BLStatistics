@@ -9,6 +9,10 @@ import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 @SuppressWarnings("serial")
 public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 {
+	private JLabel ifLabel = new JLabel("IF");
+	private JLabel thenLabel = new JLabel("THEN");
+	private JLabel elseLabel = new JLabel("ELSE");
+	
 	private BiFilterPanel<T,U> ifFilter;
 	private BiFilterPanel<T,U> thenFilter;
 	private BiFilterPanel<T,U> elseFilter;
@@ -16,6 +20,11 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	public IfThenElseFilterPanel(FilterPanelManager<T,U> filterManager)
 	{
 		super(filterManager);
+		
+		ifLabel.setAlignmentX(LEFT_ALIGNMENT);
+		thenLabel.setAlignmentX(LEFT_ALIGNMENT);
+		elseLabel.setAlignmentX(LEFT_ALIGNMENT);
+		
 		setIfFilter(new BlankFilterPanel<T, U>(filterManager));
 		setThenFilter(new BlankFilterPanel<T, U>(filterManager));
 		setElseFilter(new BlankFilterPanel<T, U>(filterManager));
@@ -95,17 +104,11 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	@Override
 	protected void addComponents()
 	{
-		JLabel label = new JLabel("IF");
-		label.setAlignmentX(LEFT_ALIGNMENT);
-		add(label);
+		add(ifLabel);
 		add(ifFilter.getPanel());
-		label = new JLabel("THEN");
-		label.setAlignmentX(LEFT_ALIGNMENT);
-		add(label);
+		add(thenLabel);
 		add(thenFilter.getPanel());
-		label = new JLabel("ELSE");
-		label.setAlignmentX(LEFT_ALIGNMENT);
-		add(label);
+		add(elseLabel);
 		add(elseFilter.getPanel());
 	}
 

@@ -16,7 +16,7 @@ public class FilterEvent<T>
 		this.type = type;
 		this.source = source;
 		this.filter = filter;
-		if(type == RESET_PANEL && ! BiFilterPanel.class.isAssignableFrom(filter.getClass()))
+		if(type == RESET_PANEL && ! (filter instanceof BiFilterPanel))
 			throw new UnsupportedOperationException("Second Argument must be a BiFilterPanel for type RESET_PANEL");
 	}
 

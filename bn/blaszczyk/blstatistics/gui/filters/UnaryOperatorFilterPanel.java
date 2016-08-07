@@ -25,40 +25,16 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	public UnaryOperatorFilterPanel(FilterPanelManager<T,U> filterManager, BiFilterPanel<T, U> originalPanel) 
 	{
 		super(filterManager);
-			
-		
 		setInnerPanel(originalPanel);
 		label.setAlignmentX(LEFT_ALIGNMENT);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
-	
-	protected void setFilter()
+
+	public BiFilterPanel<T, U> getInnerPanel()
 	{
-		setFilter(LogicalBiFilter.getNOTBiFilter(innerPanel));
+		return innerPanel;
 	}
-
 	
-	
-	@Override
-	protected void addPopupMenuItems()
-	{
-		JMenu setPanel = new JMenu("Setze Inneren Filter");
-		filterManager.addMenuItems(setPanel, e -> {
-			setInnerPanel( filterManager.getPanel());
-		});
-		addPopupMenuItem(setPanel);	
-		super.addPopupMenuItems();
-	}
-
-	@Override
-	protected void addComponents()
-	{
-		add(label);
-		add(innerPanel.getPanel());
-	}
-
-
-
 	private void setInnerPanel(BiFilterPanel<T,U> innerPanel)
 	{
 		if(innerPanel instanceof UnaryOperatorFilterPanel)
@@ -68,11 +44,27 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 		}
 		this.innerPanel = replaceFilterPanel(innerPanel, this.innerPanel);
 		setFilter();
-	}
+	}	
 	
-	public BiFilterPanel<T, U> getInnerPanel()
+	private void setFilter()
 	{
-		return innerPanel;
+		setFilter(LogicalBiFilter.getNOTBiFilter(innerPanel));
+	}
+
+	@Override
+	protected void addPopupMenuItems()
+	{
+		JMenu popupSetPanel = new JMenu("Setze Inneren Filter");
+		filterManager.addMenuItems(popupSetPanel, e -> setInnerPanel( filterManager.getPanel()) );
+		addPopupMenuItem(popupSetPanel);	
+		super.addPopupMenuItems();
+	}
+
+	@Override
+	protected void addComponents()
+	{
+		add(label);
+		add(innerPanel.getPanel());
 	}
 
 	
@@ -97,6 +89,6 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	@Override
 	public String toString()
 	{
-		return "NOT" + (hashCode()%10) + " " + innerPanel;
+		return "NOT " + innerPanel;
 	}
 }

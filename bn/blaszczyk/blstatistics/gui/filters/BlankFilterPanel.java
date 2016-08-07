@@ -13,16 +13,17 @@ public class BlankFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>
 {
 	public BlankFilterPanel(FilterPanelManager<T,U> filterManager)
 	{
-		super(LogicalBiFilter.getTRUEBiFilter(),filterManager);
+		super(filterManager);
+		setFilter(LogicalBiFilter.getTRUEBiFilter());
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		JMenu setPanel = new JMenu("Setzte Filter");
 		filterManager.addMenuItems(setPanel, e -> {
 			replaceMe( filterManager.getPanel() );
 		});
 		addPopupMenuItem(setPanel);
-		removePopupMenuItem(replace);
-		removePopupMenuItem(setActive);
-		removePopupMenuItem(negate);
+		removePopupMenuItem(popupReplace);
+		removePopupMenuItem(popupSetActive);
+		removePopupMenuItem(popupNegate);
 	}
 
 	@Override

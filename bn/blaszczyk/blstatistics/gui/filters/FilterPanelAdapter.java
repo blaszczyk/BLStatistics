@@ -29,8 +29,8 @@ public class FilterPanelAdapter {
 			super(filterFactory);
 			this.filterFactory = filterFactory;
 			this.innerPanel = panel;
-			panel.addPopupMenuItem(negate);
-			panel.addPopupMenuItem(replace);
+			panel.addPopupMenuItem(popupNegate);
+			panel.addPopupMenuItem(popupReplace);
 			panel.addFilterListener(this);
 		}
 
@@ -106,8 +106,8 @@ public class FilterPanelAdapter {
 			super(filterFactory);
 			this.filterFactory = filterFactory;
 			this.innerPanel = panel;
-			panel.addPopupMenuItem(negate);
-			panel.addPopupMenuItem(replace);
+			panel.addPopupMenuItem(popupNegate);
+			panel.addPopupMenuItem(popupReplace);
 			panel.addFilterListener(this);
 		}
 		

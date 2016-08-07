@@ -35,30 +35,27 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	 */
 	public AbstractFilterPanel()
 	{
-		this( LogicalFilter.getTRUEFilter());
-	}
-	
-	public AbstractFilterPanel( Filter<T> filter)
-	{
 		popupSetActive = new JMenuItem("Deaktivieren");
 		popupSetActive.addActionListener( e -> setActive(!active));
+		
 		popup = new JPopupMenu();
 		popup.add(popupHeader);
 		popup.addSeparator();
 		popup.add(popupSetActive);
 		setComponentPopupMenu(popup);
+		
 		setActive(true);
 		addFilterListener(e -> popupHeader.setText(this.toString()));
 	}
 
 
+	protected abstract void addComponents();
+	
 	protected void setFilter(Filter<T> filter)
 	{
 		this.filter = filter;
 		notifyListeners(new FilterEvent<>(this, filter, FilterEvent.RESET_FILTER));
 	}
-	
-//	protected abstract Filter<T> getFilter();
 	
 	private void setActive(boolean active)
 	{
@@ -76,7 +73,27 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 		}
 		notifyListeners(new FilterEvent<T>(this, this, FilterEvent.RESET_FILTER));
 	}
+
+	private void notifyListeners(FilterEvent<T> e)
+	{
+		for(FilterListener<T> listener : listeners)
+			listener.filter(e);
+	}	
+
+	/*
+	 * Filter Methods
+	 */
 	
+	@Override
+	public boolean check(T t)
+	{
+		return !active || filter.check(t);
+	}
+	
+	/*
+	 * FilterPanel Methods
+	 */
+
 	@Override 
 	public JPanel getPanel()
 	{
@@ -90,23 +107,6 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 		addComponents();
 		revalidate();
 	}
-	
-	protected abstract void addComponents();
-
-	/*
-	 * Filter Methods
-	 */
-	
-	@Override
-	public boolean check(T t)
-	{
-		return !active || filter.check(t);
-	}
-	
-	/*
-	 * FilterListener Methods
-	 */
-
 	@Override
 	public void addFilterListener(FilterListener<T> listener)
 	{
@@ -119,12 +119,6 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 		int i = listeners.indexOf(listener);
 		if( i >= 0 )
 			listeners.remove(i);
-	}
-
-	private void notifyListeners(FilterEvent<T> e)
-	{
-		for(FilterListener<T> listener : listeners)
-			listener.filter(e);
 	}
 
 	@Override
