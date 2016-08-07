@@ -13,6 +13,7 @@ import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
+import bn.blaszczyk.blstatistics.gui.filters.ComboBoxFactory;
 
 @SuppressWarnings({"serial"})
 public class TeamFilterPanel extends AbstractFilterPanel<Game>

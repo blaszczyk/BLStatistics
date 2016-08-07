@@ -1,17 +1,14 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 
@@ -21,11 +18,10 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	public static final String AND = "AND";
 	public static final String OR = "OR";
 	public static final String XOR = "XOR";
+	private static final String[] OPERATORS = {AND,OR,XOR};
 	
 	private List<BiFilterPanel<T,U>> panels;
-	private String[] operators = {AND,OR,XOR};
 	private JComboBox<String> operatorBox;
-	private JPanel top = new JPanel();
 	
 	private JMenu popupRemoveFilter;
 
@@ -33,27 +29,17 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	{
 		super(filterManager);
 		this.panels = panels;
-		
-		operatorBox = new JComboBox<>(operators);
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+	
+		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(OPERATORS);
+		cbf.setBoxWidth(80);
+		operatorBox = cbf.createComboBox();
 		operatorBox.setAlignmentX(LEFT_ALIGNMENT);
 		operatorBox.addActionListener( e -> setFilter() );
 		operatorBox.setSelectedItem(operator);
-		operatorBox.setMaximumSize(new Dimension(50,30));
-		operatorBox.setInheritsPopupMenu(true);
-		
-
-		top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
-		top.add(operatorBox);
-		top.add(Box.createRigidArea(new Dimension(150,30)));
-		top.setInheritsPopupMenu(true);
-		top.setAlignmentX(LEFT_ALIGNMENT);
 		
 		for(BiFilterPanel<T, U> panel : panels)
-			panel.addFilterListener(this);
-		
-		
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		
+			panel.addFilterListener(this);		
 	}
 
 	public MultiOperatorFilterPanel(FilterPanelManager<T,U> filterManager) 
@@ -71,7 +57,6 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	private void addPanel(BiFilterPanel<T,U> panel)
 	{
 		panels.add(replaceFilterPanel(panel, null) );
-		setDeleteMenu();
 		setFilter();
 	}
 	
@@ -80,14 +65,12 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		if(index < 0 || index >= panels.size())
 			return;
 		panels.set(index, replaceFilterPanel(panel, panels.get(index)));
-		setDeleteMenu();
 		setFilter();
 	}
 	
 	private void removePanel(BiFilterPanel<T,U> panel)
 	{
 		panels.remove(panel);
-		setDeleteMenu();
 		setFilter();
 	}
 	
@@ -104,6 +87,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	
 	private void setFilter()
 	{
+		setDeleteMenu();
 		switch(getOperator())
 		{
 		case AND:
@@ -132,7 +116,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	@Override
 	protected void addComponents()
 	{
-		add(top);
+		add(operatorBox);
 		for(int i = 0; i < panels.size(); i++)
 		{
 			if(i > 0)

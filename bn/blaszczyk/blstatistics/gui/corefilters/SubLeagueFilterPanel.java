@@ -14,33 +14,32 @@ import javax.swing.JMenuItem;
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
+import bn.blaszczyk.blstatistics.gui.filters.ComboBoxFactory;
 
 @SuppressWarnings("serial")
 public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 
-	private JLabel label = new JLabel("Direkter Vergleich");
 	private ComboBoxFactory<String> cbf;
-	private List<JComboBox<String>> teamBoxes;
-	private JButton more;
+	
+	private JLabel label = new JLabel("Direkter Vergleich");
+	private List<JComboBox<String>> teamBoxes = new ArrayList<>();
+	private JButton btnNewTeam = new JButton("Neues Team");
 
 	private JMenu popupRemoveTeam;
 	
 	public SubLeagueFilterPanel(List<String> allTeams)
 	{
-		cbf = new ComboBoxFactory<>(allTeams);
-		teamBoxes = new ArrayList<>();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		cbf = new ComboBoxFactory<>(allTeams);
 		
 		label.setAlignmentX(LEFT_ALIGNMENT);
 		
-		more = new JButton("Neues Team");
-		more.setMaximumSize(new Dimension(250,30));
-		more.setMinimumSize(new Dimension(250,30));
-		more.addActionListener( e -> {
-			addTeamBox();
-			paint();
-		});
-		more.setAlignmentX(LEFT_ALIGNMENT);
+		btnNewTeam.setMaximumSize(new Dimension(250,30));
+		btnNewTeam.setMinimumSize(new Dimension(250,30));
+		btnNewTeam.setAlignmentX(LEFT_ALIGNMENT);
+		btnNewTeam.addActionListener( e -> addTeamBox() );
+		
 		addTeamBox();
 		addTeamBox();
 	}
@@ -53,9 +52,17 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		for(String team : selectedTeams)
 			if((index = allTeams.indexOf(team)) >= 0)
 				addTeamBox().setSelectedIndex(index);
-		setFilter();
 	}
 	
+	public int getTeamCount()
+	{
+		return teamBoxes.size();
+	}
+	
+	public String getTeam(int index)
+	{
+		return (String) teamBoxes.get(index).getSelectedItem();
+	}
 	
 	private void setFilter()
 	{
@@ -72,14 +79,13 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		box.addActionListener(e -> setFilter());
 		box.setAlignmentX(LEFT_ALIGNMENT);
 		teamBoxes.add(box);
-		setDeleteMenu();
+		setFilter();
 		return box;
 	}
 
 	private void removeTeam(JComboBox<String> box)
 	{
 		teamBoxes.remove(box);
-		setDeleteMenu();
 		setFilter();
 	}
 	
@@ -92,16 +98,6 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 			remove.addActionListener( e -> removeTeam(box));
 			popupRemoveTeam.add(remove);
 		}
-	}
-	
-	public int getTeamCount()
-	{
-		return teamBoxes.size();
-	}
-	
-	public String getTeam(int index)
-	{
-		return (String) teamBoxes.get(index).getSelectedItem();
 	}
 	
 	@Override
@@ -118,7 +114,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		add(label);
 		for(JComboBox<String> box : teamBoxes)
 			add(box);
-		add(more);			
+		add(btnNewTeam);			
 	}
 
 	@Override

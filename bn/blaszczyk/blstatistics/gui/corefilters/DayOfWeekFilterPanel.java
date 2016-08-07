@@ -6,6 +6,7 @@ import javax.swing.JComboBox;
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
+import bn.blaszczyk.blstatistics.gui.filters.ComboBoxFactory;
 
 @SuppressWarnings("serial")
 public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game> 
