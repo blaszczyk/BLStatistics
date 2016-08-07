@@ -1,6 +1,5 @@
 package bn.blaszczyk.blstatistics.gui;
 
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -72,12 +71,6 @@ public class GameTable extends MyTable<Game>
 	protected MyTableModel<Game> createTableModel(List<Game> tList)
 	{
 		return new GameTableModel(tList);
-	}
-
-	@Override
-	protected void doPopup(MouseEvent e)
-	{
-		
 	}
 
 	@Override

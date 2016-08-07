@@ -6,8 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -18,7 +18,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
 
 @SuppressWarnings("serial")
-public abstract class MyTable<T> extends JTable implements MouseListener, KeyListener
+public abstract class MyTable<T> extends JTable implements KeyListener
 {
 	private static final Color ODD_COLOR = new Color(247,247,247);
 	private static final Color EVEN_COLOR = Color.WHITE;
@@ -34,7 +34,7 @@ public abstract class MyTable<T> extends JTable implements MouseListener, KeyLis
 
 	private static final Font HEADER_FONT = new Font("Arial",Font.BOLD,16);
 	
-	private final TableCellRenderer renderer = new TableCellRenderer(){
+	private final TableCellRenderer cellRenderer = new TableCellRenderer(){
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 				boolean hasFocus, int row, int column) {
@@ -68,13 +68,6 @@ public abstract class MyTable<T> extends JTable implements MouseListener, KeyLis
 	private Comparator<T> comparator;
 	private boolean isCompareBackwards = true;
 	private int sortingColumn = -1;
-
-	
-	public MyTable(Iterable<T> source)
-	{
-		this();
-		setSource(source);
-	}
 	
 	public MyTable()
 	{
@@ -84,8 +77,13 @@ public abstract class MyTable<T> extends JTable implements MouseListener, KeyLis
 		getTableHeader().setFont(HEADER_FONT);
 		setRowHeight(ODD_FONT.getSize() + 10);
 		addKeyListener(this);
-		addMouseListener(this);
-		getTableHeader().addMouseListener(this);
+		getTableHeader().addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				sortByColumn( columnAtPoint(e.getPoint()));
+			}
+		});
 	}
 
 	public void setSource(Iterable<T> source)
@@ -106,7 +104,7 @@ public abstract class MyTable<T> extends JTable implements MouseListener, KeyLis
 	protected void setCellRenderer()
 	{
 		for(int columnIndex = 0; columnIndex < getColumnCount(); columnIndex++)
-			getColumnModel().getColumn(columnIndex).setCellRenderer( renderer );
+			getColumnModel().getColumn(columnIndex).setCellRenderer( cellRenderer );
 	}
 	
 	
@@ -119,6 +117,21 @@ public abstract class MyTable<T> extends JTable implements MouseListener, KeyLis
 		setCellRenderer();
 		setWidths();
 		repaint();
+	}
+	
+	private void sortByColumn(int columnIndex)
+	{
+		if(columnIndex == sortingColumn)
+			isCompareBackwards = !isCompareBackwards;
+		else
+		{
+			sortingColumn = columnIndex;
+			isCompareBackwards = false;
+		}
+		comparator = comparator(columnIndex);
+		if(isCompareBackwards)
+			comparator = reverseComparator(comparator);
+		setModel();		
 	}
 	
 	private void setWidths()
@@ -174,62 +187,9 @@ public abstract class MyTable<T> extends JTable implements MouseListener, KeyLis
 	
 	protected abstract boolean isThisRowSelected(int rowIndex);
 	protected abstract MyTableModel<T> createTableModel(List<T> tList);
-	protected abstract void doPopup(MouseEvent e);
 	protected abstract int columnWidth(int columnIndex);
 	protected abstract int columnAlignment(int columnIndex);
 	
-	
-	/*
-	 * Mouse Listener Methods
-	 */
-	@Override
-	public void mouseClicked(MouseEvent e) 
-	{
-		e.consume();
-		if( e.getComponent() == getTableHeader() )
-		{
-			int columnIndex = columnAtPoint(e.getPoint());
-			if(columnIndex == sortingColumn)
-				isCompareBackwards = !isCompareBackwards;
-			else
-			{
-				sortingColumn = columnIndex;
-				isCompareBackwards = false;
-			}
-			comparator = comparator(columnIndex);
-			if(isCompareBackwards)
-				comparator = reverseComparator(comparator);
-			setModel();
-		}
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e)
-	{
-		e.consume();
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e)
-	{
-		e.consume();
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e)
-	{
-		e.consume();
-		if(e.isPopupTrigger())
-			doPopup(e);
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e)
-	{
-		e.consume();
-		if(e.isPopupTrigger())
-			doPopup(e);
-	}
 
 	/*
 	 * Key Listener Methods

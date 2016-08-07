@@ -8,6 +8,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
@@ -20,6 +22,8 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	private ComboBoxFactory<String> cbf;
 	private List<JComboBox<String>> teamBoxes;
 	private JButton more;
+
+	private JMenu popupRemoveTeam;
 	
 	public SubLeagueFilterPanel(List<String> allTeams)
 	{
@@ -58,6 +62,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		List<String> teams = new ArrayList<>();
 		for(JComboBox<String> box : teamBoxes)
 			teams.add(box.getSelectedItem().toString());
+		setDeleteMenu();
 		setFilter(GameFilter.getSubLeagueFilter(teams));
 	}
 	
@@ -67,7 +72,26 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		box.addActionListener(e -> setFilter());
 		box.setAlignmentX(LEFT_ALIGNMENT);
 		teamBoxes.add(box);
+		setDeleteMenu();
 		return box;
+	}
+
+	private void removeTeam(JComboBox<String> box)
+	{
+		teamBoxes.remove(box);
+		setDeleteMenu();
+		setFilter();
+	}
+	
+	private void setDeleteMenu()
+	{
+		popupRemoveTeam.removeAll();
+		for(JComboBox<String> box : teamBoxes)
+		{
+			JMenuItem remove = new JMenuItem(box.getSelectedItem().toString());
+			remove.addActionListener( e -> removeTeam(box));
+			popupRemoveTeam.add(remove);
+		}
 	}
 	
 	public int getTeamCount()
@@ -78,6 +102,14 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	public String getTeam(int index)
 	{
 		return (String) teamBoxes.get(index).getSelectedItem();
+	}
+	
+	@Override
+	protected void addPopupMenuItems()
+	{
+		popupRemoveTeam  = new JMenu("Entferne Team");
+		addPopupMenuItem(popupRemoveTeam);
+		super.addPopupMenuItems();
 	}
 	
 	@Override

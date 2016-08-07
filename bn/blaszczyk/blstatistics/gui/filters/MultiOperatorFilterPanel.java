@@ -71,7 +71,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	private void addPanel(BiFilterPanel<T,U> panel)
 	{
 		panels.add(replaceFilterPanel(panel, null) );
-		resetDeleteMenu();
+		setDeleteMenu();
 		setFilter();
 	}
 	
@@ -80,18 +80,18 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		if(index < 0 || index >= panels.size())
 			return;
 		panels.set(index, replaceFilterPanel(panel, panels.get(index)));
-		resetDeleteMenu();
+		setDeleteMenu();
 		setFilter();
 	}
 	
 	private void removePanel(BiFilterPanel<T,U> panel)
 	{
 		panels.remove(panel);
-		resetDeleteMenu();
+		setDeleteMenu();
 		setFilter();
 	}
 	
-	private void resetDeleteMenu()
+	private void setDeleteMenu()
 	{
 		popupRemoveFilter.removeAll();
 		for(BiFilterPanel<T, U> panel : panels)
@@ -164,7 +164,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		}
 		else
 		{
-			resetDeleteMenu();
+			setDeleteMenu();
 			passFilterEvent(e);
 		}
 	}

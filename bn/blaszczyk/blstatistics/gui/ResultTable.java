@@ -1,6 +1,5 @@
 package bn.blaszczyk.blstatistics.gui;
 
-import java.awt.event.MouseEvent;
 import java.util.*;
 
 import javax.swing.ListSelectionModel;
@@ -59,11 +58,6 @@ public class ResultTable extends MyTable<TeamResult>
 			return new RelativeResultTableModel(ts); 
 		else
 			return new ResultTableModel(ts);
-	}
-
-	@Override
-	protected void doPopup(MouseEvent e)
-	{
 	}
 
 	@Override
