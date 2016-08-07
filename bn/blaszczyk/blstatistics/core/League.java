@@ -48,6 +48,14 @@ public class League implements Iterable<Season>
 	{
 		return wbfURL;
 	}
+
+	public boolean hasSeason(int year)
+	{
+		for(Season s : this)
+			if(s.getYear() == year)
+				return true;
+		return false;
+	}
 	
 	public Season getSeason(int year) throws BLException
 	{

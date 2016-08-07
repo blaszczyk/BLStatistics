@@ -31,6 +31,8 @@ public class FussballDatenRequest implements SeasonRequest {
 
 	private WebClient webClient = new WebClient();
 	private HtmlTable gamesTable;
+	private int year;
+	
 	
 	public FussballDatenRequest()
 	{
@@ -45,6 +47,7 @@ public class FussballDatenRequest implements SeasonRequest {
 	public void requestData(Season season) throws BLException
 	{
 		String url = String.format("%s/%s/%4d/", BASE_URL, season.getLeague().getURLFormat(), season.getYear());
+		year = season.getYear();
 		try
 		{
 			HtmlPage page = webClient.getPage(url);
@@ -63,21 +66,41 @@ public class FussballDatenRequest implements SeasonRequest {
 	{
 		Stack<Game> games = new Stack<>();
 		if (gamesTable != null)
-			for (HtmlTableRow row : gamesTable.getRows())
-				for (HtmlTableCell cell : row.getCells())
-					if (cell.getAttribute("class").startsWith("Gegner")
-							&& cell.getFirstElementChild() instanceof HtmlAnchor)
+			for (int i = 1; i < gamesTable.getRowCount(); i++)
+				for (HtmlTableCell cell : gamesTable.getRow(i).getCells())
+					if (cell.getAttribute("class").startsWith("Gegner"))
 					{
-						String gameString;
-						gameString = cell.getFirstElementChild().getAttribute("title");
-						games.push(new Game(gameString));
-						if( cell.getChildElementCount() > 1)
+						if(cell.getFirstElementChild() instanceof HtmlAnchor)
 						{
-							gameString = cell.getLastElementChild().getAttribute("title");
-							games.push(new Game(gameString));
+							addGame(games, cell.getFirstElementChild().getAttribute("title"));
+							if( cell.getChildElementCount() > 1)
+								addGame(games, cell.getLastElementChild().getAttribute("title"));
 						}
+						else if(cell.hasAttribute("title"))
+							addGame(games, cell.getAttribute("title") );
 					}
 		return games;
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void addGame(Stack<Game> games, String gameString)
+	{
+		try
+		{
+			games.push(new Game(gameString));
+		}
+		catch (BLException e)
+		{
+			gameString = "1.Spieltag "+ Game.DATE_FORMAT.format(new Date(year, 4, 30)) + gameString.substring(1) ;
+			try
+			{
+				games.push(new Game(gameString));
+			}
+			catch (BLException e1)
+			{
+				System.err.println(e1.getErrorMessage());
+			}
+		}
 	}
 
 	@Override

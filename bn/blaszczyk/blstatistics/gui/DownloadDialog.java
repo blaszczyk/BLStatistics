@@ -32,7 +32,7 @@ public class DownloadDialog extends JDialog implements ActionListener {
 	int counter = 0;
 	
 	private Thread timeThread = new Thread(()->{
-		int cnt = 5;
+		int cnt = 1;
 		while(true)
 		{
 			SwingUtilities.invokeLater(() -> { infoArea.append("."); } );
@@ -41,14 +41,14 @@ public class DownloadDialog extends JDialog implements ActionListener {
 			{
 				if(secsLeft > 0)
 					secsLeft--;
-				cnt = 5;
+				cnt = 10;
 				SwingUtilities.invokeLater(() -> {
 					lblTimeLeft.setText(String.format( "geschätzte Restzeit: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n"));
 				});
 			}
 			try
 			{
-				Thread.sleep(200);
+				Thread.sleep(100);
 			}
 			catch (InterruptedException e)
 			{

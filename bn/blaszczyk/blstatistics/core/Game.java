@@ -65,7 +65,14 @@ public class Game
 	
 	public Game(String gameString) throws BLException
 	{
-		matchDay = Integer.parseInt( gameString.substring(0, gameString.indexOf('.') ).trim() );
+		try
+		{
+			matchDay = Integer.parseInt( gameString.substring(0, gameString.indexOf('.') ).trim() );
+		}
+		catch(StringIndexOutOfBoundsException e)
+		{
+			throw new BLException("Wrong game format in '" + gameString + "'" );
+		}
 		if(matchDay < 1)
 			throw new BLException("Wrong matchDay in '" + gameString + "'" );
 		String gameDetails = gameString.substring( gameString.indexOf('g') + 2  );

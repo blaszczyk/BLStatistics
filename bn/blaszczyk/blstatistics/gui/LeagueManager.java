@@ -3,6 +3,7 @@ package bn.blaszczyk.blstatistics.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.*;
@@ -20,9 +21,43 @@ import bn.blaszczyk.blstatistics.tools.FileIO;
 @SuppressWarnings("serial")
 public class LeagueManager extends JDialog implements ListSelectionListener, ActionListener
 {
+	private class LeagueItem implements Iterable<League>
+	{
+		private String path;
+		private List<League> leagues;
+		
+		private LeagueItem(League league)
+		{
+			leagues = new ArrayList<>();
+			leagues.add(league);
+			path = league.getPathName();
+		}
+
+		private boolean addLeague(League league)
+		{
+			if(!league.getPathName().equals(path))
+				return false;
+			leagues.add(league);
+			return true;
+		}
+		
+		@Override
+		public Iterator<League> iterator()
+		{
+			return leagues.iterator();
+		}
+		
+		@Override
+		public String toString()
+		{
+			return path;
+		}
+		
+	}
+	
 	private JFrame owner;
 	
-	private JList<League> leagueList;
+	private JList<LeagueItem> leagueList;
 	private JTable seasonTable;
 	private JPanel actionPanel;
 
@@ -36,10 +71,8 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		this.owner = owner;
 		setSize(654,405);
 		setLayout(null);
-		
-		League[] leagueArray = new League[leagues.size()];
-		leagues.toArray(leagueArray);
-		leagueList = new JList<>(leagueArray);
+				
+		leagueList = new JList<>(createLeagueItems(leagues));
 		leagueList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		leagueList.addListSelectionListener( this );
 		
@@ -99,7 +132,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		repaint();
 	}
 	
-	private void populateSeasonTable(League league)
+	private void populateSeasonTable(LeagueItem leagueItem)
 	{
 		Object[] columnNames = {"Saison","Vorhanden", "Teams", "Spiele"};
 		DefaultTableModel tm = new DefaultTableModel(columnNames,0){
@@ -108,13 +141,14 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		        return false;
 		    }
 		};
-		for(Season season : league)
-		{
-			String isSaved = FileIO.isSeasonSaved(season)? "Ja": "Nein";
-			Object[] rowData = {season.getYear(), isSaved, season.getTeamCount(), season.getGameCount()};
-			tm.addRow(rowData);
-		}
-		seasonTable.setModel(tm);
+		for(League league : leagueItem)
+			for(Season season : league)
+			{
+				String isSaved = FileIO.isSeasonSaved(season)? "Ja": "Nein";
+				Object[] rowData = {season.getYear(), isSaved, season.getTeamCount(), season.getGameCount()};
+				tm.addRow(rowData);
+			}
+			seasonTable.setModel(tm);
 	}
 	
 	private void selectUnloaded()
@@ -139,7 +173,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 			for( int i : seasonTable.getSelectedRows() )
 			{
 				int year = (int) seasonTable.getModel().getValueAt(i, 0);
-				seasons.add( leagueList.getSelectedValue().getSeason(year) );
+				for(League league : leagueList.getSelectedValue())
+					if(league.hasSeason(year))
+						seasons.add( league.getSeason(year) );
 			}
 			DownloadDialog dlDialog = new DownloadDialog(this, seasons);
 			dlDialog.showDialog();
@@ -151,6 +187,22 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	}
 	
 
+	private LeagueItem[] createLeagueItems(List<League> leagues)
+	{
+		List<LeagueItem> leagueItems = new ArrayList<>();
+		for( League league : leagues)
+		{
+			boolean exists = false;
+			for(LeagueItem leagueItem : leagueItems)
+				exists |= leagueItem.addLeague(league);
+			if(!exists)
+				leagueItems.add(new LeagueItem(league));
+		}
+		LeagueItem[] leagueArray = new LeagueItem[leagues.size()];
+		leagueItems.toArray(leagueArray);
+		return leagueArray; 
+	}
+	
 	@Override
 	public void valueChanged(ListSelectionEvent e)
 	{
