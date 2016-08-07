@@ -1,6 +1,6 @@
 package bn.blaszczyk.blstatistics.filters;
 
-public class FilterAdapter
+public abstract class FilterAdapter
 {
 	public static <T,U> BiFilter<T,U> toBiFilterArg1( Filter<T> filter )
 	{

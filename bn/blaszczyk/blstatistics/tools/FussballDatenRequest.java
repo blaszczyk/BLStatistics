@@ -72,18 +72,18 @@ public class FussballDatenRequest implements SeasonRequest {
 					{
 						if(cell.getFirstElementChild() instanceof HtmlAnchor)
 						{
-							addGame(games, cell.getFirstElementChild().getAttribute("title"));
+							pushGame(games, cell.getFirstElementChild().getAttribute("title"));
 							if( cell.getChildElementCount() > 1)
-								addGame(games, cell.getLastElementChild().getAttribute("title"));
+								pushGame(games, cell.getLastElementChild().getAttribute("title"));
 						}
 						else if(cell.hasAttribute("title"))
-							addGame(games, cell.getAttribute("title") );
+							pushGame(games, cell.getAttribute("title") );
 					}
 		return games;
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void addGame(Stack<Game> games, String gameString)
+	private void pushGame(Stack<Game> games, String gameString)
 	{
 		try
 		{

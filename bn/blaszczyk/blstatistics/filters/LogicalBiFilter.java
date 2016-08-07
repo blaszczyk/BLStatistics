@@ -1,8 +1,6 @@
 package bn.blaszczyk.blstatistics.filters;
 
-import java.util.Arrays;
-
-public class LogicalBiFilter
+public abstract class LogicalBiFilter
 {
 	/*
 	 * TRUE
@@ -34,12 +32,6 @@ public class LogicalBiFilter
 	/*
 	 * AND
 	 */
-	@SafeVarargs
-	public static <T, U> BiFilter<T, U> getANDBiFilter(BiFilter<T, U>... filters)
-	{
-		return getANDBiFilter(Arrays.asList(filters));
-
-	}
 	public static <T, U, V extends BiFilter<T,U>> BiFilter<T, U> getANDBiFilter(Iterable<V> filters)
 	{
 		BiFilter<T, U> f = (t, u) ->
@@ -55,12 +47,6 @@ public class LogicalBiFilter
 	/*
 	 * OR
 	 */
-	@SafeVarargs
-	public static <T, U> BiFilter<T, U> getORBiFilter(BiFilter<T, U>... filters)
-	{
-		return getORBiFilter(Arrays.asList(filters));
-
-	}
 	public static <T, U, V extends BiFilter<T,U>> BiFilter<T, U> getORBiFilter(Iterable<V> filters)
 	{
 		BiFilter<T, U> f = (t, u) ->
@@ -76,12 +62,6 @@ public class LogicalBiFilter
 	/*
 	 * XOR
 	 */
-	@SafeVarargs
-	public static <T, U> BiFilter<T, U> getXORBiFilter(BiFilter<T, U>... filters)
-	{
-		return getXORBiFilter(Arrays.asList(filters));
-
-	}
 	public static <T, U, V extends BiFilter<T,U>> BiFilter<T, U> getXORBiFilter(Iterable<V> filters)
 	{
 		BiFilter<T, U> f = (t, u) ->
@@ -102,9 +82,9 @@ public class LogicalBiFilter
 		BiFilter<T, U> f = (t, u) ->
 		{
 			if (ifFilter != null && ifFilter.check(t,u))
-				return thenFilter != null ? thenFilter.check(t,u) : true;
+				return thenFilter != null ? thenFilter.check(t,u) : false;
 			else
-				return elseFilter != null ? elseFilter.check(t,u) : true;
+				return elseFilter != null ? elseFilter.check(t,u) : false;
 		};
 		return f;
 	}

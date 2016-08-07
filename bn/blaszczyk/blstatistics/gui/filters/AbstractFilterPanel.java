@@ -17,18 +17,18 @@ import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 @SuppressWarnings("serial")
 public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPanel<T>
 {
-	private static final Border activeBorder = BorderFactory.createLoweredBevelBorder();
-	private static final Border deactiveBorder = BorderFactory.createRaisedBevelBorder();
-	
-	
-	private boolean isActive = true;
-	private JMenuItem setActive;
-
-	private JLabel title = new JLabel("Filter");
-	private JPopupMenu popup;
+	private static final Border ACTIVE_BORDER = BorderFactory.createLoweredBevelBorder();
+	private static final Border INACTIVE_BORDER = BorderFactory.createRaisedBevelBorder();
 	
 	private Filter<T> filter = LogicalFilter.getTRUEFilter();
+	
 	private List<FilterListener<T>> listeners = new ArrayList<>();
+
+	private JPopupMenu popup;
+	private JLabel popupHeader = new JLabel("Filter");
+	private JMenuItem popupSetActive;
+	
+	private boolean active = true;
 	
 	/*
 	 * Constructors
@@ -40,43 +40,41 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	
 	public AbstractFilterPanel( Filter<T> filter)
 	{
-		setActive = new JMenuItem("Deaktivieren");
-		setActive.addActionListener( e -> setActive(!isActive));
+		popupSetActive = new JMenuItem("Deaktivieren");
+		popupSetActive.addActionListener( e -> setActive(!active));
 		popup = new JPopupMenu();
-		popup.add(title);
+		popup.add(popupHeader);
 		popup.addSeparator();
-		popup.add(setActive);
+		popup.add(popupSetActive);
 		setComponentPopupMenu(popup);
 		setActive(true);
-		addFilterListener(e -> title.setText(this.toString()));
+		addFilterListener(e -> popupHeader.setText(this.toString()));
 	}
 
 
 	protected void setFilter(Filter<T> filter)
 	{
 		this.filter = filter;
+		notifyListeners(new FilterEvent<>(this, filter, FilterEvent.RESET_FILTER));
 	}
 	
-	protected Filter<T> getFilter()
-	{
-		return filter;
-	}
+//	protected abstract Filter<T> getFilter();
 	
 	private void setActive(boolean active)
 	{
 		if(active)
 		{
-			setBorder(activeBorder);
-			this.isActive = true;
-			setActive.setText("Deaktivieren");
+			setBorder(ACTIVE_BORDER);
+			this.active = true;
+			popupSetActive.setText("Deaktivieren");
 		}
 		else
 		{
-			setBorder(deactiveBorder);
-			this.isActive = false;
-			setActive.setText("Aktivieren");
+			setBorder(INACTIVE_BORDER);
+			this.active = false;
+			popupSetActive.setText("Aktivieren");
 		}
-		notifyListeners(new FilterEvent<T>(this, getFilter(), FilterEvent.RESET_FILTER));
+		notifyListeners(new FilterEvent<T>(this, this, FilterEvent.RESET_FILTER));
 	}
 	
 	@Override 
@@ -102,7 +100,7 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	@Override
 	public boolean check(T t)
 	{
-		return !isActive || filter.check(t);
+		return !active || filter.check(t);
 	}
 	
 	/*
@@ -123,7 +121,7 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 			listeners.remove(i);
 	}
 
-	public void notifyListeners(FilterEvent<T> e)
+	private void notifyListeners(FilterEvent<T> e)
 	{
 		for(FilterListener<T> listener : listeners)
 			listener.filter(e);

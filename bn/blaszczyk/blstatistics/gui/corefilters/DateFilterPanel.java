@@ -2,7 +2,6 @@ package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Date;
 
 import javax.swing.BoxLayout;
@@ -13,14 +12,6 @@ import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
-
-
-/*
- * TODO: 
- * 	-moussewheel / keys in ComboBoxes
- * 	-FileIO
- */
 
 @SuppressWarnings({ "deprecation", "serial" })
 public class DateFilterPanel extends AbstractFilterPanel<Game>
@@ -54,7 +45,7 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 	{
 		operatorBox.setMaximumSize(new Dimension(50,30));
 		operatorBox.setInheritsPopupMenu(true);
-		operatorBox.addActionListener(e -> setOperator());
+		operatorBox.addActionListener(e -> setFilter());
 
 		
 		ComboBoxFactory<Integer> yearFactory = new ComboBoxFactory<>( intSequence( TODAY.getYear()+1900, 1964 ) );
@@ -83,33 +74,36 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 		};
 		yearBox.addActionListener(refreshDateBox);
 		monthBox.addActionListener(refreshDateBox);
-		dateBox.addActionListener( e -> setOperator());
-		setOperator();
+		dateBox.addActionListener( e -> setFilter());
+		setFilter();
 		setLayout( new BoxLayout(this, BoxLayout.LINE_AXIS));
 	}
 
-	protected void setOperator()
+	private void setFilter()
 	{
 		Date date = getDate();
 		String operator = operatorBox.getSelectedItem().toString();
 		switch(operator)
 		{
-		case NEQ:
 		case EQ:
 			setFilter(GameFilter.getDateFilter(date));
 			break;
-		case LL:
+		case NEQ:
+			setFilter(LogicalFilter.getNOTFilter(GameFilter.getDateFilter(date)));
+			break;
 		case GEQ:
 			setFilter(GameFilter.getDateMinFilter(date));
 			break;
-		case GG:
+		case LL:
+			setFilter(LogicalFilter.getNOTFilter(GameFilter.getDateMinFilter(date)));
+			break;
 		case LEQ:
 			setFilter(GameFilter.getDateMaxFilter(date));
 			break;
+		case GG:
+			setFilter(LogicalFilter.getNOTFilter(GameFilter.getDateMaxFilter(date)));
+			break;
 		}
-		if(Arrays.asList(NEQ,LL,GG).contains(operator))
-			setFilter(LogicalFilter.getNOTFilter(getFilter()));
-		notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
 	}
 
 	@Override

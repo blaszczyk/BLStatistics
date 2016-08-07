@@ -46,16 +46,13 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		setBorder(activeBorder);
 		
 		setActive = new JMenuItem("Deaktivieren");
-		setActive.addActionListener( e -> 
-			setActive(!isActive)
-		);
+		setActive.addActionListener( e -> setActive(!isActive) );
 
 		replace = new JMenu("Ersetzten");
-		filterManager.addMenuItems(replace, e -> notifyListeners(new BiFilterEvent<>(this, filterManager.getPanel(), BiFilterEvent.RESET_PANEL)));
+		filterManager.addMenuItems(replace, e -> replaceMe( filterManager.getPanel() ));
 
 		negate = new JMenuItem("Invertieren");
 		negate.addActionListener( e -> negate() );
-		
 		
 		popup = new JPopupMenu();
 		popup.add(title);
@@ -65,24 +62,30 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		addFilterListener(e -> title.setText(this.toString()));
 	}
 
+	protected abstract void addComponents();
+	
 	protected void negate()
 	{
-		BiFilterEvent<T,U> e;
 		if(this instanceof UnaryOperatorFilterPanel)
-			e = new BiFilterEvent<>(this, ((UnaryOperatorFilterPanel<T, U>)this).getInnerPanel(), BiFilterEvent.RESET_PANEL);
+			replaceMe( ((UnaryOperatorFilterPanel<T, U>)this).getInnerPanel() );
 		else
-			e = new BiFilterEvent<>(this,new UnaryOperatorFilterPanel<T,U>(filterManager,this) , BiFilterEvent.RESET_PANEL);
-		notifyListeners(e);
+			replaceMe(new UnaryOperatorFilterPanel<T,U>(filterManager,this) );
 	}
 	
 	protected void setFilter(BiFilter<T,U> filter)
 	{
 		this.filter = filter;
+		notifyListeners(new BiFilterEvent<>(this, filter, BiFilterEvent.RESET_FILTER));
 	}
 	
-	protected BiFilter<T,U> getFilter()
+	protected void replaceMe(BiFilterPanel<T, U> newPanel)
 	{
-		return filter;
+		notifyListeners(new BiFilterEvent<>(this, newPanel, BiFilterEvent.RESET_PANEL));
+	}
+	
+	protected void passFilterEvent(BiFilterEvent<T, U> e)
+	{
+		notifyListeners(e);
 	}
 	
 	private void setActive(boolean active)
@@ -109,8 +112,18 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		popup.add(replace);
 	}
 
-	protected abstract void addComponents();
-	
+	private void notifyListeners(BiFilterEvent<T,U> e)
+	{
+		List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
+		for(BiFilterListener<T, U> listener : listeners)
+			copy.add(listener);
+		for(BiFilterListener<T, U> listener : copy)
+			listener.filter(e);		
+		
+		// In order to avoid ConcurrentModificationException we do not use		
+//		for(BiFilterListener<T,U> listener : listeners)
+//			listener.filter(e);
+	}	
 	
 	@Override
 	public boolean check(T t, U u)
@@ -148,19 +161,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		int i = listeners.indexOf(listener);
 		if( i >= 0 )
 			listeners.remove(i);
-	}
-	
-	protected void notifyListeners(BiFilterEvent<T,U> e)
-	{
-		List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
-		for(BiFilterListener<T, U> listener : listeners)
-			copy.add(listener);
-		for(BiFilterListener<T, U> listener : copy)
-			listener.filter(e);		
-		
-		// In order to avoid ConcurrentModificationException we do not use		
-//		for(BiFilterListener<T,U> listener : listeners)
-//			listener.filter(e);
 	}
 
 	@Override

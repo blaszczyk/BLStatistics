@@ -1,8 +1,6 @@
 package bn.blaszczyk.blstatistics.filters;
 
-import java.util.Arrays;
-
-public class LogicalFilter
+public abstract class LogicalFilter
 {
 	/*
 	 * TRUE
@@ -34,12 +32,6 @@ public class LogicalFilter
 	/*
 	 * AND
 	 */
-	@SafeVarargs
-	public static <T> Filter<T> getANDFilter(Filter<T>... filters)
-	{
-		return getANDFilter(Arrays.asList(filters));
-
-	}
 	public static <T> Filter<T> getANDFilter(Iterable<Filter<T>> filters)
 	{
 		Filter<T> f = t ->
@@ -55,12 +47,6 @@ public class LogicalFilter
 	/*
 	 * OR
 	 */
-	@SafeVarargs
-	public static <T> Filter<T> getORFilter(Filter<T>... filters)
-	{
-		return getORFilter(Arrays.asList(filters));
-
-	}
 	public static <T> Filter<T> getORFilter(Iterable<Filter<T>> filters)
 	{
 		Filter<T> f = t ->

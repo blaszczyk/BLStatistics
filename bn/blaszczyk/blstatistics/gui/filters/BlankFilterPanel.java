@@ -17,7 +17,7 @@ public class BlankFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		JMenu setPanel = new JMenu("Setzte Filter");
 		filterManager.addMenuItems(setPanel, e -> {
-			notifyListeners(new BiFilterEvent<T, U>(this,filterManager.getPanel(),BiFilterEvent.RESET_PANEL));
+			replaceMe( filterManager.getPanel() );
 		});
 		addPopupMenuItem(setPanel);
 		removePopupMenuItem(replace);

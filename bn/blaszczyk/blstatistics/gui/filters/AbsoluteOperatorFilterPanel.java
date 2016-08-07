@@ -51,7 +51,6 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 			setFilter(LogicalBiFilter.getFALSEBiFilter());
 			label.setText("FALSE");
 		}
-		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
 	}
 
 	@Override

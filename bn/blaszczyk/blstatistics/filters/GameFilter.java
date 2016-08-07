@@ -140,7 +140,6 @@ public abstract class GameFilter implements Filter<Game>
 	/*
 	 * Date Filters
 	 */
-
 	public static Filter<Game> getDateFilter(Date date)
 	{
 		Filter<Game> f = g -> g.getDate().equals(date);
@@ -158,7 +157,9 @@ public abstract class GameFilter implements Filter<Game>
 		Filter<Game> f = g -> g.getDate().compareTo(date)<=0;
 		return f;
 	}
-	
+	/*
+	 * DayOfWeek Filter
+	 */
 	@SuppressWarnings("deprecation")
 	public static Filter<Game> getDayOfWeekFilter(int dayOfWeek) // 0 = Sunday ... 6 = Saturday
 	{

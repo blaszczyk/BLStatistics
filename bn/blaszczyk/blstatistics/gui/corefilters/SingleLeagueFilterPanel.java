@@ -12,7 +12,6 @@ import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 import bn.blaszczyk.blstatistics.filters.SeasonFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 
 @SuppressWarnings("serial")
 public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
@@ -26,14 +25,14 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		
 		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(allLeagues);
 		cboLeagues = cbf.createComboBox();
-		cboLeagues.addActionListener(e -> resetFilter());
+		cboLeagues.addActionListener(e -> setFilter());
 
 		boxRecursive.setMinimumSize(new Dimension(60, 30));
 		boxRecursive.setMinimumSize(new Dimension(60, 30));
 		boxRecursive.setInheritsPopupMenu(true);
-		boxRecursive.addActionListener(e -> resetFilter());
+		boxRecursive.addActionListener(e -> setFilter());
 		
-		resetFilter();
+		setFilter();
 	}
 
 	public SingleLeagueFilterPanel(List<String> allLeagues, String league, boolean isRecursive)
@@ -53,7 +52,7 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		return boxRecursive.isSelected();
 	}
 	
-	private void resetFilter()
+	private void setFilter()
 	{
 		String league = (String) cboLeagues.getSelectedItem();
 		Filter<Season> filter;
@@ -64,7 +63,6 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		else
 			filter = SeasonFilter.getLeagueFilter(league);
 		setFilter(filter);
-		notifyListeners(new FilterEvent<Season>(this, getFilter(), FilterEvent.RESET_FILTER));
 	}
 
 	@Override

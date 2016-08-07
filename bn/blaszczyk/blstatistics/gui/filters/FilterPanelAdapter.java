@@ -67,9 +67,9 @@ public class FilterPanelAdapter {
 		public void filter(FilterEvent<T> e)
 		{
 			if(e.getType() == FilterEvent.RESET_PANEL)
-				notifyListeners(new BiFilterEvent<T,U>(this,getFirstArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
+				passFilterEvent(new BiFilterEvent<T,U>(this,getFirstArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
 			else
-				notifyListeners(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg1(e.getFilter()),e.getType()));
+				passFilterEvent(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg1(e.getFilter()),e.getType()));
 		}
 
 		@Override
@@ -144,9 +144,9 @@ public class FilterPanelAdapter {
 		public void filter(FilterEvent<U> e)
 		{
 			if(e.getType() == FilterEvent.RESET_PANEL)
-				notifyListeners(new BiFilterEvent<T,U>(this,getSecondArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
+				passFilterEvent(new BiFilterEvent<T,U>(this,getSecondArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
 			else
-				notifyListeners(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg2(e.getFilter()),e.getType()));
+				passFilterEvent(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg2(e.getFilter()),e.getType()));
 		}
 
 		@Override

@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import bn.blaszczyk.blstatistics.filters.Filter;
+
 @SuppressWarnings("serial")
 public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> implements MouseWheelListener, KeyListener
 {
@@ -38,7 +40,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		
 		operatorBox.setMaximumSize(new Dimension(50,30));
 		operatorBox.setInheritsPopupMenu(true);
-		operatorBox.addActionListener(e -> setOperator());
+		operatorBox.addActionListener(e -> setFilter());
 		
 		valueField = new JTextField(Integer.toString(defaultValue));
 		valueField.setMaximumSize(new Dimension(70,30));
@@ -47,7 +49,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		valueField.addMouseWheelListener(this);
 
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
-		setOperator();
+		setFilter();
 	}
 	
 	protected IntegerValueFilterPanel(String labelText, String operator, int defaultValue)
@@ -92,7 +94,12 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		return label.getText();
 	}
 	
-	protected abstract void setOperator();	
+	protected abstract Filter<T> getFilter();
+	
+	private void setFilter()
+	{
+		setFilter(getFilter());
+	}
 
 	@Override
 	public String toString()
@@ -109,7 +116,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 			JTextField tf = (JTextField) e.getSource();
 			int newVal = diff + Integer.parseInt(tf.getText());
 			tf.setText("" + newVal);
-			setOperator();
+			setFilter();
 		}
 		
 	}
@@ -137,7 +144,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	{
 		if (e.getSource() instanceof JTextField)
 		{
-			setOperator();
+			setFilter();
 			((JTextField)e.getSource()).requestFocusInWindow();
 		}
 	}
@@ -157,5 +164,5 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 			}
 		}
 	}
-	
+
 }

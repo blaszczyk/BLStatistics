@@ -21,7 +21,7 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 		setElseFilter(new BlankFilterPanel<T, U>(filterManager));
 		
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-		setOperator();
+		setFilter();
 	}
 
 	public IfThenElseFilterPanel(FilterPanelManager<T,U> filterManager, BiFilterPanel<T,U> ifFilter, BiFilterPanel<T,U> thenFilter, BiFilterPanel<T,U> elseFilter)
@@ -30,30 +30,6 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 		setIfFilter(ifFilter);
 		setThenFilter(thenFilter);
 		setElseFilter(elseFilter);
-	}
-	
-	private void setIfFilter(BiFilterPanel<T,U> panel)
-	{
-		ifFilter = replaceFilterPanel(panel, ifFilter);
-		setOperator();
-	}
-	
-	private void setThenFilter(BiFilterPanel<T,U> panel)
-	{
-		thenFilter = replaceFilterPanel(panel, thenFilter);
-		setOperator();
-	}
-	
-	private void setElseFilter(BiFilterPanel<T,U> panel)
-	{
-		elseFilter = replaceFilterPanel(panel, elseFilter);
-		setOperator();
-	}
-	
-	private void setOperator()
-	{
-		setFilter( LogicalBiFilter.getIF_THEN_ELSEBiFilter(ifFilter, thenFilter, elseFilter));
-		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
 	}
 
 	public BiFilterPanel<T, U> getIfFilter()
@@ -72,6 +48,30 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	{
 		return elseFilter;
 	}
+	
+	private void setIfFilter(BiFilterPanel<T,U> panel)
+	{
+		ifFilter = replaceFilterPanel(panel, ifFilter);
+		setFilter();
+	}
+	
+	private void setThenFilter(BiFilterPanel<T,U> panel)
+	{
+		thenFilter = replaceFilterPanel(panel, thenFilter);
+		setFilter();
+	}
+	
+	private void setElseFilter(BiFilterPanel<T,U> panel)
+	{
+		elseFilter = replaceFilterPanel(panel, elseFilter);
+		setFilter();
+	}
+	
+	private void setFilter()
+	{
+		setFilter( LogicalBiFilter.getIF_THEN_ELSEBiFilter(ifFilter, thenFilter, elseFilter));
+	}
+
 
 	
 
@@ -131,7 +131,7 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 				setElseFilter(e.getPanel());
 		}
 		else
-			notifyListeners(e);
+			passFilterEvent(e);
 	}
 	
 	@Override

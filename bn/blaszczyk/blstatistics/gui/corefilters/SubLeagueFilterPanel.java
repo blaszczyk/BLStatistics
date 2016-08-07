@@ -1,7 +1,6 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.Dimension;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,16 +12,14 @@ import javax.swing.JLabel;
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 
 @SuppressWarnings("serial")
 public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 
+	private JLabel label = new JLabel("Direkter Vergleich");
 	private ComboBoxFactory<String> cbf;
 	private List<JComboBox<String>> teamBoxes;
 	private JButton more;
-	private ActionListener listener = e -> setTeams();
-	private JLabel label = new JLabel("Direkter Vergleich");
 	
 	public SubLeagueFilterPanel(List<String> allTeams)
 	{
@@ -43,30 +40,31 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		addTeamBox();
 		addTeamBox();
 	}
+
+	public SubLeagueFilterPanel(List<String> allTeams, Iterable<String> selectedTeams)
+	{
+		this(allTeams);
+		teamBoxes.clear();
+		int index;
+		for(String team : selectedTeams)
+			if((index = allTeams.indexOf(team)) >= 0)
+				addTeamBox().setSelectedIndex(index);
+		setFilter();
+	}
 	
-	private void setTeams()
+	
+	private void setFilter()
 	{
 		List<String> teams = new ArrayList<>();
 		for(JComboBox<String> box : teamBoxes)
 			teams.add(box.getSelectedItem().toString());
 		setFilter(GameFilter.getSubLeagueFilter(teams));
-		notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
-	}
-	
-	public SubLeagueFilterPanel(List<String> allTeams, Iterable<String> teams)
-	{
-		this(allTeams);
-		teamBoxes.clear();
-		int index;
-		for(String team : teams)
-			if((index = allTeams.indexOf(team)) >= 0)
-				addTeamBox().setSelectedIndex(index);
 	}
 	
 	private JComboBox<String> addTeamBox()
 	{
 		JComboBox<String> box = cbf.createComboBox();
-		box.addActionListener(listener);
+		box.addActionListener(e -> setFilter());
 		box.setAlignmentX(LEFT_ALIGNMENT);
 		teamBoxes.add(box);
 		return box;

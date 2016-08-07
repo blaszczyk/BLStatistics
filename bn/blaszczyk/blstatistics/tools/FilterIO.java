@@ -188,11 +188,11 @@ public class FilterIO
 		return null;
 	}
 
-
 	public BiFilterPanel<Season, Game> loadFilter(String filterName)
 	{
 		return loadFilter(new File(String.format("%s/%s.%s", FOLDER, filterName, EXTENSION)));
 	}
+	
 	private BiFilterPanel<Season, Game> loadFilter(File file)
 	{
 		if(!file.exists())

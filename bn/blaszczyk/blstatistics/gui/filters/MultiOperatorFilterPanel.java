@@ -36,7 +36,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		
 		operatorBox = new JComboBox<>(operators);
 		operatorBox.setAlignmentX(LEFT_ALIGNMENT);
-		operatorBox.addActionListener( e -> setOperator() );
+		operatorBox.addActionListener( e -> setFilter() );
 		operatorBox.setSelectedItem(operator);
 		operatorBox.setMaximumSize(new Dimension(50,30));
 		operatorBox.setInheritsPopupMenu(true);
@@ -67,7 +67,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	{
 		panels.add(replaceFilterPanel(panel, null) );
 		resetDeleteMenu();
-		setOperator();
+		setFilter();
 	}
 	
 	private void replacePanel(int index, BiFilterPanel<T,U> panel)
@@ -77,14 +77,14 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		
 		panels.set(index, replaceFilterPanel(panel, panels.get(index)));
 		resetDeleteMenu();
-		setOperator();
+		setFilter();
 	}
 	
 	private void removePanel(BiFilterPanel<T,U> panel)
 	{
 		panels.remove(panel);
 		resetDeleteMenu();
-		setOperator();
+		setFilter();
 	}
 	
 	private void resetDeleteMenu()
@@ -103,7 +103,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		return (String)operatorBox.getSelectedItem();
 	}
 	
-	private void setOperator()
+	private void setFilter()
 	{
 		switch(getOperator())
 		{
@@ -117,7 +117,6 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 			setFilter(LogicalBiFilter.getXORBiFilter(panels));
 			break;
 		}		
-		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
 	}
 
 	
@@ -169,7 +168,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		else
 		{
 			resetDeleteMenu();
-			notifyListeners(e);
+			passFilterEvent(e);
 		}
 	}
 	

@@ -1,13 +1,9 @@
 package bn.blaszczyk.blstatistics.filters;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import bn.blaszczyk.blstatistics.core.Game;
-import bn.blaszczyk.blstatistics.core.League;
 import bn.blaszczyk.blstatistics.core.Season;
 
-public class SeasonFilter
+public abstract class SeasonFilter
 {
 	/*
 	 * Pure Season Filters
@@ -58,19 +54,4 @@ public class SeasonFilter
 		BiFilter<Season,Game> f = (s,g) -> 2 * g.getMatchDay() > s.getMatchDayCount();
 		return f;
 	}
-	
-	/*
-	 * What these filters do best.
-	 */
-	
-	public static List<Game> getGames( League league, BiFilter<Season,Game> filter)
-	{
-		List<Game> gameList = new ArrayList<>();
-		for(Season season : league)
-			for(Game game : league.getAllGames())
-				if(filter.check(season, game))
-					gameList.add(game);
-		return gameList;
-	}
-	
 }

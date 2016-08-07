@@ -1,15 +1,13 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
-import java.util.Arrays;
-
 import bn.blaszczyk.blstatistics.core.Game;
+import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
-import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 import bn.blaszczyk.blstatistics.gui.filters.FilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.IntegerValueFilterPanel;
 
-public class GoalFilterPanel
+public abstract class GoalFilterPanel
 {
 
 	@SuppressWarnings("serial")
@@ -18,27 +16,25 @@ public class GoalFilterPanel
 		return new IntegerValueFilterPanel<Game>("Tore",operator,refInt)
 		{
 			@Override
-			protected void setOperator()
+			protected Filter<Game> getFilter()
 			{
 				int goals = getReferenceInt();
 				switch(getSelectedOperator())
 				{
-				case NEQ:
 				case EQ:
-					setFilter(GameFilter.getGoalFilter(goals));
-					break;
-				case LL:
+					return GameFilter.getGoalFilter(goals);
+				case NEQ:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoalFilter(goals));
 				case GEQ:
-					setFilter(GameFilter.getGoalMinFilter(goals));
-					break;
-				case GG:
+					return GameFilter.getGoalMinFilter(goals);
+				case LL:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoalMinFilter(goals));
 				case LEQ:
-					setFilter(GameFilter.getGoalMaxFilter(goals));
-					break;
+					return GameFilter.getGoalMaxFilter(goals);
+				case GG:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoalMaxFilter(goals));
 				}
-				if(Arrays.asList(NEQ,LL,GG).contains(getSelectedOperator()))
-					setFilter(LogicalFilter.getNOTFilter(getFilter()));
-				notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
+				return LogicalFilter.getTRUEFilter();
 			}
 		};
 	}
@@ -48,27 +44,25 @@ public class GoalFilterPanel
 		return new IntegerValueFilterPanel<Game>("Heimtore",operator,refInt)
 		{
 			@Override
-			protected void setOperator()
+			protected Filter<Game> getFilter()
 			{
 				int goals = getReferenceInt();
 				switch(getSelectedOperator())
 				{
-				case NEQ:
 				case EQ:
-					setFilter(GameFilter.getGoal1Filter(goals));
-					break;
-				case LL:
+					return GameFilter.getGoal1Filter(goals);
+				case NEQ:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoal1Filter(goals));
 				case GEQ:
-					setFilter(GameFilter.getGoal1MinFilter(goals));
-					break;
-				case GG:
+					return GameFilter.getGoal1MinFilter(goals);
+				case LL:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoal1MinFilter(goals));
 				case LEQ:
-					setFilter(GameFilter.getGoal1MaxFilter(goals));
-					break;
+					return GameFilter.getGoal1MaxFilter(goals);
+				case GG:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoal1MaxFilter(goals));
 				}
-				if(Arrays.asList(NEQ,LL,GG).contains(getSelectedOperator()))
-					setFilter(LogicalFilter.getNOTFilter(getFilter()));
-				notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
+				return LogicalFilter.getTRUEFilter();
 			}
 		};
 	}
@@ -77,28 +71,27 @@ public class GoalFilterPanel
 	{
 		return new IntegerValueFilterPanel<Game>("Auswärtstore",operator,refInt)
 		{
+
 			@Override
-			protected void setOperator()
+			protected Filter<Game> getFilter()
 			{
 				int goals = getReferenceInt();
 				switch(getSelectedOperator())
 				{
-				case NEQ:
 				case EQ:
-					setFilter(GameFilter.getGoal2Filter(goals));
-					break;
-				case LL:
+					return GameFilter.getGoal2Filter(goals);
+				case NEQ:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoal2Filter(goals));
 				case GEQ:
-					setFilter(GameFilter.getGoal2MinFilter(goals));
-					break;
-				case GG:
+					return GameFilter.getGoal2MinFilter(goals);
+				case LL:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoal2MinFilter(goals));
 				case LEQ:
-					setFilter(GameFilter.getGoal2MaxFilter(goals));
-					break;
+					return GameFilter.getGoal2MaxFilter(goals);
+				case GG:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoal2MaxFilter(goals));
 				}
-				if(Arrays.asList(NEQ,LL,GG).contains(getSelectedOperator()))
-					setFilter(LogicalFilter.getNOTFilter(getFilter()));
-				notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
+				return LogicalFilter.getTRUEFilter();
 			}
 		};
 	}
@@ -108,27 +101,25 @@ public class GoalFilterPanel
 		return new IntegerValueFilterPanel<Game>("Tordifferenz",operator,refInt)
 		{
 			@Override
-			protected void setOperator()
+			protected Filter<Game> getFilter()
 			{
 				int goals = getReferenceInt();
 				switch(getSelectedOperator())
 				{
-				case NEQ:
 				case EQ:
-					setFilter(GameFilter.getGoalDiffFilter(goals));
-					break;
-				case LL:
+					return GameFilter.getGoalDiffFilter(goals);
+				case NEQ:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoalDiffFilter(goals));
 				case GEQ:
-					setFilter(GameFilter.getGoalDiffMinFilter(goals));
-					break;
-				case GG:
+					return GameFilter.getGoalDiffMinFilter(goals);
+				case LL:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoalDiffMinFilter(goals));
 				case LEQ:
-					setFilter(GameFilter.getGoalDiffMaxFilter(goals));
-					break;
+					return GameFilter.getGoalDiffMaxFilter(goals);
+				case GG:
+					return LogicalFilter.getNOTFilter(GameFilter.getGoalDiffMaxFilter(goals));
 				}
-				if(Arrays.asList(NEQ,LL,GG).contains(getSelectedOperator()))
-					setFilter(LogicalFilter.getNOTFilter(getFilter()));
-				notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
+				return LogicalFilter.getTRUEFilter();
 			}
 		};
 	}

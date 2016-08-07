@@ -13,7 +13,6 @@ import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 
 @SuppressWarnings({"serial"})
 public class TeamFilterPanel extends AbstractFilterPanel<Game>
@@ -72,7 +71,6 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 			if(awayBox.isSelected())
 				filter = GameFilter.getTeamAwayFilter(team);
 		setFilter(filter);
-		notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
 	}
 	
 	public String getTeam()

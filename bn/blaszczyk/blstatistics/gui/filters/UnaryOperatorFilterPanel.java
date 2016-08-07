@@ -32,10 +32,9 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
 	
-	protected void setOperator()
+	protected void setFilter()
 	{
 		setFilter(LogicalBiFilter.getNOTBiFilter(innerPanel));
-		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
 	}
 
 	
@@ -64,11 +63,11 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	{
 		if(innerPanel instanceof UnaryOperatorFilterPanel)
 		{
-			notifyListeners(new BiFilterEvent<T, U>(this, ((UnaryOperatorFilterPanel<T, U>)innerPanel).getInnerPanel(), BiFilterEvent.RESET_PANEL));
+			replaceMe(((UnaryOperatorFilterPanel<T, U>)innerPanel).getInnerPanel());
 			return;
 		}
 		this.innerPanel = replaceFilterPanel(innerPanel, this.innerPanel);
-		setOperator();
+		setFilter();
 	}
 	
 	public BiFilterPanel<T, U> getInnerPanel()
@@ -88,13 +87,11 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	public void filter(BiFilterEvent<T,U> e)
 	{
 		if(e.getType() == BiFilterEvent.RESET_PANEL && e.getSource().equals(innerPanel))
-		{
 			//The method AbstractBiFilterPanel.negate() causes a Panel x to request NOT(x) to replace x by NOT(x), thus we need:
 			if(!e.getPanel().equals(this))
 				setInnerPanel(e.getPanel());
-		}
 		else
-			notifyListeners(e);
+			passFilterEvent(e);
 	}
 
 	@Override
