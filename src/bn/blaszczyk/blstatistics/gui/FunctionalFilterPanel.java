@@ -47,10 +47,10 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		filterParser = new FilterParser(filterManager);
 		filterLog = new FilterLog( filterParser, e -> setFilterPanel(filterLog.getFilterPanel()));
 		filterIO.setParser(filterParser);
+		filterPanel = new NoFilterPanel<>(filterManager);
 
 		setPreferredSize(new Dimension(300,700));		
 		setFilterPanel(filterIO.loadFilter(LAST_FILTER));	
-		paint();
 	}
 
 

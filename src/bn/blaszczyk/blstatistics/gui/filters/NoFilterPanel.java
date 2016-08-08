@@ -24,6 +24,7 @@ public class NoFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>
 		removePopupMenuItem(popupReplace);
 		removePopupMenuItem(popupSetActive);
 		removePopupMenuItem(popupNegate);
+		removePopupMenuItem(popupRemove);
 	}
 
 	@Override

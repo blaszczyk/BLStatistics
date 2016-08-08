@@ -49,8 +49,6 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		this.leagues = leagues;
 
 		initLists();
-		if(teams.size() == 0)
-			showLeagueManager();
 		
 		populateMenuBar();
 		setJMenuBar(menuBar);
@@ -65,13 +63,15 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 			}
 		});
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		resetTable();
 	}
 	
 	
 	
 	public void showFrame()
 	{
+		if(teams.size() == 0)
+			showLeagueManager();
+		resetTable();
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		pack();
 		setVisible(true);
