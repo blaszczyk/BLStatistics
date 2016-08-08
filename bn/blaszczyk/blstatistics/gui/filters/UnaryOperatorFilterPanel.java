@@ -19,7 +19,7 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	
 	public UnaryOperatorFilterPanel(FilterPanelManager<T,U> filterManager)
 	{
-		this(filterManager,new BlankFilterPanel<T, U>(filterManager));
+		this(filterManager,new NoFilterPanel<T, U>(filterManager));
 	}
 	
 	public UnaryOperatorFilterPanel(FilterPanelManager<T,U> filterManager, BiFilterPanel<T, U> originalPanel) 

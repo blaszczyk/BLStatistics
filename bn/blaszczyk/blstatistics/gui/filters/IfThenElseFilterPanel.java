@@ -25,9 +25,9 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 		thenLabel.setAlignmentX(LEFT_ALIGNMENT);
 		elseLabel.setAlignmentX(LEFT_ALIGNMENT);
 		
-		setIfFilter(new BlankFilterPanel<T, U>(filterManager));
-		setThenFilter(new BlankFilterPanel<T, U>(filterManager));
-		setElseFilter(new BlankFilterPanel<T, U>(filterManager));
+		setIfFilter(new NoFilterPanel<T, U>(filterManager));
+		setThenFilter(new NoFilterPanel<T, U>(filterManager));
+		setElseFilter(new NoFilterPanel<T, U>(filterManager));
 		
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		setFilter();

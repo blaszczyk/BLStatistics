@@ -48,7 +48,7 @@ public class FilterIO
 
 	public void saveFilter(BiFilterPanel<Season, Game> filter)
 	{
-		if (filter == null || filter instanceof BlankFilterPanel)
+		if (filter == null || filter instanceof NoFilterPanel)
 		{
 			JOptionPane.showMessageDialog(null, "No Filter to save.", "Save Error!", JOptionPane.ERROR_MESSAGE);
 			return;
@@ -111,9 +111,9 @@ public class FilterIO
 			RoundFilterPanel rFilter = (RoundFilterPanel) filter;
 			innerBuilder.append("Runde;" + rFilter.isFirstRound() + ";" + rFilter.isSecondRound());
 		}
-		else if (filter instanceof BlankFilterPanel)
+		else if (filter instanceof NoFilterPanel)
 		{
-			innerBuilder.append("Blank");
+			innerBuilder.append("NoFilter");
 		}
 		else if (filter instanceof FilterPanelAdapter.FirstArgAdapter)
 		{
@@ -196,9 +196,9 @@ public class FilterIO
 	private BiFilterPanel<Season, Game> loadFilter(File file)
 	{
 		if(!file.exists())
-			return new BlankFilterPanel<>(manager);
+			return new NoFilterPanel<>(manager);
 		filters = new HashMap<>();
-		BiFilterPanel<Season, Game> lastPanel = new BlankFilterPanel<>(manager);
+		BiFilterPanel<Season, Game> lastPanel = new NoFilterPanel<>(manager);
 		try
 		{
 			Scanner scanner = new Scanner(new FileInputStream(file));
@@ -242,8 +242,8 @@ public class FilterIO
 		case "Runde":
 			panel = new RoundFilterPanel(manager, Boolean.parseBoolean(split[2]), Boolean.parseBoolean(split[3]));
 			break;
-		case "Blank":
-			panel = new BlankFilterPanel<Season, Game>(manager);
+		case "NoFilter":
+			panel = new NoFilterPanel<Season, Game>(manager);
 			break;
 		case "Saison":
 			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[2], Integer.parseInt(split[3])), manager);

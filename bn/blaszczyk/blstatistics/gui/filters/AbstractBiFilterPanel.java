@@ -25,6 +25,7 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	private boolean isActive = true;
 	protected JMenuItem popupSetActive;
 	protected JMenuItem popupNegate;
+	protected JMenuItem popupRemove;
 	protected JMenu popupReplace;
 	private JLabel title = new JLabel("Filter");
 	
@@ -41,11 +42,15 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		popupSetActive = new JMenuItem("Deaktivieren");
 		popupSetActive.addActionListener( e -> setActive(!isActive) );
 
+		popupNegate = new JMenuItem("Invertieren");
+		popupNegate.addActionListener( e -> negate() );
+		
+		popupRemove = new JMenuItem("Löschen");
+		popupRemove.addActionListener( e -> replaceMe( new NoFilterPanel<>(filterManager) ) );
+		
 		popupReplace = new JMenu("Ersetzten");
 		filterManager.addMenuItems(popupReplace, e -> replaceMe( filterManager.getPanel() ));
 
-		popupNegate = new JMenuItem("Invertieren");
-		popupNegate.addActionListener( e -> negate() );
 		
 		popup = new JPopupMenu();
 		popup.add(title);
@@ -79,6 +84,7 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	{
 		popup.add(popupSetActive);
 		popup.add(popupNegate);
+		popup.add(popupRemove);
 		popup.add(popupReplace);
 	}
 	

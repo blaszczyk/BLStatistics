@@ -12,7 +12,7 @@ import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.ComboBoxFactory;
+import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 
 @SuppressWarnings({ "deprecation", "serial" })
 public class DateFilterPanel extends AbstractFilterPanel<Game>

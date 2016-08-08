@@ -11,6 +11,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
+import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 
 @SuppressWarnings("serial")
 public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> implements Iterable<BiFilterPanel<T,U>> {
@@ -45,8 +46,8 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	public MultiOperatorFilterPanel(FilterPanelManager<T,U> filterManager) 
 	{
 		this(filterManager,new ArrayList<>(),AND);
-		addPanel(new BlankFilterPanel<>(filterManager));
-		addPanel(new BlankFilterPanel<>(filterManager));
+		addPanel(new NoFilterPanel<>(filterManager));
+		addPanel(new NoFilterPanel<>(filterManager));
 	}
 	
 	public String getOperator()
@@ -64,12 +65,19 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	{
 		if(index < 0 || index >= panels.size())
 			return;
-		panels.set(index, replaceFilterPanel(panel, panels.get(index)));
-		setFilter();
+		if(panel instanceof NoFilterPanel)
+			removePanel(panel);
+		else
+		{
+			panels.set(index, replaceFilterPanel(panel, panels.get(index)));
+			setFilter();
+		}
 	}
 	
 	private void removePanel(BiFilterPanel<T,U> panel)
 	{
+		if(panel != null)
+			panel.removeFilterListener(this);
 		panels.remove(panel);
 		setFilter();
 	}

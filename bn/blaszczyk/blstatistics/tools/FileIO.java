@@ -17,36 +17,28 @@ public class FileIO
 {
 	private static final String BASE_FOLDER = "leagues";
 	private static final String FILE_EXTENSION = "bls";
-	private static final String LEAGUES_FILE = "leagues";
+	private static final String LEAGUES_FILE = "data/leagues.bls";
 	
 	public static List<League> loadLeagues()
 	{
-		String path = String.format("%s/%s.%s", getPathName(), LEAGUES_FILE, FILE_EXTENSION);
 		List<League> leagues = new ArrayList<>();
-		try
+		Scanner scanner = new Scanner( BLStatistics.class.getResourceAsStream(LEAGUES_FILE) );
+		while(scanner.hasNextLine())
 		{
-			Scanner scanner = new Scanner( new FileInputStream(path) );
-			while(scanner.hasNextLine())
-			{
-				String props[] = scanner.nextLine().split(";");
-				if(props[0].startsWith("//"))
-					continue;
-				if(props.length < 3)
-					break;
-				int[] yearBounds = new int[props.length - 3];
-				for(int i = 0; i < yearBounds.length; i++)
-					yearBounds[i] = Integer.parseInt( props[i+3].trim() );
-				
-				League league = new League(props[0].trim(), props[1].trim(),props[2].trim(), yearBounds);
-				loadSeasons(league);
-				leagues.add( league );
-			}
-			scanner.close();
+			String props[] = scanner.nextLine().split(";");
+			if(props[0].startsWith("//"))
+				continue;
+			if(props.length < 3)
+				break;
+			int[] yearBounds = new int[props.length - 3];
+			for(int i = 0; i < yearBounds.length; i++)
+				yearBounds[i] = Integer.parseInt( props[i+3].trim() );
+			
+			League league = new League(props[0].trim(), props[1].trim(),props[2].trim(), yearBounds);
+			loadSeasons(league);
+			leagues.add( league );
 		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
+		scanner.close();
 		return leagues;
 	}
 	
@@ -89,7 +81,7 @@ public class FileIO
 
 	private static void loadSeasons(League league)
 	{
-		File directory = new File(getPathName() + "/" + league.getPathName() + "/");
+		File directory = new File(BASE_FOLDER + "/" + league.getPathName() + "/");
 		if(!directory.exists())
 			directory.mkdirs();
 		for(Season season : league)
@@ -131,14 +123,8 @@ public class FileIO
 		}
 	}
 	
-
-	public static String getPathName()
-	{
-		return String.format("%s-%s", BASE_FOLDER, BLStatistics.getRequestSource());
-	}
-	
 	private static String getFileName(Season season)
 	{
-		return String.format("%s/%s/%4d.%s", getPathName(), season.getLeague().getPathName(),season.getYear(),FILE_EXTENSION);
+		return String.format("%s/%s/%4d.%s", BASE_FOLDER, season.getLeague().getPathName(),season.getYear(),FILE_EXTENSION);
 	}
 }

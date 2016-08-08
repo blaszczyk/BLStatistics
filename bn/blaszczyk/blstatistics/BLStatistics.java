@@ -15,7 +15,7 @@ public class BLStatistics
 	public static final String  WELT_FUSSBALL= "wfb";
 	public static final String  FUSSBALL_DATEN = "fbd";
 	
-	private static String requestSource = FUSSBALL_DATEN;
+	private static String requestSource = WELT_FUSSBALL;
 
 	public static String getRequestSource()
 	{

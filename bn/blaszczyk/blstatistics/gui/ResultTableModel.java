@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import bn.blaszczyk.blstatistics.core.TeamResult;
+import bn.blaszczyk.blstatistics.gui.tools.MyTableModel;
 import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class ResultTableModel extends MyTableModel<TeamResult> 

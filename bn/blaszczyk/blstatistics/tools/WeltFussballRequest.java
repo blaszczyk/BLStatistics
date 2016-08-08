@@ -113,6 +113,8 @@ public class WeltFussballRequest implements SeasonRequest
 				String gameString =  String.format( "%2d. Spieltag  %s: %15s - %15s %s" , matchDay, DATE_FORMAT.format(date), team1, team2, result);
 				if(gameString.lastIndexOf("(") >= 0)
 					gameString = gameString.substring(0, gameString.lastIndexOf("("));
+				if(gameString.lastIndexOf("Wert.") >= 0)
+					gameString = gameString.substring(0, gameString.lastIndexOf("Wert."));
 				try
 				{
 					games.push(new Game(gameString));

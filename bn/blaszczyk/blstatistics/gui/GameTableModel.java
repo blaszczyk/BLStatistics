@@ -3,6 +3,7 @@ package bn.blaszczyk.blstatistics.gui;
 import java.util.List;
 
 import bn.blaszczyk.blstatistics.core.Game;
+import bn.blaszczyk.blstatistics.gui.tools.MyTableModel;
 import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class GameTableModel extends MyTableModel<Game>

@@ -6,6 +6,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import bn.blaszczyk.blstatistics.core.TeamResult;
+import bn.blaszczyk.blstatistics.gui.tools.MyTable;
+import bn.blaszczyk.blstatistics.gui.tools.MyTableModel;
 
 @SuppressWarnings("serial")
 public class ResultTable extends MyTable<TeamResult>

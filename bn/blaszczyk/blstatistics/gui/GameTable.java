@@ -8,6 +8,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import bn.blaszczyk.blstatistics.core.Game;
+import bn.blaszczyk.blstatistics.gui.tools.MyTable;
+import bn.blaszczyk.blstatistics.gui.tools.MyTableModel;
 
 @SuppressWarnings("serial")
 public class GameTable extends MyTable<Game>

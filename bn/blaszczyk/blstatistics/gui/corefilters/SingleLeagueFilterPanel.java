@@ -12,7 +12,7 @@ import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 import bn.blaszczyk.blstatistics.filters.SeasonFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.ComboBoxFactory;
+import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 
 @SuppressWarnings("serial")
 public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>

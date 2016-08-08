@@ -15,6 +15,7 @@ import bn.blaszczyk.blstatistics.gui.corefilters.GameFilterPanelManager;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterEvent;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterListener;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterPanel;
+import bn.blaszczyk.blstatistics.gui.filters.NoFilterPanel;
 import bn.blaszczyk.blstatistics.tools.FilterIO;
 
 @SuppressWarnings("serial")
@@ -27,6 +28,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	private JLabel header = new JLabel("Filter", SwingConstants.CENTER);
 	
 	private BiFilterListener<Season,Game> listener = null;
+	private GameFilterPanelManager filterManager;
 	private FilterIO filterIO = new FilterIO();
 	
 	
@@ -37,14 +39,19 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		header.setPreferredSize(new Dimension(355, 50));
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
-		GameFilterPanelManager manager = new GameFilterPanelManager(teams,leagues,filterIO);
-		filterIO.setManager(manager);
+		filterManager = new GameFilterPanelManager(teams,leagues,filterIO);
+		filterIO.setManager(filterManager);
 
 		setPreferredSize(new Dimension(300,700));		
 		setFilterPanel(filterIO.loadFilter(LAST_FILTER));	
 		paint();
 	}
 
+
+	public void newFilter()
+	{
+		setFilterPanel(new NoFilterPanel<>(filterManager));
+	}
 
 	public void loadFilter()
 	{
@@ -57,9 +64,9 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	}
 	
 
-	public void saveFilter(String string)
+	public void saveLastFilter()
 	{
-		filterIO.saveFilter(filterPanel,"last");
+		filterIO.saveFilter(filterPanel,LAST_FILTER);
 	}
 
 
