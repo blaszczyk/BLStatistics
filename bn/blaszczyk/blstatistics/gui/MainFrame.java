@@ -30,6 +30,8 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenuItem newFilter, loadFilter, saveFilter, showLeagueManager, exit;
+	private JMenu menuBack = new JMenu("Rückgängig");
+	private JMenu menuFore = new JMenu("Wiederholen");
 	
 	
 	private FunctionalFilterPanel functionalFilterPanel;
@@ -142,6 +144,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	private void populateMenuBar()
 	{
 		JMenu mainMenu = new JMenu("Fussball Statistiken");
+		mainMenu.setMnemonic('S');
 		
 		newFilter = createMenuItem(mainMenu,"Neuer Filter",'N',KeyEvent.VK_N);
 		loadFilter = createMenuItem(mainMenu, "Filter Laden", 'L',KeyEvent.VK_L);
@@ -152,6 +155,17 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		exit = createMenuItem(mainMenu, "Beenden", 'B',KeyEvent.VK_B);
 		
 		menuBar.add(mainMenu);
+		
+		JMenu editMenu = new JMenu("Bearbeiten");
+		editMenu.setMnemonic('B');
+		menuBack.setEnabled(false);
+		editMenu.add(menuBack);
+		menuFore.setEnabled(false);
+		editMenu.add(menuFore);
+		
+		menuBar.add(editMenu);
+		
+		
 	}
 
 	private void resetTable()
@@ -175,6 +189,8 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	@Override
 	public void filter(BiFilterEvent<Season,Game> e)
 	{
+		functionalFilterPanel.getFilterLog().populateBackwardsMenu(menuBack);
+		functionalFilterPanel.getFilterLog().populateForwardsMenu(menuFore);
 		resetTable();
 	}
 

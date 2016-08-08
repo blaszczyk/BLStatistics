@@ -17,6 +17,8 @@ import bn.blaszczyk.blstatistics.gui.filters.BiFilterListener;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.NoFilterPanel;
 import bn.blaszczyk.blstatistics.tools.FilterIO;
+import bn.blaszczyk.blstatistics.tools.FilterLog;
+import bn.blaszczyk.blstatistics.tools.FilterParser;
 
 @SuppressWarnings("serial")
 public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Season,Game>, BiFilterPanel<Season,Game>
@@ -29,8 +31,10 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	
 	private BiFilterListener<Season,Game> listener = null;
 	private GameFilterPanelManager filterManager;
+	private FilterParser filterParser;
 	private FilterIO filterIO = new FilterIO();
 	
+	private FilterLog filterLog;
 	
 	public FunctionalFilterPanel(List<String> teams, List<String> leagues)
 	{
@@ -40,7 +44,9 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
 		filterManager = new GameFilterPanelManager(teams,leagues,filterIO);
-		filterIO.setManager(filterManager);
+		filterParser = new FilterParser(filterManager);
+		filterLog = new FilterLog( filterParser, e -> setFilterPanel(filterLog.getFilterPanel()));
+		filterIO.setParser(filterParser);
 
 		setPreferredSize(new Dimension(300,700));		
 		setFilterPanel(filterIO.loadFilter(LAST_FILTER));	
@@ -70,6 +76,10 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	}
 
 
+	public FilterLog getFilterLog()
+	{
+		return filterLog;
+	}
 
 	private void setFilterPanel(BiFilterPanel<Season,Game> panel)
 	{
@@ -92,6 +102,10 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 			setFilterPanel(e.getPanel());
 		else
 			filterPanel.paint();
+		if(e.getFilter() instanceof BiFilterPanel)
+			filterLog.pushFilter((BiFilterPanel<Season,Game>)e.getFilter(), filterPanel);
+		else
+			filterLog.pushFilter(e.getSource(), filterPanel);
 		if(listener != null)
 			listener.filter(e);
 	}
