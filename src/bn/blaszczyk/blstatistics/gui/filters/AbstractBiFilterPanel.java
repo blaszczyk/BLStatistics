@@ -70,10 +70,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		notifyListeners(new BiFilterEvent<>(this, filter, BiFilterEvent.RESET_FILTER));
 	}
 	
-	protected void replaceMe(BiFilterPanel<T, U> newPanel)
-	{
-		notifyListeners(new BiFilterEvent<>(this, newPanel, BiFilterEvent.RESET_PANEL));
-	}
 	
 	protected void passFilterEvent(BiFilterEvent<T, U> e)
 	{
@@ -179,4 +175,9 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		popup.remove(item);
 	}
 
+	@Override
+	public void replaceMe(BiFilterPanel<T, U> newPanel)
+	{
+		notifyListeners(new BiFilterEvent<>(this, newPanel, BiFilterEvent.RESET_PANEL));
+	}
 }

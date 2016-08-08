@@ -55,7 +55,7 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	protected void addPopupMenuItems()
 	{
 		JMenu popupSetPanel = new JMenu("Setze Inneren Filter");
-		filterManager.addMenuItems(popupSetPanel, e -> setInnerPanel( filterManager.getPanel()) );
+		filterManager.addMenuItems(popupSetPanel, e -> innerPanel.replaceMe( filterManager.getPanel() ));
 		addPopupMenuItem(popupSetPanel);	
 		super.addPopupMenuItems();
 	}

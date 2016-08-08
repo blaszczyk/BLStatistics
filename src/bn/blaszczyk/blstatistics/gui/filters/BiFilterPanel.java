@@ -16,5 +16,6 @@ public interface BiFilterPanel<T,U> extends BiFilter<T,U> {
 	public void addPopupMenuItem(JMenuItem item);
 	public void removePopupMenuItem(JMenuItem item);
 	
+	public void replaceMe(BiFilterPanel<T,U> panel);
 
 }

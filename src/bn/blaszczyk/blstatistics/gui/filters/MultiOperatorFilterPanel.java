@@ -57,19 +57,22 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 
 	private void addPanel(BiFilterPanel<T,U> panel)
 	{
+		notifyReplacement(panel, panel);
 		panels.add(replaceFilterPanel(panel, null) );
 		setFilter();
 	}
 	
-	private void replacePanel(int index, BiFilterPanel<T,U> panel)
+	private void replacePanel(int index, BiFilterPanel<T,U> newPanel)
 	{
 		if(index < 0 || index >= panels.size())
 			return;
-		if(panel instanceof NoFilterPanel)
-			removePanel( panels.get(index) );
+		BiFilterPanel<T, U> oldPanel = panels.get(index) ;
+		if(newPanel instanceof NoFilterPanel)
+			removePanel( oldPanel );
 		else
 		{
-			panels.set(index, replaceFilterPanel(panel, panels.get(index)));
+			notifyReplacement(newPanel, oldPanel);
+			panels.set(index, replaceFilterPanel(newPanel, oldPanel));
 			setFilter();
 		}
 	}
@@ -78,7 +81,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	{
 		if(panel != null)
 			panel.removeFilterListener(this);
-		passFilterEvent(new BiFilterEvent<T,U>(this, panel, BiFilterEvent.RESET_PANEL));
+		notifyReplacement(panel, panel);
 		panels.remove(panel);
 		setFilter();
 	}
@@ -149,13 +152,17 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	@Override
 	public void filter(BiFilterEvent<T, U> e)
 	{
-		passFilterEvent(e);
 		if(e.getType() == BiFilterEvent.RESET_PANEL)
+		{
 			for(int i = 0; i < panels.size(); i++)
 				if(panels.get(i).equals(e.getSource()))
 					replacePanel(i, e.getPanel());
+		}
 		else
+		{
+			passFilterEvent(e);
 			setDeleteMenu();
+		}
 	}
 	
 	@Override

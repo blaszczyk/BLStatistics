@@ -158,4 +158,9 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	{
 	}
 
+	@Override
+	public void replaceMe(BiFilterPanel<Season, Game> panel)
+	{
+	}
+
 }

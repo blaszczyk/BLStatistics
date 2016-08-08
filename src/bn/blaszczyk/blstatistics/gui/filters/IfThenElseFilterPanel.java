@@ -88,15 +88,15 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	protected void addPopupMenuItems()
 	{
 		JMenu setIf = new JMenu("Setze IF Filter");
-		filterManager.addMenuItems(setIf, e -> setIfFilter(filterManager.getPanel()));
+		filterManager.addMenuItems(setIf, e -> ifFilter.replaceMe(filterManager.getPanel()));
 		addPopupMenuItem(setIf);
 		
 		JMenu setThen = new JMenu("Setze THEN Filter");
-		filterManager.addMenuItems(setThen, e -> setThenFilter(filterManager.getPanel()));
+		filterManager.addMenuItems(setThen, e -> thenFilter.replaceMe(filterManager.getPanel()));
 		addPopupMenuItem(setThen);
 		
 		JMenu setElse = new JMenu("Setze ELSE Filter");
-		filterManager.addMenuItems(setElse, e -> setElseFilter(filterManager.getPanel()));
+		filterManager.addMenuItems(setElse, e -> elseFilter.replaceMe(filterManager.getPanel()));
 		addPopupMenuItem(setElse);
 		super.addPopupMenuItems();
 	}
