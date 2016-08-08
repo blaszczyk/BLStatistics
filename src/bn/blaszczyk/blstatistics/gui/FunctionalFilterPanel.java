@@ -55,7 +55,6 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		filterLog.pushFilter(filterPanel, filterPanel);	
 	}
 
-
 	public void newFilter()
 	{
 		setFilterPanel(new NoFilterPanel<>(filterManager));

@@ -66,7 +66,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		if(index < 0 || index >= panels.size())
 			return;
 		if(panel instanceof NoFilterPanel)
-			removePanel(panel);
+			removePanel( panels.get(index) );
 		else
 		{
 			panels.set(index, replaceFilterPanel(panel, panels.get(index)));
@@ -78,6 +78,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	{
 		if(panel != null)
 			panel.removeFilterListener(this);
+		passFilterEvent(new BiFilterEvent<T,U>(this, panel, BiFilterEvent.RESET_PANEL));
 		panels.remove(panel);
 		setFilter();
 	}
@@ -160,7 +161,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	@Override
 	public String toString()
 	{
-		return operatorBox.getSelectedItem().toString() + " " + panels.size() + " Komponenten";
+		return operatorBox.getSelectedItem().toString() + ": " + panels.size() + " Filter";
 	}
 
 

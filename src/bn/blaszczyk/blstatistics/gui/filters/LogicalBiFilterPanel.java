@@ -18,6 +18,7 @@ public abstract class LogicalBiFilterPanel<T, U> extends AbstractBiFilterPanel<T
 			oldPanel.removeFilterListener(this);
 		newPanel.addFilterListener(this);
 		newPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
+		passFilterEvent(new BiFilterEvent<T, U>(this,newPanel,BiFilterEvent.RESET_PANEL));
 		return newPanel;
 	}
 }

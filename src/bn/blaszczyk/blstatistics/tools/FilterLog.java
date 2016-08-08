@@ -82,9 +82,7 @@ public class FilterLog
 		}
 		chopLog(selectedFilterIndex+1);
 		if(source == lastSource)
-		{
 			chopLog(selectedFilterIndex);
-		}
 		if(filterLog.size() > maxLog)
 		{
 			filterLog.remove(0);
