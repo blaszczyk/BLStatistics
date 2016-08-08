@@ -39,29 +39,34 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	public FunctionalFilterPanel(List<String> teams, List<String> leagues)
 	{
 		super(new BorderLayout(5,5));
+		setPreferredSize(new Dimension(300,700));		
 		
 		header.setPreferredSize(new Dimension(355, 50));
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
 		filterManager = new GameFilterPanelManager(teams,leagues,filterIO);
 		filterParser = new FilterParser(filterManager);
-		filterLog = new FilterLog( filterParser, e -> setFilterPanel(filterLog.getFilterPanel()));
+		filterLog = new FilterLog( filterParser, e -> {
+			setFilterPanel(filterLog.getFilterPanel());
+		});
 		filterIO.setParser(filterParser);
 		filterPanel = new NoFilterPanel<>(filterManager);
 
-		setPreferredSize(new Dimension(300,700));		
-		setFilterPanel(filterIO.loadFilter(LAST_FILTER));	
+		setFilterPanel(filterIO.loadFilter(LAST_FILTER));
+		filterLog.pushFilter(filterPanel, filterPanel);	
 	}
 
 
 	public void newFilter()
 	{
 		setFilterPanel(new NoFilterPanel<>(filterManager));
+		filterLog.pushFilter(filterPanel, filterPanel);	
 	}
 
 	public void loadFilter()
 	{
 		setFilterPanel(filterIO.loadFilter());
+		filterLog.pushFilter(filterPanel, filterPanel);	
 	}
 	
 	public void saveFilter()
@@ -103,7 +108,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		else
 			filterPanel.paint();
 		if(e.getFilter() instanceof BiFilterPanel)
-			filterLog.pushFilter((BiFilterPanel<Season,Game>)e.getFilter(), filterPanel);
+			filterLog.pushFilterIgnoreNext((BiFilterPanel<Season,Game>)e.getFilter(), filterPanel);
 		else
 			filterLog.pushFilter(e.getSource(), filterPanel);
 		if(listener != null)

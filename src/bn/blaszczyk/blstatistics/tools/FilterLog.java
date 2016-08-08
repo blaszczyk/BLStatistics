@@ -1,6 +1,5 @@
 package bn.blaszczyk.blstatistics.tools;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +13,6 @@ import bn.blaszczyk.blstatistics.gui.filters.BiFilterPanel;
 
 public class FilterLog
 {
-	private class MyListener implements ActionListener
-	{
-		int panelIndex;
-		private MyListener(int panelIndex)
-		{
-			this.panelIndex = panelIndex;
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			panel = parser.parseFilter( filterLog.get(panelIndex) );
-			selectedFilterIndex = panelIndex;
-			listener.actionPerformed(e);
-		}
-	}
 
 	private List<String> nameLog = new ArrayList<>();
 	private List<String> filterLog = new ArrayList<>();
@@ -42,6 +25,7 @@ public class FilterLog
 	private ActionListener listener;
 	
 	private int selectedFilterIndex;
+	private boolean ignoreNext = false;
 
 	public FilterLog(FilterParser parser, ActionListener listener)
 	{
@@ -54,31 +38,38 @@ public class FilterLog
 	{
 		clearMenu(menuBackwards);
 		if(selectedFilterIndex > 0)
-			menuBackwards.addActionListener(new MyListener(selectedFilterIndex-1));
+			menuBackwards.addActionListener(createIndexedListener(selectedFilterIndex-1));
 		else
 			menuBackwards.setEnabled(false);
 		for(int i = selectedFilterIndex - 1; i >= 0; i--)
 		{
-			ActionListener listener = new MyListener(i);
 			JMenuItem mi = new JMenuItem( nameLog.get(i+1) );
-			mi.addActionListener( listener );
+			mi.addActionListener(createIndexedListener(i));
 			menuBackwards.add(mi);
 		}
 	}
 	
+	private ActionListener createIndexedListener(int index)
+	{
+		final int panelIndex = index;
+		return e -> {
+			panel = parser.parseFilter( filterLog.get(panelIndex) );
+			selectedFilterIndex = panelIndex;
+			listener.actionPerformed(e);
+		};
+	}
 
 	public void populateForwardsMenu(JMenu menuForewards)
 	{
 		clearMenu(menuForewards);
 		if(selectedFilterIndex < filterLog.size() - 1 )
-			menuForewards.addActionListener(new MyListener(selectedFilterIndex+1));
+			menuForewards.addActionListener(createIndexedListener(selectedFilterIndex+1));
 		else
 			menuForewards.setEnabled(false);
 		for(int i = selectedFilterIndex + 1; i < filterLog.size(); i++)
 		{
-			ActionListener listener = new MyListener(i);
 			JMenuItem mi = new JMenuItem( nameLog.get(i).toString() );
-			mi.addActionListener( listener );
+			mi.addActionListener( createIndexedListener(i) );
 			menuForewards.add(mi);
 		}
 	}
@@ -90,20 +81,30 @@ public class FilterLog
 	
 	public void pushFilter(BiFilterPanel<Season, Game> source, BiFilterPanel<Season, Game> fullFilter )
 	{
-//		chopLog(selectedFilterIndex);
-//		if(source == lastSource)
-//			chopLog(selectedFilterIndex-1);
+		if(ignoreNext)
+		{
+			ignoreNext = false;
+			return;
+		}
+		chopLog(selectedFilterIndex+1);
+		if(source == lastSource)
+			chopLog(selectedFilterIndex);
 		lastSource = source;
 		nameLog.add(source.toString());
 		filterLog.add(parser.writeFilter(fullFilter));
 		selectedFilterIndex = filterLog.size() - 1;
 	}
 
+	public void pushFilterIgnoreNext(BiFilterPanel<Season, Game> source, BiFilterPanel<Season, Game> fullFilter)
+	{
+		pushFilter(source, fullFilter);
+		ignoreNext = true;
+	}
 	private void chopLog(int chopIndex)
 	{
 		if(chopIndex < 0)
 			return;
-		for(int i = chopIndex + 1; i < filterLog.size(); i++)
+		while(filterLog.size() > chopIndex)
 		{
 			filterLog.remove(chopIndex);
 			nameLog.remove(chopIndex);
@@ -118,5 +119,7 @@ public class FilterLog
 			menu.removeActionListener(a);
 		menu.setEnabled(true);
 	}
+
+
 
 }

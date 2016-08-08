@@ -41,6 +41,10 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 		setFilter(GameFilter.getDayOfWeekFilter( dowBox.getSelectedIndex()));
 	}
 	
+	public String getDayOfWeek()
+	{
+		return dowBox.getSelectedItem().toString();
+	}
 
 	@Override
 	protected void addComponents()

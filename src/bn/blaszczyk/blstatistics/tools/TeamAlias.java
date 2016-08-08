@@ -7,7 +7,7 @@ import bn.blaszczyk.blstatistics.BLStatistics;
 
 public class TeamAlias
 {
-	private static final String ALIAS_FILE = "data/teamAliases.bls";
+	private static final String ALIAS_FILE = "data/teamAliases.dat";
 	
 	private static Map<String,String> aliasMap = new HashMap<>();
 	

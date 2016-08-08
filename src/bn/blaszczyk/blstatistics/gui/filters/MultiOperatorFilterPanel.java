@@ -148,17 +148,13 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	@Override
 	public void filter(BiFilterEvent<T, U> e)
 	{
+		passFilterEvent(e);
 		if(e.getType() == BiFilterEvent.RESET_PANEL)
-		{
 			for(int i = 0; i < panels.size(); i++)
 				if(panels.get(i).equals(e.getSource()))
 					replacePanel(i, e.getPanel());
-		}
 		else
-		{
 			setDeleteMenu();
-			passFilterEvent(e);
-		}
 	}
 	
 	@Override

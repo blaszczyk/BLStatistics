@@ -17,7 +17,7 @@ public class FileIO
 {
 	private static final String BASE_FOLDER = "leagues";
 	private static final String FILE_EXTENSION = "bls";
-	private static final String LEAGUES_FILE = "data/leagues.bls";
+	private static final String LEAGUES_FILE = "data/leagues.dat";
 	
 	public static List<League> loadLeagues()
 	{

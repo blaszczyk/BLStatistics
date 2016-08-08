@@ -124,6 +124,7 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	@Override
 	public void filter(BiFilterEvent<T, U> e)
 	{
+		passFilterEvent(e);
 		if(e.getType() == BiFilterEvent.RESET_PANEL)
 		{
 			if(e.getSource().equals(ifFilter))
@@ -133,8 +134,6 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 			if(e.getSource().equals(elseFilter))
 				setElseFilter(e.getPanel());
 		}
-		else
-			passFilterEvent(e);
 	}
 	
 	@Override

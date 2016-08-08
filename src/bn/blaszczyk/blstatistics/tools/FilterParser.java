@@ -3,6 +3,7 @@ package bn.blaszczyk.blstatistics.tools;
 import java.awt.Component;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -134,6 +135,16 @@ public class FilterParser
 				for (int i = 0; i < slFilter.getTeamCount(); i++)
 					innerBuilder.append(";" + slFilter.getTeam(i));
 			}
+			else if(gFilter instanceof DateFilterPanel)
+			{
+				DateFilterPanel dFilter = (DateFilterPanel) gFilter;
+				innerBuilder.append(String.format("Datum;%s;%s", dFilter.getOperator(), Game.DATE_FORMAT.format(dFilter.getDate())));
+			}
+			else if(gFilter instanceof DayOfWeekFilterPanel)
+			{
+				DayOfWeekFilterPanel dFilter = (DayOfWeekFilterPanel) gFilter;
+				innerBuilder.append("Wochentag;" +  dFilter.getDayOfWeek());
+			}
 			else
 			{
 				System.err.println("Unknown Filter " + gFilter);
@@ -206,6 +217,19 @@ public class FilterParser
 			break;
 		case "DirekterVergleich":
 			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(teams, Arrays.asList(split).subList(2, split.length)), manager);
+			break;
+		case "Datum":
+			try
+			{
+				panel = FilterPanelAdapter.getSecondArgAdapter(new DateFilterPanel(split[2], Game.DATE_FORMAT.parse(split[3])), manager);
+			}
+			catch (ParseException e)
+			{
+				e.printStackTrace();
+			}
+			break;
+		case "Wochentag":
+			panel = FilterPanelAdapter.getSecondArgAdapter(new DayOfWeekFilterPanel(split[2]), manager);
 			break;
 		default:
 			System.out.println("Unbekannter Filter:" + in);

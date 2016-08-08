@@ -83,8 +83,7 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 	private void setFilter()
 	{
 		Date date = getDate();
-		String operator = operatorBox.getSelectedItem().toString();
-		switch(operator)
+		switch(getOperator())
 		{
 		case EQ:
 			setFilter(GameFilter.getDateFilter(date));
@@ -117,6 +116,11 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 		add(yearBox);
 	}
 
+	public String getOperator()
+	{
+		return operatorBox.getSelectedItem().toString();
+	}
+	
 	public Date getDate() 
 	{
 		int year = TODAY.getYear() - yearBox.getSelectedIndex();
