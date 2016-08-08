@@ -2,7 +2,7 @@ package bn.blaszczyk.blstatistics.filters;
 
 import bn.blaszczyk.blstatistics.core.*;
 
-public class TeamResultFilter
+public abstract class TeamResultFilter
 {
 	public static Filter<TeamResult> getTeamFilter(String team)
 	{

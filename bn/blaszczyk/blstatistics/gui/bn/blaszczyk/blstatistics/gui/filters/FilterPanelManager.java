@@ -4,10 +4,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 
-public interface FilterPanelManager<T,U> {
-	
+public interface FilterPanelManager<T,U> 
+{	
 	public BiFilterPanel<T, U> getPanel();
 	public void addMenuItems(JMenu menu, ActionListener listener);
-//	public void savePanel(BiFilterPanel<T,U> panel);
-	
 }

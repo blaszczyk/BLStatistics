@@ -9,6 +9,10 @@ import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 @SuppressWarnings("serial")
 public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 {
+	private JLabel ifLabel = new JLabel("IF");
+	private JLabel thenLabel = new JLabel("THEN");
+	private JLabel elseLabel = new JLabel("ELSE");
+	
 	private BiFilterPanel<T,U> ifFilter;
 	private BiFilterPanel<T,U> thenFilter;
 	private BiFilterPanel<T,U> elseFilter;
@@ -16,26 +20,17 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	public IfThenElseFilterPanel(FilterPanelManager<T,U> filterManager)
 	{
 		super(filterManager);
-		setIfFilter(new BlankFilterPanel<T, U>(filterManager));
-		setThenFilter(new BlankFilterPanel<T, U>(filterManager));
-		setElseFilter(new BlankFilterPanel<T, U>(filterManager));
 		
-		JMenu setIf = new JMenu("Setze IF Filter");
-		filterManager.addMenuItems(setIf, e -> setIfFilter(filterManager.getPanel()));
-		addPopupMenuItem(setIf);
+		ifLabel.setAlignmentX(LEFT_ALIGNMENT);
+		thenLabel.setAlignmentX(LEFT_ALIGNMENT);
+		elseLabel.setAlignmentX(LEFT_ALIGNMENT);
 		
-		JMenu setThen = new JMenu("Setze THEN Filter");
-		filterManager.addMenuItems(setThen, e -> setThenFilter(filterManager.getPanel()));
-		addPopupMenuItem(setThen);
-		
-		JMenu setElse = new JMenu("Setze ELSE Filter");
-		filterManager.addMenuItems(setElse, e -> setElseFilter(filterManager.getPanel()));
-		addPopupMenuItem(setElse);
-
-		addPopupMenuItem(setActive);
+		setIfFilter(new NoFilterPanel<T, U>(filterManager));
+		setThenFilter(new NoFilterPanel<T, U>(filterManager));
+		setElseFilter(new NoFilterPanel<T, U>(filterManager));
 		
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-		setOperator();
+		setFilter();
 	}
 
 	public IfThenElseFilterPanel(FilterPanelManager<T,U> filterManager, BiFilterPanel<T,U> ifFilter, BiFilterPanel<T,U> thenFilter, BiFilterPanel<T,U> elseFilter)
@@ -44,30 +39,6 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 		setIfFilter(ifFilter);
 		setThenFilter(thenFilter);
 		setElseFilter(elseFilter);
-	}
-	
-	private void setIfFilter(BiFilterPanel<T,U> panel)
-	{
-		ifFilter = replaceFilterPanel(panel, ifFilter);
-		setOperator();
-	}
-	
-	private void setThenFilter(BiFilterPanel<T,U> panel)
-	{
-		thenFilter = replaceFilterPanel(panel, thenFilter);
-		setOperator();
-	}
-	
-	private void setElseFilter(BiFilterPanel<T,U> panel)
-	{
-		elseFilter = replaceFilterPanel(panel, elseFilter);
-		setOperator();
-	}
-	
-	private void setOperator()
-	{
-		setFilter( LogicalBiFilter.getIF_THEN_ELSEBiFilter(ifFilter, thenFilter, elseFilter));
-		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
 	}
 
 	public BiFilterPanel<T, U> getIfFilter()
@@ -86,22 +57,58 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	{
 		return elseFilter;
 	}
+	
+	private void setIfFilter(BiFilterPanel<T,U> panel)
+	{
+		ifFilter = replaceFilterPanel(panel, ifFilter);
+		setFilter();
+	}
+	
+	private void setThenFilter(BiFilterPanel<T,U> panel)
+	{
+		thenFilter = replaceFilterPanel(panel, thenFilter);
+		setFilter();
+	}
+	
+	private void setElseFilter(BiFilterPanel<T,U> panel)
+	{
+		elseFilter = replaceFilterPanel(panel, elseFilter);
+		setFilter();
+	}
+	
+	private void setFilter()
+	{
+		setFilter( LogicalBiFilter.getIF_THEN_ELSEBiFilter(ifFilter, thenFilter, elseFilter));
+	}
 
+
+	
+
+	@Override
+	protected void addPopupMenuItems()
+	{
+		JMenu setIf = new JMenu("Setze IF Filter");
+		filterManager.addMenuItems(setIf, e -> setIfFilter(filterManager.getPanel()));
+		addPopupMenuItem(setIf);
+		
+		JMenu setThen = new JMenu("Setze THEN Filter");
+		filterManager.addMenuItems(setThen, e -> setThenFilter(filterManager.getPanel()));
+		addPopupMenuItem(setThen);
+		
+		JMenu setElse = new JMenu("Setze ELSE Filter");
+		filterManager.addMenuItems(setElse, e -> setElseFilter(filterManager.getPanel()));
+		addPopupMenuItem(setElse);
+		super.addPopupMenuItems();
+	}
 
 	@Override
 	protected void addComponents()
 	{
-		JLabel label = new JLabel("IF");
-		label.setAlignmentX(LEFT_ALIGNMENT);
-		add(label);
+		add(ifLabel);
 		add(ifFilter.getPanel());
-		label = new JLabel("THEN");
-		label.setAlignmentX(LEFT_ALIGNMENT);
-		add(label);
+		add(thenLabel);
 		add(thenFilter.getPanel());
-		label = new JLabel("ELSE");
-		label.setAlignmentX(LEFT_ALIGNMENT);
-		add(label);
+		add(elseLabel);
 		add(elseFilter.getPanel());
 	}
 
@@ -127,7 +134,7 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 				setElseFilter(e.getPanel());
 		}
 		else
-			notifyListeners(e);
+			passFilterEvent(e);
 	}
 	
 	@Override

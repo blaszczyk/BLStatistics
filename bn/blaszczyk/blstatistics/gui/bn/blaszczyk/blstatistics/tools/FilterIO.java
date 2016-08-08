@@ -33,6 +33,7 @@ public class FilterIO
 	private FilterPanelManager<Season, Game> manager = null;
 
 	private List<String> teams;
+	private List<String> leagues;
 
 	public FilterIO()
 	{
@@ -42,27 +43,32 @@ public class FilterIO
 	{
 		this.manager = manager;
 		teams = manager.getTeams();
+		leagues = manager.getLeagues();
 	}
 
 	public void saveFilter(BiFilterPanel<Season, Game> filter)
 	{
-		if (filter == null || filter instanceof BlankFilterPanel)
+		if (filter == null || filter instanceof NoFilterPanel)
 		{
 			JOptionPane.showMessageDialog(null, "No Filter to save.", "Save Error!", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
+		String name = JOptionPane.showInputDialog(null, "Namen für den Filter eingeben:", "Filter Speichern", JOptionPane.QUESTION_MESSAGE);
+		if(name != null && name != "")
+			saveFilter(filter, name);	
+	}
+
+	public void saveFilter(BiFilterPanel<Season, Game> filter, String fileName)
+	{
 		outerBuilder = new StringBuilder();
 		panelCount = 0;
 		saveSubFilter(filter);
-		String name = null;
-		while (name == null || name == "")
-			name = JOptionPane.showInputDialog(null, "Namen für den Filter eingeben:", "Filter Speichern", JOptionPane.QUESTION_MESSAGE);
-		File directory = new File( String.format("%s/%s.%s", FOLDER, name, EXTENSION) );
+		File directory = new File(String.format("%s/", FOLDER)  );
 		if(!directory.exists())
-			directory.mkdirs();
+			directory.mkdir();
 		try
 		{
-			FileWriter file = new FileWriter(directory);
+			FileWriter file = new FileWriter(String.format("%s/%s.%s", FOLDER, fileName, EXTENSION));
 			file.write(outerBuilder.toString());
 			file.close();
 		}
@@ -71,11 +77,10 @@ public class FilterIO
 			e.printStackTrace();
 		}
 	}
-
+	
 	private int saveSubFilter(BiFilterPanel<Season, Game> filter)
 	{
 		StringBuilder innerBuilder = new StringBuilder();
-		innerBuilder.append("F" + (++panelCount) + ";");
 		if (filter instanceof MultiOperatorFilterPanel)
 		{
 			MultiOperatorFilterPanel<Season, Game> mFilter = (MultiOperatorFilterPanel<Season, Game>) filter;
@@ -89,7 +94,7 @@ public class FilterIO
 			int ifInt = saveSubFilter(iteFilter.getIfFilter());
 			int thenInt = saveSubFilter(iteFilter.getThenFilter());
 			int elseInt = saveSubFilter(iteFilter.getElseFilter());
-			innerBuilder.append("IfThenElse;F" + ifInt + ";F" + thenInt + ";F" + elseInt);
+			innerBuilder.append(String.format("IfThenElse;F%d;F%d;F%d",ifInt, thenInt, elseInt));
 		}
 		else if (filter instanceof UnaryOperatorFilterPanel)
 		{
@@ -106,6 +111,10 @@ public class FilterIO
 			RoundFilterPanel rFilter = (RoundFilterPanel) filter;
 			innerBuilder.append("Runde;" + rFilter.isFirstRound() + ";" + rFilter.isSecondRound());
 		}
+		else if (filter instanceof NoFilterPanel)
+		{
+			innerBuilder.append("NoFilter");
+		}
 		else if (filter instanceof FilterPanelAdapter.FirstArgAdapter)
 		{
 			FilterPanel<Season> sFilter = ((FilterPanelAdapter.FirstArgAdapter<Season, Game>) filter).getInnerPanel();
@@ -114,9 +123,14 @@ public class FilterIO
 				IntegerValueFilterPanel<Season> iPanel = (IntegerValueFilterPanel<Season>) sFilter;
 				innerBuilder.append(iPanel.getLabel() + ";" + iPanel.getSelectedOperator() + ";" + iPanel.getReferenceInt());
 			}
+			else if(sFilter instanceof SingleLeagueFilterPanel)
+			{
+				SingleLeagueFilterPanel iPanel =  (SingleLeagueFilterPanel) sFilter;
+				innerBuilder.append( "Liga;" + iPanel.getSelectedLeague() + ";" + iPanel.isRecursive());
+			}
 			else
 			{
-				System.err.println("Unknown Filter" + sFilter);
+				System.err.println("Unknown Filter " + sFilter);
 			}
 		}
 		else if (filter instanceof FilterPanelAdapter.SecondArgAdapter)
@@ -141,16 +155,15 @@ public class FilterIO
 			}
 			else
 			{
-				System.err.println("Unknown Filter" + gFilter);
+				System.err.println("Unknown Filter " + gFilter);
 			}
 		}
 		else
 		{
-			System.err.println("Unknown Filter" + filter);
+			System.err.println("Unknown Filter " + filter);
 		}
-		innerBuilder.append("\n");
-		outerBuilder.append(innerBuilder.toString());
-		return panelCount;
+		outerBuilder.append(String.format("F%d;%s\n", panelCount, innerBuilder.toString()));
+		return panelCount++;
 	}
 
 	public BiFilterPanel<Season, Game> loadFilter()
@@ -175,10 +188,17 @@ public class FilterIO
 		return null;
 	}
 
+	public BiFilterPanel<Season, Game> loadFilter(String filterName)
+	{
+		return loadFilter(new File(String.format("%s/%s.%s", FOLDER, filterName, EXTENSION)));
+	}
+	
 	private BiFilterPanel<Season, Game> loadFilter(File file)
 	{
+		if(!file.exists())
+			return new NoFilterPanel<>(manager);
 		filters = new HashMap<>();
-		BiFilterPanel<Season, Game> lastPanel = new BlankFilterPanel<>(manager);
+		BiFilterPanel<Season, Game> lastPanel = new NoFilterPanel<>(manager);
 		try
 		{
 			Scanner scanner = new Scanner(new FileInputStream(file));
@@ -222,8 +242,14 @@ public class FilterIO
 		case "Runde":
 			panel = new RoundFilterPanel(manager, Boolean.parseBoolean(split[2]), Boolean.parseBoolean(split[3]));
 			break;
+		case "NoFilter":
+			panel = new NoFilterPanel<Season, Game>(manager);
+			break;
 		case "Saison":
 			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[2], Integer.parseInt(split[3])), manager);
+			break;
+		case "Liga":
+			panel = FilterPanelAdapter.getFirstArgAdapter(new SingleLeagueFilterPanel(leagues, split[2], Boolean.parseBoolean(split[3])), manager);
 			break;
 		case "Spieltag":
 			panel = FilterPanelAdapter.getSecondArgAdapter(new MatchDayFilterPanel(split[2], Integer.parseInt(split[3])), manager);

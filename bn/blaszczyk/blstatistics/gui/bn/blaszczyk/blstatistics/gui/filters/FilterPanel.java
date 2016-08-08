@@ -7,7 +7,6 @@ import bn.blaszczyk.blstatistics.filters.Filter;
 
 public interface FilterPanel<T> extends Filter<T>
 {
-
 	public void paint();
 	public JPanel getPanel();
 	

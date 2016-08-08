@@ -4,21 +4,17 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.core.Season;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 import bn.blaszczyk.blstatistics.filters.SeasonFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractBiFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.BiFilterEvent;
-import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 import bn.blaszczyk.blstatistics.gui.filters.FilterPanelManager;
 
 @SuppressWarnings("serial")
 public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 {
-	private JLabel label = new JLabel("Runden ");
 	private JCheckBox first = new JCheckBox("Hinrunde",true);
 	private JCheckBox second = new JCheckBox("Rückrunde",true);
 
@@ -26,10 +22,12 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 	{
 		super(filterFactory);
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
-		ActionListener listener = e -> resetFilter();
+		ActionListener listener = e -> setFilter();
 		first.addActionListener(listener);
+		first.setInheritsPopupMenu(true);
 		second.addActionListener(listener);
-		resetFilter();
+		second.setInheritsPopupMenu(true);
+		setFilter();
 	}
 
 	public RoundFilterPanel(FilterPanelManager<Season,Game> filterFactory, boolean firstRound, boolean secondRound)
@@ -37,10 +35,10 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 		this(filterFactory);
 		first.setSelected(firstRound);
 		second.setSelected(secondRound);
-		resetFilter();
+		setFilter();
 	}
 	
-	private void resetFilter()
+	private void setFilter()
 	{
 		if(isFirstRound())
 			if(isSecondRound())
@@ -52,7 +50,6 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 				setFilter(SeasonFilter.getSecondRoundFilter());
 			else
 				setFilter(LogicalBiFilter.getFALSEBiFilter());
-		notifyListeners(new BiFilterEvent<Season,Game>(this, getFilter(), FilterEvent.RESET_FILTER));
 	}
 
 	public boolean isFirstRound()
@@ -68,7 +65,6 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 	@Override
 	protected void addComponents()
 	{
-		add(label);
 		add(first);
 		add(second);
 	}

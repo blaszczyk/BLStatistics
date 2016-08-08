@@ -7,28 +7,30 @@ import bn.blaszczyk.blstatistics.tools.BLException;
 
 public class League implements Iterable<Season>
 {
+	private static final Date TODAY = new Date();
+	@SuppressWarnings("deprecation")
+	private static final int THIS_YEAR = 1900 + TODAY.getYear() + ( (TODAY.getMonth() > 6) ? 1 : 0  );		 
+	
 	private List<Season> seasons = new ArrayList<>();
 	private List<String> teams = new ArrayList<>();
 	private String pathName;
+	private String urlFormat;
 	private String name;
 
-	public League(String name, String pathName, int[] yearBounds)
+	public League(String name, String urlFormat, String pathName, int[] yearBounds)
 	{
 		this.name = name;
-		this.pathName = pathName;
+		this.urlFormat = urlFormat;
+		this.pathName = pathName;	 
 		
-		Date today = new Date();
-		@SuppressWarnings("deprecation")
-		int thisYear = 1900 + today.getYear() + ( (today.getMonth() > 6) ? 1 : 0  );		 
 		int nrBounds = yearBounds.length;
-		
 		for(int i = 0; i < nrBounds; i+=2)
 		{
-			int endYear = thisYear;
+			int endYear = THIS_YEAR;
 			if( i+1 < nrBounds) 
 				endYear = yearBounds[i+1];
 			for(int year = yearBounds[i]; year <= endYear; year++)
-				seasons.add( new Season(year,this));				
+				seasons.add(new Season(year,this));				
 		}
 	}
 
@@ -40,6 +42,19 @@ public class League implements Iterable<Season>
 	public String getPathName()
 	{
 		return pathName;
+	}
+	
+	public String getURLFormat()
+	{
+		return urlFormat;
+	}
+
+	public boolean hasSeason(int year)
+	{
+		for(Season s : this)
+			if(s.getYear() == year)
+				return true;
+		return false;
 	}
 	
 	public Season getSeason(int year) throws BLException
@@ -87,4 +102,5 @@ public class League implements Iterable<Season>
 	{
 		return name;
 	}
+
 }

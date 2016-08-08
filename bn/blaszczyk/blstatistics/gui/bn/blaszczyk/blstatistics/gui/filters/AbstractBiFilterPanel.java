@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -22,70 +23,77 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	
 	
 	private boolean isActive = true;
-	protected JMenuItem setActive;
-	protected JMenuItem negate;
-//	protected JMenuItem save;
-	protected JMenu replace;
+	protected JMenuItem popupSetActive;
+	protected JMenuItem popupNegate;
+	protected JMenuItem popupRemove;
+	protected JMenu popupReplace;
+	private JLabel title = new JLabel("Filter");
 	
 	private JPopupMenu popup;
 	
-	private BiFilter<T,U> filter;
+	private BiFilter<T,U> filter = LogicalBiFilter.getTRUEBiFilter();
 	private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
-	private FilterPanelManager<T, U> filterManager;
+	protected FilterPanelManager<T, U> filterManager;
 	
-	public AbstractBiFilterPanel(FilterPanelManager<T, U> filterFactory)
-	{
-		this( LogicalBiFilter.getTRUEBiFilter(),filterFactory);
-	}
-	
-	public AbstractBiFilterPanel( BiFilter<T,U> filter, FilterPanelManager<T, U> filterManager)
+	public AbstractBiFilterPanel(FilterPanelManager<T, U> filterManager)
 	{
 		this.filterManager = filterManager;
-		setFilter(filter);
-		setBorder(activeBorder);
 		
-		setActive = new JMenuItem("Deaktivieren");
-		setActive.addActionListener( e -> 
-			setActive(!isActive)
-		);
+		popupSetActive = new JMenuItem("Deaktivieren");
+		popupSetActive.addActionListener( e -> setActive(!isActive) );
 
-		replace = new JMenu("Ersetzten durch");
-		filterManager.addMenuItems(replace, e -> notifyListeners(new BiFilterEvent<>(this, filterManager.getPanel(), BiFilterEvent.RESET_PANEL)));
+		popupNegate = new JMenuItem("Invertieren");
+		popupNegate.addActionListener( e -> negate() );
+		
+		popupRemove = new JMenuItem("Löschen");
+		popupRemove.addActionListener( e -> replaceMe( new NoFilterPanel<>(filterManager) ) );
+		
+		popupReplace = new JMenu("Ersetzten");
+		filterManager.addMenuItems(popupReplace, e -> replaceMe( filterManager.getPanel() ));
 
-		negate = new JMenuItem("Verneinen");
-		negate.addActionListener( e -> negate() );
-		
-//		save = new JMenuItem("Speichern");
-//		save.addActionListener( e -> filterManager.savePanel(this));
-		
 		
 		popup = new JPopupMenu();
-		popup.add(setActive);
-		popup.add(replace);
-		popup.add(negate);
-//		popup.add(save);
+		popup.add(title);
+		popup.addSeparator();
+		addPopupMenuItems();
 		setComponentPopupMenu(popup);
 		
+		setActive(true);
+		addFilterListener(e -> title.setText(this.toString()));
 	}
 
-	protected void negate()
-	{
-		BiFilterEvent<T,U> e;
-		if(this instanceof UnaryOperatorFilterPanel)
-			e = new BiFilterEvent<>(this, ((UnaryOperatorFilterPanel<T, U>)this).getInnerPanel(), BiFilterEvent.RESET_PANEL);
-		else
-			e = new BiFilterEvent<>(this,new UnaryOperatorFilterPanel<T,U>(filterManager,this) , BiFilterEvent.RESET_PANEL);
-		notifyListeners(e);
-	}
+	protected abstract void addComponents();
 	
 	protected void setFilter(BiFilter<T,U> filter)
 	{
 		this.filter = filter;
+		notifyListeners(new BiFilterEvent<>(this, filter, BiFilterEvent.RESET_FILTER));
 	}
 	
-	protected BiFilter<T,U> getFilter()
+	protected void replaceMe(BiFilterPanel<T, U> newPanel)
 	{
-		return filter;
+		notifyListeners(new BiFilterEvent<>(this, newPanel, BiFilterEvent.RESET_PANEL));
+	}
+	
+	protected void passFilterEvent(BiFilterEvent<T, U> e)
+	{
+		notifyListeners(e);
+	}	
+
+	protected void addPopupMenuItems()
+	{
+		popup.add(popupSetActive);
+		popup.add(popupNegate);
+		popup.add(popupRemove);
+		popup.add(popupReplace);
+	}
+	
+	private void negate()
+	{
+		if(this instanceof UnaryOperatorFilterPanel)
+			replaceMe( ((UnaryOperatorFilterPanel<T, U>)this).getInnerPanel() );
+		else
+			replaceMe(new UnaryOperatorFilterPanel<T,U>(filterManager,this) );
 	}
 	
 	private void setActive(boolean active)
@@ -94,22 +102,33 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		{
 			setBorder(activeBorder);
 			this.isActive = true;
-			setActive.setText("Deaktivieren");
+			popupSetActive.setText("Deaktivieren");
 		}
 		else
 		{
 			setBorder(deactiveBorder);
 			this.isActive = false;
-			setActive.setText("Aktivieren");
+			popupSetActive.setText("Aktivieren");
 		}
 		notifyListeners(new BiFilterEvent<T, U>(this,this,BiFilterEvent.RESET_FILTER));
 	}
-	
-	
 
-	protected abstract void addComponents();
+	private void notifyListeners(BiFilterEvent<T,U> e)
+	{
+		List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
+		for(BiFilterListener<T, U> listener : listeners)
+			copy.add(listener);
+		for(BiFilterListener<T, U> listener : copy)
+			listener.filter(e);		
+		
+		// In order to avoid ConcurrentModificationException we do not use		
+//		for(BiFilterListener<T,U> listener : listeners)
+//			listener.filter(e);
+	}	
 	
-	
+	/*
+	 * BiFilter Methods
+	 */
 	@Override
 	public boolean check(T t, U u)
 	{
@@ -137,30 +156,15 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	@Override
 	public void addFilterListener(BiFilterListener<T,U> listener)
 	{
-//		System.out.println( listener + " listens to " + this);
 		listeners.add(listener);
 	}
 
 	@Override
 	public void removeFilterListener(BiFilterListener<T,U> listener)
 	{
-//		System.out.println( listener + " does no longer listen to " + this);
 		int i = listeners.indexOf(listener);
 		if( i >= 0 )
 			listeners.remove(i);
-	}
-	
-	protected void notifyListeners(BiFilterEvent<T,U> e)
-	{
-		List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
-		for(BiFilterListener<T, U> listener : listeners)
-			copy.add(listener);
-		for(BiFilterListener<T, U> listener : copy)
-			listener.filter(e);		
-		
-		// In order to avoid ConcurrentModificationException we do not use		
-//		for(BiFilterListener<T,U> listener : listeners)
-//			listener.filter(e);
 	}
 
 	@Override

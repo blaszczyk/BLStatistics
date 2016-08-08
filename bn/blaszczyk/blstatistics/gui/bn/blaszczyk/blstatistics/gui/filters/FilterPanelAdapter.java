@@ -29,8 +29,8 @@ public class FilterPanelAdapter {
 			super(filterFactory);
 			this.filterFactory = filterFactory;
 			this.innerPanel = panel;
-			panel.addPopupMenuItem(replace);
-			panel.addPopupMenuItem(negate);
+			panel.addPopupMenuItem(popupNegate);
+			panel.addPopupMenuItem(popupReplace);
 			panel.addFilterListener(this);
 		}
 
@@ -60,16 +60,16 @@ public class FilterPanelAdapter {
 		@Override
 		public String toString()
 		{
-			return innerPanel.toString();
+			return String.valueOf(innerPanel);
 		}
 
 		@Override
 		public void filter(FilterEvent<T> e)
 		{
 			if(e.getType() == FilterEvent.RESET_PANEL)
-				notifyListeners(new BiFilterEvent<T,U>(this,getFirstArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
+				passFilterEvent(new BiFilterEvent<T,U>(this,getFirstArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
 			else
-				notifyListeners(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg1(e.getFilter()),e.getType()));
+				passFilterEvent(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg1(e.getFilter()),e.getType()));
 		}
 
 		@Override
@@ -77,7 +77,6 @@ public class FilterPanelAdapter {
 		{
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public boolean equals(Object obj)
 		{
@@ -87,7 +86,7 @@ public class FilterPanelAdapter {
 				return false;
 			if (!(obj instanceof FirstArgAdapter))
 				return false;
-			FirstArgAdapter<T,U> other = (FirstArgAdapter<T,U>) obj;
+			FirstArgAdapter<?,?> other = (FirstArgAdapter<?,?>) obj;
 			return innerPanel.equals(other.innerPanel);
 		}
 
@@ -107,8 +106,8 @@ public class FilterPanelAdapter {
 			super(filterFactory);
 			this.filterFactory = filterFactory;
 			this.innerPanel = panel;
-			panel.addPopupMenuItem(replace);
-			panel.addPopupMenuItem(negate);
+			panel.addPopupMenuItem(popupNegate);
+			panel.addPopupMenuItem(popupReplace);
 			panel.addFilterListener(this);
 		}
 		
@@ -138,16 +137,16 @@ public class FilterPanelAdapter {
 		@Override
 		public String toString()
 		{
-			return innerPanel.toString();
+			return String.valueOf(innerPanel);
 		}
 
 		@Override
 		public void filter(FilterEvent<U> e)
 		{
 			if(e.getType() == FilterEvent.RESET_PANEL)
-				notifyListeners(new BiFilterEvent<T,U>(this,getSecondArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
+				passFilterEvent(new BiFilterEvent<T,U>(this,getSecondArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
 			else
-				notifyListeners(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg2(e.getFilter()),e.getType()));
+				passFilterEvent(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg2(e.getFilter()),e.getType()));
 		}
 
 		@Override
@@ -155,7 +154,6 @@ public class FilterPanelAdapter {
 		{
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public boolean equals(Object obj)
 		{
@@ -165,7 +163,7 @@ public class FilterPanelAdapter {
 				return false;
 			if (!(obj instanceof SecondArgAdapter))
 				return false;
-			SecondArgAdapter<T,U> other = (SecondArgAdapter<T,U>) obj;
+			SecondArgAdapter<?,?> other = (SecondArgAdapter<?,?>) obj;
 			return innerPanel.equals(other.innerPanel);
 		}
 	}

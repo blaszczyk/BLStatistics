@@ -1,19 +1,17 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
+import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 
 @SuppressWarnings("serial")
 public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> implements Iterable<BiFilterPanel<T,U>> {
@@ -21,94 +19,83 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	public static final String AND = "AND";
 	public static final String OR = "OR";
 	public static final String XOR = "XOR";
+	private static final String[] OPERATORS = {AND,OR,XOR};
 	
 	private List<BiFilterPanel<T,U>> panels;
-	private String[] operators = {AND,OR,XOR};
 	private JComboBox<String> operatorBox;
-	private JPanel top = new JPanel();
 	
-	private JMenu removePanel = new JMenu("Entferne Feld");
+	private JMenu popupRemoveFilter;
 
 	public MultiOperatorFilterPanel(FilterPanelManager<T,U> filterManager, List<BiFilterPanel<T, U>> panels, String operator) 
 	{
 		super(filterManager);
 		this.panels = panels;
-		operatorBox = new JComboBox<>(operators);
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+	
+		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(OPERATORS);
+		cbf.setBoxWidth(80);
+		operatorBox = cbf.createComboBox();
 		operatorBox.setAlignmentX(LEFT_ALIGNMENT);
-		operatorBox.addActionListener( e -> {
-			setOperator();
-		});
+		operatorBox.addActionListener( e -> setFilter() );
 		operatorBox.setSelectedItem(operator);
-		operatorBox.setMaximumSize(new Dimension(50,30));
-		
-
-		top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
-		top.add(operatorBox);
-		top.add(Box.createRigidArea(new Dimension(150,30)));
-		top.setAlignmentX(LEFT_ALIGNMENT);
 		
 		for(BiFilterPanel<T, U> panel : panels)
-			panel.addFilterListener(this);
-		
-		
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		
-		JMenu addPanel = new JMenu("Neues Feld");
-		filterManager.addMenuItems(addPanel, e -> addPanel(filterManager.getPanel()));
-		addPopupMenuItem(addPanel);
-		addPopupMenuItem(removePanel);
-		addPopupMenuItem(setActive);
+			panel.addFilterListener(this);		
 	}
 
 	public MultiOperatorFilterPanel(FilterPanelManager<T,U> filterManager) 
 	{
 		this(filterManager,new ArrayList<>(),AND);
-		addPanel(new BlankFilterPanel<>(filterManager));
-		addPanel(new BlankFilterPanel<>(filterManager));
-	}
-
-	private void addPanel(BiFilterPanel<T,U> panel)
-	{
-		panels.add(replaceFilterPanel(panel, null) );
-		resetDeleteMenu();
-		setOperator();
-	}
-	
-	private void replacePanel(int index, BiFilterPanel<T,U> panel)
-	{
-		if(index < 0 || index >= panels.size())
-			return;
-		
-		panels.set(index, replaceFilterPanel(panel, panels.get(index)));
-		resetDeleteMenu();
-		setOperator();
-	}
-	
-	private void removePanel(BiFilterPanel<T,U> panel)
-	{
-		panels.remove(panel);
-		resetDeleteMenu();
-		setOperator();
-	}
-	
-	private void resetDeleteMenu()
-	{
-		removePanel.removeAll();
-		for(BiFilterPanel<T, U> panel : panels)
-		{
-			JMenuItem remove = new JMenuItem(panel.toString());
-			remove.addActionListener( e -> removePanel(panel));
-			removePanel.add(remove);
-		}
+		addPanel(new NoFilterPanel<>(filterManager));
+		addPanel(new NoFilterPanel<>(filterManager));
 	}
 	
 	public String getOperator()
 	{
 		return (String)operatorBox.getSelectedItem();
 	}
-	
-	private void setOperator()
+
+	private void addPanel(BiFilterPanel<T,U> panel)
 	{
+		panels.add(replaceFilterPanel(panel, null) );
+		setFilter();
+	}
+	
+	private void replacePanel(int index, BiFilterPanel<T,U> panel)
+	{
+		if(index < 0 || index >= panels.size())
+			return;
+		if(panel instanceof NoFilterPanel)
+			removePanel(panel);
+		else
+		{
+			panels.set(index, replaceFilterPanel(panel, panels.get(index)));
+			setFilter();
+		}
+	}
+	
+	private void removePanel(BiFilterPanel<T,U> panel)
+	{
+		if(panel != null)
+			panel.removeFilterListener(this);
+		panels.remove(panel);
+		setFilter();
+	}
+	
+	private void setDeleteMenu()
+	{
+		popupRemoveFilter.removeAll();
+		for(BiFilterPanel<T, U> panel : panels)
+		{
+			JMenuItem remove = new JMenuItem(panel.toString());
+			remove.addActionListener( e -> removePanel(panel));
+			popupRemoveFilter.add(remove);
+		}
+	}
+	
+	private void setFilter()
+	{
+		setDeleteMenu();
 		switch(getOperator())
 		{
 		case AND:
@@ -121,13 +108,23 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 			setFilter(LogicalBiFilter.getXORBiFilter(panels));
 			break;
 		}		
-		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
+	}
+
+	@Override
+	protected void addPopupMenuItems()
+	{
+		JMenu popupAddFilter = new JMenu("Neuer Filter");
+		filterManager.addMenuItems(popupAddFilter, e -> addPanel(filterManager.getPanel()));
+		addPopupMenuItem(popupAddFilter);
+		popupRemoveFilter = new JMenu("Entferne Feld");
+		addPopupMenuItem(popupRemoveFilter);
+		super.addPopupMenuItems();
 	}
 
 	@Override
 	protected void addComponents()
 	{
-		add(top);
+		add(operatorBox);
 		for(int i = 0; i < panels.size(); i++)
 		{
 			if(i > 0)
@@ -159,8 +156,8 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		}
 		else
 		{
-			resetDeleteMenu();
-			notifyListeners(e);
+			setDeleteMenu();
+			passFilterEvent(e);
 		}
 	}
 	

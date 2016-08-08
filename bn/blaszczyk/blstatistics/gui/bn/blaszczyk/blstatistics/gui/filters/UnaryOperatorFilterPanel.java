@@ -19,29 +19,45 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	
 	public UnaryOperatorFilterPanel(FilterPanelManager<T,U> filterManager)
 	{
-		this(filterManager,new BlankFilterPanel<T, U>(filterManager));
+		this(filterManager,new NoFilterPanel<T, U>(filterManager));
 	}
 	
 	public UnaryOperatorFilterPanel(FilterPanelManager<T,U> filterManager, BiFilterPanel<T, U> originalPanel) 
 	{
 		super(filterManager);
-		
-		JMenu setPanel = new JMenu("Setze Filter");
-		filterManager.addMenuItems(setPanel, e -> {
-			setInnerPanel( filterManager.getPanel());
-		});
-		addPopupMenuItem(setPanel);		
-		addPopupMenuItem(setActive);
-		
 		setInnerPanel(originalPanel);
 		label.setAlignmentX(LEFT_ALIGNMENT);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
+
+	public BiFilterPanel<T, U> getInnerPanel()
+	{
+		return innerPanel;
+	}
 	
-	protected void setOperator()
+	private void setInnerPanel(BiFilterPanel<T,U> innerPanel)
+	{
+		if(innerPanel instanceof UnaryOperatorFilterPanel)
+		{
+			replaceMe(((UnaryOperatorFilterPanel<T, U>)innerPanel).getInnerPanel());
+			return;
+		}
+		this.innerPanel = replaceFilterPanel(innerPanel, this.innerPanel);
+		setFilter();
+	}	
+	
+	private void setFilter()
 	{
 		setFilter(LogicalBiFilter.getNOTBiFilter(innerPanel));
-		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
+	}
+
+	@Override
+	protected void addPopupMenuItems()
+	{
+		JMenu popupSetPanel = new JMenu("Setze Inneren Filter");
+		filterManager.addMenuItems(popupSetPanel, e -> setInnerPanel( filterManager.getPanel()) );
+		addPopupMenuItem(popupSetPanel);	
+		super.addPopupMenuItems();
 	}
 
 	@Override
@@ -49,24 +65,6 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	{
 		add(label);
 		add(innerPanel.getPanel());
-	}
-
-
-
-	private void setInnerPanel(BiFilterPanel<T,U> innerPanel)
-	{
-		if(innerPanel instanceof UnaryOperatorFilterPanel)
-		{
-			notifyListeners(new BiFilterEvent<T, U>(this, ((UnaryOperatorFilterPanel<T, U>)innerPanel).getInnerPanel(), BiFilterEvent.RESET_PANEL));
-			return;
-		}
-		this.innerPanel = replaceFilterPanel(innerPanel, this.innerPanel);
-		setOperator();
-	}
-	
-	public BiFilterPanel<T, U> getInnerPanel()
-	{
-		return innerPanel;
 	}
 
 	
@@ -81,18 +79,16 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	public void filter(BiFilterEvent<T,U> e)
 	{
 		if(e.getType() == BiFilterEvent.RESET_PANEL && e.getSource().equals(innerPanel))
-		{
 			//The method AbstractBiFilterPanel.negate() causes a Panel x to request NOT(x) to replace x by NOT(x), thus we need:
 			if(!e.getPanel().equals(this))
 				setInnerPanel(e.getPanel());
-		}
 		else
-			notifyListeners(e);
+			passFilterEvent(e);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "NOT" + (hashCode()%10) + " " + innerPanel;
+		return "NOT " + innerPanel;
 	}
 }

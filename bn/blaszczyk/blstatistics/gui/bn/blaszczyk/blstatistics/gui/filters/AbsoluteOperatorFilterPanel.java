@@ -18,9 +18,10 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 	public AbsoluteOperatorFilterPanel(boolean value, FilterPanelManager<T,U> filterManager) 
 	{
 		super(filterManager);
-		JMenuItem toggle = new JMenuItem("Umschalten");
-		toggle.addActionListener( e -> toggleFilter());
-		addPopupMenuItem(toggle);
+		
+		JMenuItem popupToggle = new JMenuItem("Umschalten");
+		popupToggle.addActionListener( e -> toggleFilter());
+		addPopupMenuItem(popupToggle);
 
 		addMouseListener( new MouseAdapter(){
 			@Override
@@ -31,10 +32,10 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 			}
 		});
 		
-		if(!value)
-			toggleFilter();
+		if(value)
+			this.value = false;
+		toggleFilter();
 		
-		setFilter(LogicalBiFilter.getTRUEBiFilter());
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 	}
 	
@@ -51,7 +52,6 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 			setFilter(LogicalBiFilter.getFALSEBiFilter());
 			label.setText("FALSE");
 		}
-		notifyListeners(new BiFilterEvent<T, U>(this,getFilter(),BiFilterEvent.RESET_FILTER));
 	}
 
 	@Override

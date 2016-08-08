@@ -6,13 +6,21 @@ import java.util.List;
 import javax.swing.UIManager;
 
 import bn.blaszczyk.blstatistics.core.*;
-import bn.blaszczyk.blstatistics.gui.LeagueManager;
 import bn.blaszczyk.blstatistics.gui.MainFrame;
 import bn.blaszczyk.blstatistics.tools.FileIO;
 import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class BLStatistics
 {
+	public static final String  WELT_FUSSBALL= "wfb";
+	public static final String  FUSSBALL_DATEN = "fbd";
+	
+	private static String requestSource = WELT_FUSSBALL;
+
+	public static String getRequestSource()
+	{
+		return requestSource;
+	}
 
 	private static void initUIManager()
 	{
@@ -38,27 +46,22 @@ public class BLStatistics
 		UIManager.put("OptionPane.messageFont", plainFont);
 		UIManager.put("List.font", plainFont);
 		UIManager.put("PopupMenu.font", plainFont);
+		UIManager.put("TextField.font", plainFont);
 
 //		UIManager.put("JTree.font", plainFont);
 //		UIManager.put("TabbedPane.font", plainFont);
 //		UIManager.put("Tree.font", plainFont);
 //		UIManager.put("RadioButton.font", plainFont);
 //		UIManager.put("RadioButtonMenuItem.font", plainFont);
-//		UIManager.put("TextField.font", plainFont);
 	}	
 	
 	public static void main(String[] args)
 	{
 		initUIManager();
 		TeamAlias.loadAliases();
-		
 		List<League> leagues = FileIO.loadLeagues();
-		
 		MainFrame mf = new MainFrame(leagues);
 		mf.showFrame();
-		
-		LeagueManager lm = new LeagueManager(mf, leagues);
-		lm.showDialog();
 	}
 
 }

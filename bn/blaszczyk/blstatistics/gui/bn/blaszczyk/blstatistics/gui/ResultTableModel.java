@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import bn.blaszczyk.blstatistics.core.TeamResult;
+import bn.blaszczyk.blstatistics.gui.tools.MyTableModel;
 import bn.blaszczyk.blstatistics.tools.TeamAlias;
 
 public class ResultTableModel extends MyTableModel<TeamResult> 
@@ -68,7 +69,7 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 		case 3:
 			return "Punkte";
 		case 4:
-			return "Tordifferenz";
+			return "Tordiff.";
 		case 5:
 			return "S";
 		case 6:

@@ -1,11 +1,9 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
-import java.util.Arrays;
-
 import bn.blaszczyk.blstatistics.core.Game;
+import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
-import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
 import bn.blaszczyk.blstatistics.gui.filters.IntegerValueFilterPanel;
 
 @SuppressWarnings("serial")
@@ -25,27 +23,25 @@ public class MatchDayFilterPanel extends IntegerValueFilterPanel<Game>
 
 
 	@Override
-	protected void setOperator()
+	protected Filter<Game> getFilter()
 	{
 		int matchDay = getReferenceInt();
 		switch(getSelectedOperator())
 		{
-		case NEQ:
 		case EQ:
-			setFilter(GameFilter.getMatchDayFilter(matchDay));
-			break;
-		case LL:
+			return GameFilter.getMatchDayFilter(matchDay);
+		case NEQ:
+			return LogicalFilter.getNOTFilter(GameFilter.getMatchDayFilter(matchDay));
 		case GEQ:
-			setFilter(GameFilter.getMatchDayMinFilter(matchDay));
-			break;
-		case GG:
+			return GameFilter.getMatchDayMinFilter(matchDay);
+		case LL:
+			return LogicalFilter.getNOTFilter(GameFilter.getMatchDayMinFilter(matchDay));
 		case LEQ:
-			setFilter(GameFilter.getMatchDayMaxFilter(matchDay));
-			break;
+			return GameFilter.getMatchDayMaxFilter(matchDay);
+		case GG:
+			return LogicalFilter.getNOTFilter(GameFilter.getMatchDayMaxFilter(matchDay));
 		}
-		if(Arrays.asList(NEQ,LL,GG).contains(getSelectedOperator()))
-			setFilter(LogicalFilter.getNOTFilter(getFilter()));
-		notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
+		return LogicalFilter.getTRUEFilter();
 	}
 	
 	

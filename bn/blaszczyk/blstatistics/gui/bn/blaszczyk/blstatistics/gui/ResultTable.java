@@ -1,22 +1,22 @@
 package bn.blaszczyk.blstatistics.gui;
 
-import java.awt.event.MouseEvent;
 import java.util.*;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import bn.blaszczyk.blstatistics.core.TeamResult;
+import bn.blaszczyk.blstatistics.gui.tools.MyTable;
+import bn.blaszczyk.blstatistics.gui.tools.MyTableModel;
 
 @SuppressWarnings("serial")
-public class ResultTable extends SwingTable<TeamResult>
+public class ResultTable extends MyTable<TeamResult>
 {
 	private boolean isRelativeTable = false;
 	List<String> selectedTeams = new ArrayList<>();
 	
 	public ResultTable()
 	{
-		super();
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		getSelectionModel().addListSelectionListener( e -> repaint());
 	}
@@ -30,6 +30,13 @@ public class ResultTable extends SwingTable<TeamResult>
 				selectedTeams.add(getModel().getValueAt( row  , 1).toString());
 		}
 		return selectedTeams;
+	}
+	
+	public void setSelectedTeams(List<String> teams)
+	{
+		this.selectedTeams = teams;
+		getSelectionModel().removeSelectionInterval(0, getRowCount());
+		repaint();
 	}
 	
 	public void setRelativeTable(boolean isRelativeTable)
@@ -56,30 +63,35 @@ public class ResultTable extends SwingTable<TeamResult>
 	}
 
 	@Override
-	protected void doPopup(MouseEvent e)
-	{
-	}
-
-	@Override
 	protected int columnWidth(int columnIndex)
 	{
-		if( columnIndex == 0)	//Position
+		switch(columnIndex)
+		{
+		case 0:
 			return 50;
-		if( columnIndex == 1)	//Team
-			return 250;
-		if( columnIndex < 5)	//Games,Points,Diff
-			return 100;
-		if( columnIndex < 8)	// S U N
-			return 80;
-		if( columnIndex == 9)	// " : "
+		case 1:
+			return 230;
+		case 2:
+		case 3:
+		case 4:
+			return 90;
+		case 5:
+		case 6:
+		case 7:
+			return 70;
+		case 8:
+			return 70;
+		case 9:
 			return 20;
-		return 70;				//Goals
+		default:
+			return 100;	
+		}
 	}
 	
 	@Override
 	protected int columnAlignment(int columnIndex)
 	{
-		if(columnIndex == 9 || (columnIndex > 4 && columnIndex< 8 ) )	// " : "
+		if(columnIndex == 9 )	// " : "
 			return SwingConstants.CENTER;
 		if(columnIndex == 10)	// OpponentGoals
 			return SwingConstants.LEFT;

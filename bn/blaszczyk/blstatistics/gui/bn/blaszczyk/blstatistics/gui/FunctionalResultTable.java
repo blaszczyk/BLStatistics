@@ -2,6 +2,7 @@ package bn.blaszczyk.blstatistics.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
@@ -21,6 +22,7 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	private ResultTable resultTable = new ResultTable();	
 	private JPanel optionsPanel;
 
+	private JLabel header = new JLabel("Tabelle", SwingConstants.CENTER);
 	private JCheckBox cboHome = new JCheckBox("Heimspiele",true);
 	private JCheckBox cboAway = new JCheckBox("Auswärtsspiele",true);
 	private JLabel lblWinPoints = new JLabel("Punkte pro Sieg:",SwingConstants.RIGHT);
@@ -35,24 +37,29 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	public FunctionalResultTable()
 	{
 		super(new BorderLayout(5, 5));		
+
+		header.setBounds(0, 0, 940, 50);
+		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
-		cboHome.setBounds(10, 10, 150, 30);
+		cboHome.setBounds(10, 60, 150, 30);
 		cboHome.addItemListener(this);
 		
-		cboAway.setBounds(160, 10, 150, 30);
+		cboAway.setBounds(160, 60, 150, 30);
 		cboAway.addItemListener(this);
 		
-		lblWinPoints.setBounds(370, 10, 150, 30);
+		lblWinPoints.setBounds(370, 60, 150, 30);
 		
-		boxWinPoints.setBounds(530, 10, 70, 30);
+		boxWinPoints.setBounds(530, 60, 70, 30);
+		boxWinPoints.setSelectedIndex(1);
 		boxWinPoints.addItemListener(this);
 		
-		cboRelative.setBounds(650,10,250,30);
+		cboRelative.setBounds(650,60,250,30);
 		cboRelative.addItemListener(this);
 		
 		optionsPanel = new JPanel();
 		optionsPanel.setLayout(null);
-		optionsPanel.setPreferredSize(new Dimension(1000, 50));
+		optionsPanel.setPreferredSize(new Dimension(1000, 100));
+		optionsPanel.add(header);
 		optionsPanel.add(cboHome);
 		optionsPanel.add(cboAway);
 		optionsPanel.add(lblWinPoints);
@@ -68,6 +75,11 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		return resultTable.getSelectedTeams();
 	}
 
+	public void setSelectedTeams(List<String> teams)
+	{
+		resultTable.setSelectedTeams(teams);
+	}
+	
 	public void addListSelectionListener(ListSelectionListener l)
 	{
 		resultTable.getSelectionModel().addListSelectionListener(l);

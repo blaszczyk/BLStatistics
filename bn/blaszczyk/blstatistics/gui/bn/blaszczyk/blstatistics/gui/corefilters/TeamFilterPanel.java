@@ -1,5 +1,6 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.List;
 
@@ -11,31 +12,41 @@ import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
-import bn.blaszczyk.blstatistics.gui.filters.FilterEvent;
+import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
+import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 
 @SuppressWarnings({"serial"})
-public class TeamFilterPanel extends AbstractTeamFilterPanel
+public class TeamFilterPanel extends AbstractFilterPanel<Game>
 {
 	private JComboBox<String> teamBox;
 	private JCheckBox homeBox;
 	private JCheckBox awayBox;
 	
-	public TeamFilterPanel(Iterable<String> allTeams)
+	public TeamFilterPanel(List<String> allTeams)
 	{
-		super(allTeams);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		ActionListener listener = e -> resetFilter();
 		
-		teamBox = createTeamBox(allTeams);
+		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(allTeams);
+		
+		teamBox = cbf.createComboBox();
 		teamBox.addActionListener(listener);
 		
 		homeBox = new JCheckBox("H",true);
 		homeBox.setInheritsPopupMenu(true);
 		homeBox.addActionListener(listener);
+		homeBox.setMaximumSize(new Dimension(50,30));
+		homeBox.setMinimumSize(new Dimension(50,30));
 		
 		awayBox = new JCheckBox("A",true);
 		awayBox.setInheritsPopupMenu(true);
 		awayBox.addActionListener(listener);
+		awayBox.setMaximumSize(new Dimension(50,30));
+		awayBox.setMinimumSize(new Dimension(50,30));
+		
+
+		setMaximumSize(new Dimension(350,30));
+		setMinimumSize(new Dimension(350,30));
 	}
 	
 	public TeamFilterPanel(List<String> allTeams, String team, boolean home, boolean away)
@@ -50,7 +61,7 @@ public class TeamFilterPanel extends AbstractTeamFilterPanel
 
 	private void resetFilter()
 	{
-		String team = teamBox.getSelectedItem().toString();
+		String team = (String) teamBox.getSelectedItem();
 		Filter<Game> filter = LogicalFilter.getFALSEFilter();
 		if(homeBox.isSelected())
 			if(awayBox.isSelected())
@@ -61,7 +72,6 @@ public class TeamFilterPanel extends AbstractTeamFilterPanel
 			if(awayBox.isSelected())
 				filter = GameFilter.getTeamAwayFilter(team);
 		setFilter(filter);
-		notifyListeners(new FilterEvent<Game>(this, getFilter(), FilterEvent.RESET_FILTER));
 	}
 	
 	public String getTeam()

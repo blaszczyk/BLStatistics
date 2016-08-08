@@ -1,16 +1,15 @@
 package bn.blaszczyk.blstatistics.core;
 
 import java.util.*;
-
 import bn.blaszczyk.blstatistics.filters.*;
 
 public class Table implements Iterable<TeamResult>
 {
 	private List<TeamResult> teamResults = new ArrayList<>();
-	private int pointsForWin = 2;
+	private int pointsForWin = 3;
 
 	/*
-	 * Constructors for different sets of Filters
+	 * Constructors
 	 */
 	public Table(Iterable<Game> games, int pointsForWin)
 	{
@@ -38,6 +37,8 @@ public class Table implements Iterable<TeamResult>
 				getTeamResult(i).setPosition(lastPos);
 			else
 				getTeamResult(i).setPosition(lastPos = i + 1);	
+//		for(TeamResult tr: this)
+//			System.out.println(tr);
 	}
 	
 	public int getTeamCount()

@@ -1,10 +1,9 @@
 package bn.blaszczyk.blstatistics.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.*;
@@ -22,9 +21,43 @@ import bn.blaszczyk.blstatistics.tools.FileIO;
 @SuppressWarnings("serial")
 public class LeagueManager extends JDialog implements ListSelectionListener, ActionListener
 {
+	private class LeagueItem implements Iterable<League>
+	{
+		private String path;
+		private List<League> leagues;
+		
+		private LeagueItem(League league)
+		{
+			leagues = new ArrayList<>();
+			leagues.add(league);
+			path = league.getPathName();
+		}
+
+		private boolean addLeague(League league)
+		{
+			if(!league.getPathName().equals(path))
+				return false;
+			leagues.add(league);
+			return true;
+		}
+		
+		@Override
+		public Iterator<League> iterator()
+		{
+			return leagues.iterator();
+		}
+		
+		@Override
+		public String toString()
+		{
+			return path;
+		}
+		
+	}
+	
 	private JFrame owner;
 	
-	private JList<League> leagueList;
+	private JList<LeagueItem> leagueList;
 	private JTable seasonTable;
 	private JPanel actionPanel;
 
@@ -32,25 +65,19 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	private JButton btnSelect = new JButton("Markieren");
 	private JButton btnSeasonRequest = new JButton("Download");
 	
-	
-	/*
-	 * TODO:
-	 * - Find nice way to open on Request in MainFrame
-	 */
-	
 	public LeagueManager(JFrame owner, List<League> leagues)
 	{
 		super(owner, "Liga Manager", true);
 		this.owner = owner;
-		setLayout(new BorderLayout(5,5));
-		setResizable(false);
-		
-		League[] leagueArray = new League[leagues.size()];
-		leagues.toArray(leagueArray);
-		leagueList = new JList<>(leagueArray);
+		setSize(654,405);
+		setLayout(null);
+				
+		leagueList = new JList<>(createLeagueItems(leagues));
 		leagueList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		leagueList.addListSelectionListener( this );
-		leagueList.setPreferredSize(new Dimension(200, 300));
+		
+		JScrollPane leaguePane = new JScrollPane(leagueList);
+		leaguePane.setBounds(10,10,210, 300);
 		
 		seasonTable = new JTable() {
 		    DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
@@ -67,28 +94,34 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		seasonTable.setRowSelectionAllowed(true);
 		seasonTable.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		
+		JScrollPane seasonPane = new JScrollPane(seasonTable);
+		seasonPane.setBounds(230, 10, 410, 300);
+		
 		btnSeasonRequest.addActionListener(this);
 		btnSeasonRequest.setBounds(10, 10, 190, 30);
+		btnSeasonRequest.setMnemonic('d');
 		
 		btnSelect.addActionListener(this);
 		btnSelect.setBounds(220, 10, 190, 30);
+		btnSelect.setMnemonic('m');
 		
 		btnClose.addActionListener(this);
 		btnClose.setBounds(430, 10, 190, 30);
+		btnClose.setMnemonic('s');
 		
 		actionPanel = new JPanel();
 		actionPanel.setLayout(null);
-		actionPanel.setPreferredSize(new Dimension(630, 50));
+		actionPanel.setBounds(10,320,630, 50);
 		actionPanel.add(btnSeasonRequest);
 		actionPanel.add(btnSelect);
 		actionPanel.add(btnClose);
 		
 		
 		
-		add(new JScrollPane(leagueList),BorderLayout.WEST);
-		add(new JScrollPane(seasonTable),BorderLayout.CENTER);
-		add(actionPanel,BorderLayout.SOUTH);
-		pack();
+		add(leaguePane);
+		add(seasonPane);
+		add(actionPanel);
+		setResizable(false);
 			
 	}
 
@@ -99,7 +132,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		repaint();
 	}
 	
-	private void populateSeasonTable(League league)
+	private void populateSeasonTable(LeagueItem leagueItem)
 	{
 		Object[] columnNames = {"Saison","Vorhanden", "Teams", "Spiele"};
 		DefaultTableModel tm = new DefaultTableModel(columnNames,0){
@@ -108,13 +141,14 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		        return false;
 		    }
 		};
-		for(Season season : league)
-		{
-			String isSaved = FileIO.isSeasonSaved(season)? "Ja": "Nein";
-			Object[] rowData = {season.getYear(), isSaved, season.getTeamCount(), season.getGameCount()};
-			tm.addRow(rowData);
-		}
-		seasonTable.setModel(tm);
+		for(League league : leagueItem)
+			for(Season season : league)
+			{
+				String isSaved = FileIO.isSeasonSaved(season)? "Ja": "Nein";
+				Object[] rowData = {season.getYear(), isSaved, season.getTeamCount(), season.getGameCount()};
+				tm.addRow(rowData);
+			}
+			seasonTable.setModel(tm);
 	}
 	
 	private void selectUnloaded()
@@ -139,7 +173,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 			for( int i : seasonTable.getSelectedRows() )
 			{
 				int year = (int) seasonTable.getModel().getValueAt(i, 0);
-				seasons.add( leagueList.getSelectedValue().getSeason(year) );
+				for(League league : leagueList.getSelectedValue())
+					if(league.hasSeason(year))
+						seasons.add( league.getSeason(year) );
 			}
 			DownloadDialog dlDialog = new DownloadDialog(this, seasons);
 			dlDialog.showDialog();
@@ -151,6 +187,22 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	}
 	
 
+	private LeagueItem[] createLeagueItems(List<League> leagues)
+	{
+		List<LeagueItem> leagueItems = new ArrayList<>();
+		for( League league : leagues)
+		{
+			boolean exists = false;
+			for(LeagueItem leagueItem : leagueItems)
+				exists |= leagueItem.addLeague(league);
+			if(!exists)
+				leagueItems.add(new LeagueItem(league));
+		}
+		LeagueItem[] leagueArray = new LeagueItem[leagues.size()];
+		leagueItems.toArray(leagueArray);
+		return leagueArray; 
+	}
+	
 	@Override
 	public void valueChanged(ListSelectionEvent e)
 	{

@@ -18,6 +18,9 @@ public class Season implements Iterable<MatchDay>
 		this.league = league;
 	}
 
+	/*
+	 * Getters
+	 */
 	public MatchDay getMatchDay(int index)
 	{
 		return matchDays.get(index);
@@ -70,32 +73,35 @@ public class Season implements Iterable<MatchDay>
 		return gameList;
 	}
 
-	public void addGame(Game game)
+	public void consumeGames(Iterable<Game> source)
+	{
+		matchDays = new ArrayList<>();
+		for(Game game : source)
+			consumeGame(game);
+	}
+	
+	private void consumeGame(Game game)
 	{
 		int matchDayIndex = game.getMatchDay() - 1;
 		while(matchDayIndex >= matchDays.size())
 			matchDays.add(new MatchDay());
 		matchDays.get(matchDayIndex).addGame(game);
-		league.addTeam(game.getTeam1());
-		league.addTeam(game.getTeam2());
-		if(!teams.contains(game.getTeam1()))
-			teams.add(game.getTeam1());
-		if(!teams.contains(game.getTeam2()))
-			teams.add(game.getTeam2());
-	}
-	
-	public void consumeGames(Iterable<Game> source)
-	{
-		matchDays = new ArrayList<>();
-		for(Game game : source)
-			addGame(game);
+		addTeam(game.getTeam1());
+		addTeam(game.getTeam2());
 	}
 
+	private void addTeam(String team)
+	{
+		if(teams.contains(team))
+			return;
+		teams.add(team);
+		league.addTeam(team);
+	}
+	
 	@Override
 	public Iterator<MatchDay> iterator()
 	{
 		return matchDays.iterator();
 	}
-
 	
 }

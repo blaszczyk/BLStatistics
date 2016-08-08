@@ -1,19 +1,13 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
-import bn.blaszczyk.blstatistics.filters.BiFilter;
 
 @SuppressWarnings("serial")
 public abstract class LogicalBiFilterPanel<T, U> extends AbstractBiFilterPanel<T, U> implements BiFilterListener<T, U>
 {
 
-	public LogicalBiFilterPanel(FilterPanelManager<T, U> filterFactory)
+	public LogicalBiFilterPanel(FilterPanelManager<T, U> filterManager)
 	{
-		super(filterFactory);
-	}
-
-	public LogicalBiFilterPanel(BiFilter<T, U> filter, FilterPanelManager<T, U> filterManager)
-	{
-		super(filter, filterManager);
+		super(filterManager);
 	}
 	
 	protected BiFilterPanel<T, U> replaceFilterPanel(BiFilterPanel<T, U> newPanel, BiFilterPanel<T, U> oldPanel)
@@ -26,6 +20,4 @@ public abstract class LogicalBiFilterPanel<T, U> extends AbstractBiFilterPanel<T
 		newPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
 		return newPanel;
 	}
-
-
 }
