@@ -32,7 +32,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	private BiFilterListener<Season,Game> listener = null;
 	private GameFilterPanelManager filterManager;
 	private FilterParser filterParser;
-	private FilterIO filterIO = new FilterIO();
+	private FilterIO filterIO;
 	
 	private FilterLog filterLog;
 	
@@ -44,11 +44,10 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		header.setPreferredSize(new Dimension(355, 50));
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
+		filterIO = new FilterIO();
 		filterManager = new GameFilterPanelManager(teams,leagues,filterIO);
 		filterParser = new FilterParser(filterManager);
-		filterLog = new FilterLog( filterParser, e -> {
-			setFilterPanel(filterLog.getFilterPanel());
-		});
+		filterLog = new FilterLog( filterParser, 10, e -> setFilterPanel(filterLog.getFilterPanel()) );
 		filterIO.setParser(filterParser);
 		filterPanel = new NoFilterPanel<>(filterManager);
 
@@ -108,7 +107,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		else
 			filterPanel.paint();
 		if(e.getFilter() instanceof BiFilterPanel)
-			filterLog.pushFilterIgnoreNext((BiFilterPanel<Season,Game>)e.getFilter(), filterPanel);
+			filterLog.pushFilterName((BiFilterPanel<Season,Game>)e.getFilter(), filterPanel);
 		else
 			filterLog.pushFilter(e.getSource(), filterPanel);
 		if(listener != null)

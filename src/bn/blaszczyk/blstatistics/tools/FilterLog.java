@@ -25,11 +25,13 @@ public class FilterLog
 	private ActionListener listener;
 	
 	private int selectedFilterIndex;
-	private boolean ignoreNext = false;
+	private int maxLog;
+	private boolean hasName = false;
 
-	public FilterLog(FilterParser parser, ActionListener listener)
+	public FilterLog(FilterParser parser, int maxLog, ActionListener listener)
 	{
 		this.parser = parser;
+		this.maxLog = maxLog;
 		this.listener = listener;
 	}
 
@@ -47,16 +49,6 @@ public class FilterLog
 			mi.addActionListener(createIndexedListener(i));
 			menuBackwards.add(mi);
 		}
-	}
-	
-	private ActionListener createIndexedListener(int index)
-	{
-		final int panelIndex = index;
-		return e -> {
-			panel = parser.parseFilter( filterLog.get(panelIndex) );
-			selectedFilterIndex = panelIndex;
-			listener.actionPerformed(e);
-		};
 	}
 
 	public void populateForwardsMenu(JMenu menuForewards)
@@ -81,25 +73,45 @@ public class FilterLog
 	
 	public void pushFilter(BiFilterPanel<Season, Game> source, BiFilterPanel<Season, Game> fullFilter )
 	{
-		if(ignoreNext)
+		if(hasName)
 		{
-			ignoreNext = false;
+			filterLog.remove(filterLog.size()-1);
+			filterLog.add(parser.writeFilter(fullFilter));
+			hasName = false;
 			return;
 		}
 		chopLog(selectedFilterIndex+1);
 		if(source == lastSource)
+		{
 			chopLog(selectedFilterIndex);
-		lastSource = source;
+		}
+		if(filterLog.size() > maxLog)
+		{
+			filterLog.remove(0);
+			nameLog.remove(0);
+		}
 		nameLog.add(source.toString());
 		filterLog.add(parser.writeFilter(fullFilter));
+		lastSource = source;
 		selectedFilterIndex = filterLog.size() - 1;
 	}
 
-	public void pushFilterIgnoreNext(BiFilterPanel<Season, Game> source, BiFilterPanel<Season, Game> fullFilter)
+	public void pushFilterName(BiFilterPanel<Season, Game> source, BiFilterPanel<Season, Game> fullFilter)
 	{
 		pushFilter(source, fullFilter);
-		ignoreNext = true;
+		hasName = true;
 	}
+		
+	private ActionListener createIndexedListener(int index)
+	{
+		final int panelIndex = index;
+		return e -> {
+			panel = parser.parseFilter( filterLog.get(panelIndex) );
+			selectedFilterIndex = panelIndex;
+			listener.actionPerformed(e);
+		};
+	}
+	
 	private void chopLog(int chopIndex)
 	{
 		if(chopIndex < 0)
@@ -119,7 +131,5 @@ public class FilterLog
 			menu.removeActionListener(a);
 		menu.setEnabled(true);
 	}
-
-
 
 }
