@@ -23,10 +23,9 @@ public class FilterParser
 	private int panelCount;
 	private Map<String, BiFilterPanel<Season, Game>> filters;
 
-	
 	private FilterPanelManager<Season,Game> manager;
 	
-	public FilterParser(GameFilterPanelManager manager)
+	public FilterParser(FilterPanelManager<Season,Game> manager)
 	{
 		this.manager = manager;
 	}
@@ -41,7 +40,7 @@ public class FilterParser
 	
 	public BiFilterPanel<Season, Game> parseFilter(String in)
 	{
-		InputStream stream = new ByteArrayInputStream(in.getBytes(StandardCharsets.UTF_8));
+		InputStream stream = new ByteArrayInputStream(in.getBytes(StandardCharsets.ISO_8859_1));
 		return parseFilter(stream);
 	}
 

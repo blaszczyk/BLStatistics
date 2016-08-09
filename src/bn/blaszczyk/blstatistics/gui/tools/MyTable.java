@@ -65,7 +65,7 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	};
 	
 	private List<T> tList;
-	private Comparator<T> comparator;
+	private Comparator<T> comparator = comparator(0);
 	private boolean isCompareBackwards = true;
 	private int sortingColumn = -1;
 	

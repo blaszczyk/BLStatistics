@@ -32,7 +32,6 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		cbf = new ComboBoxFactory<>(TeamFilterPanel.getTeamList());
-		
 		label.setAlignmentX(LEFT_ALIGNMENT);
 		
 		btnNewTeam.setMaximumSize(new Dimension(250,30));

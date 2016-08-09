@@ -10,10 +10,10 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import bn.blaszczyk.blstatistics.filters.Filter;
+import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 
 @SuppressWarnings("serial")
 public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> implements MouseWheelListener, KeyListener
@@ -28,7 +28,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	private static final String[] OPERATORS = {EQ,NEQ,GG,GEQ,LL,LEQ};
 	
 	private JLabel label;
-	private JComboBox<String> operatorBox = new JComboBox<>(OPERATORS);
+	private JComboBox<String> operatorBox;
 	private JTextField valueField;
 	private int defaultValue;
 
@@ -38,9 +38,12 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		
 		label = new JLabel(labelText);
 		
-		operatorBox.setMaximumSize(new Dimension(50,30));
-		operatorBox.setInheritsPopupMenu(true);
-		operatorBox.addActionListener(e -> setFilter());
+		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(OPERATORS);
+		cbf.setBoxWidth(50);
+		operatorBox = cbf.createComboBox();
+		operatorBox.addActionListener(e -> {
+			setFilter();
+		});
 		
 		valueField = new JTextField(Integer.toString(defaultValue));
 		valueField.setMaximumSize(new Dimension(70,30));
@@ -77,14 +80,11 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		int result = defaultValue;
 		try
 		{
-			if(valueField.getText() == null)
-				valueField.setText("0");
 			result = Integer.parseInt(valueField.getText());
 		}
 		catch(NumberFormatException e)
 		{
-			valueField.setText(Integer.toString(defaultValue));
-			JOptionPane.showMessageDialog(valueField, "Falschens Zahlenformat", "Error", JOptionPane.ERROR_MESSAGE);
+//			JOptionPane.showMessageDialog(valueField, "Falschens Zahlenformat", "Error", JOptionPane.ERROR_MESSAGE);
 		}	
 		return result;
 	}

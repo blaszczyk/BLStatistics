@@ -120,7 +120,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		JMenu popupAddFilter = new JMenu("Neuer Filter");
 		filterManager.addMenuItems(popupAddFilter, e -> addPanel(filterManager.getPanel()));
 		addPopupMenuItem(popupAddFilter);
-		popupRemoveFilter = new JMenu("Entferne Feld");
+		popupRemoveFilter = new JMenu("Entferne Filter");
 		addPopupMenuItem(popupRemoveFilter);
 		super.addPopupMenuItems();
 	}

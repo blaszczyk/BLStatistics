@@ -1,6 +1,8 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,7 @@ import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 
 @SuppressWarnings("serial")
-public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
+public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season> implements ActionListener
 {
 	private final static List<String> LEAGUE_LIST = new ArrayList<>();
 	
@@ -29,7 +31,7 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		
 		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(LEAGUE_LIST);
 		cboLeagues = cbf.createComboBox();
-		cboLeagues.addActionListener(e -> setFilter());
+		cboLeagues.addActionListener(this);
 
 		boxRecursive.setMinimumSize(new Dimension(60, 30));
 		boxRecursive.setMinimumSize(new Dimension(60, 30));
@@ -89,4 +91,15 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		return getSelectedLeague().toString();
 	}
 
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() instanceof JCheckBox)
+		{
+			JCheckBox box = (JCheckBox) e.getSource();
+			setFilter();
+			box.requestFocusInWindow();
+		}
+	}
 }

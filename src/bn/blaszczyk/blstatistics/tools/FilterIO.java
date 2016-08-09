@@ -19,18 +19,18 @@ public class FilterIO
 	private static final String FOLDER = "filters";
 	private static final String EXTENSION = "flt";
 	
-	private FilterParser parser;
+	private static FilterParser parser;
 	
 	public FilterIO()
 	{
 	}
 
-	public void setParser(FilterParser parser)
+	public static void setParser(FilterParser parser)
 	{
-		this.parser = parser;
+		FilterIO.parser = parser;
 	}
 
-	public void saveFilter(BiFilterPanel<Season, Game> filter)
+	public static void saveFilter(BiFilterPanel<Season, Game> filter)
 	{
 		if (filter == null || filter instanceof NoFilterPanel)
 		{
@@ -42,7 +42,7 @@ public class FilterIO
 			saveFilter(filter, name);	
 	}
 
-	public void saveFilter(BiFilterPanel<Season, Game> filter, String fileName)
+	public static void saveFilter(BiFilterPanel<Season, Game> filter, String fileName)
 	{
 		File directory = new File(String.format("%s/", FOLDER)  );
 		if(!directory.exists())
@@ -57,7 +57,7 @@ public class FilterIO
 		}
 	}
 
-	public BiFilterPanel<Season, Game> loadFilter()
+	public static BiFilterPanel<Season, Game> loadFilter()
 	{
 		File workingDirectory = new File(System.getProperty("user.dir") + "/" + FOLDER);
 		
@@ -79,12 +79,12 @@ public class FilterIO
 		return null;
 	}
 
-	public BiFilterPanel<Season, Game> loadFilter(String filterName)
+	public static BiFilterPanel<Season, Game> loadFilter(String filterName)
 	{
 		return loadFilter(new File(String.format("%s/%s.%s", FOLDER, filterName, EXTENSION)));
 	}
 	
-	private BiFilterPanel<Season, Game> loadFilter(File file)
+	private static BiFilterPanel<Season, Game> loadFilter(File file)
 	{
 		if(file.exists())
 			try

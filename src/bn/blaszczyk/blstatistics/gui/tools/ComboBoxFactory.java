@@ -2,6 +2,8 @@ package bn.blaszczyk.blstatistics.gui.tools;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
@@ -12,12 +14,13 @@ import javax.swing.JComboBox;
 import javax.swing.UIManager;
 
 
-public class ComboBoxFactory<T> implements MouseWheelListener, KeyListener
+public class ComboBoxFactory<T> implements MouseWheelListener, KeyListener, ActionListener
 {
 
 	private int charCounter = 0;
 	private char selectChar = '1';
 	private int boxWidth = 250;
+	private boolean editable = false;
 	private T[] allObjects;
 
 	@SuppressWarnings("unchecked")
@@ -36,11 +39,16 @@ public class ComboBoxFactory<T> implements MouseWheelListener, KeyListener
 	{
 		this.allObjects = allObjects;
 	}
-	
+
 	public void setBoxWidth(int width)
 	{
 		if( width > 0)
 			boxWidth = width;
+	}
+	
+	public void setEditable(boolean editable)
+	{
+		this.editable = editable;
 	}
 
 	
@@ -51,7 +59,9 @@ public class ComboBoxFactory<T> implements MouseWheelListener, KeyListener
 		box.setMinimumSize(new Dimension(boxWidth,30));
 		box.addMouseWheelListener(this);
 		box.addKeyListener(this);
+		box.addActionListener(this);
 		box.setInheritsPopupMenu(true);
+		box.setEditable(editable);
 		box.setFont( UIManager.getFont("ComboBox.font").deriveFont(Font.BOLD) );
 		return box;
 	}
@@ -146,6 +156,16 @@ public class ComboBoxFactory<T> implements MouseWheelListener, KeyListener
 			char keyChar = e.getKeyChar();
 			if(Character.isAlphabetic(keyChar) || Character.isDigit(keyChar))
 				selectByChar(Character.toLowerCase(keyChar), box);
+			box.requestFocusInWindow();
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() instanceof JComboBox)
+		{
+			JComboBox<?> box = (JComboBox<?>) e.getSource();
 			box.requestFocusInWindow();
 		}
 	}

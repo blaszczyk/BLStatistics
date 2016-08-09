@@ -1,5 +1,6 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
@@ -13,7 +14,7 @@ import bn.blaszczyk.blstatistics.gui.filters.AbstractBiFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.FilterPanelManager;
 
 @SuppressWarnings("serial")
-public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
+public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game> implements ActionListener
 {
 	private JCheckBox first = new JCheckBox("Hinrunde",true);
 	private JCheckBox second = new JCheckBox("Rückrunde",true);
@@ -22,10 +23,9 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 	{
 		super(filterFactory);
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
-		ActionListener listener = e -> setFilter();
-		first.addActionListener(listener);
+		first.addActionListener(this);
 		first.setInheritsPopupMenu(true);
-		second.addActionListener(listener);
+		second.addActionListener(this);
 		second.setInheritsPopupMenu(true);
 		setFilter();
 	}
@@ -75,4 +75,14 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 		return "Hin- / Rückrunde";
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() instanceof JCheckBox)
+		{
+			JCheckBox box = (JCheckBox) e.getSource();
+			setFilter();
+			box.requestFocusInWindow();
+		}
+	}
 }

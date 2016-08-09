@@ -45,7 +45,7 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		popupNegate = new JMenuItem("Invertieren");
 		popupNegate.addActionListener( e -> negate() );
 		
-		popupRemove = new JMenuItem("Löschen");
+		popupRemove = new JMenuItem("Entfernen");
 		popupRemove.addActionListener( e -> replaceMe( new NoFilterPanel<>(filterManager) ) );
 		
 		popupReplace = new JMenu("Ersetzten");

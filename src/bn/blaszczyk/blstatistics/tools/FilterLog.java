@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.core.Season;
+import bn.blaszczyk.blstatistics.gui.corefilters.TeamFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterPanel;
 
 public class FilterLog
@@ -16,6 +17,7 @@ public class FilterLog
 
 	private List<String> nameLog = new ArrayList<>();
 	private List<String> filterLog = new ArrayList<>();
+	private List<List<String>> teamListLog = new ArrayList<>();
 	
 	private BiFilterPanel<Season,Game> lastSource;
 	
@@ -87,9 +89,11 @@ public class FilterLog
 		{
 			filterLog.remove(0);
 			nameLog.remove(0);
+			teamListLog.remove(0);
 		}
 		nameLog.add(source.toString());
 		filterLog.add(parser.writeFilter(fullFilter));
+		teamListLog.add(new ArrayList<>(TeamFilterPanel.getTeamList()));
 		lastSource = source;
 		selectedFilterIndex = filterLog.size() - 1;
 	}
@@ -105,6 +109,7 @@ public class FilterLog
 		final int panelIndex = index;
 		return e -> {
 			panel = parser.parseFilter( filterLog.get(panelIndex) );
+			TeamFilterPanel.setTeamList(teamListLog.get(panelIndex));
 			selectedFilterIndex = panelIndex;
 			listener.actionPerformed(e);
 		};
@@ -116,6 +121,7 @@ public class FilterLog
 		{
 			filterLog.remove(chopIndex);
 			nameLog.remove(chopIndex);
+			teamListLog.remove(chopIndex);
 		}
 	}
 	

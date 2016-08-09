@@ -30,6 +30,7 @@ public class FilterPanelAdapter {
 			this.filterFactory = filterFactory;
 			this.innerPanel = panel;
 			panel.addPopupMenuItem(popupNegate);
+			panel.addPopupMenuItem(popupRemove);
 			panel.addPopupMenuItem(popupReplace);
 			panel.addFilterListener(this);
 		}

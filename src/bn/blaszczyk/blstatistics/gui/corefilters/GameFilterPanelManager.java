@@ -17,13 +17,6 @@ import bn.blaszczyk.blstatistics.tools.FilterIO;
 public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 	
 	private BiFilterPanel<Season,Game> panel;
-	private FilterIO filterIO;
-	
-	
-	public GameFilterPanelManager(FilterIO filterIO)
-	{
-		this.filterIO = filterIO;
-	}
 	
 	@Override
 	public void addMenuItems(JMenu menu, ActionListener listener)
@@ -137,7 +130,7 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		
 		
 		addMenuItem(menu,"Lade Filter").addActionListener( e -> {
-			setPanel( filterIO.loadFilter() );
+			setPanel( FilterIO.loadFilter() );
 			listener.actionPerformed(e);
 		});
 	}

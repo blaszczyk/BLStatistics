@@ -1,6 +1,7 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 
 @SuppressWarnings({"serial"})
-public class TeamFilterPanel extends AbstractFilterPanel<Game>
+public class TeamFilterPanel extends AbstractFilterPanel<Game> implements ActionListener
 {
 	private static final List<String> TEAM_LIST = new ArrayList<>();
 	
@@ -28,22 +29,20 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	public TeamFilterPanel()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-		ActionListener listener = e -> resetFilter();
 		
 		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(TEAM_LIST);
-		
 		teamBox = cbf.createComboBox();
-		teamBox.addActionListener(listener);
+		teamBox.addActionListener(this);
 		
 		homeBox = new JCheckBox("H",true);
 		homeBox.setInheritsPopupMenu(true);
-		homeBox.addActionListener(listener);
+		homeBox.addActionListener(this);
 		homeBox.setMaximumSize(new Dimension(50,30));
 		homeBox.setMinimumSize(new Dimension(50,30));
 		
 		awayBox = new JCheckBox("A",true);
 		awayBox.setInheritsPopupMenu(true);
-		awayBox.addActionListener(listener);
+		awayBox.addActionListener(this);
 		awayBox.setMaximumSize(new Dimension(50,30));
 		awayBox.setMinimumSize(new Dimension(50,30));
 		
@@ -87,7 +86,7 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 		return TeamFilterPanel.TEAM_LIST;
 	}
 	
-	private void resetFilter()
+	private void setFilter()
 	{
 		String team = (String) teamBox.getSelectedItem();
 		Filter<Game> filter = LogicalFilter.getFALSEFilter();
@@ -115,6 +114,17 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	public String toString()
 	{
 		return "Team " + teamBox.getSelectedItem();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() instanceof JCheckBox)
+		{
+			JCheckBox box = (JCheckBox) e.getSource();
+			setFilter();
+			box.requestFocusInWindow();
+		}
 	}
 
 	

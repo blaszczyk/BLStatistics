@@ -31,7 +31,6 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	private BiFilterListener<Season,Game> listener = null;
 	private GameFilterPanelManager filterManager;
 	private FilterParser filterParser;
-	private FilterIO filterIO;
 	
 	private FilterLog filterLog;
 	
@@ -43,14 +42,13 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		header.setPreferredSize(new Dimension(355, 50));
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
-		filterIO = new FilterIO();
-		filterManager = new GameFilterPanelManager(filterIO);
+		filterManager = new GameFilterPanelManager();
 		filterParser = new FilterParser(filterManager);
+		FilterIO.setParser(filterParser);
 		filterLog = new FilterLog( filterParser, 10, e -> setFilterPanel(filterLog.getFilterPanel()) );
-		filterIO.setParser(filterParser);
 		filterPanel = new NoFilterPanel<>(filterManager);
 
-		setFilterPanel(filterIO.loadFilter(LAST_FILTER));
+		setFilterPanel(FilterIO.loadFilter(LAST_FILTER));
 		filterLog.pushFilter(filterPanel, filterPanel);	
 	}
 
@@ -62,19 +60,19 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 
 	public void loadFilter()
 	{
-		setFilterPanel(filterIO.loadFilter());
+		setFilterPanel(FilterIO.loadFilter());
 		filterLog.pushFilter(filterPanel, filterPanel);	
 	}
 	
 	public void saveFilter()
 	{
-		filterIO.saveFilter(filterPanel);
+		FilterIO.saveFilter(filterPanel);
 	}
 	
 
 	public void saveLastFilter()
 	{
-		filterIO.saveFilter(filterPanel,LAST_FILTER);
+		FilterIO.saveFilter(filterPanel,LAST_FILTER);
 	}
 
 
