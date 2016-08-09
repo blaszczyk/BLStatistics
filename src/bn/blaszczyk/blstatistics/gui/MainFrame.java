@@ -21,6 +21,8 @@ import javax.swing.KeyStroke;
 
 import bn.blaszczyk.blstatistics.BLStatistics;
 import bn.blaszczyk.blstatistics.core.*;
+import bn.blaszczyk.blstatistics.gui.corefilters.SingleLeagueFilterPanel;
+import bn.blaszczyk.blstatistics.gui.corefilters.TeamFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.*;
 
 @SuppressWarnings("serial")
@@ -40,8 +42,8 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	
 	private List<Game> gameList;
 	private List<League> leagues;
-	private List<String> leagueNames = new ArrayList<>();
-	private List<String> teams = new ArrayList<>();
+	
+	private boolean noContent = true;
 	
 	public MainFrame(List<League> leagues)
 	{
@@ -69,7 +71,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	
 	public void showFrame()
 	{
-		if(teams.size() == 0)
+		if( noContent )
 			showLeagueManager();
 		resetTable();
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -87,7 +89,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	
 	private void initComponents()
 	{
-		functionalFilterPanel = new FunctionalFilterPanel(teams,leagueNames);
+		functionalFilterPanel = new FunctionalFilterPanel();
 		functionalFilterPanel.addFilterListener(this);
 
 		functionalResultTable.addListSelectionListener( e -> {
@@ -109,6 +111,8 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 
 	private void initLists()
 	{
+		List<String> teams = new ArrayList<>();
+		List<String> leagueNames = new ArrayList<>();
 		for(League league : leagues)
 		{
 			for(String team : league.getTeams())
@@ -118,6 +122,9 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 				leagueNames.add(league.getName());
 		}
 		Collections.sort(teams);
+		noContent = teams.size() == 0;
+		SingleLeagueFilterPanel.setLeagueList(leagueNames);
+		TeamFilterPanel.setTeamList(teams);
 	}
 	
 	private void initIcon()

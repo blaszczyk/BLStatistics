@@ -3,7 +3,6 @@ package bn.blaszczyk.blstatistics.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -36,7 +35,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	
 	private FilterLog filterLog;
 	
-	public FunctionalFilterPanel(List<String> teams, List<String> leagues)
+	public FunctionalFilterPanel()
 	{
 		super(new BorderLayout(5,5));
 		setPreferredSize(new Dimension(300,700));		
@@ -45,7 +44,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
 		filterIO = new FilterIO();
-		filterManager = new GameFilterPanelManager(teams,leagues,filterIO);
+		filterManager = new GameFilterPanelManager(filterIO);
 		filterParser = new FilterParser(filterManager);
 		filterLog = new FilterLog( filterParser, 10, e -> setFilterPanel(filterLog.getFilterPanel()) );
 		filterIO.setParser(filterParser);

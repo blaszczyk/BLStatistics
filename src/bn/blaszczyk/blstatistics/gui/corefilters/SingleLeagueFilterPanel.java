@@ -1,6 +1,7 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -17,14 +18,16 @@ import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 @SuppressWarnings("serial")
 public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 {
+	private final static List<String> LEAGUE_LIST = new ArrayList<>();
+	
 	private JComboBox<String> cboLeagues;
 	private JCheckBox boxRecursive = new JCheckBox("Alle",true);
 
-	public SingleLeagueFilterPanel(List<String> allLeagues)
+	public SingleLeagueFilterPanel()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(allLeagues);
+		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(LEAGUE_LIST);
 		cboLeagues = cbf.createComboBox();
 		cboLeagues.addActionListener(e -> setFilter());
 
@@ -36,9 +39,9 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		setFilter();
 	}
 
-	public SingleLeagueFilterPanel(List<String> allLeagues, String league, boolean isRecursive)
+	public SingleLeagueFilterPanel(String league, boolean isRecursive)
 	{
-		this(allLeagues);
+		this();
 		cboLeagues.setSelectedItem(league);
 		boxRecursive.setSelected(isRecursive);
 	}
@@ -51,6 +54,13 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 	public boolean isRecursive()
 	{
 		return boxRecursive.isSelected();
+	}
+
+	public static void setLeagueList(Iterable<String> leagueList)
+	{
+		SingleLeagueFilterPanel.LEAGUE_LIST.clear();
+		for(String league : leagueList)
+			SingleLeagueFilterPanel.LEAGUE_LIST.add(league);
 	}
 	
 	private void setFilter()

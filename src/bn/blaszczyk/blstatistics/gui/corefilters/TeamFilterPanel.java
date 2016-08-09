@@ -2,6 +2,7 @@ package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -18,16 +19,18 @@ import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 @SuppressWarnings({"serial"})
 public class TeamFilterPanel extends AbstractFilterPanel<Game>
 {
+	private static final List<String> TEAM_LIST = new ArrayList<>();
+	
 	private JComboBox<String> teamBox;
 	private JCheckBox homeBox;
 	private JCheckBox awayBox;
 	
-	public TeamFilterPanel(List<String> allTeams)
+	public TeamFilterPanel()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		ActionListener listener = e -> resetFilter();
 		
-		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(allTeams);
+		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(TEAM_LIST);
 		
 		teamBox = cbf.createComboBox();
 		teamBox.addActionListener(listener);
@@ -49,29 +52,12 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 		setMinimumSize(new Dimension(350,30));
 	}
 	
-	public TeamFilterPanel(List<String> allTeams, String team, boolean home, boolean away)
+	public TeamFilterPanel(String team, boolean home, boolean away)
 	{
-		this(allTeams);
-		int index = allTeams.indexOf(team);
-		if(index >= 0)
-			teamBox.setSelectedIndex(index);
+		this();
+		teamBox.setSelectedItem(team);
 		homeBox.setSelected(home);
 		awayBox.setSelected(away);		
-	}
-
-	private void resetFilter()
-	{
-		String team = (String) teamBox.getSelectedItem();
-		Filter<Game> filter = LogicalFilter.getFALSEFilter();
-		if(homeBox.isSelected())
-			if(awayBox.isSelected())
-				filter = GameFilter.getTeamFilter(team);
-			else
-				filter = GameFilter.getTeamHomeFilter(team);
-		else
-			if(awayBox.isSelected())
-				filter = GameFilter.getTeamAwayFilter(team);
-		setFilter(filter);
 	}
 	
 	public String getTeam()
@@ -88,6 +74,34 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	{
 		return awayBox.isSelected();
 	}
+
+	public static void setTeamList(Iterable<String> teamList)
+	{
+		TeamFilterPanel.TEAM_LIST.clear();
+		for(String team : teamList)
+			TeamFilterPanel.TEAM_LIST.add(team);
+	}
+	
+	public static List<String> getTeamList()
+	{
+		return TeamFilterPanel.TEAM_LIST;
+	}
+	
+	private void resetFilter()
+	{
+		String team = (String) teamBox.getSelectedItem();
+		Filter<Game> filter = LogicalFilter.getFALSEFilter();
+		if(homeBox.isSelected())
+			if(awayBox.isSelected())
+				filter = GameFilter.getTeamFilter(team);
+			else
+				filter = GameFilter.getTeamHomeFilter(team);
+		else
+			if(awayBox.isSelected())
+				filter = GameFilter.getTeamAwayFilter(team);
+		setFilter(filter);
+	}
+	
 	
 	@Override
 	protected void addComponents()

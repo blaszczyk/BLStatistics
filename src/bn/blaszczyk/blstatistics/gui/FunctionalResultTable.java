@@ -12,6 +12,7 @@ import javax.swing.event.ListSelectionListener;
 
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.filters.*;
+import bn.blaszczyk.blstatistics.gui.corefilters.TeamFilterPanel;
 
 @SuppressWarnings("serial")
 public class FunctionalResultTable extends JPanel implements ItemListener
@@ -117,6 +118,8 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	{
 		Table table = new Table(games, filter,(Integer)boxWinPoints.getSelectedItem());
 		table.sort();	
+		if(table.getTeamCount() != 0)
+			TeamFilterPanel.setTeamList( table.getTeamList() );
 		resultTable.setRelativeTable(cboRelative.isSelected());
 		resultTable.setSource(table);
 	}

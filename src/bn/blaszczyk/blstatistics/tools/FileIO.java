@@ -42,30 +42,15 @@ public class FileIO
 		return leagues;
 	}
 	
-	public static void saveAllSeasons(League league)
-	{
-		for(Season season : league)
-			try
-			{
-				saveSeason(season);
-			}
-			catch (BLException e)
-			{
-				e.printStackTrace();
-			}
-	}
-	
 	public static void saveSeason(Season season) throws BLException
 	{
 		if(season == null)
 			return;
 		String filename = getFileName(season);
-		try
+		try(FileWriter file = new FileWriter(filename))
 		{
-			FileWriter file = new FileWriter(filename);
 			for(Game game : season.getAllGames())
 				file.write(game.toString() + "\n");
-			file.close();
 		}
 		catch (IOException e)
 		{
@@ -103,13 +88,11 @@ public class FileIO
 		String file = getFileName(season);
 		if(!isSeasonSaved(season))
 			return false;
-		try
+		try(Scanner scanner = new Scanner(new FileInputStream(file)))
 		{
 			Stack<Game> gameStack = new Stack<>();
-			Scanner scanner = new Scanner(new FileInputStream(file));
 			while (scanner.hasNextLine())
 				gameStack.push(new Game( scanner.nextLine() ));
-			scanner.close();
 			season.consumeGames( gameStack );
 			return true;
 		}

@@ -27,11 +27,11 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 
 	private JMenu popupRemoveTeam;
 	
-	public SubLeagueFilterPanel(List<String> allTeams)
+	public SubLeagueFilterPanel()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		cbf = new ComboBoxFactory<>(allTeams);
+		cbf = new ComboBoxFactory<>(TeamFilterPanel.getTeamList());
 		
 		label.setAlignmentX(LEFT_ALIGNMENT);
 		
@@ -44,14 +44,12 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		addTeamBox();
 	}
 
-	public SubLeagueFilterPanel(List<String> allTeams, Iterable<String> selectedTeams)
+	public SubLeagueFilterPanel(Iterable<String> selectedTeams)
 	{
-		this(allTeams);
+		this();
 		teamBoxes.clear();
-		int index;
 		for(String team : selectedTeams)
-			if((index = allTeams.indexOf(team)) >= 0)
-				addTeamBox().setSelectedIndex(index);
+			addTeamBox().setSelectedItem(team);
 	}
 	
 	public int getTeamCount()

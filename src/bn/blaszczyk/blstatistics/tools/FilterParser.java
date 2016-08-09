@@ -23,16 +23,12 @@ public class FilterParser
 	private int panelCount;
 	private Map<String, BiFilterPanel<Season, Game>> filters;
 
-	private List<String> teams;
-	private List<String> leagues;
 	
 	private FilterPanelManager<Season,Game> manager;
 	
 	public FilterParser(GameFilterPanelManager manager)
 	{
 		this.manager = manager;
-		teams = manager.getTeams();
-		leagues = manager.getLeagues();
 	}
 
 	public String writeFilter(BiFilterPanel<Season, Game> filter)
@@ -195,7 +191,7 @@ public class FilterParser
 			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[2], Integer.parseInt(split[3])), manager);
 			break;
 		case "Liga":
-			panel = FilterPanelAdapter.getFirstArgAdapter(new SingleLeagueFilterPanel(leagues, split[2], Boolean.parseBoolean(split[3])), manager);
+			panel = FilterPanelAdapter.getFirstArgAdapter(new SingleLeagueFilterPanel(split[2], Boolean.parseBoolean(split[3])), manager);
 			break;
 		case "Spieltag":
 			panel = FilterPanelAdapter.getSecondArgAdapter(new MatchDayFilterPanel(split[2], Integer.parseInt(split[3])), manager);
@@ -213,10 +209,10 @@ public class FilterParser
 			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalDiffFilterPanel(split[2], Integer.parseInt(split[3])), manager);
 			break;
 		case "Team":
-			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(teams, split[2], Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4])), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(split[2], Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4])), manager);
 			break;
 		case "DirekterVergleich":
-			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(teams, Arrays.asList(split).subList(2, split.length)), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(Arrays.asList(split).subList(2, split.length)), manager);
 			break;
 		case "Datum":
 			try

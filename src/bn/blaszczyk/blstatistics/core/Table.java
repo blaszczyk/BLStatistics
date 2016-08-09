@@ -37,8 +37,6 @@ public class Table implements Iterable<TeamResult>
 				getTeamResult(i).setPosition(lastPos);
 			else
 				getTeamResult(i).setPosition(lastPos = i + 1);	
-//		for(TeamResult tr: this)
-//			System.out.println(tr);
 	}
 	
 	public int getTeamCount()
@@ -57,6 +55,15 @@ public class Table implements Iterable<TeamResult>
 			if( teamResults.get(i).getTeam().equals(team))
 				return i;
 		return -1;
+	}
+	
+	public List<String> getTeamList()
+	{
+		List<String> teamList = new ArrayList<>();
+		for(TeamResult tr : this)
+			teamList.add(tr.getTeam());
+		Collections.sort(teamList);
+		return teamList;
 	}
 	
 	private void consumeGame(Game game, BiFilter<TeamResult,Game> teamResultFilter)

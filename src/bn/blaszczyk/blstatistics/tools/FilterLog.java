@@ -112,8 +112,6 @@ public class FilterLog
 	
 	private void chopLog(int chopIndex)
 	{
-		if(chopIndex < 0)
-			return;
 		while(filterLog.size() > chopIndex)
 		{
 			filterLog.remove(chopIndex);

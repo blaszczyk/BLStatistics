@@ -1,11 +1,6 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.event.ActionListener;
-//import java.util.ArrayList;
-//import java.util.Collections;
-import java.util.List;
-//import java.util.Map;
-
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
@@ -22,15 +17,11 @@ import bn.blaszczyk.blstatistics.tools.FilterIO;
 public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 	
 	private BiFilterPanel<Season,Game> panel;
-	private List<String> teams;
-	private List<String> leagues;
 	private FilterIO filterIO;
 	
 	
-	public GameFilterPanelManager(List<String> teams, List<String> leagues, FilterIO filterIO)
+	public GameFilterPanelManager(FilterIO filterIO)
 	{
-		this.teams = teams;
-		this.leagues = leagues;
 		this.filterIO = filterIO;
 	}
 	
@@ -66,11 +57,11 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		JMenu teamFilters = new JMenu("Team Filter");
 		
 		addMenuItem(teamFilters,"Team").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getSecondArgAdapter( new TeamFilterPanel(teams),this ) );
+			setPanel( FilterPanelAdapter.getSecondArgAdapter( new TeamFilterPanel(),this ) );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(teamFilters,"Direkter Vergleich").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getSecondArgAdapter( new SubLeagueFilterPanel(teams),this ) );
+			setPanel( FilterPanelAdapter.getSecondArgAdapter( new SubLeagueFilterPanel(),this ) );
 			listener.actionPerformed(e);
 		});
 		
@@ -101,7 +92,7 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		JMenu seasonFilters = new JMenu("Saison Filter");
 
 		addMenuItem(seasonFilters,"Liga").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getFirstArgAdapter( new SingleLeagueFilterPanel(leagues),this) );
+			setPanel( FilterPanelAdapter.getFirstArgAdapter( new SingleLeagueFilterPanel(),this) );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(seasonFilters,"Saison").addActionListener( e -> {
@@ -168,17 +159,5 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 	{
 		this.panel = panel;
 	}
-
-	public List<String> getTeams()
-	{
-		return teams;
-	}
-
-	public List<String> getLeagues()
-	{
-		return leagues;
-	}
-
-
 
 }

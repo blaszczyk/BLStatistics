@@ -18,10 +18,7 @@ public class FilterIO
 {
 	private static final String FOLDER = "filters";
 	private static final String EXTENSION = "flt";
-
-//	private FilterPanelManager<Season, Game> manager = null;
-
-
+	
 	private FilterParser parser;
 	
 	public FilterIO()
@@ -50,11 +47,9 @@ public class FilterIO
 		File directory = new File(String.format("%s/", FOLDER)  );
 		if(!directory.exists())
 			directory.mkdir();
-		try
+		try(FileWriter file = new FileWriter(String.format("%s/%s.%s", FOLDER, fileName, EXTENSION)))
 		{
-			FileWriter file = new FileWriter(String.format("%s/%s.%s", FOLDER, fileName, EXTENSION));
 			file.write( parser.writeFilter(filter) );
-			file.close();
 		}
 		catch (IOException e)
 		{
