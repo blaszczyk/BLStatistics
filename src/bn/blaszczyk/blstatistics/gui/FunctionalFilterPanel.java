@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import bn.blaszczyk.blstatistics.core.*;
-import bn.blaszczyk.blstatistics.gui.corefilters.GameFilterPanelManager;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterEvent;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterListener;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterPanel;
@@ -18,6 +17,7 @@ import bn.blaszczyk.blstatistics.gui.filters.NoFilterPanel;
 import bn.blaszczyk.blstatistics.tools.FilterIO;
 import bn.blaszczyk.blstatistics.tools.FilterLog;
 import bn.blaszczyk.blstatistics.tools.FilterParser;
+import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
 public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Season,Game>, BiFilterPanel<Season,Game>
@@ -29,8 +29,6 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	private JLabel header = new JLabel("Filter", SwingConstants.CENTER);
 	
 	private BiFilterListener<Season,Game> listener = null;
-	private GameFilterPanelManager filterManager;
-	private FilterParser filterParser;
 	
 	private FilterLog filterLog;
 	
@@ -42,11 +40,8 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		header.setPreferredSize(new Dimension(355, 50));
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
-		filterManager = new GameFilterPanelManager();
-		filterParser = new FilterParser(filterManager);
-		FilterIO.setParser(filterParser);
-		filterLog = new FilterLog( filterParser, 10, e -> setFilterPanel(filterLog.getFilterPanel()) );
-		filterPanel = new NoFilterPanel<>(filterManager);
+		filterLog = new FilterLog( 10, e -> setFilterPanel(filterLog.getFilterPanel()) );
+		filterPanel = new NoFilterPanel<>();
 
 		setFilterPanel(FilterIO.loadFilter(LAST_FILTER));
 		filterLog.pushFilter(filterPanel, filterPanel);	
@@ -54,7 +49,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 
 	public void newFilter()
 	{
-		setFilterPanel(new NoFilterPanel<>(filterManager));
+		setFilterPanel(new NoFilterPanel<>());
 		filterLog.pushFilter(filterPanel, filterPanel);	
 	}
 

@@ -7,14 +7,14 @@ import bn.blaszczyk.blstatistics.filters.FilterAdapter;
 
 public class FilterPanelAdapter {
 
-	public static <T,U> BiFilterPanel<T, U> getFirstArgAdapter(FilterPanel<T> panel,FilterPanelManager<T,U> filterFactory )
+	public static <T,U> BiFilterPanel<T, U> getFirstArgAdapter(FilterPanel<T> panel)
 	{
-		return new FirstArgAdapter<T,U>(panel,filterFactory);
+		return new FirstArgAdapter<T,U>(panel);
 	}
 
-	public static <T,U> BiFilterPanel<T, U> getSecondArgAdapter(FilterPanel<U> panel,FilterPanelManager<T,U> filterFactory )
+	public static <T,U> BiFilterPanel<T, U> getSecondArgAdapter(FilterPanel<U> panel)
 	{
-		return new SecondArgAdapter<T,U>(panel,filterFactory);
+		return new SecondArgAdapter<T,U>(panel);
 	}
 
 	@SuppressWarnings("serial")
@@ -22,12 +22,9 @@ public class FilterPanelAdapter {
 	{
 		
 		private FilterPanel<T> innerPanel;
-		private FilterPanelManager<T,U> filterFactory;
 		
-		public FirstArgAdapter(FilterPanel<T> panel,FilterPanelManager<T,U> filterFactory )
+		public FirstArgAdapter(FilterPanel<T> panel)
 		{
-			super(filterFactory);
-			this.filterFactory = filterFactory;
 			this.innerPanel = panel;
 			panel.addPopupMenuItem(popupNegate);
 			panel.addPopupMenuItem(popupRemove);
@@ -68,7 +65,7 @@ public class FilterPanelAdapter {
 		public void filter(FilterEvent<T> e)
 		{
 			if(e.getType() == FilterEvent.RESET_PANEL)
-				passFilterEvent(new BiFilterEvent<T,U>(this,getFirstArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
+				passFilterEvent(new BiFilterEvent<T,U>(this,getFirstArgAdapter(e.getPanel()),BiFilterEvent.RESET_PANEL));
 			else
 				passFilterEvent(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg1(e.getFilter()),e.getType()));
 		}
@@ -100,12 +97,9 @@ public class FilterPanelAdapter {
 	{
 		
 		private FilterPanel<U> innerPanel;
-		private FilterPanelManager<T,U> filterFactory;
 		
-		public SecondArgAdapter(FilterPanel<U> panel,FilterPanelManager<T,U> filterFactory )
+		public SecondArgAdapter(FilterPanel<U> panel)
 		{
-			super(filterFactory);
-			this.filterFactory = filterFactory;
 			this.innerPanel = panel;
 			panel.addPopupMenuItem(popupNegate);
 			panel.addPopupMenuItem(popupReplace);
@@ -145,7 +139,7 @@ public class FilterPanelAdapter {
 		public void filter(FilterEvent<U> e)
 		{
 			if(e.getType() == FilterEvent.RESET_PANEL)
-				passFilterEvent(new BiFilterEvent<T,U>(this,getSecondArgAdapter(e.getPanel(),filterFactory),BiFilterEvent.RESET_PANEL));
+				passFilterEvent(new BiFilterEvent<T,U>(this,getSecondArgAdapter(e.getPanel()),BiFilterEvent.RESET_PANEL));
 			else
 				passFilterEvent(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg2(e.getFilter()),e.getType()));
 		}

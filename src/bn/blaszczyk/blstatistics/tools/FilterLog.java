@@ -23,16 +23,14 @@ public class FilterLog
 	
 	private BiFilterPanel<Season, Game> panel;
 	
-	private FilterParser parser;
 	private ActionListener listener;
 	
 	private int selectedFilterIndex;
 	private int maxLog;
 	private boolean hasName = false;
 
-	public FilterLog(FilterParser parser, int maxLog, ActionListener listener)
+	public FilterLog( int maxLog, ActionListener listener)
 	{
-		this.parser = parser;
 		this.maxLog = maxLog;
 		this.listener = listener;
 	}
@@ -78,7 +76,7 @@ public class FilterLog
 		if(hasName)
 		{
 			filterLog.remove(filterLog.size()-1);
-			filterLog.add(parser.writeFilter(fullFilter));
+			filterLog.add(FilterParser.writeFilter(fullFilter));
 			hasName = false;
 			return;
 		}
@@ -92,7 +90,7 @@ public class FilterLog
 			teamListLog.remove(0);
 		}
 		nameLog.add(source.toString());
-		filterLog.add(parser.writeFilter(fullFilter));
+		filterLog.add(FilterParser.writeFilter(fullFilter));
 		teamListLog.add(new ArrayList<>(TeamFilterPanel.getTeamList()));
 		lastSource = source;
 		selectedFilterIndex = filterLog.size() - 1;
@@ -108,7 +106,7 @@ public class FilterLog
 	{
 		final int panelIndex = index;
 		return e -> {
-			panel = parser.parseFilter( filterLog.get(panelIndex) );
+			panel = FilterParser.parseFilter( filterLog.get(panelIndex) );
 			TeamFilterPanel.setTeamList(teamListLog.get(panelIndex));
 			selectedFilterIndex = panelIndex;
 			listener.actionPerformed(e);

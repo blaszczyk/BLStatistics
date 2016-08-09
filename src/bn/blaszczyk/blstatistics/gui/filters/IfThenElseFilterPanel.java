@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
+import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
 public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
@@ -17,25 +18,23 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	private BiFilterPanel<T,U> thenFilter;
 	private BiFilterPanel<T,U> elseFilter;
 	
-	public IfThenElseFilterPanel(FilterPanelManager<T,U> filterManager)
+	public IfThenElseFilterPanel()
 	{
-		super(filterManager);
-		
 		ifLabel.setAlignmentX(LEFT_ALIGNMENT);
 		thenLabel.setAlignmentX(LEFT_ALIGNMENT);
 		elseLabel.setAlignmentX(LEFT_ALIGNMENT);
 		
-		setIfFilter(new NoFilterPanel<T, U>(filterManager));
-		setThenFilter(new NoFilterPanel<T, U>(filterManager));
-		setElseFilter(new NoFilterPanel<T, U>(filterManager));
+		setIfFilter(new NoFilterPanel<T, U>());
+		setThenFilter(new NoFilterPanel<T, U>());
+		setElseFilter(new NoFilterPanel<T, U>());
 		
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		setFilter();
 	}
 
-	public IfThenElseFilterPanel(FilterPanelManager<T,U> filterManager, BiFilterPanel<T,U> ifFilter, BiFilterPanel<T,U> thenFilter, BiFilterPanel<T,U> elseFilter)
+	public IfThenElseFilterPanel( BiFilterPanel<T,U> ifFilter, BiFilterPanel<T,U> thenFilter, BiFilterPanel<T,U> elseFilter)
 	{
-		this(filterManager);
+		this();
 		setIfFilter(ifFilter);
 		setThenFilter(thenFilter);
 		setElseFilter(elseFilter);
@@ -88,15 +87,15 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	protected void addPopupMenuItems()
 	{
 		JMenu setIf = new JMenu("Setze IF Filter");
-		filterManager.addMenuItems(setIf, e -> ifFilter.replaceMe(filterManager.getPanel()));
+		NewFilterMenu.addMenuItems(setIf, e -> ifFilter.replaceMe(NewFilterMenu.getPanel()));
 		addPopupMenuItem(setIf);
 		
 		JMenu setThen = new JMenu("Setze THEN Filter");
-		filterManager.addMenuItems(setThen, e -> thenFilter.replaceMe(filterManager.getPanel()));
+		NewFilterMenu.addMenuItems(setThen, e -> thenFilter.replaceMe(NewFilterMenu.getPanel()));
 		addPopupMenuItem(setThen);
 		
 		JMenu setElse = new JMenu("Setze ELSE Filter");
-		filterManager.addMenuItems(setElse, e -> elseFilter.replaceMe(filterManager.getPanel()));
+		NewFilterMenu.addMenuItems(setElse, e -> elseFilter.replaceMe(NewFilterMenu.getPanel()));
 		addPopupMenuItem(setElse);
 		super.addPopupMenuItems();
 	}

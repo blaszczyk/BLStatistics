@@ -19,16 +19,6 @@ public class FilterIO
 	private static final String FOLDER = "filters";
 	private static final String EXTENSION = "flt";
 	
-	private static FilterParser parser;
-	
-	public FilterIO()
-	{
-	}
-
-	public static void setParser(FilterParser parser)
-	{
-		FilterIO.parser = parser;
-	}
 
 	public static void saveFilter(BiFilterPanel<Season, Game> filter)
 	{
@@ -49,7 +39,7 @@ public class FilterIO
 			directory.mkdir();
 		try(FileWriter file = new FileWriter(String.format("%s/%s.%s", FOLDER, fileName, EXTENSION)))
 		{
-			file.write( parser.writeFilter(filter) );
+			file.write( FilterParser.writeFilter(filter) );
 		}
 		catch (IOException e)
 		{
@@ -89,13 +79,13 @@ public class FilterIO
 		if(file.exists())
 			try
 			{
-				return parser.parseFilter(new FileInputStream(file));
+				return FilterParser.parseFilter(new FileInputStream(file));
 			}
 			catch (FileNotFoundException e)
 			{
 				e.printStackTrace();
 			}
-		return parser.parseFilter("NoFilter");
+		return FilterParser.parseFilter("NoFilter");
 	}
 
 

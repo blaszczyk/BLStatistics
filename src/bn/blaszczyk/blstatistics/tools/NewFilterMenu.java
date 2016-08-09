@@ -1,25 +1,19 @@
-package bn.blaszczyk.blstatistics.gui.corefilters;
+package bn.blaszczyk.blstatistics.tools;
 
 import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import bn.blaszczyk.blstatistics.core.*;
-import bn.blaszczyk.blstatistics.gui.filters.AbsoluteOperatorFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.BiFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.FilterPanelAdapter;
-import bn.blaszczyk.blstatistics.gui.filters.IfThenElseFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.MultiOperatorFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.FilterPanelManager;
-import bn.blaszczyk.blstatistics.gui.filters.UnaryOperatorFilterPanel;
-import bn.blaszczyk.blstatistics.tools.FilterIO;
+import bn.blaszczyk.blstatistics.gui.corefilters.*;
+import bn.blaszczyk.blstatistics.gui.filters.*;
 
-public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
+public class NewFilterMenu  
+{
 	
-	private BiFilterPanel<Season,Game> panel;
+	private static BiFilterPanel<Season,Game> panel;
 	
-	@Override
-	public void addMenuItems(JMenu menu, ActionListener listener)
+	public static void addMenuItems(JMenu menu, ActionListener listener)
 	{
 		/*
 		 * Goal Filters
@@ -28,19 +22,19 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		JMenu goalFilters = new JMenu("Tor Filter");
 
 		addMenuItem(goalFilters,"Tore").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getGoalFilterPanel("=",0),this ) );
+			setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getGoalFilterPanel("=",0) ) );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(goalFilters,"Heimtore").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getHomeGoalFilterPanel("=",0),this ) );
+			setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getHomeGoalFilterPanel("=",0) ) );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(goalFilters,"Auswärtstore").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getAwayGoalFilterPanel("=",0),this ) );
+			setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getAwayGoalFilterPanel("=",0) ) );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(goalFilters,"Tordifferenz").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getGoalDiffFilterPanel("=",0),this ) );
+			setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getGoalDiffFilterPanel("=",0) ) );
 			listener.actionPerformed(e);
 		});
 		
@@ -50,11 +44,11 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		JMenu teamFilters = new JMenu("Team Filter");
 		
 		addMenuItem(teamFilters,"Team").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getSecondArgAdapter( new TeamFilterPanel(),this ) );
+			setPanel( FilterPanelAdapter.getSecondArgAdapter( new TeamFilterPanel() ) );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(teamFilters,"Direkter Vergleich").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getSecondArgAdapter( new SubLeagueFilterPanel(),this ) );
+			setPanel( FilterPanelAdapter.getSecondArgAdapter( new SubLeagueFilterPanel() ) );
 			listener.actionPerformed(e);
 		});
 		
@@ -64,17 +58,17 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		JMenu dateFilters = new JMenu("Spieltag Filter");
 
 		addMenuItem(dateFilters, "Datum").addActionListener( e -> {
-			setPanel(FilterPanelAdapter.getSecondArgAdapter(new DateFilterPanel(), this));
+			setPanel(FilterPanelAdapter.getSecondArgAdapter(new DateFilterPanel()));
 			listener.actionPerformed(e);
 		});
 		
 		addMenuItem(dateFilters, "Wochentag").addActionListener( e -> {
-			setPanel(FilterPanelAdapter.getSecondArgAdapter(new DayOfWeekFilterPanel(), this));
+			setPanel(FilterPanelAdapter.getSecondArgAdapter(new DayOfWeekFilterPanel()));
 			listener.actionPerformed(e);
 		});
 		
 		addMenuItem(dateFilters,"Spieltag").addActionListener( e -> {
-			setPanel(FilterPanelAdapter.getSecondArgAdapter( new MatchDayFilterPanel(),this));
+			setPanel(FilterPanelAdapter.getSecondArgAdapter( new MatchDayFilterPanel()));
 			listener.actionPerformed(e);
 		});
 		
@@ -85,15 +79,15 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		JMenu seasonFilters = new JMenu("Saison Filter");
 
 		addMenuItem(seasonFilters,"Liga").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getFirstArgAdapter( new SingleLeagueFilterPanel(),this) );
+			setPanel( FilterPanelAdapter.getFirstArgAdapter( new SingleLeagueFilterPanel()) );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(seasonFilters,"Saison").addActionListener( e -> {
-			setPanel( FilterPanelAdapter.getFirstArgAdapter( new SeasonFilterPanel(),this) );
+			setPanel( FilterPanelAdapter.getFirstArgAdapter( new SeasonFilterPanel()) );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(seasonFilters,"Hin-/Rückrunde").addActionListener( e -> {
-			setPanel( new RoundFilterPanel(this) );
+			setPanel( new RoundFilterPanel() );
 			listener.actionPerformed(e);
 		});
 		
@@ -104,19 +98,19 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 		JMenu logicalFilters = new JMenu("Logische Filter");
 		
 		addMenuItem(logicalFilters,"TRUE, FALSE").addActionListener( e -> {
-			setPanel( new AbsoluteOperatorFilterPanel<>(true,this) );
+			setPanel( new AbsoluteOperatorFilterPanel<>(true) );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(logicalFilters,"NOT").addActionListener( e -> {
-			setPanel( new UnaryOperatorFilterPanel<>(this) );
+			setPanel( new UnaryOperatorFilterPanel<>() );
 			listener.actionPerformed(e);
 		});
 		addMenuItem(logicalFilters,"AND, OR, XOR").addActionListener( e -> {
-			setPanel( new MultiOperatorFilterPanel<>(this));
+			setPanel( new MultiOperatorFilterPanel<>());
 			listener.actionPerformed(e);
 		});
 		addMenuItem(logicalFilters,"IF_THEN_ELSE").addActionListener( e -> {
-			setPanel( new IfThenElseFilterPanel<>(this));
+			setPanel( new IfThenElseFilterPanel<>());
 			listener.actionPerformed(e);
 		});
 		
@@ -134,23 +128,28 @@ public class GameFilterPanelManager implements FilterPanelManager<Season,Game> {
 			listener.actionPerformed(e);
 		});
 	}
+
+//	public static BiFilterPanel<Season,Game> getPanel()
+//	{
+//		return panel;
+//	}
 	
-	@Override
-	public BiFilterPanel<Season,Game> getPanel()
+	@SuppressWarnings("unchecked")
+	public static <T,U> BiFilterPanel<T,U> getPanel()
 	{
-		return panel;
+		return (BiFilterPanel<T, U>) panel;
 	}
 	
-	private JMenuItem addMenuItem(JMenu menu, String label)
+	private static JMenuItem addMenuItem(JMenu menu, String label)
 	{
 		JMenuItem item = new JMenuItem(label);
 		menu.add(item);
 		return item;
 	}
 	
-	private void setPanel(BiFilterPanel<Season,Game> panel)
+	private static void setPanel(BiFilterPanel<Season,Game> panel)
 	{
-		this.panel = panel;
+		NewFilterMenu.panel = panel;
 	}
 
 }

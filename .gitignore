@@ -9,6 +9,11 @@
 #
 # Season Files and User Filters
 #
+leagues-fbd/
+leagues-wbf/
+leagues/
+filters/
+lib/
 *.bls
 *.flt
 

@@ -14,6 +14,7 @@ import javax.swing.border.Border;
 
 import bn.blaszczyk.blstatistics.filters.BiFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
+import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
 public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFilterPanel<T,U>
@@ -33,12 +34,9 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	
 	private BiFilter<T,U> filter = LogicalBiFilter.getTRUEBiFilter();
 	private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
-	protected FilterPanelManager<T, U> filterManager;
 	
-	public AbstractBiFilterPanel(FilterPanelManager<T, U> filterManager)
+	public AbstractBiFilterPanel()
 	{
-		this.filterManager = filterManager;
-		
 		popupSetActive = new JMenuItem("Deaktivieren");
 		popupSetActive.addActionListener( e -> setActive(!isActive) );
 
@@ -46,10 +44,10 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		popupNegate.addActionListener( e -> negate() );
 		
 		popupRemove = new JMenuItem("Entfernen");
-		popupRemove.addActionListener( e -> replaceMe( new NoFilterPanel<>(filterManager) ) );
+		popupRemove.addActionListener( e -> replaceMe( new NoFilterPanel<>() ) );
 		
 		popupReplace = new JMenu("Ersetzten");
-		filterManager.addMenuItems(popupReplace, e -> replaceMe( filterManager.getPanel() ));
+		NewFilterMenu.addMenuItems(popupReplace, e -> replaceMe( NewFilterMenu.getPanel() ));
 
 		
 		popup = new JPopupMenu();
@@ -89,7 +87,7 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		if(this instanceof UnaryOperatorFilterPanel)
 			replaceMe( ((UnaryOperatorFilterPanel<T, U>)this).getInnerPanel() );
 		else
-			replaceMe(new UnaryOperatorFilterPanel<T,U>(filterManager,this) );
+			replaceMe(new UnaryOperatorFilterPanel<T,U>(this) );
 	}
 	
 	private void setActive(boolean active)

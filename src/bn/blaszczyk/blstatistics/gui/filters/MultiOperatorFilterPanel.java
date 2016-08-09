@@ -12,6 +12,7 @@ import javax.swing.JMenuItem;
 
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
+import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
 public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> implements Iterable<BiFilterPanel<T,U>> {
@@ -26,9 +27,8 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	
 	private JMenu popupRemoveFilter;
 
-	public MultiOperatorFilterPanel(FilterPanelManager<T,U> filterManager, List<BiFilterPanel<T, U>> panels, String operator) 
+	public MultiOperatorFilterPanel(List<BiFilterPanel<T, U>> panels, String operator) 
 	{
-		super(filterManager);
 		this.panels = panels;
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 	
@@ -43,11 +43,11 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 			panel.addFilterListener(this);		
 	}
 
-	public MultiOperatorFilterPanel(FilterPanelManager<T,U> filterManager) 
+	public MultiOperatorFilterPanel() 
 	{
-		this(filterManager,new ArrayList<>(),AND);
-		addPanel(new NoFilterPanel<>(filterManager));
-		addPanel(new NoFilterPanel<>(filterManager));
+		this(new ArrayList<>(),AND);
+		addPanel(new NoFilterPanel<>());
+		addPanel(new NoFilterPanel<>());
 	}
 	
 	public String getOperator()
@@ -118,7 +118,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	protected void addPopupMenuItems()
 	{
 		JMenu popupAddFilter = new JMenu("Neuer Filter");
-		filterManager.addMenuItems(popupAddFilter, e -> addPanel(filterManager.getPanel()));
+		NewFilterMenu.addMenuItems(popupAddFilter, e -> addPanel(NewFilterMenu.getPanel()));
 		addPopupMenuItem(popupAddFilter);
 		popupRemoveFilter = new JMenu("Entferne Filter");
 		addPopupMenuItem(popupRemoveFilter);

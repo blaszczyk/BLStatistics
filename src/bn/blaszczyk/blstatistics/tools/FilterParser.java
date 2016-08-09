@@ -19,18 +19,12 @@ import bn.blaszczyk.blstatistics.gui.filters.*;
 
 public class FilterParser
 {
-	private StringBuilder outerBuilder;
-	private int panelCount;
-	private Map<String, BiFilterPanel<Season, Game>> filters;
-
-	private FilterPanelManager<Season,Game> manager;
+	private static StringBuilder outerBuilder;
+	private static int panelCount;
+	private static Map<String, BiFilterPanel<Season, Game>> filters;
 	
-	public FilterParser(FilterPanelManager<Season,Game> manager)
-	{
-		this.manager = manager;
-	}
 
-	public String writeFilter(BiFilterPanel<Season, Game> filter)
+	public static String writeFilter(BiFilterPanel<Season, Game> filter)
 	{
 		outerBuilder = new StringBuilder();
 		panelCount = 0;
@@ -38,16 +32,16 @@ public class FilterParser
 		return outerBuilder.toString();
 	}
 	
-	public BiFilterPanel<Season, Game> parseFilter(String in)
+	public static BiFilterPanel<Season, Game> parseFilter(String in)
 	{
 		InputStream stream = new ByteArrayInputStream(in.getBytes(StandardCharsets.ISO_8859_1));
 		return parseFilter(stream);
 	}
 
-	public BiFilterPanel<Season, Game> parseFilter(InputStream iStream)
+	public static BiFilterPanel<Season, Game> parseFilter(InputStream iStream)
 	{
 		filters = new HashMap<>();
-		BiFilterPanel<Season, Game> lastPanel = new NoFilterPanel<>(manager);
+		BiFilterPanel<Season, Game> lastPanel = new NoFilterPanel<>();
 		Scanner scanner = new Scanner(iStream);
 		while(scanner.hasNextLine())
 			lastPanel = parseSubFilter(scanner.nextLine());
@@ -55,7 +49,7 @@ public class FilterParser
 		return lastPanel;
 	}
 	
-	private int writeSubFilter(BiFilterPanel<Season, Game> filter)
+	private static int writeSubFilter(BiFilterPanel<Season, Game> filter)
 	{
 		StringBuilder innerBuilder = new StringBuilder();
 		if (filter instanceof MultiOperatorFilterPanel)
@@ -154,7 +148,7 @@ public class FilterParser
 	}
 
 
-	private BiFilterPanel<Season, Game> parseSubFilter(String in)
+	private static BiFilterPanel<Season, Game> parseSubFilter(String in)
 	{
 		String[] split = in.split(";");
 		BiFilterPanel<Season, Game> panel = null;
@@ -166,57 +160,57 @@ public class FilterParser
 			List<BiFilterPanel<Season, Game>> pList = new ArrayList<>();
 			for (int i = 3; i < split.length; i++)
 				pList.add(filters.get(split[i]));
-			panel = new MultiOperatorFilterPanel<>(manager, pList, split[2]);
+			panel = new MultiOperatorFilterPanel<>(pList, split[2]);
 			break;
 		case "IfThenElse":
-			panel = new IfThenElseFilterPanel<>(manager, filters.get(split[2]), filters.get(split[3]), filters.get(split[4]));
+			panel = new IfThenElseFilterPanel<>(filters.get(split[2]), filters.get(split[3]), filters.get(split[4]));
 			break;
 		case "UnaryOperator":
-			panel = new UnaryOperatorFilterPanel<>(manager, filters.get(split[2]));
+			panel = new UnaryOperatorFilterPanel<>(filters.get(split[2]));
 			break;
 		case "TRUE":
-			panel = new AbsoluteOperatorFilterPanel<>(true, manager);
+			panel = new AbsoluteOperatorFilterPanel<>(true );
 			break;
 		case "FALSE":
-			panel = new AbsoluteOperatorFilterPanel<>(false, manager);
+			panel = new AbsoluteOperatorFilterPanel<>(false );
 			break;
 		case "Runde":
-			panel = new RoundFilterPanel(manager, Boolean.parseBoolean(split[2]), Boolean.parseBoolean(split[3]));
+			panel = new RoundFilterPanel(Boolean.parseBoolean(split[2]), Boolean.parseBoolean(split[3]));
 			break;
 		case "NoFilter":
-			panel = new NoFilterPanel<Season, Game>(manager);
+			panel = new NoFilterPanel<Season, Game>();
 			break;
 		case "Saison":
-			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[2], Integer.parseInt(split[3])), manager);
+			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
 		case "Liga":
-			panel = FilterPanelAdapter.getFirstArgAdapter(new SingleLeagueFilterPanel(split[2], Boolean.parseBoolean(split[3])), manager);
+			panel = FilterPanelAdapter.getFirstArgAdapter(new SingleLeagueFilterPanel(split[2], Boolean.parseBoolean(split[3])) );
 			break;
 		case "Spieltag":
-			panel = FilterPanelAdapter.getSecondArgAdapter(new MatchDayFilterPanel(split[2], Integer.parseInt(split[3])), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(new MatchDayFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
 		case "Tore":
-			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalFilterPanel(split[2], Integer.parseInt(split[3])), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
 		case "Heimtore":
-			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getHomeGoalFilterPanel(split[2], Integer.parseInt(split[3])), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getHomeGoalFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
 		case "Auswärtstore":
-			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getAwayGoalFilterPanel(split[2], Integer.parseInt(split[3])), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getAwayGoalFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
 		case "Tordifferenz":
-			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalDiffFilterPanel(split[2], Integer.parseInt(split[3])), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalDiffFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
 		case "Team":
-			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(split[2], Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4])), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(split[2], Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4])) );
 			break;
 		case "DirekterVergleich":
-			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(Arrays.asList(split).subList(2, split.length)), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(Arrays.asList(split).subList(2, split.length)) );
 			break;
 		case "Datum":
 			try
 			{
-				panel = FilterPanelAdapter.getSecondArgAdapter(new DateFilterPanel(split[2], Game.DATE_FORMAT.parse(split[3])), manager);
+				panel = FilterPanelAdapter.getSecondArgAdapter(new DateFilterPanel(split[2], Game.DATE_FORMAT.parse(split[3])) );
 			}
 			catch (ParseException e)
 			{
@@ -224,7 +218,7 @@ public class FilterParser
 			}
 			break;
 		case "Wochentag":
-			panel = FilterPanelAdapter.getSecondArgAdapter(new DayOfWeekFilterPanel(split[2]), manager);
+			panel = FilterPanelAdapter.getSecondArgAdapter(new DayOfWeekFilterPanel(split[2]));
 			break;
 		default:
 			System.out.println("Unbekannter Filter:" + in);

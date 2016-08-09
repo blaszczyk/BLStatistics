@@ -9,6 +9,7 @@ import javax.swing.JMenu;
 //import javax.swing.JMenuItem;
 
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
+import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
 public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
@@ -17,14 +18,13 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	private BiFilterPanel<T,U> innerPanel;
 	private JLabel label = new JLabel("NOT");
 	
-	public UnaryOperatorFilterPanel(FilterPanelManager<T,U> filterManager)
+	public UnaryOperatorFilterPanel()
 	{
-		this(filterManager,new NoFilterPanel<T, U>(filterManager));
+		this(new NoFilterPanel<T, U>());
 	}
 	
-	public UnaryOperatorFilterPanel(FilterPanelManager<T,U> filterManager, BiFilterPanel<T, U> originalPanel) 
+	public UnaryOperatorFilterPanel(BiFilterPanel<T, U> originalPanel) 
 	{
-		super(filterManager);
 		setInnerPanel(originalPanel);
 		label.setAlignmentX(LEFT_ALIGNMENT);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -55,7 +55,7 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	protected void addPopupMenuItems()
 	{
 		JMenu popupSetPanel = new JMenu("Setze Inneren Filter");
-		filterManager.addMenuItems(popupSetPanel, e -> innerPanel.replaceMe( filterManager.getPanel() ));
+		NewFilterMenu.addMenuItems(popupSetPanel, e -> innerPanel.replaceMe( NewFilterMenu.getPanel() ));
 		addPopupMenuItem(popupSetPanel);	
 		super.addPopupMenuItems();
 	}

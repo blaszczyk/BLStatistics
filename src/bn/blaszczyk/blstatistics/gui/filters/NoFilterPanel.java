@@ -7,17 +7,17 @@ import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
+import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
 public class NoFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>
 {
-	public NoFilterPanel(FilterPanelManager<T,U> filterManager)
+	public NoFilterPanel()
 	{
-		super(filterManager);
 		setFilter(LogicalBiFilter.getTRUEBiFilter());
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		JMenu setPanel = new JMenu("Setzte Filter");
-		filterManager.addMenuItems(setPanel, e -> replaceMe( filterManager.getPanel() ) );
+		NewFilterMenu.addMenuItems(setPanel, e -> replaceMe( NewFilterMenu.getPanel() ) );
 		addPopupMenuItem(setPanel);
 		removePopupMenuItem(popupReplace);
 		removePopupMenuItem(popupSetActive);

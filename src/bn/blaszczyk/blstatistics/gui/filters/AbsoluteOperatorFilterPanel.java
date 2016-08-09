@@ -15,10 +15,8 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 	private JLabel label = new JLabel("TRUE");
 	private boolean value = true;
 	
-	public AbsoluteOperatorFilterPanel(boolean value, FilterPanelManager<T,U> filterManager) 
+	public AbsoluteOperatorFilterPanel(boolean value) 
 	{
-		super(filterManager);
-		
 		JMenuItem popupToggle = new JMenuItem("Umschalten");
 		popupToggle.addActionListener( e -> toggleFilter());
 		addPopupMenuItem(popupToggle);

@@ -11,7 +11,6 @@ import bn.blaszczyk.blstatistics.core.Season;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 import bn.blaszczyk.blstatistics.filters.SeasonFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractBiFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.FilterPanelManager;
 
 @SuppressWarnings("serial")
 public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game> implements ActionListener
@@ -19,9 +18,8 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game> implem
 	private JCheckBox first = new JCheckBox("Hinrunde",true);
 	private JCheckBox second = new JCheckBox("Rückrunde",true);
 
-	public RoundFilterPanel(FilterPanelManager<Season,Game> filterFactory)
+	public RoundFilterPanel()
 	{
-		super(filterFactory);
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		first.addActionListener(this);
 		first.setInheritsPopupMenu(true);
@@ -30,9 +28,9 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game> implem
 		setFilter();
 	}
 
-	public RoundFilterPanel(FilterPanelManager<Season,Game> filterFactory, boolean firstRound, boolean secondRound)
+	public RoundFilterPanel(boolean firstRound, boolean secondRound)
 	{
-		this(filterFactory);
+		this();
 		first.setSelected(firstRound);
 		second.setSelected(secondRound);
 		setFilter();
