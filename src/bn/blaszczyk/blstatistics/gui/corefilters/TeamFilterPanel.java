@@ -20,6 +20,7 @@ import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 @SuppressWarnings({"serial"})
 public class TeamFilterPanel extends AbstractFilterPanel<Game> implements ActionListener
 {
+	public static final String NAME = "Team";
 	private static final List<String> TEAM_LIST = new ArrayList<>();
 	
 	private JComboBox<String> teamBox;

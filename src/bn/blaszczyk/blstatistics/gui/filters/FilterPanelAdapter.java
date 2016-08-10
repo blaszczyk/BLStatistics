@@ -1,9 +1,9 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
 
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import bn.blaszczyk.blstatistics.filters.FilterAdapter;
 
 public class FilterPanelAdapter {
 
@@ -18,18 +18,13 @@ public class FilterPanelAdapter {
 	}
 
 	@SuppressWarnings("serial")
-	public static class FirstArgAdapter<T, U> extends AbstractBiFilterPanel<T, U> implements FilterListener<T>
+	public static class FirstArgAdapter<T, U> extends AbstractBiFilterPanel<T, U>
 	{
-		
 		private FilterPanel<T> innerPanel;
 		
 		public FirstArgAdapter(FilterPanel<T> panel)
 		{
 			this.innerPanel = panel;
-			panel.addPopupMenuItem(popupNegate);
-			panel.addPopupMenuItem(popupRemove);
-			panel.addPopupMenuItem(popupReplace);
-			panel.addFilterListener(this);
 		}
 
 		public FilterPanel<T> getInnerPanel()
@@ -62,12 +57,36 @@ public class FilterPanelAdapter {
 		}
 
 		@Override
-		public void filter(FilterEvent<T> e)
+		public void addFilterListener(BiFilterListener<T, U> listener)
 		{
-			if(e.getType() == FilterEvent.RESET_PANEL)
-				passFilterEvent(new BiFilterEvent<T,U>(this,getFirstArgAdapter(e.getPanel()),BiFilterEvent.RESET_PANEL));
-			else
-				passFilterEvent(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg1(e.getFilter()),e.getType()));
+			super.addFilterListener(listener);
+			innerPanel.addFilterListener( FilterListenerAdapter.getFirstArgAdapter(listener));
+		}
+
+		@Override
+		public void removeFilterListener(BiFilterListener<T, U> listener)
+		{
+			super.addFilterListener(listener);
+			innerPanel.removeFilterListener( FilterListenerAdapter.getFirstArgAdapter(listener));
+		}
+
+		@Override
+		public void addPopupMenuItem(JMenuItem item)
+		{
+			innerPanel.addPopupMenuItem(item);
+		}
+
+
+		@Override
+		public void setActive(boolean active)
+		{
+			innerPanel.setActive(active);
+		}
+
+		@Override
+		public boolean isActive()
+		{
+			return innerPanel.isActive();
 		}
 
 		@Override
@@ -80,37 +99,29 @@ public class FilterPanelAdapter {
 		{
 			if (this == obj)
 				return true;
-			if (obj == null)
-				return false;
 			if (!(obj instanceof FirstArgAdapter))
 				return false;
-			FirstArgAdapter<?,?> other = (FirstArgAdapter<?,?>) obj;
-			return innerPanel.equals(other.innerPanel);
+			FirstArgAdapter<?,?> that = (FirstArgAdapter<?,?>) obj;
+			return innerPanel.equals(that.innerPanel);
 		}
-
-		
-		
-		
 	}
+	
+	
 	@SuppressWarnings("serial")
-	public static class SecondArgAdapter<T, U> extends AbstractBiFilterPanel<T, U> implements FilterListener<U>
+	public static class SecondArgAdapter<T, U> extends AbstractBiFilterPanel<T, U>
 	{
-		
 		private FilterPanel<U> innerPanel;
 		
 		public SecondArgAdapter(FilterPanel<U> panel)
 		{
 			this.innerPanel = panel;
-			panel.addPopupMenuItem(popupNegate);
-			panel.addPopupMenuItem(popupReplace);
-			panel.addFilterListener(this);
 		}
-		
+
 		public FilterPanel<U> getInnerPanel()
 		{
 			return innerPanel;
 		}
-
+		
 		@Override
 		public void paint()
 		{
@@ -136,12 +147,36 @@ public class FilterPanelAdapter {
 		}
 
 		@Override
-		public void filter(FilterEvent<U> e)
+		public void addFilterListener(BiFilterListener<T, U> listener)
 		{
-			if(e.getType() == FilterEvent.RESET_PANEL)
-				passFilterEvent(new BiFilterEvent<T,U>(this,getSecondArgAdapter(e.getPanel()),BiFilterEvent.RESET_PANEL));
-			else
-				passFilterEvent(new BiFilterEvent<T,U>(this,FilterAdapter.toBiFilterArg2(e.getFilter()),e.getType()));
+			super.addFilterListener(listener);
+			innerPanel.addFilterListener( FilterListenerAdapter.getSecondArgAdapter(listener));
+		}
+
+		@Override
+		public void removeFilterListener(BiFilterListener<T, U> listener)
+		{
+			super.addFilterListener(listener);
+			innerPanel.removeFilterListener( FilterListenerAdapter.getSecondArgAdapter(listener));
+		}
+
+		@Override
+		public void addPopupMenuItem(JMenuItem item)
+		{
+			innerPanel.addPopupMenuItem(item);
+		}
+
+
+		@Override
+		public void setActive(boolean active)
+		{
+			innerPanel.setActive(active);
+		}
+
+		@Override
+		public boolean isActive()
+		{
+			return innerPanel.isActive();
 		}
 
 		@Override
@@ -154,14 +189,10 @@ public class FilterPanelAdapter {
 		{
 			if (this == obj)
 				return true;
-			if (obj == null)
+			if (!(obj instanceof FirstArgAdapter))
 				return false;
-			if (!(obj instanceof SecondArgAdapter))
-				return false;
-			SecondArgAdapter<?,?> other = (SecondArgAdapter<?,?>) obj;
-			return innerPanel.equals(other.innerPanel);
+			FirstArgAdapter<?,?> that = (FirstArgAdapter<?,?>) obj;
+			return innerPanel.equals(that.innerPanel);
 		}
 	}
-
-
 }

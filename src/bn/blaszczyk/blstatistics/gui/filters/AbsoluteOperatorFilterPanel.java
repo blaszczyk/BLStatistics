@@ -12,7 +12,9 @@ import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 @SuppressWarnings("serial")
 public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>{
 
-	private JLabel label = new JLabel("TRUE");
+	public static final String TRUE_NAME = "TRUE";
+	public static final String FALSE_NAME = "FALSE";
+	private JLabel label = new JLabel(TRUE_NAME);
 	private boolean value = true;
 	
 	public AbsoluteOperatorFilterPanel(boolean value) 
@@ -43,12 +45,12 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 		if(value)
 		{
 			setFilter(LogicalBiFilter.getTRUEBiFilter());
-			label.setText("TRUE");
+			label.setText(TRUE_NAME);
 		}
 		else
 		{
 			setFilter(LogicalBiFilter.getFALSEBiFilter());
-			label.setText("FALSE");
+			label.setText(FALSE_NAME);
 		}
 	}
 

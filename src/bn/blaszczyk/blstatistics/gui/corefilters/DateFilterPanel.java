@@ -17,6 +17,8 @@ import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 @SuppressWarnings({ "deprecation", "serial" })
 public class DateFilterPanel extends AbstractFilterPanel<Game>
 {
+	public static final String NAME = "Datum";
+	
 	private static final String EQ = "=";
 	private static final String NEQ = "!=";
 	private static final String GEQ = ">=";
@@ -30,7 +32,7 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 	private static final String[] MONTH_NAMES =
 		{"Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"};
 
-	private JLabel label = new JLabel("Datum");
+	private JLabel label = new JLabel(NAME);
 	
 	private JComboBox<String> operatorBox = new JComboBox<>(OPERATORS);
 	private JComboBox<Integer> dateBox;

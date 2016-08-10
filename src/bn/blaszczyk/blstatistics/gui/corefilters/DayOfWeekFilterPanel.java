@@ -11,8 +11,9 @@ import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 @SuppressWarnings("serial")
 public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game> 
 {
+	public static final String NAME = "Wochentag";
 	
-	private final static String[] DAYS_OF_WEEK = {"Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"};
+	private static final String[] DAYS_OF_WEEK = {"Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"};
 	
 	private JComboBox<String> dowBox;
 	

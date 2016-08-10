@@ -9,11 +9,16 @@ import bn.blaszczyk.blstatistics.gui.filters.IntegerValueFilterPanel;
 
 public abstract class GoalFilterPanel
 {
+	public static final String NAME_GOAL = "Tore";
+	public static final String NAME_HOME_GOAL = "Heimtore";
+	public static final String NAME_AWAY_GOAL = "Auswärtsore";
+	public static final String NAME_GOAL_DIFF = "Tordifferenz";
+	
 
 	@SuppressWarnings("serial")
 	public static FilterPanel<Game> getGoalFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>("Tore",operator,refInt)
+		return new IntegerValueFilterPanel<Game>(NAME_GOAL,operator,refInt)
 		{
 			@Override
 			protected Filter<Game> getFilter()
@@ -41,7 +46,7 @@ public abstract class GoalFilterPanel
 	@SuppressWarnings("serial")
 	public static FilterPanel<Game> getHomeGoalFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>("Heimtore",operator,refInt)
+		return new IntegerValueFilterPanel<Game>(NAME_HOME_GOAL,operator,refInt)
 		{
 			@Override
 			protected Filter<Game> getFilter()
@@ -69,7 +74,7 @@ public abstract class GoalFilterPanel
 	@SuppressWarnings("serial")
 	public static FilterPanel<Game> getAwayGoalFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>("Auswärtstore",operator,refInt)
+		return new IntegerValueFilterPanel<Game>(NAME_AWAY_GOAL,operator,refInt)
 		{
 
 			@Override
@@ -98,7 +103,7 @@ public abstract class GoalFilterPanel
 	@SuppressWarnings("serial")
 	public static FilterPanel<Game> getGoalDiffFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>("Tordifferenz",operator,refInt)
+		return new IntegerValueFilterPanel<Game>(NAME_GOAL_DIFF,operator,refInt)
 		{
 			@Override
 			protected Filter<Game> getFilter()

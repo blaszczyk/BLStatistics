@@ -5,23 +5,17 @@ package bn.blaszczyk.blstatistics.gui.filters;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 //import javax.swing.JMenuItem;
 
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
-import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
 public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 {
+	public static final String NAME = "UnaryOperator";
 
 	private BiFilterPanel<T,U> innerPanel;
 	private JLabel label = new JLabel("NOT");
-	
-	public UnaryOperatorFilterPanel()
-	{
-		this(new NoFilterPanel<T, U>());
-	}
 	
 	public UnaryOperatorFilterPanel(BiFilterPanel<T, U> originalPanel) 
 	{
@@ -49,15 +43,6 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	private void setFilter()
 	{
 		setFilter(LogicalBiFilter.getNOTBiFilter(innerPanel));
-	}
-
-	@Override
-	protected void addPopupMenuItems()
-	{
-		JMenu popupSetPanel = new JMenu("Setze Inneren Filter");
-		NewFilterMenu.addMenuItems(popupSetPanel, e -> innerPanel.replaceMe( NewFilterMenu.getPanel() ));
-		addPopupMenuItem(popupSetPanel);	
-		super.addPopupMenuItems();
 	}
 
 	@Override

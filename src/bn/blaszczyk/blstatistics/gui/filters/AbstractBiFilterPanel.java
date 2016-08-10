@@ -1,12 +1,10 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -14,7 +12,6 @@ import javax.swing.border.Border;
 
 import bn.blaszczyk.blstatistics.filters.BiFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
-import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
 public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFilterPanel<T,U>
@@ -24,10 +21,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	
 	
 	private boolean isActive = true;
-	protected JMenuItem popupSetActive;
-	protected JMenuItem popupNegate;
-	protected JMenuItem popupRemove;
-	protected JMenu popupReplace;
 	private JLabel title = new JLabel("Filter");
 	
 	private JPopupMenu popup;
@@ -37,27 +30,14 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	
 	public AbstractBiFilterPanel()
 	{
-		popupSetActive = new JMenuItem("Deaktivieren");
-		popupSetActive.addActionListener( e -> setActive(!isActive) );
-
-		popupNegate = new JMenuItem("Invertieren");
-		popupNegate.addActionListener( e -> negate() );
-		
-		popupRemove = new JMenuItem("Entfernen");
-		popupRemove.addActionListener( e -> replaceMe( new NoFilterPanel<>() ) );
-		
-		popupReplace = new JMenu("Ersetzten");
-		NewFilterMenu.addMenuItems(popupReplace, e -> replaceMe( NewFilterMenu.getPanel() ));
-
-		
 		popup = new JPopupMenu();
 		popup.add(title);
 		popup.addSeparator();
-		addPopupMenuItems();
 		setComponentPopupMenu(popup);
-		
-		setActive(true);
-		addFilterListener(e -> title.setText(this.toString()));
+		setBorder(activeBorder);
+		setAlignmentX(LEFT_ALIGNMENT);
+//		setActive(true);
+//		addFilterListener(e -> title.setText(this.toString()));
 	}
 
 	protected abstract void addComponents();
@@ -74,37 +54,28 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		notifyListeners(e);
 	}	
 
-	protected void addPopupMenuItems()
-	{
-		popup.add(popupSetActive);
-		popup.add(popupNegate);
-		popup.add(popupRemove);
-		popup.add(popupReplace);
-	}
+
 	
-	private void negate()
-	{
-		if(this instanceof UnaryOperatorFilterPanel)
-			replaceMe( ((UnaryOperatorFilterPanel<T, U>)this).getInnerPanel() );
-		else
-			replaceMe(new UnaryOperatorFilterPanel<T,U>(this) );
-	}
-	
-	private void setActive(boolean active)
+	@Override
+	public void setActive(boolean active)
 	{
 		if(active)
 		{
 			setBorder(activeBorder);
 			this.isActive = true;
-			popupSetActive.setText("Deaktivieren");
 		}
 		else
 		{
 			setBorder(deactiveBorder);
 			this.isActive = false;
-			popupSetActive.setText("Aktivieren");
 		}
 		notifyListeners(new BiFilterEvent<T, U>(this,this,BiFilterEvent.RESET_FILTER));
+	}
+
+	@Override
+	public boolean isActive()
+	{
+		return isActive;
 	}
 
 	private void notifyListeners(BiFilterEvent<T,U> e)
@@ -150,6 +121,7 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	@Override
 	public void addFilterListener(BiFilterListener<T,U> listener)
 	{
+//		System.out.println(this + " telling "+ listener);
 		listeners.add(listener);
 	}
 
@@ -168,14 +140,9 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	}
 
 	@Override
-	public void removePopupMenuItem(JMenuItem item)
-	{
-		popup.remove(item);
-	}
-
-	@Override
 	public void replaceMe(BiFilterPanel<T, U> newPanel)
 	{
+//		System.out.println( "Replacing " + this + " by " + newPanel);
 		notifyListeners(new BiFilterEvent<>(this, newPanel, BiFilterEvent.RESET_PANEL));
 	}
 }

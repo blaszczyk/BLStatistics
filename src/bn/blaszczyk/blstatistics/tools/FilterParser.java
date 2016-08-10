@@ -55,7 +55,7 @@ public class FilterParser
 		if (filter instanceof MultiOperatorFilterPanel)
 		{
 			MultiOperatorFilterPanel<Season, Game> mFilter = (MultiOperatorFilterPanel<Season, Game>) filter;
-			innerBuilder.append("MultiOperator;" + mFilter.getOperator());
+			innerBuilder.append(MultiOperatorFilterPanel.NAME + ";" + mFilter.getOperator());
 			for (BiFilterPanel<Season, Game> p : mFilter)
 				innerBuilder.append(";F" + writeSubFilter(p));
 		}
@@ -65,12 +65,12 @@ public class FilterParser
 			int ifInt = writeSubFilter(iteFilter.getIfFilter());
 			int thenInt = writeSubFilter(iteFilter.getThenFilter());
 			int elseInt = writeSubFilter(iteFilter.getElseFilter());
-			innerBuilder.append(String.format("IfThenElse;F%d;F%d;F%d",ifInt, thenInt, elseInt));
+			innerBuilder.append(String.format("%s;F%d;F%d;F%d", IfThenElseFilterPanel.NAME, ifInt, thenInt, elseInt));
 		}
 		else if (filter instanceof UnaryOperatorFilterPanel)
 		{
 			UnaryOperatorFilterPanel<Season, Game> uFilter = (UnaryOperatorFilterPanel<Season, Game>) filter;
-			innerBuilder.append("UnaryOperator;F" + writeSubFilter(uFilter.getInnerPanel()));
+			innerBuilder.append(UnaryOperatorFilterPanel.NAME + ";F" + writeSubFilter(uFilter.getInnerPanel()));
 		}
 		else if (filter instanceof AbsoluteOperatorFilterPanel)
 		{
@@ -80,11 +80,11 @@ public class FilterParser
 		else if (filter instanceof RoundFilterPanel)
 		{
 			RoundFilterPanel rFilter = (RoundFilterPanel) filter;
-			innerBuilder.append("Runde;" + rFilter.isFirstRound() + ";" + rFilter.isSecondRound());
+			innerBuilder.append( RoundFilterPanel.NAME +  ";" + rFilter.isFirstRound() + ";" + rFilter.isSecondRound());
 		}
 		else if (filter instanceof NoFilterPanel)
 		{
-			innerBuilder.append("NoFilter");
+			innerBuilder.append(NoFilterPanel.NAME);
 		}
 		else if (filter instanceof FilterPanelAdapter.FirstArgAdapter)
 		{
@@ -97,7 +97,7 @@ public class FilterParser
 			else if(sFilter instanceof SingleLeagueFilterPanel)
 			{
 				SingleLeagueFilterPanel iPanel =  (SingleLeagueFilterPanel) sFilter;
-				innerBuilder.append( "Liga;" + iPanel.getSelectedLeague() + ";" + iPanel.isRecursive());
+				innerBuilder.append( SingleLeagueFilterPanel.NAME + ";" + iPanel.getSelectedLeague() + ";" + iPanel.isRecursive());
 			}
 			else
 			{
@@ -115,24 +115,24 @@ public class FilterParser
 			else if (gFilter instanceof TeamFilterPanel)
 			{
 				TeamFilterPanel tFilter = (TeamFilterPanel) gFilter;
-				innerBuilder.append("Team;" + tFilter.getTeam() + ";" + tFilter.getHome() + ";" + tFilter.getAway());
+				innerBuilder.append(String.format("%s;%s;%s;%s", TeamFilterPanel.NAME,  tFilter.getTeam(), tFilter.getHome(), tFilter.getAway()));
 			}
 			else if (gFilter instanceof SubLeagueFilterPanel)
 			{
 				SubLeagueFilterPanel slFilter = (SubLeagueFilterPanel) gFilter;
-				innerBuilder.append("DirekterVergleich");
+				innerBuilder.append(SubLeagueFilterPanel.NAME);
 				for (int i = 0; i < slFilter.getTeamCount(); i++)
 					innerBuilder.append(";" + slFilter.getTeam(i));
 			}
 			else if(gFilter instanceof DateFilterPanel)
 			{
 				DateFilterPanel dFilter = (DateFilterPanel) gFilter;
-				innerBuilder.append(String.format("Datum;%s;%s", dFilter.getOperator(), Game.DATE_FORMAT.format(dFilter.getDate())));
+				innerBuilder.append(String.format("%s;%s;%s", DateFilterPanel.NAME, dFilter.getOperator(), Game.DATE_FORMAT.format(dFilter.getDate())));
 			}
 			else if(gFilter instanceof DayOfWeekFilterPanel)
 			{
 				DayOfWeekFilterPanel dFilter = (DayOfWeekFilterPanel) gFilter;
-				innerBuilder.append("Wochentag;" +  dFilter.getDayOfWeek());
+				innerBuilder.append(DayOfWeekFilterPanel.NAME + ";" +  dFilter.getDayOfWeek());
 			}
 			else
 			{
@@ -156,58 +156,58 @@ public class FilterParser
 			return null;
 		switch (split[1])
 		{
-		case "MultiOperator":
+		case MultiOperatorFilterPanel.NAME:
 			List<BiFilterPanel<Season, Game>> pList = new ArrayList<>();
 			for (int i = 3; i < split.length; i++)
 				pList.add(filters.get(split[i]));
 			panel = new MultiOperatorFilterPanel<>(pList, split[2]);
 			break;
-		case "IfThenElse":
+		case IfThenElseFilterPanel.NAME:
 			panel = new IfThenElseFilterPanel<>(filters.get(split[2]), filters.get(split[3]), filters.get(split[4]));
 			break;
-		case "UnaryOperator":
+		case UnaryOperatorFilterPanel.NAME:
 			panel = new UnaryOperatorFilterPanel<>(filters.get(split[2]));
 			break;
-		case "TRUE":
+		case AbsoluteOperatorFilterPanel.TRUE_NAME:
 			panel = new AbsoluteOperatorFilterPanel<>(true );
 			break;
-		case "FALSE":
+		case AbsoluteOperatorFilterPanel.FALSE_NAME:
 			panel = new AbsoluteOperatorFilterPanel<>(false );
 			break;
-		case "Runde":
+		case RoundFilterPanel.NAME:
 			panel = new RoundFilterPanel(Boolean.parseBoolean(split[2]), Boolean.parseBoolean(split[3]));
 			break;
-		case "NoFilter":
+		case NoFilterPanel.NAME:
 			panel = new NoFilterPanel<Season, Game>();
 			break;
-		case "Saison":
+		case SeasonFilterPanel.NAME:
 			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
-		case "Liga":
+		case SingleLeagueFilterPanel.NAME:
 			panel = FilterPanelAdapter.getFirstArgAdapter(new SingleLeagueFilterPanel(split[2], Boolean.parseBoolean(split[3])) );
 			break;
-		case "Spieltag":
+		case MatchDayFilterPanel.NAME:
 			panel = FilterPanelAdapter.getSecondArgAdapter(new MatchDayFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
-		case "Tore":
+		case GoalFilterPanel.NAME_GOAL:
 			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
-		case "Heimtore":
+		case GoalFilterPanel.NAME_HOME_GOAL:
 			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getHomeGoalFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
-		case "Auswärtstore":
+		case GoalFilterPanel.NAME_AWAY_GOAL:
 			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getAwayGoalFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
-		case "Tordifferenz":
+		case GoalFilterPanel.NAME_GOAL_DIFF:
 			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalDiffFilterPanel(split[2], Integer.parseInt(split[3])) );
 			break;
-		case "Team":
+		case TeamFilterPanel.NAME:
 			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(split[2], Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4])) );
 			break;
-		case "DirekterVergleich":
+		case SubLeagueFilterPanel.NAME:
 			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(Arrays.asList(split).subList(2, split.length)) );
 			break;
-		case "Datum":
+		case DateFilterPanel.NAME:
 			try
 			{
 				panel = FilterPanelAdapter.getSecondArgAdapter(new DateFilterPanel(split[2], Game.DATE_FORMAT.parse(split[3])) );
@@ -217,12 +217,13 @@ public class FilterParser
 				e.printStackTrace();
 			}
 			break;
-		case "Wochentag":
+		case DayOfWeekFilterPanel.NAME:
 			panel = FilterPanelAdapter.getSecondArgAdapter(new DayOfWeekFilterPanel(split[2]));
 			break;
 		default:
 			System.out.println("Unbekannter Filter:" + in);
 		}
+		NewFilterMenu.populatePopupMenu(panel);
 		filters.put(split[0], panel);
 		panel.getPanel().setAlignmentX(Component.LEFT_ALIGNMENT);
 		return panel;

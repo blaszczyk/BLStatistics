@@ -19,13 +19,15 @@ import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 @SuppressWarnings("serial")
 public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 
+	public static final String NAME = "DirekterVergleich";
+	
 	private ComboBoxFactory<String> cbf;
 	
 	private JLabel label = new JLabel("Direkter Vergleich");
 	private List<JComboBox<String>> teamBoxes = new ArrayList<>();
 	private JButton btnNewTeam = new JButton("Neues Team");
 
-	private JMenu popupRemoveTeam;
+	private JMenu popupRemoveTeam = new JMenu("Entferne Team");
 	
 	public SubLeagueFilterPanel()
 	{
@@ -97,13 +99,6 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		}
 	}
 	
-	@Override
-	protected void addPopupMenuItems()
-	{
-		popupRemoveTeam  = new JMenu("Entferne Team");
-		addPopupMenuItem(popupRemoveTeam);
-		super.addPopupMenuItems();
-	}
 	
 	@Override
 	protected void addComponents()
@@ -118,5 +113,10 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	public String toString()
 	{
 		return "Direkter Vergleich " + getTeamCount() + " Teams";
+	}
+
+	public JMenuItem getMiRemoveTeam()
+	{
+		return popupRemoveTeam;
 	}
 }

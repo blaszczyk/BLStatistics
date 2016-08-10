@@ -9,15 +9,16 @@ import bn.blaszczyk.blstatistics.gui.filters.IntegerValueFilterPanel;
 @SuppressWarnings("serial")
 public class SeasonFilterPanel extends IntegerValueFilterPanel<Season>
 {
+	public static final String NAME = "Saison";
 	
 	public SeasonFilterPanel()
 	{
-		super("Saison","=",2016);
+		super(NAME,"=",2016);
 	}
 	
 	public SeasonFilterPanel( String operator, int refValue)
 	{
-		super("Saison",operator,refValue);
+		super(NAME,operator,refValue);
 	}
 
 

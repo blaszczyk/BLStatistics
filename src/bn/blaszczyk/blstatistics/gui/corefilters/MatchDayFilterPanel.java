@@ -10,15 +10,16 @@ import bn.blaszczyk.blstatistics.gui.filters.IntegerValueFilterPanel;
 public class MatchDayFilterPanel extends IntegerValueFilterPanel<Game>
 {
 
+	public static final String NAME = "Spieltag";
 	
 	public MatchDayFilterPanel()
 	{
-		super("Spieltag","=",1);
+		super(NAME,"=",1);
 	}
 	
 	public MatchDayFilterPanel(String operator, int refInt)
 	{
-		super("Spieltag",operator,refInt);
+		super(NAME,operator,refInt);
 	}
 
 

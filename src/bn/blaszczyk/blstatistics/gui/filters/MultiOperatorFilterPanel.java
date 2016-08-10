@@ -1,6 +1,5 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,13 +9,15 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
-import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
 public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> implements Iterable<BiFilterPanel<T,U>> {
 
+	public static final String NAME = "MultiOperator";
+	
 	public static final String AND = "AND";
 	public static final String OR = "OR";
 	public static final String XOR = "XOR";
@@ -25,7 +26,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	private List<BiFilterPanel<T,U>> panels;
 	private JComboBox<String> operatorBox;
 	
-	private JMenu popupRemoveFilter;
+	private JMenu miRemoveFilter = new JMenu("Entferne Filter");
 
 	public MultiOperatorFilterPanel(List<BiFilterPanel<T, U>> panels, String operator) 
 	{
@@ -42,23 +43,16 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		for(BiFilterPanel<T, U> panel : panels)
 			panel.addFilterListener(this);		
 	}
-
-	public MultiOperatorFilterPanel() 
-	{
-		this(new ArrayList<>(),AND);
-		addPanel(new NoFilterPanel<>());
-		addPanel(new NoFilterPanel<>());
-	}
 	
 	public String getOperator()
 	{
 		return (String)operatorBox.getSelectedItem();
 	}
 
-	private void addPanel(BiFilterPanel<T,U> panel)
+	public void addPanel(BiFilterPanel<T,U> panel)
 	{
-		notifyReplacement(panel, panel);
 		panels.add(replaceFilterPanel(panel, null) );
+		notifyReplacement(panel, panel);
 		setFilter();
 	}
 	
@@ -88,12 +82,12 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	
 	private void setDeleteMenu()
 	{
-		popupRemoveFilter.removeAll();
+		miRemoveFilter.removeAll();
 		for(BiFilterPanel<T, U> panel : panels)
 		{
 			JMenuItem remove = new JMenuItem(panel.toString());
 			remove.addActionListener( e -> removePanel(panel));
-			popupRemoveFilter.add(remove);
+			miRemoveFilter.add(remove);
 		}
 	}
 	
@@ -114,15 +108,9 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		}		
 	}
 
-	@Override
-	protected void addPopupMenuItems()
+	public JMenu getMiRemoveFilter()
 	{
-		JMenu popupAddFilter = new JMenu("Neuer Filter");
-		NewFilterMenu.addMenuItems(popupAddFilter, e -> addPanel(NewFilterMenu.getPanel()));
-		addPopupMenuItem(popupAddFilter);
-		popupRemoveFilter = new JMenu("Entferne Filter");
-		addPopupMenuItem(popupRemoveFilter);
-		super.addPopupMenuItems();
+		return miRemoveFilter;
 	}
 
 	@Override
@@ -177,5 +165,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	{
 		return panels.iterator();
 	}
+
+
 
 }

@@ -26,7 +26,6 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 
 	private JPopupMenu popup;
 	private JLabel popupHeader = new JLabel("Filter");
-	private JMenuItem popupSetActive;
 	
 	private boolean active = true;
 	
@@ -35,13 +34,9 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	 */
 	public AbstractFilterPanel()
 	{
-		popupSetActive = new JMenuItem("Deaktivieren");
-		popupSetActive.addActionListener( e -> setActive(!active));
-		
 		popup = new JPopupMenu();
 		popup.add(popupHeader);
 		popup.addSeparator();
-		addPopupMenuItems();
 		setComponentPopupMenu(popup);
 		
 		setActive(true);
@@ -51,32 +46,32 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 
 	protected abstract void addComponents();
 	
-	protected void addPopupMenuItems()
-	{
-		popup.add(popupSetActive);
-	}
-	
 	protected void setFilter(Filter<T> filter)
 	{
 		this.filter = filter;
 		notifyListeners(new FilterEvent<>(this, filter, FilterEvent.RESET_FILTER));
 	}
 	
-	private void setActive(boolean active)
+	@Override
+	public void setActive(boolean active)
 	{
 		if(active)
 		{
 			setBorder(ACTIVE_BORDER);
 			this.active = true;
-			popupSetActive.setText("Deaktivieren");
 		}
 		else
 		{
 			setBorder(INACTIVE_BORDER);
 			this.active = false;
-			popupSetActive.setText("Aktivieren");
 		}
 		notifyListeners(new FilterEvent<T>(this, this, FilterEvent.RESET_FILTER));
+	}
+	
+	@Override
+	public boolean isActive()
+	{
+		return active;
 	}
 
 	private void notifyListeners(FilterEvent<T> e)
@@ -130,12 +125,6 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	public void addPopupMenuItem(JMenuItem item)
 	{
 		popup.add(item);
-	}
-
-	@Override
-	public void removePopupMenuItem(JMenuItem item)
-	{
-		popup.remove(item);
 	}
 	
 }

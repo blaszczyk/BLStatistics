@@ -20,6 +20,8 @@ import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 @SuppressWarnings("serial")
 public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season> implements ActionListener
 {
+	public static final String NAME = "Liga";
+	
 	private final static List<String> LEAGUE_LIST = new ArrayList<>();
 	
 	private JComboBox<String> cboLeagues;

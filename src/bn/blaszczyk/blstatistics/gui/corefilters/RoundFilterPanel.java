@@ -15,6 +15,8 @@ import bn.blaszczyk.blstatistics.gui.filters.AbstractBiFilterPanel;
 @SuppressWarnings("serial")
 public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game> implements ActionListener
 {
+	public static final String NAME = "Runde";
+	
 	private JCheckBox first = new JCheckBox("Hinrunde",true);
 	private JCheckBox second = new JCheckBox("Rückrunde",true);
 

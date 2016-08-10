@@ -14,8 +14,11 @@ public interface BiFilterPanel<T,U> extends BiFilter<T,U> {
 	public void removeFilterListener(BiFilterListener<T,U> listener);
 	
 	public void addPopupMenuItem(JMenuItem item);
-	public void removePopupMenuItem(JMenuItem item);
 	
 	public void replaceMe(BiFilterPanel<T,U> panel);
+	
+	public void setActive(boolean active);
+	public boolean isActive();
+	
 
 }

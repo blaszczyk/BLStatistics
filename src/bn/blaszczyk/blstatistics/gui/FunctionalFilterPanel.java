@@ -13,10 +13,8 @@ import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterEvent;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterListener;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterPanel;
-import bn.blaszczyk.blstatistics.gui.filters.NoFilterPanel;
 import bn.blaszczyk.blstatistics.tools.FilterIO;
 import bn.blaszczyk.blstatistics.tools.FilterLog;
-import bn.blaszczyk.blstatistics.tools.FilterParser;
 import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
@@ -41,7 +39,8 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
 		filterLog = new FilterLog( 10, e -> setFilterPanel(filterLog.getFilterPanel()) );
-		filterPanel = new NoFilterPanel<>();
+		filterPanel = NewFilterMenu.createNoFilterPanel();
+		NewFilterMenu.populatePopupMenu(filterPanel);
 
 		setFilterPanel(FilterIO.loadFilter(LAST_FILTER));
 		filterLog.pushFilter(filterPanel, filterPanel);	
@@ -49,7 +48,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 
 	public void newFilter()
 	{
-		setFilterPanel(new NoFilterPanel<>());
+		setFilterPanel(NewFilterMenu.createNoFilterPanel());
 		filterLog.pushFilter(filterPanel, filterPanel);	
 	}
 
@@ -83,8 +82,10 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		if(this.filterPanel != null)
 			this.filterPanel.removeFilterListener(this);
 		this.filterPanel = panel;
+		System.out.println("Listening to " + panel);
 		panel.addFilterListener(this);
 		panel.getPanel().setPreferredSize(new Dimension(300,1000));
+//		NewFilterMenu.populatePopupMenu(panel);
 		paint();
 		if(listener != null)
 			listener.filter(new BiFilterEvent<Season,Game>(this,panel,BiFilterEvent.RESET_FILTER));
@@ -144,15 +145,27 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	public void addPopupMenuItem(JMenuItem item)
 	{
 	}
-	
-	@Override
-	public void removePopupMenuItem(JMenuItem item)
-	{
-	}
 
 	@Override
 	public void replaceMe(BiFilterPanel<Season, Game> panel)
 	{
+	}
+
+	@Override
+	public void setActive(boolean active)
+	{
+	}
+
+	@Override
+	public boolean isActive()
+	{
+		return true;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "FunctionalFilterPanel";
 	}
 
 }
