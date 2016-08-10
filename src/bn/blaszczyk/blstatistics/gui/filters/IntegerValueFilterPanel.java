@@ -96,7 +96,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	
 	protected abstract Filter<T> getFilter();
 	
-	private void setFilter()
+	protected void setFilter()
 	{
 		setFilter(getFilter());
 	}

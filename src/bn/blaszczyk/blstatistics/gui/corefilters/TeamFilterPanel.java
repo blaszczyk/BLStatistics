@@ -1,8 +1,6 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +16,7 @@ import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
 
 @SuppressWarnings({"serial"})
-public class TeamFilterPanel extends AbstractFilterPanel<Game> implements ActionListener
+public class TeamFilterPanel extends AbstractFilterPanel<Game>
 {
 	public static final String NAME = "Team";
 	private static final List<String> TEAM_LIST = new ArrayList<>();
@@ -29,35 +27,35 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game> implements Action
 	
 	public TeamFilterPanel()
 	{
+		this("",true,true);
+	}
+	
+	public TeamFilterPanel(String team, boolean home, boolean away)
+	{
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
 		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(TEAM_LIST);
 		teamBox = cbf.createComboBox();
-		teamBox.addActionListener(this);
+		teamBox.addActionListener(setFilterListener);
 		
 		homeBox = new JCheckBox("H",true);
 		homeBox.setInheritsPopupMenu(true);
-		homeBox.addActionListener(this);
+		homeBox.addActionListener(setFilterListener);
 		homeBox.setMaximumSize(new Dimension(50,30));
 		homeBox.setMinimumSize(new Dimension(50,30));
 		
 		awayBox = new JCheckBox("A",true);
 		awayBox.setInheritsPopupMenu(true);
-		awayBox.addActionListener(this);
+		awayBox.addActionListener(setFilterListener);
 		awayBox.setMaximumSize(new Dimension(50,30));
 		awayBox.setMinimumSize(new Dimension(50,30));
-		
 
 		setMaximumSize(new Dimension(350,30));
 		setMinimumSize(new Dimension(350,30));
-	}
-	
-	public TeamFilterPanel(String team, boolean home, boolean away)
-	{
-		this();
 		teamBox.setSelectedItem(team);
 		homeBox.setSelected(home);
 		awayBox.setSelected(away);		
+		setFilter();
 	}
 	
 	public String getTeam()
@@ -87,7 +85,7 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game> implements Action
 		return TeamFilterPanel.TEAM_LIST;
 	}
 	
-	private void setFilter()
+	protected void setFilter()
 	{
 		String team = (String) teamBox.getSelectedItem();
 		Filter<Game> filter = LogicalFilter.getFALSEFilter();
@@ -116,17 +114,5 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game> implements Action
 	{
 		return "Team " + teamBox.getSelectedItem();
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		if(e.getSource() instanceof JCheckBox)
-		{
-			JCheckBox box = (JCheckBox) e.getSource();
-			setFilter();
-			box.requestFocusInWindow();
-		}
-	}
-
 	
 }

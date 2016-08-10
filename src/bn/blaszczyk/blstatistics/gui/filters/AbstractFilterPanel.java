@@ -1,10 +1,12 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
 
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -21,10 +23,15 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	private static final Border INACTIVE_BORDER = BorderFactory.createRaisedBevelBorder();
 	
 	private Filter<T> filter = LogicalFilter.getTRUEFilter();
-	
 	private List<FilterListener<T>> listeners = new ArrayList<>();
-
 	private JPopupMenu popup;
+	
+	protected ActionListener setFilterListener = e ->
+	{
+		setFilter();
+		if(e.getSource() instanceof JComponent)
+			((JComponent)e.getSource()).requestFocusInWindow();
+	};
 	
 	private boolean active = true;
 	
@@ -40,6 +47,7 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 
 
 	protected abstract void addComponents();
+	protected abstract void setFilter();
 	
 	protected void setFilter(Filter<T> filter)
 	{

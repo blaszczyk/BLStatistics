@@ -1,11 +1,7 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 
@@ -14,34 +10,11 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 
 	public static final String TRUE_NAME = "TRUE";
 	public static final String FALSE_NAME = "FALSE";
-	private JLabel label = new JLabel(TRUE_NAME);
-	private boolean value = true;
+	private JLabel label = new JLabel();
 	
 	public AbsoluteOperatorFilterPanel(boolean value) 
 	{
-		JMenuItem popupToggle = new JMenuItem("Umschalten");
-		popupToggle.addActionListener( e -> toggleFilter());
-		addPopupMenuItem(popupToggle);
-
-		addMouseListener( new MouseAdapter(){
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				if(e.getClickCount() == 2)
-					toggleFilter();
-			}
-		});
-		
-		if(value)
-			this.value = false;
-		toggleFilter();
-		
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-	}
-	
-	private void toggleFilter()
-	{
-		value = !value;
 		if(value)
 		{
 			setFilter(LogicalBiFilter.getTRUEBiFilter());
@@ -53,17 +26,28 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 			label.setText(FALSE_NAME);
 		}
 	}
+	
 
 	@Override
 	protected void addComponents()
 	{
 		add(label);
 	}
+	
+	public boolean getValue()
+	{
+		return label.getText() == TRUE_NAME;
+	}
 
 	@Override
 	public String toString()
 	{
 		return label.getText();
+	}
+
+	@Override
+	protected void setFilter()
+	{
 	}
 
 }

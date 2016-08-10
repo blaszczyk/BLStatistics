@@ -37,7 +37,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		cbf.setBoxWidth(80);
 		operatorBox = cbf.createComboBox();
 		operatorBox.setAlignmentX(LEFT_ALIGNMENT);
-		operatorBox.addActionListener( e -> setFilter() );
+		operatorBox.addActionListener(setFilterListener);
 		operatorBox.setSelectedItem(operator);
 		
 		for(BiFilterPanel<T, U> panel : panels)
@@ -91,7 +91,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		}
 	}
 	
-	private void setFilter()
+	protected void setFilter()
 	{
 		setDeleteMenu();
 		switch(getOperator())

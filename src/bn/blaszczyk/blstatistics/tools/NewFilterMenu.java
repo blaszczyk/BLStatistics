@@ -22,11 +22,18 @@ public class NewFilterMenu
 	
 	public static void populatePopupMenu(BiFilterPanel<Season, Game> panel)
 	{
+		
+		/*
+		 * Header First
+		 */
 		JLabel header = new JLabel("Filter");
 		panel.addPopupMenuLabel(header);
 		panel.addPopupMenuSeparator();
 		panel.addFilterListener(e -> header.setText(panel.toString()));
 		
+		/*
+		 * NoFilterPanel Menu
+		 */
 		if(panel instanceof NoFilterPanel)
 		{
 			NoFilterPanel<Season, Game> nfPanel = (NoFilterPanel<Season, Game>) panel;
@@ -36,6 +43,9 @@ public class NewFilterMenu
 			nfPanel.addPopupMenuItem(setPanel);
 			return;
 		}
+		/*
+		 * MultiOperatorFilterPanel Menu
+		 */
 		if(panel instanceof MultiOperatorFilterPanel)
 		{
 			MultiOperatorFilterPanel<Season, Game> moPanel = (MultiOperatorFilterPanel<Season, Game>) panel;
@@ -45,6 +55,9 @@ public class NewFilterMenu
 			moPanel.addPopupMenuItem(miAddFilter);
 			moPanel.addPopupMenuItem( moPanel.getMiRemoveFilter() );
 		}
+		/*
+		 * IfThenElseFilterPanel Menu
+		 */
 		else if( panel instanceof IfThenElseFilterPanel)
 		{
 			IfThenElseFilterPanel<Season, Game> itePanel = (IfThenElseFilterPanel<Season, Game>) panel;
@@ -64,6 +77,9 @@ public class NewFilterMenu
 			addMenuItems(miSetElse);
 			itePanel.addPopupMenuItem(miSetElse);
 		}
+		/*
+		 * UnaryOperatorFilterPanel Menu
+		 */
 		else if( panel instanceof UnaryOperatorFilterPanel)
 		{
 			UnaryOperatorFilterPanel<Season, Game> uPanel = (UnaryOperatorFilterPanel<Season, Game>) panel;
@@ -72,12 +88,17 @@ public class NewFilterMenu
 			addMenuItems(miSetPanel);
 			uPanel.addPopupMenuItem(miSetPanel);
 		}
+		/*
+		 * SubLeagueFilterPanel Menu
+		 */
 		else if(panel instanceof SubLeagueFilterPanel)
 		{
 			SubLeagueFilterPanel slPanel = (SubLeagueFilterPanel) panel;
 			slPanel.addPopupMenuItem( slPanel.getMiRemoveTeam() );
 		}
-		
+		/*
+		 * General Menu
+		 */
 		JMenuItem miSetActive = new JMenuItem("Deaktivieren");
 		miSetActive.addActionListener(e -> {
 			if(panel.isActive())
@@ -91,11 +112,18 @@ public class NewFilterMenu
 				miSetActive.setText("Deaktivieren");
 			}
 		});
+		panel.addPopupMenuItem(miSetActive);
 		
 		JMenuItem miInvert = new JMenuItem("Invertieren");
 		miInvert.addActionListener(e -> {
 			if(panel instanceof UnaryOperatorFilterPanel)
 				panel.replaceMe( ((UnaryOperatorFilterPanel<Season, Game>)panel).getInnerPanel() );
+			else if(panel instanceof AbsoluteOperatorFilterPanel)
+			{
+				BiFilterPanel<Season, Game> invertPanel = new AbsoluteOperatorFilterPanel<>( !((AbsoluteOperatorFilterPanel<Season, Game>) panel).getValue() );
+				populatePopupMenu(invertPanel);
+				panel.replaceMe(invertPanel);
+			}
 			else
 			{
 				BiFilterPanel<Season, Game> newPanel = new UnaryOperatorFilterPanel<Season, Game>(panel);
@@ -103,17 +131,15 @@ public class NewFilterMenu
 				panel.replaceMe(newPanel);	
 			}
 		});
+		panel.addPopupMenuItem(miInvert);
 		
 		JMenuItem miRemove = new JMenuItem("Entfernen");
 		miRemove.addActionListener(e -> panel.replaceMe(createNoFilterPanel()) );
+		panel.addPopupMenuItem(miRemove);
 		
 		JMenu miReplace = new JMenu("Ersetzten");
 		setPanelAction( () -> panel.replaceMe(getPanel()));
 		addMenuItems(miReplace);
-		
-		panel.addPopupMenuItem(miSetActive);
-		panel.addPopupMenuItem(miInvert);
-		panel.addPopupMenuItem(miRemove);
 		panel.addPopupMenuItem(miReplace);
 	}
 	

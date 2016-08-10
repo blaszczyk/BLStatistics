@@ -23,7 +23,7 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(DAYS_OF_WEEK);
 		dowBox = cbf.createComboBox();
-		dowBox.addActionListener(e -> setFilter());
+		dowBox.addActionListener(setFilterListener);
 		setFilter();
 	}
 	
@@ -37,7 +37,7 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 
 	
 	
-	private void setFilter()
+	protected void setFilter()
 	{
 		setFilter(GameFilter.getDayOfWeekFilter( dowBox.getSelectedIndex()));
 	}

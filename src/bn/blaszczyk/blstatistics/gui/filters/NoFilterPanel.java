@@ -29,4 +29,9 @@ public class NoFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>
 	{
 		return "Kein Filter";
 	}
+
+	@Override
+	protected void setFilter()
+	{
+	}
 }

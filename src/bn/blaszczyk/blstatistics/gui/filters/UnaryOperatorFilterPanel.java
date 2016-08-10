@@ -40,7 +40,7 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 		setFilter();
 	}	
 	
-	private void setFilter()
+	protected void setFilter()
 	{
 		setFilter(LogicalBiFilter.getNOTBiFilter(innerPanel));
 	}

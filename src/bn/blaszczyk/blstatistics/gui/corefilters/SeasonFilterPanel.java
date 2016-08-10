@@ -13,7 +13,7 @@ public class SeasonFilterPanel extends IntegerValueFilterPanel<Season>
 	
 	public SeasonFilterPanel()
 	{
-		super(NAME,"=",2016);
+		this(EQ,2016);
 	}
 	
 	public SeasonFilterPanel( String operator, int refValue)

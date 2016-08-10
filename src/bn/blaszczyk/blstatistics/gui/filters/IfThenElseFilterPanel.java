@@ -67,7 +67,7 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 		setFilter();
 	}
 	
-	private void setFilter()
+	protected void setFilter()
 	{
 		setFilter( LogicalBiFilter.getIF_THEN_ELSEBiFilter(ifFilter, thenFilter, elseFilter));
 	}

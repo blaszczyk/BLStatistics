@@ -39,50 +39,49 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 	private JComboBox<String> monthBox;
 	private JComboBox<Integer> yearBox;
 	
+	private ActionListener refreshDateBox = e -> {
+		int year = TODAY.getYear() - yearBox.getSelectedIndex();
+		int month = monthBox.getSelectedIndex();
+		int date = dateBox.getSelectedIndex() + 1;
+		dateBox.removeAllItems();
+		for( int i = 1; i <= getNrOfDays(month, year); i++ )
+			dateBox.addItem(i);
+		dateBox.setSelectedIndex( date - 1);
+	};
+	
 	public DateFilterPanel()
 	{
-		this("=",TODAY);
+		this(EQ,TODAY);
 	}
 	
 	public DateFilterPanel(String operator, Date referenceDate)
 	{
+		setLayout( new BoxLayout(this, BoxLayout.LINE_AXIS));
+		
 		operatorBox.setMaximumSize(new Dimension(50,30));
 		operatorBox.setInheritsPopupMenu(true);
-		operatorBox.addActionListener(e -> setFilter());
+		operatorBox.addActionListener(setFilterListener);
 
-		
 		ComboBoxFactory<Integer> yearFactory = new ComboBoxFactory<>( intSequence( TODAY.getYear()+1900, 1964 ) );
 		yearFactory.setBoxWidth(80);
 		yearBox = yearFactory.createComboBox();
+		yearBox.addActionListener(refreshDateBox);
 		
 		ComboBoxFactory<String> monthFactory = new ComboBoxFactory<>(MONTH_NAMES);
 		monthFactory.setBoxWidth(150);
 		monthBox = monthFactory.createComboBox();
+		monthBox.addActionListener(refreshDateBox);
 		
-
 		ComboBoxFactory<Integer> dateFactory = new ComboBoxFactory<>( intSequence( 1, getNrOfDays(referenceDate.getMonth(), referenceDate.getYear()) ) );
 		dateFactory.setBoxWidth(50);
 		dateBox = dateFactory.createComboBox();
+		dateBox.addActionListener(setFilterListener);
 		
 		setDate( referenceDate );
-		
-		ActionListener refreshDateBox = e -> {
-			int year = TODAY.getYear() - yearBox.getSelectedIndex();
-			int month = monthBox.getSelectedIndex();
-			int date = dateBox.getSelectedIndex() + 1;
-			dateBox.removeAllItems();
-			for( int i = 1; i <= getNrOfDays(month, year); i++ )
-				dateBox.addItem(i);
-			dateBox.setSelectedIndex( date - 1);
-		};
-		yearBox.addActionListener(refreshDateBox);
-		monthBox.addActionListener(refreshDateBox);
-		dateBox.addActionListener( e -> setFilter());
 		setFilter();
-		setLayout( new BoxLayout(this, BoxLayout.LINE_AXIS));
 	}
 
-	private void setFilter()
+	protected void setFilter()
 	{
 		Date date = getDate();
 		switch(getOperator())

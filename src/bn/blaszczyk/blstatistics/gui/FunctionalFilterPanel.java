@@ -82,7 +82,6 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		if(this.filterPanel != null)
 			this.filterPanel.removeFilterListener(this);
 		this.filterPanel = panel;
-		System.out.println("Listening to " + panel);
 		panel.addFilterListener(this);
 		panel.getPanel().setPreferredSize(new Dimension(300,1000));
 		paint();

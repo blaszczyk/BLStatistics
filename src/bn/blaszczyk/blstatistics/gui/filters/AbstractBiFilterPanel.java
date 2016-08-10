@@ -1,13 +1,10 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import javax.swing.border.Border;
 
 import bn.blaszczyk.blstatistics.filters.BiFilter;
@@ -19,9 +16,14 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	private static final Border activeBorder = BorderFactory.createLoweredBevelBorder();
 	private static final Border deactiveBorder = BorderFactory.createRaisedBevelBorder();
 	
+	protected ActionListener setFilterListener = e ->
+	{
+		setFilter();
+		if(e.getSource() instanceof JComponent)
+			((JComponent)e.getSource()).requestFocusInWindow();
+	};
 	
 	private boolean isActive = true;
-	private JLabel title = new JLabel("Filter");
 	
 	private JPopupMenu popup;
 	
@@ -31,13 +33,12 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	public AbstractBiFilterPanel()
 	{
 		popup = new JPopupMenu();
-		popup.add(title);
-		popup.addSeparator();
 		setComponentPopupMenu(popup);
 		setBorder(activeBorder);
 		setAlignmentX(LEFT_ALIGNMENT);
 	}
 
+	protected abstract void setFilter();
 	protected abstract void addComponents();
 	
 	protected void setFilter(BiFilter<T,U> filter)
@@ -46,14 +47,38 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		notifyListeners(new BiFilterEvent<>(this, filter, BiFilterEvent.RESET_FILTER));
 	}
 	
-	
 	protected void passFilterEvent(BiFilterEvent<T, U> e)
 	{
 		notifyListeners(e);
 	}	
-
-
 	
+
+	private void notifyListeners(BiFilterEvent<T,U> e)
+	{
+		List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
+		for(BiFilterListener<T, U> listener : listeners)
+			copy.add(listener);
+		for(BiFilterListener<T, U> listener : copy)
+			listener.filter(e);		
+		
+// 		//In order to avoid ConcurrentModificationException we do not use		
+//		for(BiFilterListener<T,U> listener : listeners)
+//			listener.filter(e);
+	}	
+	
+	/*
+	 * BiFilter Methods
+	 */
+	@Override
+	public boolean check(T t, U u)
+	{
+		return !isActive || filter.check(t, u);
+	}
+	
+	/*
+	 * BiFilterPanel Methods
+	 */
+
 	@Override
 	public void setActive(boolean active)
 	{
@@ -75,33 +100,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	{
 		return isActive;
 	}
-
-	private void notifyListeners(BiFilterEvent<T,U> e)
-	{
-		List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
-		for(BiFilterListener<T, U> listener : listeners)
-			copy.add(listener);
-		for(BiFilterListener<T, U> listener : copy)
-			listener.filter(e);		
-		
-		// In order to avoid ConcurrentModificationException we do not use		
-//		for(BiFilterListener<T,U> listener : listeners)
-//			listener.filter(e);
-	}	
-	
-	/*
-	 * BiFilter Methods
-	 */
-	@Override
-	public boolean check(T t, U u)
-	{
-		return !isActive || filter.check(t, u);
-	}
-	
-	/*
-	 * FilterPanel Methods
-	 */
-
 	@Override
 	public JPanel getPanel()
 	{
@@ -119,7 +117,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	@Override
 	public void addFilterListener(BiFilterListener<T,U> listener)
 	{
-//		System.out.println(this + " telling "+ listener);
 		listeners.add(listener);
 	}
 
@@ -153,7 +150,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	@Override
 	public void replaceMe(BiFilterPanel<T, U> newPanel)
 	{
-//		System.out.println( "Replacing " + this + " by " + newPanel);
 		notifyListeners(new BiFilterEvent<>(this, newPanel, BiFilterEvent.RESET_PANEL));
 	}
 }
