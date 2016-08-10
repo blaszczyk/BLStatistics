@@ -25,7 +25,6 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	private List<FilterListener<T>> listeners = new ArrayList<>();
 
 	private JPopupMenu popup;
-	private JLabel popupHeader = new JLabel("Filter");
 	
 	private boolean active = true;
 	
@@ -35,12 +34,8 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	public AbstractFilterPanel()
 	{
 		popup = new JPopupMenu();
-		popup.add(popupHeader);
-		popup.addSeparator();
 		setComponentPopupMenu(popup);
-		
 		setActive(true);
-		addFilterListener(e -> popupHeader.setText(this.toString()));
 	}
 
 
@@ -125,6 +120,18 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	public void addPopupMenuItem(JMenuItem item)
 	{
 		popup.add(item);
+	}
+
+	@Override
+	public void addPopupMenuLabel(JLabel item)
+	{
+		popup.add(item);
+	}
+
+	@Override
+	public void addPopupMenuSeparator()
+	{
+		popup.addSeparator();
 	}
 	
 }

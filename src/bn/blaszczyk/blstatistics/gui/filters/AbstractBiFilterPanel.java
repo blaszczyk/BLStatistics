@@ -36,8 +36,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		setComponentPopupMenu(popup);
 		setBorder(activeBorder);
 		setAlignmentX(LEFT_ALIGNMENT);
-//		setActive(true);
-//		addFilterListener(e -> title.setText(this.toString()));
 	}
 
 	protected abstract void addComponents();
@@ -138,7 +136,20 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	{
 		popup.add(item);
 	}
+	
+	@Override
+	public void addPopupMenuLabel(JLabel item)
+	{
+		popup.add(item);
+	}
 
+	@Override
+	public void addPopupMenuSeparator()
+	{
+		popup.addSeparator();
+	}
+
+	
 	@Override
 	public void replaceMe(BiFilterPanel<T, U> newPanel)
 	{

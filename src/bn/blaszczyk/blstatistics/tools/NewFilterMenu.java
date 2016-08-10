@@ -2,6 +2,7 @@ package bn.blaszczyk.blstatistics.tools;
 
 import java.util.Arrays;
 
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
@@ -21,6 +22,11 @@ public class NewFilterMenu
 	
 	public static void populatePopupMenu(BiFilterPanel<Season, Game> panel)
 	{
+		JLabel header = new JLabel("Filter");
+		panel.addPopupMenuLabel(header);
+		panel.addPopupMenuSeparator();
+		panel.addFilterListener(e -> header.setText(panel.toString()));
+		
 		if(panel instanceof NoFilterPanel)
 		{
 			NoFilterPanel<Season, Game> nfPanel = (NoFilterPanel<Season, Game>) panel;

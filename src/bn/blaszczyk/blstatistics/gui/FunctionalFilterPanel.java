@@ -5,11 +5,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import bn.blaszczyk.blstatistics.core.*;
+import bn.blaszczyk.blstatistics.filters.BiFilter;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterEvent;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterListener;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterPanel;
@@ -18,7 +18,7 @@ import bn.blaszczyk.blstatistics.tools.FilterLog;
 import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
 
 @SuppressWarnings("serial")
-public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Season,Game>, BiFilterPanel<Season,Game>
+public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Season,Game>, BiFilter<Season,Game>
 {
 	
 	public static final String LAST_FILTER = "last";
@@ -85,10 +85,9 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		System.out.println("Listening to " + panel);
 		panel.addFilterListener(this);
 		panel.getPanel().setPreferredSize(new Dimension(300,1000));
-//		NewFilterMenu.populatePopupMenu(panel);
 		paint();
 		if(listener != null)
-			listener.filter(new BiFilterEvent<Season,Game>(this,panel,BiFilterEvent.RESET_FILTER));
+			listener.filter(new BiFilterEvent<Season,Game>(panel,panel,BiFilterEvent.RESET_FILTER));
 	}
 	
 	@Override
@@ -112,7 +111,6 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		return filterPanel.check(s, g);
 	}
 	
-	@Override
 	public void paint()
 	{
 		filterPanel.paint();
@@ -122,44 +120,15 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		revalidate();
 	}
 	
-	@Override
-	public JPanel getPanel()
-	{
-		return this;
-	}
-	
-	@Override
 	public void addFilterListener(BiFilterListener<Season, Game> listener)
 	{
 		this.listener = listener;
 	}
 	
-	@Override
 	public void removeFilterListener(BiFilterListener<Season, Game> listener)
 	{
 		if(this.listener == listener)
 			this.listener = null;
-	}
-	
-	@Override
-	public void addPopupMenuItem(JMenuItem item)
-	{
-	}
-
-	@Override
-	public void replaceMe(BiFilterPanel<Season, Game> panel)
-	{
-	}
-
-	@Override
-	public void setActive(boolean active)
-	{
-	}
-
-	@Override
-	public boolean isActive()
-	{
-		return true;
 	}
 	
 	@Override

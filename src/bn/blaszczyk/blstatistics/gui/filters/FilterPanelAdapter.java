@@ -1,6 +1,10 @@
 package bn.blaszczyk.blstatistics.gui.filters;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
@@ -17,10 +21,10 @@ public class FilterPanelAdapter {
 		return new SecondArgAdapter<T,U>(panel);
 	}
 
-	@SuppressWarnings("serial")
-	public static class FirstArgAdapter<T, U> extends AbstractBiFilterPanel<T, U>
+	public static class FirstArgAdapter<T, U> implements BiFilterPanel<T, U>
 	{
 		private FilterPanel<T> innerPanel;
+		private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
 		
 		public FirstArgAdapter(FilterPanel<T> panel)
 		{
@@ -59,14 +63,16 @@ public class FilterPanelAdapter {
 		@Override
 		public void addFilterListener(BiFilterListener<T, U> listener)
 		{
-			super.addFilterListener(listener);
+			listeners.add(listener);
 			innerPanel.addFilterListener( FilterListenerAdapter.getFirstArgAdapter(listener));
 		}
 
 		@Override
 		public void removeFilterListener(BiFilterListener<T, U> listener)
 		{
-			super.addFilterListener(listener);
+			int i = listeners.indexOf(listener);
+			if( i >= 0 )
+				listeners.remove(i);
 			innerPanel.removeFilterListener( FilterListenerAdapter.getFirstArgAdapter(listener));
 		}
 
@@ -89,10 +95,6 @@ public class FilterPanelAdapter {
 			return innerPanel.isActive();
 		}
 
-		@Override
-		protected void addComponents()
-		{
-		}
 
 		@Override
 		public boolean equals(Object obj)
@@ -104,13 +106,36 @@ public class FilterPanelAdapter {
 			FirstArgAdapter<?,?> that = (FirstArgAdapter<?,?>) obj;
 			return innerPanel.equals(that.innerPanel);
 		}
+
+		@Override
+		public void addPopupMenuLabel(JLabel item)
+		{
+			innerPanel.addPopupMenuLabel(item);
+		}
+
+		@Override
+		public void addPopupMenuSeparator()
+		{
+			innerPanel.addPopupMenuSeparator();
+		}
+
+		@Override
+		public void replaceMe(BiFilterPanel<T, U> panel)
+		{
+			BiFilterEvent<T, U> e = new BiFilterEvent<>(this, panel, BiFilterEvent.RESET_PANEL);
+			List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
+			for(BiFilterListener<T, U> listener : listeners)
+				copy.add(listener);
+			for(BiFilterListener<T, U> listener : copy)
+				listener.filter(e);		
+		}
 	}
 	
 	
-	@SuppressWarnings("serial")
-	public static class SecondArgAdapter<T, U> extends AbstractBiFilterPanel<T, U>
+	public static class SecondArgAdapter<T, U> implements BiFilterPanel<T, U>
 	{
 		private FilterPanel<U> innerPanel;
+		private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
 		
 		public SecondArgAdapter(FilterPanel<U> panel)
 		{
@@ -149,14 +174,16 @@ public class FilterPanelAdapter {
 		@Override
 		public void addFilterListener(BiFilterListener<T, U> listener)
 		{
-			super.addFilterListener(listener);
+			listeners.add(listener);
 			innerPanel.addFilterListener( FilterListenerAdapter.getSecondArgAdapter(listener));
 		}
 
 		@Override
 		public void removeFilterListener(BiFilterListener<T, U> listener)
 		{
-			super.addFilterListener(listener);
+			int i = listeners.indexOf(listener);
+			if( i >= 0 )
+				listeners.remove(i);
 			innerPanel.removeFilterListener( FilterListenerAdapter.getSecondArgAdapter(listener));
 		}
 
@@ -180,11 +207,6 @@ public class FilterPanelAdapter {
 		}
 
 		@Override
-		protected void addComponents()
-		{
-		}
-
-		@Override
 		public boolean equals(Object obj)
 		{
 			if (this == obj)
@@ -193,6 +215,30 @@ public class FilterPanelAdapter {
 				return false;
 			FirstArgAdapter<?,?> that = (FirstArgAdapter<?,?>) obj;
 			return innerPanel.equals(that.innerPanel);
+		}
+		
+
+		@Override
+		public void addPopupMenuLabel(JLabel item)
+		{
+			innerPanel.addPopupMenuLabel(item);
+		}
+
+		@Override
+		public void addPopupMenuSeparator()
+		{
+			innerPanel.addPopupMenuSeparator();
+		}
+
+		@Override
+		public void replaceMe(BiFilterPanel<T, U> panel)
+		{
+			BiFilterEvent<T, U> e = new BiFilterEvent<>(this, panel, BiFilterEvent.RESET_PANEL);
+			List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
+			for(BiFilterListener<T, U> listener : listeners)
+				copy.add(listener);
+			for(BiFilterListener<T, U> listener : copy)
+				listener.filter(e);		
 		}
 	}
 }
