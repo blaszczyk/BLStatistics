@@ -26,9 +26,9 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	
 	private JLabel label = new JLabel("Direkter Vergleich");
 	private List<JComboBox<String>> teamBoxes = new ArrayList<>();
-	private JButton btnNewTeam = new JButton("Neues Team");
+	private JButton btnNewTeam = new JButton("Team Hinzufügen");
 
-	private JMenu popupRemoveTeam = new JMenu("Entferne Team");
+	private JMenu popupRemoveTeam = new JMenu("Team Entfernen");
 	
 	public SubLeagueFilterPanel()
 	{

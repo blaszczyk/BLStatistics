@@ -4,8 +4,6 @@ package bn.blaszczyk.blstatistics.gui.filters;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 
@@ -80,12 +78,6 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 			innerPanel.removeFilterListener( FilterListenerAdapter.getFirstArgAdapter(listener));
 		}
 
-		@Override
-		public void addPopupMenuItem(JMenuItem item)
-		{
-			innerPanel.addPopupMenuItem(item);
-		}
-
 
 		@Override
 		public void setActive(boolean active)
@@ -97,18 +89,6 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		public boolean isActive()
 		{
 			return innerPanel.isActive();
-		}
-
-		@Override
-		public void addPopupMenuLabel(JLabel item)
-		{
-			innerPanel.addPopupMenuLabel(item);
-		}
-
-		@Override
-		public void addPopupMenuSeparator()
-		{
-			innerPanel.addPopupMenuSeparator();
 		}
 
 		@Override
@@ -192,13 +172,6 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		}
 
 		@Override
-		public void addPopupMenuItem(JMenuItem item)
-		{
-			innerPanel.addPopupMenuItem(item);
-		}
-
-
-		@Override
 		public void setActive(boolean active)
 		{
 			innerPanel.setActive(active);
@@ -219,19 +192,6 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 				return false;
 			SecondArgAdapter<?,?> that = (SecondArgAdapter<?,?>) obj;
 			return innerPanel.equals(that.innerPanel);
-		}
-		
-
-		@Override
-		public void addPopupMenuLabel(JLabel item)
-		{
-			innerPanel.addPopupMenuLabel(item);
-		}
-
-		@Override
-		public void addPopupMenuSeparator()
-		{
-			innerPanel.addPopupMenuSeparator();
 		}
 
 		@Override

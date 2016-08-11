@@ -22,7 +22,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	private boolean isActive = true;
 	private final boolean varComponents;
 	private boolean isPainted = false;
-	private JPopupMenu popup;
 	
 	private BiFilter<T,U> filter = LogicalBiFilter.getTRUEBiFilter();
 	private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
@@ -30,8 +29,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	public AbstractBiFilterPanel(boolean varComponents)
 	{
 		this.varComponents = varComponents;
-		popup = new JPopupMenu();
-		setComponentPopupMenu(popup);
 		setBorder(AbstractFilterPanel.ACTIVE_BORDER);
 		setAlignmentX(LEFT_ALIGNMENT);
 	}
@@ -128,24 +125,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		int i = listeners.indexOf(listener);
 		if( i >= 0 )
 			listeners.remove(i);
-	}
-
-	@Override
-	public void addPopupMenuItem(JMenuItem item)
-	{
-		popup.add(item);
-	}
-	
-	@Override
-	public void addPopupMenuLabel(JLabel item)
-	{
-		popup.add(item);
-	}
-
-	@Override
-	public void addPopupMenuSeparator()
-	{
-		popup.addSeparator();
 	}
 
 	

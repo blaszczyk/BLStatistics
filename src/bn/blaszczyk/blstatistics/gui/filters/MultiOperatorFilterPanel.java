@@ -26,7 +26,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	private List<BiFilterPanel<T,U>> panels;
 	private JComboBox<String> operatorBox;
 	
-	private JMenu miRemoveFilter = new JMenu("Entferne Filter");
+	private JMenu miRemoveFilter = new JMenu("Filter Entfernen");
 
 	public MultiOperatorFilterPanel(List<BiFilterPanel<T, U>> panels, String operator) 
 	{

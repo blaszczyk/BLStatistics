@@ -15,7 +15,7 @@ import bn.blaszczyk.blstatistics.gui.filters.BiFilterListener;
 import bn.blaszczyk.blstatistics.gui.filters.BiFilterPanel;
 import bn.blaszczyk.blstatistics.tools.FilterIO;
 import bn.blaszczyk.blstatistics.tools.FilterLog;
-import bn.blaszczyk.blstatistics.tools.NewFilterMenu;
+import bn.blaszczyk.blstatistics.tools.FilterMenuFactory;
 
 @SuppressWarnings("serial")
 public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Season,Game>, BiFilter<Season,Game>
@@ -39,8 +39,8 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
 		filterLog = new FilterLog( 10, e -> setFilterPanel(filterLog.getFilterPanel()) );
-		filterPanel = NewFilterMenu.createNoFilterPanel();
-		NewFilterMenu.populatePopupMenu(filterPanel);
+		filterPanel = FilterMenuFactory.createNoFilterPanel();
+		FilterMenuFactory.createPopupMenu(filterPanel);
 
 		setFilterPanel(FilterIO.loadFilter(LAST_FILTER));
 		filterLog.pushFilter(filterPanel, filterPanel);	
@@ -48,7 +48,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 
 	public void newFilter()
 	{
-		setFilterPanel(NewFilterMenu.createNoFilterPanel());
+		setFilterPanel(FilterMenuFactory.createNoFilterPanel());
 		filterLog.pushFilter(filterPanel, filterPanel);	
 	}
 
@@ -119,15 +119,9 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		revalidate();
 	}
 	
-	public void addFilterListener(BiFilterListener<Season, Game> listener)
+	public void setFilterListener(BiFilterListener<Season, Game> listener)
 	{
 		this.listener = listener;
-	}
-	
-	public void removeFilterListener(BiFilterListener<Season, Game> listener)
-	{
-		if(this.listener == listener)
-			this.listener = null;
 	}
 	
 	@Override

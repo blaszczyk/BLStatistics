@@ -117,6 +117,11 @@ public class FilterParser
 				TeamFilterPanel tFilter = (TeamFilterPanel) gFilter;
 				innerBuilder.append(String.format("%s;%s;%s;%s", TeamFilterPanel.NAME,  tFilter.getTeam(), tFilter.getHome(), tFilter.getAway()));
 			}
+			else if (gFilter instanceof TeamSearchFilterPanel)
+			{
+				TeamSearchFilterPanel tFilter = (TeamSearchFilterPanel) gFilter;
+				innerBuilder.append(String.format("%s;%s;%s", TeamSearchFilterPanel.NAME,  tFilter.getTeam(), tFilter.isStrict()));
+			}
 			else if (gFilter instanceof SubLeagueFilterPanel)
 			{
 				SubLeagueFilterPanel slFilter = (SubLeagueFilterPanel) gFilter;
@@ -204,6 +209,9 @@ public class FilterParser
 		case TeamFilterPanel.NAME:
 			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(split[2], Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4])) );
 			break;
+		case TeamSearchFilterPanel.NAME:
+			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamSearchFilterPanel(split[2], Boolean.parseBoolean(split[3])) );
+			break;
 		case SubLeagueFilterPanel.NAME:
 			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(Arrays.asList(split).subList(2, split.length)) );
 			break;
@@ -223,7 +231,7 @@ public class FilterParser
 		default:
 			System.out.println("Unbekannter Filter:" + in);
 		}
-		NewFilterMenu.populatePopupMenu(panel);
+		FilterMenuFactory.createPopupMenu(panel);
 		filters.put(split[0], panel);
 		panel.getPanel().setAlignmentX(Component.LEFT_ALIGNMENT);
 		return panel;

@@ -23,6 +23,7 @@ import bn.blaszczyk.blstatistics.BLStatistics;
 import bn.blaszczyk.blstatistics.core.*;
 import bn.blaszczyk.blstatistics.gui.corefilters.SingleLeagueFilterPanel;
 import bn.blaszczyk.blstatistics.gui.corefilters.TeamFilterPanel;
+import bn.blaszczyk.blstatistics.gui.corefilters.TeamSearchFilterPanel;
 import bn.blaszczyk.blstatistics.gui.filters.*;
 
 @SuppressWarnings("serial")
@@ -90,7 +91,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	private void initComponents()
 	{
 		functionalFilterPanel = new FunctionalFilterPanel();
-		functionalFilterPanel.addFilterListener(this);
+		functionalFilterPanel.setFilterListener(this);
 
 		functionalResultTable.addListSelectionListener( e -> {
 			if(!e.getValueIsAdjusting())
@@ -125,6 +126,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		noContent = teams.size() == 0;
 		SingleLeagueFilterPanel.setLeagueList(leagueNames);
 		TeamFilterPanel.setTeamList(teams);
+		TeamSearchFilterPanel.setTeamList(teams);
 	}
 	
 	private void initIcon()

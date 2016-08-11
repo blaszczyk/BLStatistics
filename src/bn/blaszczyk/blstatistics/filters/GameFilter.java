@@ -102,6 +102,26 @@ public abstract class GameFilter implements Filter<Game>
 		Filter<Game> f = g -> g.getTeam2().equals(team);
 		return f;
 	}
+	/*
+	 * Basic Team Filters
+	 */
+	public static Filter<Game> getTeamContainsFilter(String team) 
+	{
+		Filter<Game> f = g -> g.getTeam1().toLowerCase().contains(team.toLowerCase()) || g.getTeam2().toLowerCase().contains(team.toLowerCase());
+		return f;
+	}
+	
+	public static Filter<Game> getTeamHomeContainsFilter(String team) 
+	{
+		Filter<Game> f = g -> g.getTeam1().toLowerCase().contains(team.toLowerCase());
+		return f;
+	}
+	
+	public static Filter<Game> getTeamAwayContainsFilter(String team) 
+	{
+		Filter<Game> f = g -> g.getTeam2().toLowerCase().contains(team.toLowerCase());
+		return f;
+	}
 	
 	/*
 	 * SubLeague Filters
