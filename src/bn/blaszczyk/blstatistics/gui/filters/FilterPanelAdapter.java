@@ -9,8 +9,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 
-public class FilterPanelAdapter {
+public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
+{
 
+	public abstract FilterPanel<?> getInnerPanel();
+	
 	public static <T,U> BiFilterPanel<T, U> getFirstArgAdapter(FilterPanel<T> panel)
 	{
 		return new FirstArgAdapter<T,U>(panel);
@@ -21,7 +24,7 @@ public class FilterPanelAdapter {
 		return new SecondArgAdapter<T,U>(panel);
 	}
 
-	public static class FirstArgAdapter<T, U> implements BiFilterPanel<T, U>
+	public static class FirstArgAdapter<T, U> extends FilterPanelAdapter<T, U>
 	{
 		private FilterPanel<T> innerPanel;
 		private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
@@ -31,6 +34,7 @@ public class FilterPanelAdapter {
 			this.innerPanel = panel;
 		}
 
+		@Override
 		public FilterPanel<T> getInnerPanel()
 		{
 			return innerPanel;
@@ -95,18 +99,6 @@ public class FilterPanelAdapter {
 			return innerPanel.isActive();
 		}
 
-
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-				return true;
-			if (!(obj instanceof FirstArgAdapter))
-				return false;
-			FirstArgAdapter<?,?> that = (FirstArgAdapter<?,?>) obj;
-			return innerPanel.equals(that.innerPanel);
-		}
-
 		@Override
 		public void addPopupMenuLabel(JLabel item)
 		{
@@ -129,10 +121,21 @@ public class FilterPanelAdapter {
 			for(BiFilterListener<T, U> listener : copy)
 				listener.filter(e);		
 		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+				return true;
+			if (!(obj instanceof FirstArgAdapter))
+				return false;
+			FirstArgAdapter<?,?> that = (FirstArgAdapter<?,?>) obj;
+			return innerPanel.equals(that.innerPanel);
+		}
 	}
 	
 	
-	public static class SecondArgAdapter<T, U> implements BiFilterPanel<T, U>
+	public static class SecondArgAdapter<T, U> extends FilterPanelAdapter<T, U>
 	{
 		private FilterPanel<U> innerPanel;
 		private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
@@ -142,6 +145,7 @@ public class FilterPanelAdapter {
 			this.innerPanel = panel;
 		}
 
+		@Override
 		public FilterPanel<U> getInnerPanel()
 		{
 			return innerPanel;
@@ -211,9 +215,9 @@ public class FilterPanelAdapter {
 		{
 			if (this == obj)
 				return true;
-			if (!(obj instanceof FirstArgAdapter))
+			if (!(obj instanceof SecondArgAdapter))
 				return false;
-			FirstArgAdapter<?,?> that = (FirstArgAdapter<?,?>) obj;
+			SecondArgAdapter<?,?> that = (SecondArgAdapter<?,?>) obj;
 			return innerPanel.equals(that.innerPanel);
 		}
 		

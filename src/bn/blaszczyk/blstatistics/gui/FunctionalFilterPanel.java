@@ -92,7 +92,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	@Override
 	public void filter(BiFilterEvent<Season, Game> e)
 	{
-		if(e.getType() == BiFilterEvent.RESET_PANEL && e.getSource().equals(filterPanel))
+		if(e.getType() == BiFilterEvent.RESET_PANEL && filterPanel.equals(e.getSource()))
 			setFilterPanel(e.getPanel());
 		else
 			filterPanel.paint();

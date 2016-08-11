@@ -14,6 +14,7 @@ public class NoFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>
 	
 	public NoFilterPanel()
 	{
+		super(false);
 		setFilter(LogicalBiFilter.getTRUEBiFilter());
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 	}

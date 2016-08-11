@@ -11,7 +11,7 @@ import javax.swing.JMenuItem;
 
 
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
-import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
+import bn.blaszczyk.blstatistics.gui.tools.MyComboBox;
 
 @SuppressWarnings("serial")
 public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> implements Iterable<BiFilterPanel<T,U>> {
@@ -33,9 +33,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 		this.panels = panels;
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 	
-		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(OPERATORS);
-		cbf.setBoxWidth(80);
-		operatorBox = cbf.createComboBox();
+		operatorBox = new MyComboBox<>(OPERATORS,80,false);
 		operatorBox.setAlignmentX(LEFT_ALIGNMENT);
 		operatorBox.addActionListener(setFilterListener);
 		operatorBox.setSelectedItem(operator);
@@ -52,7 +50,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	public void addPanel(BiFilterPanel<T,U> panel)
 	{
 		panels.add(replaceFilterPanel(panel, null) );
-		notifyReplacement(panel, panel);
+		notifyReplacement(panel, null);
 		setFilter();
 	}
 	
@@ -75,7 +73,7 @@ public class MultiOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U> im
 	{
 		if(panel != null)
 			panel.removeFilterListener(this);
-		notifyReplacement(panel, panel);
+		notifyReplacement(null, panel);
 		panels.remove(panel);
 		setFilter();
 	}

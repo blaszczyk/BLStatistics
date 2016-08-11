@@ -81,7 +81,7 @@ public class FilterLog
 			return;
 		}
 		chopLog(selectedFilterIndex+1);
-		if(source == lastSource)
+		if(source.equals(lastSource))
 			chopLog(selectedFilterIndex);
 		if(filterLog.size() > maxLog)
 		{

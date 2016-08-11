@@ -64,7 +64,7 @@ public class UnaryOperatorFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	public void filter(BiFilterEvent<T,U> e)
 	{
 		passFilterEvent(e);
-		if(e.getType() == BiFilterEvent.RESET_PANEL && e.getSource().equals(innerPanel))
+		if(e.getType() == BiFilterEvent.RESET_PANEL && innerPanel.equals(e.getSource()))
 			//The method AbstractBiFilterPanel.negate() causes a Panel x to request NOT(x) to replace x by NOT(x), thus we need:
 			if(!e.getPanel().equals(this))
 				setInnerPanel(e.getPanel());

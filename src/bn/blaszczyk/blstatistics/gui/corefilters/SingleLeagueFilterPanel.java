@@ -13,7 +13,7 @@ import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 import bn.blaszczyk.blstatistics.filters.SeasonFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
+import bn.blaszczyk.blstatistics.gui.tools.MyComboBox;
 
 @SuppressWarnings("serial")
 public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
@@ -32,10 +32,10 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 
 	public SingleLeagueFilterPanel(String league, boolean isRecursive)
 	{
+		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(LEAGUE_LIST);
-		cboLeagues = cbf.createComboBox();
+		cboLeagues = new MyComboBox<>(LEAGUE_LIST,250,false);
 		cboLeagues.addActionListener(setFilterListener);
 
 		boxRecursive.setMinimumSize(new Dimension(60, 30));

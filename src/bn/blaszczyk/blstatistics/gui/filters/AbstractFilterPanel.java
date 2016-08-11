@@ -5,12 +5,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 import bn.blaszczyk.blstatistics.filters.Filter;
@@ -19,8 +15,8 @@ import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 @SuppressWarnings("serial")
 public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPanel<T>
 {
-	private static final Border ACTIVE_BORDER = BorderFactory.createLoweredBevelBorder();
-	private static final Border INACTIVE_BORDER = BorderFactory.createRaisedBevelBorder();
+	public static final Border ACTIVE_BORDER = new BevelBorder(BevelBorder.LOWERED);
+	public static final Border INACTIVE_BORDER = new BevelBorder(BevelBorder.RAISED);
 	
 	private Filter<T> filter = LogicalFilter.getTRUEFilter();
 	private List<FilterListener<T>> listeners = new ArrayList<>();
@@ -34,12 +30,15 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	};
 	
 	private boolean active = true;
+	private final boolean varComponents;
+	private boolean isPainted = false;
 	
 	/*
 	 * Constructors
 	 */
-	public AbstractFilterPanel()
+	public AbstractFilterPanel(boolean varComponents)
 	{
+		this.varComponents = varComponents;
 		popup = new JPopupMenu();
 		setComponentPopupMenu(popup);
 		setActive(true);
@@ -106,10 +105,15 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	@Override
 	public void paint()
 	{
-		removeAll();
-		addComponents();
-		revalidate();
+		if(varComponents || !isPainted)
+		{
+			removeAll();
+			addComponents();
+			revalidate();
+		}
+		isPainted = true;
 	}
+	
 	@Override
 	public void addFilterListener(FilterListener<T> listener)
 	{

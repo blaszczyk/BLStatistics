@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import bn.blaszczyk.blstatistics.filters.BiFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
@@ -13,9 +12,6 @@ import bn.blaszczyk.blstatistics.filters.LogicalBiFilter;
 @SuppressWarnings("serial")
 public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFilterPanel<T,U>
 {
-	private static final Border activeBorder = BorderFactory.createLoweredBevelBorder();
-	private static final Border deactiveBorder = BorderFactory.createRaisedBevelBorder();
-	
 	protected ActionListener setFilterListener = e ->
 	{
 		setFilter();
@@ -24,17 +20,19 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	};
 	
 	private boolean isActive = true;
-	
+	private final boolean varComponents;
+	private boolean isPainted = false;
 	private JPopupMenu popup;
 	
 	private BiFilter<T,U> filter = LogicalBiFilter.getTRUEBiFilter();
 	private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
 	
-	public AbstractBiFilterPanel()
+	public AbstractBiFilterPanel(boolean varComponents)
 	{
+		this.varComponents = varComponents;
 		popup = new JPopupMenu();
 		setComponentPopupMenu(popup);
-		setBorder(activeBorder);
+		setBorder(AbstractFilterPanel.ACTIVE_BORDER);
 		setAlignmentX(LEFT_ALIGNMENT);
 	}
 
@@ -84,12 +82,12 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	{
 		if(active)
 		{
-			setBorder(activeBorder);
+			setBorder(AbstractFilterPanel.ACTIVE_BORDER);
 			this.isActive = true;
 		}
 		else
 		{
-			setBorder(deactiveBorder);
+			setBorder(AbstractFilterPanel.INACTIVE_BORDER);
 			this.isActive = false;
 		}
 		notifyListeners(new BiFilterEvent<T, U>(this,this,BiFilterEvent.RESET_FILTER));
@@ -109,9 +107,13 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	@Override
 	public void paint()
 	{
-		removeAll();
-		addComponents();
-		revalidate();
+		if(varComponents || !isPainted)
+		{
+			removeAll();
+			addComponents();
+			revalidate();
+		}
+		isPainted = true;
 	}
 	
 	@Override

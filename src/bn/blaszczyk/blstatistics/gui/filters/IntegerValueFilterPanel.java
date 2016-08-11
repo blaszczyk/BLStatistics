@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import bn.blaszczyk.blstatistics.filters.Filter;
-import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
+import bn.blaszczyk.blstatistics.gui.tools.MyComboBox;
 
 @SuppressWarnings("serial")
 public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> implements MouseWheelListener, KeyListener
@@ -34,16 +34,13 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 
 	private IntegerValueFilterPanel(String labelText, int defaultValue)
 	{
+		super(false);
 		this.defaultValue = defaultValue;
 		
 		label = new JLabel(labelText);
 		
-		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(OPERATORS);
-		cbf.setBoxWidth(50);
-		operatorBox = cbf.createComboBox();
-		operatorBox.addActionListener(e -> {
-			setFilter();
-		});
+		operatorBox = new MyComboBox<>(OPERATORS,50,false);
+		operatorBox.addActionListener(setFilterListener);
 		
 		valueField = new JTextField(Integer.toString(defaultValue));
 		valueField.setMaximumSize(new Dimension(70,30));
@@ -54,6 +51,8 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		setFilter();
 	}
+
+	protected abstract Filter<T> getFilter();
 	
 	protected IntegerValueFilterPanel(String labelText, String operator, int defaultValue)
 	{
@@ -89,12 +88,36 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		return result;
 	}
 	
+	public void invertOperator()
+	{
+		switch(getSelectedOperator())
+		{
+		case EQ:
+			operatorBox.setSelectedItem(NEQ);
+			break;
+		case NEQ:
+			operatorBox.setSelectedItem(EQ);
+			break;
+		case LEQ:
+			operatorBox.setSelectedItem(GG);
+			break;
+		case GG:
+			operatorBox.setSelectedItem(LEQ);
+			break;
+		case GEQ:
+			operatorBox.setSelectedItem(LL);
+			break;
+		case LL:
+			operatorBox.setSelectedItem(GEQ);
+			break;
+		}
+	}
+	
 	public String getLabel()
 	{
 		return label.getText();
 	}
 	
-	protected abstract Filter<T> getFilter();
 	
 	protected void setFilter()
 	{

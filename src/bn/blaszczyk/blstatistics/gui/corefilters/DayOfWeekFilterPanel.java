@@ -6,7 +6,7 @@ import javax.swing.JComboBox;
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
+import bn.blaszczyk.blstatistics.gui.tools.MyComboBox;
 
 @SuppressWarnings("serial")
 public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game> 
@@ -20,9 +20,9 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 	
 	public DayOfWeekFilterPanel()
 	{
+		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(DAYS_OF_WEEK);
-		dowBox = cbf.createComboBox();
+		dowBox = new MyComboBox<>(DAYS_OF_WEEK,250,false);
 		dowBox.addActionListener(setFilterListener);
 		setFilter();
 	}

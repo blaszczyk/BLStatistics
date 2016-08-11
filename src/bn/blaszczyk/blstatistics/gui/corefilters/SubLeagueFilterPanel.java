@@ -15,7 +15,7 @@ import javax.swing.JMenuItem;
 import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
+import bn.blaszczyk.blstatistics.gui.tools.MyComboBox;
 
 @SuppressWarnings("serial")
 public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
@@ -23,7 +23,6 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	public static final String NAME = "DirekterVergleich";
 	
 	private static final String[] EMPTY_TWO_ARRAY = {"",""};
-	private ComboBoxFactory<String> cbf;
 	
 	private JLabel label = new JLabel("Direkter Vergleich");
 	private List<JComboBox<String>> teamBoxes = new ArrayList<>();
@@ -38,9 +37,9 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 
 	public SubLeagueFilterPanel(Iterable<String> selectedTeams)
 	{
+		super(true);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		cbf = new ComboBoxFactory<>(TeamFilterPanel.getTeamList());
 		label.setAlignmentX(LEFT_ALIGNMENT);
 		
 		btnNewTeam.setMaximumSize(new Dimension(250,30));
@@ -76,7 +75,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	
 	private JComboBox<String> addTeamBox()
 	{
-		JComboBox<String> box = cbf.createComboBox();
+		JComboBox<String> box =  new MyComboBox<>(TeamFilterPanel.getTeamList(),250,false);
 		box.addActionListener(setFilterListener);
 		box.setAlignmentX(LEFT_ALIGNMENT);
 		teamBoxes.add(box);

@@ -13,7 +13,7 @@ import bn.blaszczyk.blstatistics.filters.Filter;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
+import bn.blaszczyk.blstatistics.gui.tools.MyComboBox;
 
 @SuppressWarnings({"serial"})
 public class TeamFilterPanel extends AbstractFilterPanel<Game>
@@ -32,10 +32,10 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	
 	public TeamFilterPanel(String team, boolean home, boolean away)
 	{
+		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		ComboBoxFactory<String> cbf = new ComboBoxFactory<>(TEAM_LIST);
-		teamBox = cbf.createComboBox();
+		teamBox = new MyComboBox<>(TEAM_LIST,250,false);
 		teamBox.addActionListener(setFilterListener);
 		
 		homeBox = new JCheckBox("H",true);

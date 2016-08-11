@@ -96,7 +96,7 @@ public class IfThenElseFilterPanel<T,U> extends LogicalBiFilterPanel<T, U>
 	public void filter(BiFilterEvent<T, U> e)
 	{
 		passFilterEvent(e);
-		if(e.getType() == BiFilterEvent.RESET_PANEL)
+		if(e.getType() == BiFilterEvent.RESET_PANEL && e.getSource() != null)
 		{
 			if(e.getSource().equals(ifFilter))
 				setIfFilter(e.getPanel());

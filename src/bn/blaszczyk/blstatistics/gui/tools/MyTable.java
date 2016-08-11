@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -33,12 +34,25 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	private static final Color SELECTED_FONT_COLOR = Color.BLACK;
 
 	private static final Font HEADER_FONT = new Font("Arial",Font.BOLD,16);
+	private static final Color HEADER_COLOR = new Color(238,238,238);
 	
 	private final TableCellRenderer cellRenderer = new TableCellRenderer(){
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 				boolean hasFocus, int row, int column) {
-			
+
+			if(row < 0)
+			{
+				String headerText = "";
+				if(value != null)
+					headerText= value.toString();
+				JLabel c = new JLabel(" " + headerText + " ", columnAlignment(column));
+				c.setOpaque(true);
+				c.setFont(HEADER_FONT);
+				c.setBackground(HEADER_COLOR);
+				c.setBorder(BorderFactory.createEtchedBorder());
+				return c;
+			}
 			JLabel c = new JLabel(value.toString(), columnAlignment(column) );
 			c.setOpaque(true);
 			c.setMaximumSize(new Dimension(columnWidth(column),ODD_FONT.getSize() + 10 ));
@@ -103,6 +117,8 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	
 	protected void setCellRenderer()
 	{
+		getTableHeader().setPreferredSize(new Dimension(getWidth(), 30));
+		getTableHeader().setDefaultRenderer(cellRenderer);
 		for(int columnIndex = 0; columnIndex < getColumnCount(); columnIndex++)
 			getColumnModel().getColumn(columnIndex).setCellRenderer( cellRenderer );
 	}

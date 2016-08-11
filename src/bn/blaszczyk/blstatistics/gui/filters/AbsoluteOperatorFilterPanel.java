@@ -14,6 +14,7 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 	
 	public AbsoluteOperatorFilterPanel(boolean value) 
 	{
+		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		if(value)
 		{

@@ -12,7 +12,7 @@ import bn.blaszczyk.blstatistics.core.Game;
 import bn.blaszczyk.blstatistics.filters.GameFilter;
 import bn.blaszczyk.blstatistics.filters.LogicalFilter;
 import bn.blaszczyk.blstatistics.gui.filters.AbstractFilterPanel;
-import bn.blaszczyk.blstatistics.gui.tools.ComboBoxFactory;
+import bn.blaszczyk.blstatistics.gui.tools.MyComboBox;
 
 @SuppressWarnings({ "deprecation", "serial" })
 public class DateFilterPanel extends AbstractFilterPanel<Game>
@@ -34,19 +34,23 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 
 	private JLabel label = new JLabel(NAME);
 	
-	private JComboBox<String> operatorBox = new JComboBox<>(OPERATORS);
-	private JComboBox<Integer> dateBox;
-	private JComboBox<String> monthBox;
-	private JComboBox<Integer> yearBox;
+	private JComboBox<String> operatorBox = new MyComboBox<>(OPERATORS,50,false);
+	private MyComboBox<Integer> dateBox;
+	private MyComboBox<String> monthBox;
+	private MyComboBox<Integer> yearBox;
 	
 	private ActionListener refreshDateBox = e -> {
 		int year = TODAY.getYear() - yearBox.getSelectedIndex();
 		int month = monthBox.getSelectedIndex();
 		int date = dateBox.getSelectedIndex() + 1;
+		int nrOfDays = getNrOfDays(month, year);
 		dateBox.removeAllItems();
-		for( int i = 1; i <= getNrOfDays(month, year); i++ )
+		for( int i = 1; i <= nrOfDays; i++ )
 			dateBox.addItem(i);
-		dateBox.setSelectedIndex( date - 1);
+		if(date > nrOfDays)
+			dateBox.setSelectedIndex(nrOfDays-1);
+		else
+			dateBox.setSelectedIndex( date - 1);
 	};
 	
 	public DateFilterPanel()
@@ -56,26 +60,21 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 	
 	public DateFilterPanel(String operator, Date referenceDate)
 	{
+		super(false);
 		setLayout( new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		operatorBox.setMaximumSize(new Dimension(50,30));
-		operatorBox.setInheritsPopupMenu(true);
 		operatorBox.addActionListener(setFilterListener);
 
-		ComboBoxFactory<Integer> yearFactory = new ComboBoxFactory<>( intSequence( TODAY.getYear()+1900, 1964 ) );
-		yearFactory.setBoxWidth(80);
-		yearBox = yearFactory.createComboBox();
+		yearBox = new MyComboBox<>( intSequence( TODAY.getYear()+1900, 1964 ),80,false );
 		yearBox.addActionListener(refreshDateBox);
 		
-		ComboBoxFactory<String> monthFactory = new ComboBoxFactory<>(MONTH_NAMES);
-		monthFactory.setBoxWidth(150);
-		monthBox = monthFactory.createComboBox();
+		monthBox =  new MyComboBox<>(MONTH_NAMES,150,false);
 		monthBox.addActionListener(refreshDateBox);
+		monthBox.setCycleListener(e -> yearBox.moveSelection(e.getDirection()));
 		
-		ComboBoxFactory<Integer> dateFactory = new ComboBoxFactory<>( intSequence( 1, getNrOfDays(referenceDate.getMonth(), referenceDate.getYear()) ) );
-		dateFactory.setBoxWidth(50);
-		dateBox = dateFactory.createComboBox();
+		dateBox = new MyComboBox<>( intSequence( 1, getNrOfDays(referenceDate.getMonth(), referenceDate.getYear()) ),50,false );
 		dateBox.addActionListener(setFilterListener);
+		dateBox.setCycleListener(e -> monthBox.moveSelection(-e.getDirection()));
 		
 		setDate( referenceDate );
 		setFilter();
