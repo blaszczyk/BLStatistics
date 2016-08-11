@@ -1,6 +1,5 @@
 package bn.blaszczyk.blstatistics.gui.corefilters;
 
-import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.Date;
 
@@ -25,15 +24,14 @@ public class DateFilterPanel extends AbstractFilterPanel<Game>
 	private static final String LEQ = "<=";
 	private static final String GG = ">";
 	private static final String LL = "<";
-	
 	private static final String[] OPERATORS = {EQ,NEQ,GG,GEQ,LL,LEQ};
 	
 	private static final Date TODAY = new Date();
+	
 	private static final String[] MONTH_NAMES =
 		{"Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"};
 
 	private JLabel label = new JLabel(NAME);
-	
 	private JComboBox<String> operatorBox = new MyComboBox<>(OPERATORS,50,false);
 	private MyComboBox<Integer> dateBox;
 	private MyComboBox<String> monthBox;

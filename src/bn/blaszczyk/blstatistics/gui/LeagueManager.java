@@ -141,14 +141,18 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		        return false;
 		    }
 		};
+		List<Object[]> rows = new ArrayList<>();
 		for(League league : leagueItem)
 			for(Season season : league)
 			{
 				String isSaved = FileIO.isSeasonSaved(season)? "Ja": "Nein";
 				Object[] rowData = {season.getYear(), isSaved, season.getTeamCount(), season.getGameCount()};
-				tm.addRow(rowData);
+				rows.add(rowData);
 			}
-			seasonTable.setModel(tm);
+		rows.sort((o1,o2) -> Integer.compare((Integer)o1[0], (Integer)o2[0]) );
+		for(Object[] rowData : rows)
+			tm.addRow(rowData);
+		seasonTable.setModel(tm);
 	}
 	
 	private void selectUnloaded()
