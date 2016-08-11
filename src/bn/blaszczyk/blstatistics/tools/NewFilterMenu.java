@@ -95,9 +95,10 @@ public class NewFilterMenu
 		/*
 		 * SubLeagueFilterPanel Menu
 		 */
-		else if(panel instanceof SubLeagueFilterPanel)
+		else if(panel instanceof FilterPanelAdapter && 
+				((FilterPanelAdapter<Season,Game>)panel).getInnerPanel() instanceof SubLeagueFilterPanel)
 		{
-			SubLeagueFilterPanel slPanel = (SubLeagueFilterPanel) panel;
+			SubLeagueFilterPanel slPanel = (SubLeagueFilterPanel) ((FilterPanelAdapter<Season,Game>)panel).getInnerPanel();
 			slPanel.addPopupMenuItem( slPanel.getMiRemoveTeam() );
 			slPanel.addPopupMenuSeparator();
 		}

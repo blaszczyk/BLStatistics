@@ -29,11 +29,15 @@ public class DownloadDialog extends JDialog implements ActionListener {
 	private List<Season> seasons;
 	private int secsLeft = 10;
 	private long initTimeStamp = System.currentTimeMillis();
-	int counter = 0;
+	
+	private boolean interruptTimeThread = false;
+	private boolean interruptDownloadThread = false;
+	
+	private int counter = 0;
 	
 	private Thread timeThread = new Thread(()->{
 		int cnt = 1;
-		while(true)
+		while(!interruptTimeThread)
 		{
 			SwingUtilities.invokeLater(() -> { infoArea.append("."); } );
 			cnt--;
@@ -76,8 +80,16 @@ public class DownloadDialog extends JDialog implements ActionListener {
 			}
 			counter++;
 			secsLeft = (int)( (System.currentTimeMillis() - initTimeStamp) * (seasons.size() - counter) / counter )/1000;
+			if(interruptDownloadThread)
+			{
+				if(JOptionPane.showConfirmDialog(this, "Sollen die Downloads abgebrochen werden?", "Downloads Abbrechen", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.CANCEL_OPTION)
+					interruptDownloadThread = false;
+				else
+					break;
+			}
 		}
-		timeThread.interrupt();
+		interruptTimeThread = true;
+		interruptDownloadThread = true;
 		secsLeft = (int) (System.currentTimeMillis() - initTimeStamp)/1000;
 		SwingUtilities.invokeLater( () -> {
 			prograssBar.setValue(counter);
@@ -85,6 +97,7 @@ public class DownloadDialog extends JDialog implements ActionListener {
 			infoArea.setCaretPosition(infoArea.getDocument().getLength());
 			lblTimeLeft.setText(String.format( "Dauer: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n"));
 			btnCancel.setText("Fertig");
+			btnCancel.setEnabled(true);
 		});
 	});
 
@@ -111,7 +124,7 @@ public class DownloadDialog extends JDialog implements ActionListener {
 		setResizable(false);
 
 		infoArea.setEditable(false);
-		infoArea.setWrapStyleWord(true);
+		infoArea.setLineWrap(true);
 		infoArea.append("Starte Download");
 
 		JScrollPane infoPane = new JScrollPane(infoArea);
@@ -154,14 +167,13 @@ public class DownloadDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if( dlThread.isAlive())
-			if(JOptionPane.showConfirmDialog(this, "Sollen die Downloads abgebrochen werden?", "Downloads Abbrechen", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.CANCEL_OPTION)
-				return;
-		if(!dlThread.isInterrupted())
-			dlThread.interrupt();
-		if(!timeThread.isInterrupted())
-			timeThread.interrupt();
-		dispose();			
+		if(interruptDownloadThread)
+			dispose();
+		else
+		{
+			interruptDownloadThread = true;
+			btnCancel.setEnabled(false);
+		}
 	}
 	
 	
