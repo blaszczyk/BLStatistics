@@ -1,0 +1,58 @@
+//
+//  1. Liga
+//
+	1. Bundesliga			;	bundesliga-%4d-%4d						;	bundesliga					;	1964
+//
+//  2. Liga
+//
+	2. Bundesliga			;	2-bundesliga-%4d-%4d					;	zweiteliga					;	1982;1991;	1993;2010;	2012
+	2. Bundesliga			;	2-bundesliga-%4d-%4d_2					;	zweiteliga					;	2011;2011
+	2. Bundesliga Nord		;	2-bundesliga-%4d-%4d-nord				;	zweiteliga/nord				;	1975;1981;	1992;1992
+	2. Bundesliga Nord		;	2-bundesliga-%4d-%4d-nord-aufstieg		;	zweiteliga/nord/aufstieg	;	1992;1992
+	2. Bundesliga Nord		;	2-bundesliga-%4d-%4d-nord-abstieg		;	zweiteliga/nord/abstieg		;	1992;1992
+	2. Bundesliga Süd		;	2-bundesliga-%4d-%4d-sued				;	zweiteliga/sued				;	1975;1981;	1992;1992
+	2. Bundesliga Süd		;	2-bundesliga-%4d-%4d-sued-aufstieg		;	zweiteliga/sued/aufstieg	;	1992;1992
+	2. Bundesliga Süd		;	2-bundesliga-%4d-%4d-sued-abstieg		;	zweiteliga/sued/abstieg		;	1992;1992
+//
+//  3. Liga
+//
+	3. Bundesliga			;	3-liga-%4d-%4d							;	dritteliga					;	2009
+//
+//  Regionalliga
+//
+	Regionalliga			;											;	regionalliga
+//
+//  West
+//
+	Regionalliga West		;	regionalliga-west-63-74-%4d-%4d			;	regionalliga/west			;	1964;1969
+	Regionalliga West		;	regionalliga-west-1963-1974-%4d-%4d		;	regionalliga/west			;	1970;1974
+	Regionalliga West		;	regionalliga-west-%4d-%4d				;	regionalliga/west			;	2009;2012;	2014
+	Regionalliga West		;	regionalliga-west-%4d-%4d_2				;	regionalliga/west			;	2013;2013
+//
+//  Nord
+//
+	Regionalliga Nord		;	regionalliga-nord-1963-1974-%4d-%4d		;	regionalliga/nord			;	1964;1974
+	Regionalliga Nord		;	regionalliga-nord-%4d-%4d				;	regionalliga/nord			;	1995;2012;	2014
+	Regionalliga Nord		;	regionalliga-nord-%4d-%4d_2				;	regionalliga/nord			;	2013;2013
+//
+//  NordOst
+//
+	Regionalliga NordOst	;	regionalliga-nordost-%4d-%4d			;	regionalliga/nordost		;	1995;2000;	2013
+//
+//  SüdWest
+//
+	Regionalliga SüdWest	;	regionalliga-suedwest-1963-1974-%4d-%4d	;	regionalliga/suedwest		;	1964;1974
+	Regionalliga SüdWest	;	regionalliga-suedwest-%4d-%4d			;	regionalliga/suedwest		;	2013
+//
+//  Bayern
+//
+	Regionalliga Bayern		;	regionalliga-bayern-%4d-%4d				;	regionalliga/bayern			;	2013
+//
+//  Süd
+//
+	Regionalliga Süd		;	regionalliga-sued-1963-1974-%4d-%4d		;	regionalliga/sued			;	1964;1974
+	Regionalliga Süd		;	regionalliga-sued-%4d-%4d				;	regionalliga/sued			;	1995;2012
+//
+//  Berlin
+//
+	Regionalliga Berlin		;	regionalliga-berlin-1963-1974-%4d-%4d	;	regionalliga/berlin			;	1964;1974
