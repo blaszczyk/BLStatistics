@@ -51,15 +51,15 @@ public class GameTableModel extends MyTableModel<Game>
 		case 0:
 			return Game.DATE_FORMAT.format(game.getDate());
 		case 1:
-			return TeamAlias.getAlias(game.getTeam1());
+			return TeamAlias.getAlias(game.getTeamH());
 		case 2:
-			return game.getGoals1();
+			return game.getGoalsH();
 		case 3:
 			return " : ";
 		case 4:
-			return game.getGoals2();
+			return game.getGoalsA();
 		case 5:
-			return TeamAlias.getAlias(game.getTeam2());
+			return TeamAlias.getAlias(game.getTeamA());
 		}
 		return "";
 	}

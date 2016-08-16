@@ -27,16 +27,16 @@ public class Game
 	public static final Comparator<Game> DATE_COMPARATOR = (g1,g2) -> g1.getDate().compareTo(g2.getDate());
 	public static final Comparator<Game> DIFF_COMPARATOR = (g1,g2) -> Integer.compare(g2.getDiff(),g1.getDiff());
 	public static final Comparator<Game> GOALS_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoals(),g1.getGoals());
-	public static final Comparator<Game> GOALS1_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoals1(),g1.getGoals1());
-	public static final Comparator<Game> GOALS2_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoals2(),g1.getGoals2());
-	public static final Comparator<Game> TEAM1_COMPARATOR = (g1,g2) -> g1.getTeam1().compareTo(g2.getTeam1());
-	public static final Comparator<Game> TEAM2_COMPARATOR = (g1,g2) -> g1.getTeam2().compareTo(g2.getTeam2());
+	public static final Comparator<Game> GOALS1_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoalsH(),g1.getGoalsH());
+	public static final Comparator<Game> GOALS2_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoalsA(),g1.getGoalsA());
+	public static final Comparator<Game> TEAM1_COMPARATOR = (g1,g2) -> g1.getTeamH().compareTo(g2.getTeamH());
+	public static final Comparator<Game> TEAM2_COMPARATOR = (g1,g2) -> g1.getTeamA().compareTo(g2.getTeamA());
 	public static final Comparator<Game> DUEL_COMPARATOR = (g1,g2) -> {
 		int result = 0;
-		if( g1.containsTeam(g2.getTeam1()) && g1.containsTeam(g2.getTeam2()))
+		if( g1.containsTeam(g2.getTeamH()) && g1.containsTeam(g2.getTeamA()))
 		{
-			int teamSort1 = g1.getTeam1().compareTo(g1.getTeam2());
-			int teamSort2 = g2.getTeam1().compareTo(g2.getTeam2());
+			int teamSort1 = g1.getTeamH().compareTo(g1.getTeamA());
+			int teamSort2 = g2.getTeamH().compareTo(g2.getTeamA());
 			result += 4 * Integer.compare(g1.getDiff()*teamSort1,g2.getDiff()*teamSort2);
 			result += 2 * GOALS_COMPARATOR.compare(g1, g2);
 			result += DATE_COMPARATOR.compare(g1, g2);	
@@ -52,16 +52,27 @@ public class Game
 	/*
 	 * Object Properties
 	 */
-	private int goals1;
-	private int goals2;
-	private String team1;
-	private String team2;
-	private Date date;
 	private int matchDay;
+	private Date date;
+	private String teamH;
+	private String teamA;
+	private int goalsH;
+	private int goalsA;
 	
 	/*
 	 * Constructors
 	 */
+	
+
+	public Game(int matchDay, Date date, String teamH, String teamA, int goalsH, int goalsA)
+	{
+		this.matchDay = matchDay;
+		this.date = date;
+		this.teamH = teamH;
+		this.teamA = teamA;
+		this.goalsH = goalsH;
+		this.goalsA = goalsA;
+	}
 	
 	public Game(String gameString) throws BLException
 	{
@@ -89,8 +100,8 @@ public class Game
 		} 
 		try
 		{
-			goals1 = Integer.parseInt( split[1].substring(split[1].lastIndexOf(' ')+1).trim() );
-			goals2 = Integer.parseInt(split[2].trim());
+			goalsH = Integer.parseInt( split[1].substring(split[1].lastIndexOf(' ')+1).trim() );
+			goalsA = Integer.parseInt(split[2].trim());
 		}
 		catch( NumberFormatException e)
 		{
@@ -100,39 +111,39 @@ public class Game
 		int splitIntex = teams.indexOf(" - ");
 		if(splitIntex < 0)
 			throw new BLException("Wrong game Format in '" + gameDetails + "'");
-		team1 = teams.substring(0, splitIntex) .trim();
-		team2 = teams.substring(splitIntex + 3).trim();
+		teamH = teams.substring(0, splitIntex) .trim();
+		teamA = teams.substring(splitIntex + 3).trim();
 	}
 	
 	/*
 	 * only Getters
 	 */
-	public int getGoals1()
+	public int getGoalsH()
 	{
-		return goals1;
+		return goalsH;
 	}
-	public int getGoals2()
+	public int getGoalsA()
 	{
-		return goals2;
+		return goalsA;
 	}
 
 	public int getDiff()
 	{
-		return goals1 - goals2;
+		return goalsH - goalsA;
 	}
 	
 	public int getGoals()
 	{
-		return goals1 + goals2;
+		return goalsH + goalsA;
 	}
 	
-	public String getTeam1()
+	public String getTeamH()
 	{
-		return TeamAlias.getAlias(team1);
+		return TeamAlias.getAlias(teamH);
 	}
-	public String getTeam2()
+	public String getTeamA()
 	{
-		return TeamAlias.getAlias(team2);
+		return TeamAlias.getAlias(teamA);
 	}
 	
 	public Date getDate()
@@ -151,7 +162,7 @@ public class Game
 	 */
 	public int getWinner()
 	{
-		switch(Integer.signum(goals1-goals2))
+		switch(Integer.signum(goalsH-goalsA))
 		{
 		case 1:
 			return HOME;
@@ -168,13 +179,13 @@ public class Game
 	public boolean containsTeam(String team)
 	{
 		if(team != null)	
-			return team.equals(getTeam1()) || team.equals(getTeam2());
+			return team.equals(getTeamH()) || team.equals(getTeamA());
 		return false;
 	}
 
 	@Override
 	public String toString()
 	{
-		return String.format( "%2d. Spieltag  %s: %15s - %15s %2d:%d" , matchDay, DATE_FORMAT.format(date), team1, team2, goals1, goals2);
+		return String.format( "%2d. Spieltag  %s: %15s - %15s %2d:%d" , matchDay, DATE_FORMAT.format(date), teamH, teamA, goalsH, goalsA);
 	}
 }

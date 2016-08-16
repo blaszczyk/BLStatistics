@@ -75,8 +75,8 @@ public class FunctionalGameTable extends JPanel
 	{
 		nrGames++;
 		nrGoals += game.getGoals();
-		nrHomeGoals += game.getGoals1();
-		nrAwayGoals += game.getGoals2();
+		nrHomeGoals += game.getGoalsH();
+		nrAwayGoals += game.getGoalsA();
 		switch(game.getWinner())
 		{
 		case Game.HOME:

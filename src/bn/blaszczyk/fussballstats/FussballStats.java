@@ -13,6 +13,7 @@ import bn.blaszczyk.fussballstats.gui.MainFrame;
 import bn.blaszczyk.fussballstats.gui.corefilters.SingleLeagueFilterPanel;
 import bn.blaszczyk.fussballstats.gui.corefilters.TeamFilterPanel;
 import bn.blaszczyk.fussballstats.gui.corefilters.TeamSearchFilterPanel;
+import bn.blaszczyk.fussballstats.tools.DBTools;
 import bn.blaszczyk.fussballstats.tools.FileIO;
 import bn.blaszczyk.fussballstats.tools.TeamAlias;
 
@@ -85,7 +86,11 @@ public class FussballStats
 	{
 		initUIManager();
 		TeamAlias.loadAliases();
-		List<League> leagues = FileIO.loadLeagues();
+		List<League> leagues = FileIO.initLeagues();
+//		FileIO.loadLeagues(leagues);
+		DBTools.openMySQLDatabase();
+		for(Season season : leagues.get(0))
+			DBTools.loadGames(season);
 		if(!initLists(leagues))
 		{
 			LeagueManager lm = new LeagueManager(null, leagues);

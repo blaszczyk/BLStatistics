@@ -48,6 +48,11 @@ public class League implements Iterable<Season>
 	{
 		return urlFormat;
 	}
+	
+	public String getSQLName()
+	{
+		return pathName.replace("/", "_");
+	}
 
 	public boolean hasSeason(int year)
 	{

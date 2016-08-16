@@ -19,7 +19,7 @@ public class FileIO
 	private static final String FILE_EXTENSION = "bls";
 	private static final String LEAGUES_FILE = "data/leagues.dat";
 	
-	public static List<League> loadLeagues()
+	public static List<League> initLeagues()
 	{
 		List<League> leagues = new ArrayList<>();
 		Scanner scanner = new Scanner( FussballStats.class.getResourceAsStream(LEAGUES_FILE) );
@@ -35,11 +35,16 @@ public class FileIO
 				yearBounds[i] = Integer.parseInt( props[i+3].trim() );
 			
 			League league = new League(props[0].trim(), props[1].trim(),props[2].trim(), yearBounds);
-			loadSeasons(league);
 			leagues.add( league );
 		}
 		scanner.close();
 		return leagues;
+	}
+	
+	public static void loadLeagues(Iterable<League> leagues)
+	{
+		for(League league : leagues)
+			loadSeasons(league);
 	}
 	
 	public static void saveSeason(Season season) throws BLException

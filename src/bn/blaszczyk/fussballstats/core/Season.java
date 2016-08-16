@@ -86,8 +86,8 @@ public class Season implements Iterable<MatchDay>
 		while(matchDayIndex >= matchDays.size())
 			matchDays.add(new MatchDay());
 		matchDays.get(matchDayIndex).addGame(game);
-		addTeam(game.getTeam1());
-		addTeam(game.getTeam2());
+		addTeam(game.getTeamH());
+		addTeam(game.getTeamA());
 	}
 
 	private void addTeam(String team)

@@ -21,6 +21,11 @@ import javax.swing.table.TableCellRenderer;
 @SuppressWarnings("serial")
 public abstract class MyTable<T> extends JTable implements KeyListener
 {
+	//
+	// TableRowSorter
+	//
+	
+	
 	private static final Color ODD_COLOR = new Color(247,247,247);
 	private static final Color EVEN_COLOR = Color.WHITE;
 	private static final Color SELECTED_COLOR = new Color(255,192,192);
