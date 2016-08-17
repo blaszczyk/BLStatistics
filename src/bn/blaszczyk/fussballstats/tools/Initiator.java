@@ -11,10 +11,10 @@ import javax.swing.UIManager;
 import bn.blaszczyk.fussballstats.FussballStats;
 import bn.blaszczyk.fussballstats.core.League;
 import bn.blaszczyk.fussballstats.core.Season;
-import bn.blaszczyk.fussballstats.gui.ProgressDialog;
 import bn.blaszczyk.fussballstats.gui.corefilters.SingleLeagueFilterPanel;
 import bn.blaszczyk.fussballstats.gui.corefilters.TeamFilterPanel;
 import bn.blaszczyk.fussballstats.gui.corefilters.TeamSearchFilterPanel;
+import bn.blaszczyk.fussballstats.gui.tools.ProgressDialog;
 
 public class Initiator
 {

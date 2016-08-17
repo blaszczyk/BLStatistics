@@ -19,6 +19,7 @@ import bn.blaszczyk.fussballstats.FussballStats;
 import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.core.League;
 import bn.blaszczyk.fussballstats.core.Season;
+import bn.blaszczyk.fussballstats.gui.tools.ProgressDialog;
 import bn.blaszczyk.fussballstats.tools.FussballException;
 import bn.blaszczyk.fussballstats.tools.DBConnection;
 import bn.blaszczyk.fussballstats.tools.DBTools;

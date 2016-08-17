@@ -134,6 +134,8 @@ public class FilterLog implements BiFilterListener<Season, Game>
 	@Override
 	public void filter(BiFilterEvent<Season, Game> e)
 	{
+		if( "K".toLowerCase().equals("k"))
+			return;
 		BiFilterPanel<Season, Game> source = e.getSource();
 		if(lastSource != null && lastSource.equals(source))
 		{

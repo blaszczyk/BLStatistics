@@ -2,14 +2,17 @@ package bn.blaszczyk.fussballstats.gui.tools;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 
@@ -39,18 +42,23 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	private int charCounter = 0;
 	private char selectChar = '.';
 	private CycleListener listener = null;
+	private T[] tArray;
 	
 	@SuppressWarnings("unchecked")
-	public MyComboBox(List<T> allObjects, int boxWidth, boolean editable)
+	public MyComboBox(List<T> tList, int boxWidth, boolean editable)
 	{
-		this((T[]) new Object[0], boxWidth,  editable);
-		for(T t : allObjects)
+		this( (T[]) new Object[0], boxWidth,  editable);
+		for(T t : tList)
 			addItem(t);
+		this.tArray = toArray(tList);
+		if(editable)
+			getEditor().getEditorComponent().addKeyListener(this);
 	}
 	
-	public MyComboBox(T[] allObjects, int boxWidth, boolean editable)
+	public MyComboBox(T[] tArray, int boxWidth, boolean editable)
 	{
-		super(allObjects);
+		super(tArray);
+		this.tArray = tArray;
 		setMaximumSize(new Dimension(boxWidth,30));
 		setMinimumSize(new Dimension(boxWidth,30));
 		addMouseWheelListener(this);
@@ -116,6 +124,15 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		setSelectedIndex( newIndex );
 	}
 	
+	@SuppressWarnings("unchecked")
+	private T[] toArray(List<T> tList)
+	{
+		T[] tArray = (T[]) new Object[tList.size()];
+		tList.toArray(tArray);
+		return tArray;
+		
+	}
+	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
@@ -136,29 +153,61 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 			moveSelection(-1);
 			e.consume();
 			break;
-		case KeyEvent.VK_RIGHT:
-			setPopupVisible(true);
-			break;
-		case KeyEvent.VK_LEFT:
-			setPopupVisible(false);
-			break;
+//		case KeyEvent.VK_RIGHT:
+//			setPopupVisible(true);
+//			break;
+//		case KeyEvent.VK_LEFT:
+//			setPopupVisible(false);
+//			break;
 		}
-		requestFocusInWindow();
+		setPopupVisible(true);
+//		requestFocusInWindow();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
+		e.consume();
+		char c = e.getKeyChar();
+		if( !Character.isISOControl(c) && !Character.isDigit(c) && !Character.isAlphabetic(c) )
+			return;
+		if(e.getSource() == getEditor().getEditorComponent() )
+		{
+			JTextField inputField = (JTextField)getEditor().getEditorComponent();
+			String input = inputField.getText();
+			int caret = inputField.getCaretPosition();
+			
+			ActionListener[] listeners = getActionListeners();
+			for(ActionListener listener : listeners)
+				removeActionListener(listener);
+			
+			removeAllItems();
+			for(T t : tArray)
+				if(t.toString().toLowerCase().contains(input.toLowerCase()))
+					addItem(t);
+			
+			inputField.setText(input);
+			inputField.setCaretPosition(caret);
+			setPopupVisible(true);
+			
+			for(ActionListener listener : listeners)
+				addActionListener(listener);
+		}
+		setPopupVisible(true);
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e)
 	{
-		char keyChar = e.getKeyChar();
-		if(e.getModifiers() == InputEvent.ALT_DOWN_MASK)
-			return;
-		if(Character.isAlphabetic(keyChar) || Character.isDigit(keyChar))
-			selectByChar(Character.toLowerCase(keyChar));
-		requestFocusInWindow();
+		
+//		if(e.getSource() == this)
+//		{
+//			char keyChar = e.getKeyChar();
+//			if(e.getModifiers() == InputEvent.ALT_DOWN_MASK)
+//				return;
+//			if(Character.isAlphabetic(keyChar) || Character.isDigit(keyChar))
+//				selectByChar(Character.toLowerCase(keyChar));
+//			requestFocusInWindow();
+//		}
 	}
 }
