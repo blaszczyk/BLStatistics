@@ -5,41 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
-import bn.blaszczyk.fussballstats.FussballStats;
 import bn.blaszczyk.fussballstats.core.*;
 
 public class FileIO
 {
 	private static final String BASE_FOLDER = "leagues";
 	private static final String FILE_EXTENSION = "bls";
-	private static final String LEAGUES_FILE = "data/leagues.dat";
-	
-	public static List<League> initLeagues()
-	{
-		List<League> leagues = new ArrayList<>();
-		Scanner scanner = new Scanner( FussballStats.class.getResourceAsStream(LEAGUES_FILE) );
-		while(scanner.hasNextLine())
-		{
-			String props[] = scanner.nextLine().split(";");
-			if(props[0].startsWith("//"))
-				continue;
-			if(props.length < 3)
-				break;
-			int[] yearBounds = new int[props.length - 3];
-			for(int i = 0; i < yearBounds.length; i++)
-				yearBounds[i] = Integer.parseInt( props[i+3].trim() );
-			
-			League league = new League(props[0].trim(), props[1].trim(),props[2].trim(), yearBounds);
-			leagues.add( league );
-		}
-		scanner.close();
-		return leagues;
-	}
 	
 	public static void loadLeagues(Iterable<League> leagues)
 	{
@@ -47,7 +21,7 @@ public class FileIO
 			loadSeasons(league);
 	}
 	
-	public static void saveSeason(Season season) throws BLException
+	public static void saveSeason(Season season) throws FussballException
 	{
 		if(season == null)
 			return;
@@ -59,7 +33,7 @@ public class FileIO
 		}
 		catch (IOException e)
 		{
-			throw new BLException("Error writing " + filename,e);
+			throw new FussballException("Error writing " + filename,e);
 		}
 	}
 	
@@ -79,14 +53,14 @@ public class FileIO
 			{
 				loadSeason(season);
 			}
-			catch (BLException e)
+			catch (FussballException e)
 			{
 				//TODO: NotifyUser
 				e.printStackTrace();
 			}
 	}
 	
-	private static boolean loadSeason(Season season) throws BLException
+	private static boolean loadSeason(Season season) throws FussballException
 	{
 		if(season == null)
 			return false;
@@ -103,11 +77,11 @@ public class FileIO
 		}
 		catch (FileNotFoundException e)
 		{
-			throw new BLException("Error loading " + file, e );
+			throw new FussballException("Error loading " + file, e );
 		}
 		catch(NumberFormatException e)
 		{
-			throw new BLException("Wrong Filename " + file, e );
+			throw new FussballException("Wrong Filename " + file, e );
 		}
 	}
 	

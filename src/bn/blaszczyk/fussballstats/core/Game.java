@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 
-import bn.blaszczyk.fussballstats.tools.BLException;
+import bn.blaszczyk.fussballstats.tools.FussballException;
 import bn.blaszczyk.fussballstats.tools.TeamAlias;
 
 public class Game
@@ -74,7 +74,7 @@ public class Game
 		this.goalsA = goalsA;
 	}
 	
-	public Game(String gameString) throws BLException
+	public Game(String gameString) throws FussballException
 	{
 		try
 		{
@@ -82,21 +82,21 @@ public class Game
 		}
 		catch(StringIndexOutOfBoundsException e)
 		{
-			throw new BLException("Wrong game format in '" + gameString + "'" );
+			throw new FussballException("Wrong game format in '" + gameString + "'" );
 		}
 		if(matchDay < 1)
-			throw new BLException("Wrong matchDay in '" + gameString + "'" );
+			throw new FussballException("Wrong matchDay in '" + gameString + "'" );
 		String gameDetails = gameString.substring( gameString.indexOf('g') + 2  );
 		String[] split = gameDetails.trim().split(":");
 		if(split.length != 3)
-			throw new BLException("Wrong game Format in '" + gameDetails + "'");
+			throw new FussballException("Wrong game Format in '" + gameDetails + "'");
 		try
 		{
 			date = DATE_FORMAT.parse( split[0].trim());
 		}
 		catch (ParseException e)
 		{
-			throw new BLException("Wrong date Format in '" + gameDetails + "'",e);
+			throw new FussballException("Wrong date Format in '" + gameDetails + "'",e);
 		} 
 		try
 		{
@@ -105,12 +105,12 @@ public class Game
 		}
 		catch( NumberFormatException e)
 		{
-			throw new BLException("Wrong goal Format in '" + gameDetails + "'",e);
+			throw new FussballException("Wrong goal Format in '" + gameDetails + "'",e);
 		}
 		String teams = split[1].substring(0, split[1].lastIndexOf(' '));
 		int splitIntex = teams.indexOf(" - ");
 		if(splitIntex < 0)
-			throw new BLException("Wrong game Format in '" + gameDetails + "'");
+			throw new FussballException("Wrong game Format in '" + gameDetails + "'");
 		teamH = teams.substring(0, splitIntex) .trim();
 		teamA = teams.substring(splitIntex + 3).trim();
 	}

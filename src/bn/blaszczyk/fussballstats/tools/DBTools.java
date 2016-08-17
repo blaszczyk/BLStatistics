@@ -1,12 +1,9 @@
 package bn.blaszczyk.fussballstats.tools;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
+import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Stack;
-import java.sql.DatabaseMetaData;
-import java.sql.Date;
 
 
 import bn.blaszczyk.fussballstats.core.Game;
@@ -15,6 +12,8 @@ import bn.blaszczyk.fussballstats.core.Season;
 
 public class DBTools
 {
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	
 	private static final String DB_NAME = "fussballspiele";
 	private static final String SERVER = "localhost";
 
@@ -29,36 +28,67 @@ public class DBTools
 	private static final String COL_GOALS_H = "TORE_H";
 	private static final String COL_GOALS_A = "TORE_A";
 	
+	private static final String INDEX_NAME = "MY_INDEX";
+	
 
 	
-	public static boolean openMySQLDatabase()
+	public static void openMySQLDatabase() throws FussballException
 	{
 		String connectionString, classForName;
 		classForName = "com.mysql.jdbc.Driver";		
 		connectionString = "jdbc:mysql://" + SERVER + ":3306/" + DB_NAME;
-		return DBConnection.connectToDatabase(classForName, connectionString, "root", null);
-			
-	}
-	
-	public static void updateGames(Season season)
-	{
-		League league = season.getLeague();
-		
-		PreparedStatement prepStatInsert = prepareInsertGame(league);
-		PreparedStatement prepStatUpdate = prepareUpdateGame(league);
-		PreparedStatement prepStatPrimKey = prepareGetPrimaryKey(league);
-		long nextPimaryKey = getNextKey(league);
-		for(Game game : season.getAllGames())
-		{
-			long primaryKey = getPrimaryKeyPrepared(prepStatPrimKey, season, game);
-			if(primaryKey < 0)
-				insertGamePrepared(prepStatInsert, nextPimaryKey++, season, game);
-			else
-				updateGamePrepared(prepStatUpdate, primaryKey, season,game);
-		}
+		DBConnection.connectToDatabase(classForName, connectionString, "root", null);
 	}
 
-	public static boolean loadGames(Season season)
+	public static void insertSeason(Season season) throws FussballException
+	{
+		if(season.getGameCount() == 0)
+			return;
+		removeSeason(season);
+		League league = season.getLeague();
+		long nextPimaryKey = getNextKey(league);
+		StringBuilder sql = new StringBuilder();
+		sql.append(String.format("INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s,%s) VALUES ",
+				season.getLeague().getSQLName(), COL_PRIMARY_KEY, COL_SEASON, COL_MATCHDAY, COL_DATE, 
+				COL_TEAM_H, COL_TEAM_A, COL_GOALS_H, COL_GOALS_A ));
+		boolean first = true;
+		for(Game game : season.getAllGames())
+		{
+			if(first)
+				first = false;
+			else
+				sql.append(", ");
+			sql.append(String.format("(%d, %4d, %2d, %s, %s, %s, %2d, %2d)",
+					nextPimaryKey++, season.getYear(), game.getMatchDay(), quote(DATE_FORMAT.format(game.getDate())), 
+					quote(game.getTeamH()), quote(game.getTeamA()), game.getGoalsH(), game.getGoalsA() ) );
+			
+		}
+		DBConnection.executeUpdate(sql.toString());
+	}
+
+	public static void createTable(League league) throws FussballException
+	{
+		if(tableExists(league) || league.getSeasonCount() == 0)
+			return;
+		String sql = "CREATE TABLE " + league.getSQLName() + " ( ";
+		sql += COL_PRIMARY_KEY + " int(7) NOT NULL, ";
+		sql += COL_TIMESTAMP + " timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, ";
+		sql += COL_SEASON + " int(4) NOT NULL, ";
+		sql += COL_MATCHDAY + " int(2) NOT NULL, ";
+		sql += COL_DATE + " date NOT NULL, ";
+		sql += COL_TEAM_H + " varchar(40) COLLATE latin1_general_ci NOT NULL, ";
+		sql += COL_TEAM_A + " varchar(40) COLLATE latin1_general_ci NOT NULL, ";
+		sql += COL_GOALS_H + " int(2) NOT NULL, ";
+		sql += COL_GOALS_A + " int(2) NOT NULL ";
+		sql += ") ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci";
+		DBConnection.executeUpdate(sql);
+		sql = String.format("ALTER TABLE %s ADD PRIMARY KEY (%s), ADD KEY " + INDEX_NAME + " (%s, %s, %s, %s)",
+				league.getSQLName(), COL_PRIMARY_KEY, COL_SEASON, COL_MATCHDAY, COL_TEAM_H, COL_TEAM_A );
+		DBConnection.executeUpdate(sql);
+	}
+
+	
+	public static void loadSeason(Season season) throws FussballException
 	{
 		Stack<Game> games = new Stack<>();
 		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d",
@@ -78,96 +108,47 @@ public class DBTools
 				games.push(game);
 			}
 			season.consumeGames(games);
-			return true;
 		}
 		catch (SQLException e)
 		{
-			DBConnection.showErrorMsg(e);
+			throw new FussballException("Fehler beim Zugriff auf Datenbank",e);
 		}
-		return false;
-	}
-	
-	public static void createTable(League league)
-	{
-		String sql = "CREATE TABLE " + league.getSQLName() + " ( ";
-		sql += quote(COL_PRIMARY_KEY) + " int(7) NOT NULL, ";
-		sql += quote(COL_TIMESTAMP) + " timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, ";
-		sql += quote(COL_SEASON) + " int(4) NOT NULL, ";
-		sql += quote(COL_MATCHDAY) + " int(2) NOT NULL, ";
-		sql += quote(COL_DATE) + " date NOT NULL, ";
-		sql += quote(COL_TEAM_H) + " varchar(40) COLLATE latin1_general_ci NOT NULL, ";
-		sql += quote(COL_TEAM_A) + " varchar(40) COLLATE latin1_general_ci NOT NULL, ";
-		sql += quote(COL_GOALS_H) + " int(2) NOT NULL, ";
-		sql += quote(COL_GOALS_A) + " int(2) NOT NULL ";
-		sql += ") ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci";
-		System.out.println(sql);
-		DBConnection.executeUpdate(sql);
-		sql = String.format("ALTER TABLE %s ADD PRIMARY KEY (%s), ADD KEY MYKEY (%s, %s, %s, %s)",
-				league.getSQLName(), quote(COL_PRIMARY_KEY), quote(COL_SEASON), quote(COL_MATCHDAY), quote(COL_TEAM_H), quote(COL_TEAM_A) );
-		DBConnection.executeUpdate(sql);
 	}
 
-	public static String quote(String value)
+	public static void dropTable(League league) throws FussballException
 	{
-		return value;//"'" + value.replaceAll("'", "''") + "'";
+		String sql = "DROP TABLE " + league.getSQLName();
+		DBConnection.executeUpdate(sql);
 	}
 	
-	private static PreparedStatement prepareUpdateGame(League league)
+	private static void removeSeason(Season season) throws FussballException
 	{
-		String sql = String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?  WHERE %s = ?",
-				league.getSQLName(), COL_DATE, COL_GOALS_H, COL_GOALS_A, COL_PRIMARY_KEY );
-		return DBConnection.prepareStatement(sql);
+		String sql = String.format("DELETE FROM %s WHERE %s = %4d", season.getLeague().getSQLName(), COL_SEASON, season.getYear() );
+		DBConnection.executeUpdate(sql);
 	}
-
-	private static boolean updateGamePrepared(PreparedStatement prepStatement, long primaryKey, Season season, Game game)
+	
+	private static boolean tableExists(League league) throws FussballException
 	{
+		DatabaseMetaData meta;
 		try
 		{
-			prepStatement.setDate(1, new Date( game.getDate().getTime()));
-			prepStatement.setInt(2, game.getGoalsH());
-			prepStatement.setInt(3, game.getGoalsA());
-			prepStatement.setLong(4, primaryKey);
-			prepStatement.executeUpdate();
-			return true;
+			meta = DBConnection.getConnection().getMetaData();
+			ResultSet res = meta.getTables(null, null, league.getSQLName(),null);
+			return res.next();
 		}
 		catch (SQLException e)
 		{
-			DBConnection.showErrorMsg(e);
+			throw new FussballException("Fehler beim Zugriff auf Datenbank",e);
 		}
-		return false;
 	}
 	
-	private static PreparedStatement prepareGetPrimaryKey(League league)
+
+	private static String quote(String value)
 	{
-		String sql = String.format("SELECT %s FROM %s WHERE %s = ? AND %s = ? AND %s = ? AND %s = ?", 
-				COL_PRIMARY_KEY, league.getSQLName(), COL_SEASON, COL_DATE, COL_TEAM_H, COL_TEAM_A );
-		return DBConnection.prepareStatement(sql);
-	}
-	
-	private static long getPrimaryKeyPrepared(PreparedStatement prepStatement, Season season, Game game)
-	{
-		try
-		{
-			prepStatement.setInt(1, season.getYear());
-			prepStatement.setInt(2, game.getMatchDay());
-			prepStatement.setString(3, game.getTeamH());
-			prepStatement.setString(4, game.getTeamA());
-			ResultSet rSet = prepStatement.executeQuery();
-			if(rSet.next())
-			{
-				long primaryKey = rSet.getLong(1);
-				rSet.close();
-				return primaryKey;
-			}
-		}
-		catch( SQLException e)
-		{
-			DBConnection.showErrorMsg(e);
-		}
-		return -1;
+		return "'" + value.replaceAll("'", "''") + "'";
 	}
 
-	private static long getNextKey(League league)
+	private static long getNextKey(League league) throws FussballException
 	{
 		String sql = String.format("SELECT MAX(%s) FROM %s", COL_PRIMARY_KEY, league.getSQLName());
 		ResultSet rSet = DBConnection.executeQuery(sql);
@@ -178,67 +159,9 @@ public class DBTools
 		}
 		catch (SQLException e)
 		{
-			DBConnection.showErrorMsg(e);
+			throw new FussballException("Fehler beim Zugriff auf Datenbank",e);
 		}
 		return 1;
-	}
-	
-	private static PreparedStatement prepareInsertGame(League league)
-	{
-		String sql = String.format("INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s,%s) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-				league.getSQLName(), COL_PRIMARY_KEY, COL_SEASON, COL_MATCHDAY, COL_DATE, COL_TEAM_H, COL_TEAM_A, COL_GOALS_H, COL_GOALS_A );
-		return DBConnection.prepareStatement(sql);
-	}
-
-	private static boolean insertGamePrepared(PreparedStatement prepStatement, long primaryKey, Season season, Game game)
-	{
-		try
-		{
-			prepStatement.setLong(1, primaryKey);
-			prepStatement.setInt(2, season.getYear());
-			prepStatement.setInt(3, game.getMatchDay());
-			prepStatement.setDate(4, new Date(game.getDate().getTime()));
-			prepStatement.setString(5, game.getTeamH());
-			prepStatement.setString(6, game.getTeamA());
-			prepStatement.setInt(7, game.getGoalsH());
-			prepStatement.setInt(8, game.getGoalsA());
-			prepStatement.executeUpdate();
-			return true;
-		}
-		catch( SQLException e)
-		{
-			DBConnection.showErrorMsg(e);
-		}
-		return false;
-	}
-	
-	private static boolean tableExists(League league)
-	{
-		DatabaseMetaData meta;
-		try
-		{
-			meta = DBConnection.getConnection().getMetaData();
-			ResultSet res = meta.getTables(DBConnection.getCatalog(), null, league.getSQLName(),null);
-			return res.next();
-		}
-		catch (SQLException e)
-		{
-			DBConnection.showErrorMsg(e);
-		}
-		return false;
-	}
-	
-	public static void main(String[] args)
-	{
-		List<League> leagues = FileIO.initLeagues();
-		openMySQLDatabase();
-		for(League league : leagues)
-		{
-			if(!tableExists(league))
-				createTable(league);
-			for(Season season : league)
-				updateGames(season);
-		}
 	}
 
 }

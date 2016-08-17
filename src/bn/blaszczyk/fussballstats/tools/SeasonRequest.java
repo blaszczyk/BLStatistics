@@ -5,6 +5,6 @@ import bn.blaszczyk.fussballstats.core.Season;
 
 public interface SeasonRequest 
 {
-	public void requestData(Season season) throws BLException;
-	public Iterable<Game> getGames() throws BLException; 
+	public void requestData(Season season) throws FussballException;
+	public Iterable<Game> getGames() throws FussballException; 
 }

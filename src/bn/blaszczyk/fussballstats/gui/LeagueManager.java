@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.gui;
 
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,10 +16,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import bn.blaszczyk.fussballstats.FussballStats;
+import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.core.League;
 import bn.blaszczyk.fussballstats.core.Season;
-import bn.blaszczyk.fussballstats.tools.BLException;
+import bn.blaszczyk.fussballstats.tools.FussballException;
+import bn.blaszczyk.fussballstats.tools.DBConnection;
+import bn.blaszczyk.fussballstats.tools.DBTools;
 import bn.blaszczyk.fussballstats.tools.FileIO;
+import bn.blaszczyk.fussballstats.tools.SeasonRequest;
+import bn.blaszczyk.fussballstats.tools.WeltFussballRequest;
 
 @SuppressWarnings("serial")
 public class LeagueManager extends JDialog implements ListSelectionListener, ActionListener
@@ -58,6 +64,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	}
 	
 	private static final String ICON_FILE = "data/manager.png";
+	private static final String DL_ICON_FILE = "data/download.png";
 	
 	private JFrame owner;
 	
@@ -187,10 +194,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 					if(league.hasSeason(year))
 						seasons.add( league.getSeason(year) );
 			}
-			DownloadDialog dlDialog = new DownloadDialog(this, seasons);
-			dlDialog.showDialog();
+			requestSeasons(seasons);
 		}
-		catch (BLException e)
+		catch (FussballException e)
 		{
 			e.printStackTrace();
 		}
@@ -212,6 +218,51 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		leagueItems.toArray(leagueArray);
 		return leagueArray; 
 	}
+	
+	private void requestSeasons(List<Season> seasons)
+	{
+		new Thread(() ->
+		{
+		Image icon = Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(DL_ICON_FILE) );
+		ProgressDialog progressDialog = new ProgressDialog(this, 2 * seasons.size(), "Download", icon, true,true);
+		SeasonRequest request = new WeltFussballRequest();
+		try
+		{
+			SwingUtilities.invokeLater(() -> progressDialog.showDialog());
+			progressDialog.appendInfo("Verbinde mit Datenbank");
+			DBTools.openMySQLDatabase();
+			for(Season season : seasons)
+			{
+				if(progressDialog.hasCancelRequest())
+				{
+					int choice = JOptionPane.showConfirmDialog(progressDialog, "Downloads Abbrechen?", "Abbruch Bestätigen", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if(choice == JOptionPane.OK_OPTION)
+						break;
+					else
+						progressDialog.undoCancelRequest();
+				}
+				
+				progressDialog.incrementValue();
+				progressDialog.appendInfo(String.format("\nLade Saison: %s - %4d", season.getLeague().toString(), season.getYear() ) );
+				request.requestData(season);
+				Iterable<Game> games = request.getGames();
+				season.consumeGames(games);
+				
+				progressDialog.incrementValue();
+				progressDialog.appendInfo(String.format("\nSchreibe Saison in Datenbank: %s - %4d", season.getLeague().toString(), season.getYear() ) );
+				DBTools.insertSeason(season);
+			}
+		}
+		catch( FussballException e)
+		{
+			progressDialog.appendInfo("\n" + e.getErrorMessage());
+		}
+		DBConnection.closeConnection();
+		progressDialog.appendInfo("\nDownloads Beendet");
+		progressDialog.setFinished();
+		}).start();
+	}
+
 	
 	@Override
 	public void valueChanged(ListSelectionEvent e)

@@ -43,6 +43,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		FilterMenuFactory.createPopupMenu(filterPanel);
 
 		setFilterPanel(FilterIO.loadFilter(LAST_FILTER));
+		notifyLog(new BiFilterEvent<Season, Game>(null,filterPanel));
 	}
 
 	public void newFilter()

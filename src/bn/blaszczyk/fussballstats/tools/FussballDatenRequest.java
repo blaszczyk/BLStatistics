@@ -44,7 +44,7 @@ public class FussballDatenRequest implements SeasonRequest {
 	}
 	
 	@Override
-	public void requestData(Season season) throws BLException
+	public void requestData(Season season) throws FussballException
 	{
 		String url = String.format("%s/%s/%4d/", BASE_URL, season.getLeague().getURLFormat(), season.getYear());
 		year = season.getYear();
@@ -57,12 +57,12 @@ public class FussballDatenRequest implements SeasonRequest {
 		catch (FailingHttpStatusCodeException | IOException | NullPointerException e)
 		{
 //			setMutedErrStream(false);
-			throw new BLException("Fehler beim Download von Saison " + season.getLeague() + " - "+ season.getYear(),e);
+			throw new FussballException("Fehler beim Download von Saison " + season.getLeague() + " - "+ season.getYear(),e);
 		}
 	}
 	
 	@Override
-	public Iterable<Game> getGames() throws BLException
+	public Iterable<Game> getGames() throws FussballException
 	{
 		Stack<Game> games = new Stack<>();
 		if (gamesTable != null)
@@ -89,14 +89,14 @@ public class FussballDatenRequest implements SeasonRequest {
 		{
 			games.push(new Game(gameString));
 		}
-		catch (BLException e)
+		catch (FussballException e)
 		{
 			gameString = "1.Spieltag "+ Game.DATE_FORMAT.format(new Date(year, 4, 30)) + gameString.substring(1) ;
 			try
 			{
 				games.push(new Game(gameString));
 			}
-			catch (BLException e1)
+			catch (FussballException e1)
 			{
 				System.err.println(e1.getErrorMessage());
 			}

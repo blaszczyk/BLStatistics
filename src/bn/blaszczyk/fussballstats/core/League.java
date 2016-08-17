@@ -2,7 +2,7 @@ package bn.blaszczyk.fussballstats.core;
 
 import java.util.*;
 
-import bn.blaszczyk.fussballstats.tools.BLException;
+import bn.blaszczyk.fussballstats.tools.FussballException;
 
 
 public class League implements Iterable<Season>
@@ -62,12 +62,12 @@ public class League implements Iterable<Season>
 		return false;
 	}
 	
-	public Season getSeason(int year) throws BLException
+	public Season getSeason(int year) throws FussballException
 	{
 		for(Season s : this)
 			if(s.getYear() == year)
 				return s;
-		throw new BLException("Season " + year + " of League " + name + " not found.");
+		throw new FussballException("Season " + year + " of League " + name + " not found.");
 	}
 	
 	public List<Game> getAllGames()

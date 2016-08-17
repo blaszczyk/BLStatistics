@@ -38,11 +38,8 @@ public class FilterLog implements BiFilterListener<Season, Game>
 
 	public void populateUndoMenu(JMenu menuUndo)
 	{
-		clearMenu(menuUndo);
-//		if(selectedFilterIndex > 0)
-//			menuUndo.addActionListener(createIndexedListener(selectedFilterIndex-1));
-//		else
-//			menuUndo.setEnabled(false);
+		menuUndo.removeAll();
+		menuUndo.setEnabled( selectedFilterIndex > 0  );
 		for(int i = selectedFilterIndex - 1  ; i >= 0; i--)
 		{
 			JMenuItem mi = new JMenuItem( logUndoLabel.get(i + 1) );
@@ -53,11 +50,8 @@ public class FilterLog implements BiFilterListener<Season, Game>
 
 	public void populateRedoMenu(JMenu menuRedo)
 	{
-		clearMenu(menuRedo);
-//		if(selectedFilterIndex < logFilter.size() - 1 )
-//			menuRedo.addActionListener(createIndexedListener(selectedFilterIndex+1));
-//		else
-//			menuRedo.setEnabled(false);
+		menuRedo.removeAll();
+		menuRedo.setEnabled( selectedFilterIndex + 1< logFilter.size() );
 		for(int i = selectedFilterIndex + 1; i < logFilter.size(); i++)
 		{
 			JMenuItem mi = new JMenuItem( logRedoLabel.get(i).toString() );
@@ -75,6 +69,9 @@ public class FilterLog implements BiFilterListener<Season, Game>
 	{
 		addLogItem(text, text);
 	}
+	
+	
+	
 	
 	private void addLogItem(String undoLabel, String redoLabel)
 	{
@@ -98,15 +95,9 @@ public class FilterLog implements BiFilterListener<Season, Game>
 		System.out.println();
 	}
 
-	private void setLastFilter()
-	{
-		chopLog(selectedFilterIndex+1);
-		logFilter.set(selectedFilterIndex,FilterParser.writeFilter(currentFilter));		
-	}
 	
 	private void setLastUndoLabel(String undoLabel)
 	{
-//		chopLog(selectedFilterIndex+1);
 		logUndoLabel.set(selectedFilterIndex,undoLabel);		
 	}
 		
@@ -131,15 +122,6 @@ public class FilterLog implements BiFilterListener<Season, Game>
 			logUndoLabel.remove(chopIndex);
 			logRedoLabel.remove(chopIndex);
 		}
-	}
-	
-	private void clearMenu(JMenu menu)
-	{
-		menu.removeAll();
-		ActionListener[] as = menu.getActionListeners();
-		for(ActionListener a : as )
-			menu.removeActionListener(a);
-		menu.setEnabled(true);
 	}
 
 
@@ -196,7 +178,7 @@ public class FilterLog implements BiFilterListener<Season, Game>
 		}
 		else if (e.getType() == BiFilterEvent.SET_FILTER)
 		{
-			if(!lastSource.equals(source))
+			if( lastSource == null || !lastSource.equals(source))
 			{
 				setLastUndoLabel("Ändere Filter: " + e.getOldSourceName());
 				lastSource = source;

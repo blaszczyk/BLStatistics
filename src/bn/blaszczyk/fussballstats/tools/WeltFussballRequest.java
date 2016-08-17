@@ -44,7 +44,7 @@ public class WeltFussballRequest implements SeasonRequest
 	}
 	
 	@Override
-	public void requestData(Season season) throws BLException
+	public void requestData(Season season) throws FussballException
 	{
 		String innerPath = String.format(season.getLeague().getURLFormat(), season.getYear()-1, season.getYear());
 		String url = String.format("%s/%s/", BASE_URL, innerPath);
@@ -66,13 +66,13 @@ public class WeltFussballRequest implements SeasonRequest
 		}
 		catch (FailingHttpStatusCodeException | IOException | NullPointerException e)
 		{
-			throw new BLException("Fehler beim Download von Saison " + season.getLeague() + " - "+ season.getYear(),e);
+			throw new FussballException("Fehler beim Download von Saison " + season.getLeague() + " - "+ season.getYear(),e);
 		}
 	}
 	
 	
 	@Override
-	public Stack<Game> getGames() throws BLException
+	public Stack<Game> getGames() throws FussballException
 	{
 		Stack<Game> games = new Stack<>();
 		for(HtmlTableRow row :  tableBody.getRows())
@@ -95,19 +95,19 @@ public class WeltFussballRequest implements SeasonRequest
 					}
 					catch (ParseException e)
 					{
-						throw new BLException("Wrong day format in " + temp,e);
+						throw new FussballException("Wrong day format in " + temp,e);
 					}
 				}
 				tempElement = cells.get(2).getFirstElementChild();
 				if(tempElement instanceof HtmlAnchor)
 					team1 =  ((HtmlAnchor)tempElement).getAttribute("title");
 				else
-					throw new BLException("Wrong team1 format in " + tempElement);
+					throw new FussballException("Wrong team1 format in " + tempElement);
 				tempElement = cells.get(4).getFirstElementChild();
 				if(tempElement instanceof HtmlAnchor)
 					team2 =  ((HtmlAnchor)tempElement).getAttribute("title");
 				else
-					throw new BLException("Wrong team2 format in " + tempElement);
+					throw new FussballException("Wrong team2 format in " + tempElement);
 				HtmlTableDataCell dataCell = (HtmlTableDataCell) cells.get(5);
 				result = dataCell.getTextContent().trim();
 				String gameString =  String.format( "%2d. Spieltag  %s: %15s - %15s %s" , matchDay, DATE_FORMAT.format(date), team1, team2, result);
@@ -119,7 +119,7 @@ public class WeltFussballRequest implements SeasonRequest
 				{
 					games.push(new Game(gameString));
 				}
-				catch(BLException e)
+				catch(FussballException e)
 				{
 				}
 			}
