@@ -27,7 +27,7 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	private int lastValue = 0;
 	
 	private Timer timerDots = new Timer(100, e -> appendInfo("."));
-	private Timer timerSecs = new Timer(100, e -> setSecsLeft());
+	private Timer timerSecs = new Timer(1000, e -> setSecsLeft());
 	
 
 	public ProgressDialog(JDialog owner, int maxValue, String title, Image icon, boolean modal, boolean showButton)
@@ -111,6 +111,8 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		cancelRequest = true;
 		btnCancel.setEnabled(true);
 		btnCancel.setText("Fertig");
+		timerDots.stop();
+		timerSecs.stop();
 		lblTimeLeft.setText("Gesamtdauer: " + (System.currentTimeMillis() - initTimeStamp) / 1000 + " Sekunden");
 	}
 	

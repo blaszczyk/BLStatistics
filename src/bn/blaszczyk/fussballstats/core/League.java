@@ -74,7 +74,8 @@ public class League implements Iterable<Season>
 	{
 		List<Game> games = new ArrayList<Game>();
 		for( Season s : this)
-			games.addAll(s.getAllGames());
+			for(Game g : s)
+				games.add(g);
 		return games;
 	}
 	

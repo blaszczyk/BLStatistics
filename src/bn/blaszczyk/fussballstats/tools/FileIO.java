@@ -28,7 +28,7 @@ public class FileIO
 		String filename = getFileName(season);
 		try(FileWriter file = new FileWriter(filename))
 		{
-			for(Game game : season.getAllGames())
+			for(Game game : season)
 				file.write(game.toString() + "\n");
 		}
 		catch (IOException e)

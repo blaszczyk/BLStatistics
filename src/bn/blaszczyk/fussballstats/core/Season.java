@@ -2,12 +2,13 @@ package bn.blaszczyk.fussballstats.core;
 
 import java.util.*;
 
-public class Season implements Iterable<MatchDay>
+public class Season implements Iterable<Game>
 {
 	private int year;
-	private League league;
-	private List<MatchDay> matchDays = new ArrayList<>();
+	private League league; 
 	private List<String> teams = new ArrayList<>();
+	private List<Game> games = new ArrayList<>();
+	private int matchDayCount = 0;
 
 	/*
 	 * Constructor
@@ -21,26 +22,12 @@ public class Season implements Iterable<MatchDay>
 	/*
 	 * Getters
 	 */
-	public MatchDay getMatchDay(int index)
-	{
-		return matchDays.get(index);
-	}
 
 	public int getMatchDayCount()
 	{
-		return matchDays.size();
+		return matchDayCount;
 	}
 
-//	public List<String> getTeams()
-//	{
-//		return teams;
-//	}
-//
-//	public String getTeam(int index)
-//	{
-//		return teams.get(index);
-//	}
-//
 	public int getTeamCount()
 	{
 		return teams.size();
@@ -59,33 +46,19 @@ public class Season implements Iterable<MatchDay>
 
 	public int getGameCount()
 	{
-		int count = 0;
-		for(MatchDay matchDay : this)
-			count += matchDay.getGameCount();
-		return count;
+		return games.size();
 	}	
-	public List<Game> getAllGames()
-	{
-		List<Game> gameList = new ArrayList<>();
-		for(MatchDay matchDay : this)
-			for(Game game : matchDay)
-				gameList.add(game);
-		return gameList;
-	}
 
 	public void consumeGames(Iterable<Game> source)
 	{
-		matchDays = new ArrayList<>();
 		for(Game game : source)
 			consumeGame(game);
 	}
 	
 	private void consumeGame(Game game)
 	{
-		int matchDayIndex = game.getMatchDay() - 1;
-		while(matchDayIndex >= matchDays.size())
-			matchDays.add(new MatchDay());
-		matchDays.get(matchDayIndex).addGame(game);
+		matchDayCount = Math.max(matchDayCount, game.getMatchDay());
+		games.add(game);
 		addTeam(game.getTeamH());
 		addTeam(game.getTeamA());
 	}
@@ -99,9 +72,9 @@ public class Season implements Iterable<MatchDay>
 	}
 	
 	@Override
-	public Iterator<MatchDay> iterator()
+	public Iterator<Game> iterator()
 	{
-		return matchDays.iterator();
+		return games.iterator();
 	}
 	
 }

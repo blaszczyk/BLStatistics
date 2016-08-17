@@ -52,7 +52,7 @@ public class DBTools
 				season.getLeague().getSQLName(), COL_PRIMARY_KEY, COL_SEASON, COL_MATCHDAY, COL_DATE, 
 				COL_TEAM_H, COL_TEAM_A, COL_GOALS_H, COL_GOALS_A ));
 		boolean first = true;
-		for(Game game : season.getAllGames())
+		for(Game game : season)
 		{
 			if(first)
 				first = false;
