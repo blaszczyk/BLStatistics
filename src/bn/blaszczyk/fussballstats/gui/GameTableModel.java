@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.gui;
 
+import java.sql.Date;
 import java.util.List;
 
 import bn.blaszczyk.fussballstats.core.Game;
@@ -17,6 +18,8 @@ public class GameTableModel extends MyTableModel<Game>
 	@Override
 	public Class<?> getColumnClass(int columnIndex)
 	{
+		if(columnIndex == 0)
+			return Date.class;
 		if(columnIndex == 2 || columnIndex == 4)
 			return Integer.class;
 		return String.class;
@@ -49,7 +52,7 @@ public class GameTableModel extends MyTableModel<Game>
 		switch(columnIndex)
 		{
 		case 0:
-			return Game.DATE_FORMAT.format(game.getDate());
+			return game.getDate();
 		case 1:
 			return TeamAlias.getAlias(game.getTeamH());
 		case 2:

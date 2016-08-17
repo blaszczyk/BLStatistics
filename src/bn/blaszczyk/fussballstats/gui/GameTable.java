@@ -1,7 +1,6 @@
 package bn.blaszczyk.fussballstats.gui;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.ListSelectionModel;
@@ -40,33 +39,13 @@ public class GameTable extends MyTable<Game>
 		getSelectionModel().setAnchorSelectionIndex(-1);
 		repaint();
 	}
-
+	
 	@Override
 	protected boolean isThisRowSelected(int rowIndex)
 	{
 		if(selectedTeams == null)
 			return false;
 		return selectedTeams.contains(getModel().getValueAt(rowIndex, 1)) || selectedTeams.contains(getModel().getValueAt(rowIndex, 5));
-	}
-
-	@Override
-	protected Comparator<Game> comparator(int columnIndex)
-	{
-		switch(columnIndex)
-		{
-		case 1:
-			return Game.TEAM1_COMPARATOR;
-		case 2:
-			return Game.GOALS1_COMPARATOR;
-		case 3:
-			return Game.DIFF_COMPARATOR;
-		case 4:
-			return Game.GOALS2_COMPARATOR;
-		case 5:
-			return Game.TEAM2_COMPARATOR;
-		default:
-			return Game.DATE_COMPARATOR;
-		}
 	}
 
 	@Override

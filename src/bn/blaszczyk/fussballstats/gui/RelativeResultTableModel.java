@@ -1,6 +1,5 @@
 package bn.blaszczyk.fussballstats.gui;
 
-import java.util.Comparator;
 import java.util.List;
 
 import bn.blaszczyk.fussballstats.core.TeamResult;
@@ -14,39 +13,7 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 	public RelativeResultTableModel(List<TeamResult> results)
 	{
 		super(results);
-	}
-	
-	
-
-	public static Comparator<TeamResult> comparator(int columnIndex)
-	{	
-		switch (columnIndex)
-		{
-		case 1:
-			return TeamResult.COMPARE_TEAM;
-		case 2:
-			return TeamResult.COMPARE_GAMES;
-		case 3:
-			return TeamResult.COMPARE_POINTS_REL;
-		case 4:
-		case 9:
-			return TeamResult.COMPARE_DIFF_REL;
-		case 5:
-			return TeamResult.COMPARE_WINS_REL;
-		case 6:
-			return TeamResult.COMPARE_DRAWS_REL;
-		case 7:
-			return TeamResult.COMPARE_LOSSES_REL;
-		case 8:
-			return TeamResult.COMPARE_GOALS_TEAM_REL;
-		case 10:
-			return TeamResult.COMPARE_GOALS_OPPONENT_REL;
-		// case 0:
-		default:
-			return TeamResult.COMPARE_POSITION;
-		}
-	}
-	
+	}	
 	
 	/*
 	 * Table Model Methods
@@ -86,7 +53,11 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 	@Override
 	public Class<?> getColumnClass(int columnIndex)
 	{
-		return String.class;
+		if(columnIndex == 1 || columnIndex == 9)
+			return String.class;
+		if(columnIndex >= 3)
+			return Double.class;
+		return Integer.class;
 	}
 	
 	@Override
@@ -100,7 +71,7 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 		case 1:
 			return TeamAlias.getAlias(result.getTeam());
 		case 2:
-			return "" + result.getGames();
+			return result.getGames();
 		case 9:
 			return " : ";		
 		case 3:
@@ -126,8 +97,8 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 			break;	
 		}
 		if(result.getGames() == 0)
-			return "0";
-		return String.format("%3.3f", value / result.getGames() );
+			return 0.;
+		return  value / result.getGames() ;
 	}
 	
 	

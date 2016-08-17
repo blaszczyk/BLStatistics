@@ -102,31 +102,16 @@ public abstract class GameFilter implements Filter<Game>
 		Filter<Game> f = g -> g.getTeamA().equals(team);
 		return f;
 	}
-	/*
-	 * Basic Team Filters
-	 */
+
 	public static Filter<Game> getTeamContainsFilter(String team) 
 	{
 		Filter<Game> f = g -> g.getTeamH().toLowerCase().contains(team.toLowerCase()) || g.getTeamA().toLowerCase().contains(team.toLowerCase());
 		return f;
 	}
 	
-	public static Filter<Game> getTeamHomeContainsFilter(String team) 
-	{
-		Filter<Game> f = g -> g.getTeamH().toLowerCase().contains(team.toLowerCase());
-		return f;
-	}
-	
-	public static Filter<Game> getTeamAwayContainsFilter(String team) 
-	{
-		Filter<Game> f = g -> g.getTeamA().toLowerCase().contains(team.toLowerCase());
-		return f;
-	}
-	
 	/*
 	 * SubLeague Filters
-	 */
-	
+	 */	
 	public static Filter<Game> getSubLeagueFilter(Collection<String> teams)
 	{
 		Filter<Game> f = g -> teams.contains(g.getTeamH()) && teams.contains(g.getTeamA());
@@ -177,6 +162,7 @@ public abstract class GameFilter implements Filter<Game>
 		Filter<Game> f = g -> g.getDate().compareTo(date)<=0;
 		return f;
 	}
+	
 	/*
 	 * DayOfWeek Filter
 	 */

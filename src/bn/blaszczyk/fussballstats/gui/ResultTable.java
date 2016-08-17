@@ -44,15 +44,6 @@ public class ResultTable extends MyTable<TeamResult>
 		this.isRelativeTable = isRelativeTable;
 	}
 
-	
-	@Override
-	protected Comparator<TeamResult> comparator(int columnIndex)
-	{	
-		if(getModel() instanceof RelativeResultTableModel)
-			return RelativeResultTableModel.comparator(columnIndex);
-		return ResultTableModel.comparator(columnIndex);
-	}
-
 	@Override
 	protected MyTableModel<TeamResult> createTableModel(List<TeamResult> ts)
 	{

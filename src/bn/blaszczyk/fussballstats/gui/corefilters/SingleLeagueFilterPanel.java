@@ -23,14 +23,14 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 	private final static List<String> LEAGUE_LIST = new ArrayList<>();
 	
 	private JComboBox<String> cboLeagues;
-	private JCheckBox boxRecursive = new JCheckBox("Alle",true);
+	private JCheckBox boxContains = new JCheckBox("Alle",true);
 
 	public SingleLeagueFilterPanel()
 	{
 		this("",true);
 	}
 
-	public SingleLeagueFilterPanel(String league, boolean isRecursive)
+	public SingleLeagueFilterPanel(String league, boolean isContains)
 	{
 		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -38,13 +38,13 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		cboLeagues = new MyComboBox<>(LEAGUE_LIST,250,false);
 		cboLeagues.addActionListener(setFilterListener);
 
-		boxRecursive.setMinimumSize(new Dimension(60, 30));
-		boxRecursive.setMinimumSize(new Dimension(60, 30));
-		boxRecursive.setInheritsPopupMenu(true);
-		boxRecursive.addActionListener(setFilterListener);
+		boxContains.setMinimumSize(new Dimension(60, 30));
+		boxContains.setMinimumSize(new Dimension(60, 30));
+		boxContains.setInheritsPopupMenu(true);
+		boxContains.addActionListener(setFilterListener);
 		
 		cboLeagues.setSelectedItem(league);
-		boxRecursive.setSelected(isRecursive);
+		boxContains.setSelected(isContains);
 		
 		setFilter();
 	}
@@ -56,7 +56,7 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 
 	public boolean isRecursive()
 	{
-		return boxRecursive.isSelected();
+		return boxContains.isSelected();
 	}
 
 	public static void setLeagueList(Iterable<String> leagueList)
@@ -72,8 +72,8 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		Filter<Season> filter;
 		if(league == null)
 			filter = LogicalFilter.getTRUEFilter();
-		else if( boxRecursive.isSelected())
-			filter = SeasonFilter.getLeagueRecursiveFilter(league);
+		else if( boxContains.isSelected())
+			filter = SeasonFilter.getLeagueContainsFilter(league);
 		else
 			filter = SeasonFilter.getLeagueFilter(league);
 		setFilter(filter);
@@ -83,7 +83,7 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 	protected void addComponents()
 	{
 		add(cboLeagues);
-		add(boxRecursive);
+		add(boxContains);
 	}
 	
 	@Override

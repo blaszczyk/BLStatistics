@@ -27,15 +27,15 @@ public abstract class SeasonFilter
 	/*
 	 * Pure League Filter
 	 */
-	public static Filter<Season> getLeagueFilter(String league)
+	public static Filter<Season> getLeagueFilter(String leagueName)
 	{
-		Filter<Season> f = s -> s.getLeague().getName().equals(league);
+		Filter<Season> f = s -> s.getLeague().getName().equals(leagueName);
 		return f;
 	}
 
-	public static Filter<Season> getLeagueRecursiveFilter(String league)
+	public static Filter<Season> getLeagueContainsFilter(String leagueName)
 	{
-		Filter<Season> f = s -> s.getLeague().getName().startsWith(league);
+		Filter<Season> f = s -> s.getLeague().getName().startsWith(leagueName);
 		return f;
 	}
 	

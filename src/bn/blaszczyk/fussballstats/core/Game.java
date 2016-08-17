@@ -3,7 +3,6 @@ package bn.blaszczyk.fussballstats.core;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
 import java.util.Date;
 
 import bn.blaszczyk.fussballstats.tools.FussballException;
@@ -20,29 +19,6 @@ public class Game
 	
 	public static final int WIN = HOME;
 	public static final int LOSS = AWAY;
-	
-	/*
-	 * Some useful Comparators
-	 */
-	public static final Comparator<Game> DATE_COMPARATOR = (g1,g2) -> g1.getDate().compareTo(g2.getDate());
-	public static final Comparator<Game> DIFF_COMPARATOR = (g1,g2) -> Integer.compare(g2.getDiff(),g1.getDiff());
-	public static final Comparator<Game> GOALS_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoals(),g1.getGoals());
-	public static final Comparator<Game> GOALS1_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoalsH(),g1.getGoalsH());
-	public static final Comparator<Game> GOALS2_COMPARATOR = (g1,g2) -> Integer.compare(g2.getGoalsA(),g1.getGoalsA());
-	public static final Comparator<Game> TEAM1_COMPARATOR = (g1,g2) -> g1.getTeamH().compareTo(g2.getTeamH());
-	public static final Comparator<Game> TEAM2_COMPARATOR = (g1,g2) -> g1.getTeamA().compareTo(g2.getTeamA());
-	public static final Comparator<Game> DUEL_COMPARATOR = (g1,g2) -> {
-		int result = 0;
-		if( g1.containsTeam(g2.getTeamH()) && g1.containsTeam(g2.getTeamA()))
-		{
-			int teamSort1 = g1.getTeamH().compareTo(g1.getTeamA());
-			int teamSort2 = g2.getTeamH().compareTo(g2.getTeamA());
-			result += 4 * Integer.compare(g1.getDiff()*teamSort1,g2.getDiff()*teamSort2);
-			result += 2 * GOALS_COMPARATOR.compare(g1, g2);
-			result += DATE_COMPARATOR.compare(g1, g2);	
-		}
-		return Integer.signum(result);
-	};
 	
 	/*
 	 * Standard Date Format

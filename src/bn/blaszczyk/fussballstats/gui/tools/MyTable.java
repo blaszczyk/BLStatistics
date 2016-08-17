@@ -6,10 +6,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -17,14 +18,13 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
 
 @SuppressWarnings("serial")
 public abstract class MyTable<T> extends JTable implements KeyListener
 {
-	//
-	// TableRowSorter
-	//
-	
+	private static final DateFormat  DATE_FORMAT = new SimpleDateFormat("dd.MM.YY");
+	private static final NumberFormat INT_FORMAT = NumberFormat.getIntegerInstance();
 	
 	private static final Color ODD_COLOR = new Color(247,247,247);
 	private static final Color EVEN_COLOR = Color.WHITE;
@@ -45,48 +45,51 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 				boolean hasFocus, int row, int column) {
-
-			if(row < 0)
+			String text = "";
+			if(value instanceof Date)
+				text = DATE_FORMAT.format(value);
+			else if(value instanceof Double)
+				text = String.format("%1.3f", value);
+			else if(value instanceof Integer)
+				text = INT_FORMAT.format(value);
+			else if(value instanceof String)
+				text = (String) value;
+			
+			JLabel c = new JLabel(" " + text + " ", columnAlignment(column) );
+			c.setOpaque(true);
+//			c.setMaximumSize(new Dimension(columnWidth(column),ODD_FONT.getSize() + 10 ));
+			if(row < 0 )
 			{
-				String headerText = "";
-				if(value != null)
-					headerText= value.toString();
-				JLabel c = new JLabel(" " + headerText + " ", columnAlignment(column));
-				c.setOpaque(true);
 				c.setFont(HEADER_FONT);
 				c.setBackground(HEADER_COLOR);
 				c.setBorder(BorderFactory.createEtchedBorder());
-				return c;
-			}
-			JLabel c = new JLabel(value.toString(), columnAlignment(column) );
-			c.setOpaque(true);
-			c.setMaximumSize(new Dimension(columnWidth(column),ODD_FONT.getSize() + 10 ));
-			if( isThisRowSelected(row) )
-			{
-				c.setBackground(SELECTED_COLOR);
-				c.setFont( SELECTED_FONT );
-				c.setForeground(SELECTED_FONT_COLOR);
-			}
-			else if( (row % 2) == 1)
-			{
-				c.setBackground(ODD_COLOR);
-				c.setFont( ODD_FONT );
-				c.setForeground(ODD_FONT_COLOR);
 			}
 			else
-			{
-				c.setBackground(EVEN_COLOR);
-				c.setFont( EVEN_FONT );
-				c.setForeground(EVEN_FONT_COLOR);
-			}
+				if( isThisRowSelected(row) )
+				{
+					c.setBackground(SELECTED_COLOR);
+					c.setFont( SELECTED_FONT );
+					c.setForeground(SELECTED_FONT_COLOR);
+				}
+				else if( (row % 2) == 1)
+				{
+					c.setBackground(ODD_COLOR);
+					c.setFont( ODD_FONT );
+					c.setForeground(ODD_FONT_COLOR);
+				}
+				else
+				{
+					c.setBackground(EVEN_COLOR);
+					c.setFont( EVEN_FONT );
+					c.setForeground(EVEN_FONT_COLOR);
+				}
 			return c;
 		}
 	};
 	
 	private List<T> tList;
-	private Comparator<T> comparator = comparator(0);
-	private boolean isCompareBackwards = true;
-	private int sortingColumn = -1;
+	protected TableRowSorter<MyTableModel<T>> sorter = new TableRowSorter<>();
+
 	
 	public MyTable()
 	{
@@ -94,15 +97,9 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 		setIntercellSpacing(new Dimension(0, 0));
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		getTableHeader().setFont(HEADER_FONT);
+		setRowSorter(sorter);
 		setRowHeight(ODD_FONT.getSize() + 10);
 		addKeyListener(this);
-		getTableHeader().addMouseListener(new MouseAdapter(){
-			@Override
-			public void mouseClicked(MouseEvent e) 
-			{
-				sortByColumn( columnAtPoint(e.getPoint()));
-			}
-		});
 	}
 
 	public void setSource(Iterable<T> source)
@@ -110,13 +107,6 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 		tList = new ArrayList<>();
 		for(T t : source)
 			tList.add(t);	
-		setModel();
-	}
-	
-	
-	public void setComparator(Comparator<T> comparator)
-	{
-		this.comparator = comparator;
 		setModel();
 	}
 	
@@ -132,27 +122,12 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	
 	public void setModel()
 	{
-		if(comparator != null)
-			tList.sort(comparator);
-		setModel(createTableModel(tList));
+		MyTableModel<T> model = createTableModel(tList);
+		setModel(model);
+		sorter.setModel(model);
 		setCellRenderer();
 		setWidths();
 		repaint();
-	}
-	
-	private void sortByColumn(int columnIndex)
-	{
-		if(columnIndex == sortingColumn)
-			isCompareBackwards = !isCompareBackwards;
-		else
-		{
-			sortingColumn = columnIndex;
-			isCompareBackwards = false;
-		}
-		comparator = comparator(columnIndex);
-		if(isCompareBackwards)
-			comparator = reverseComparator(comparator);
-		setModel();		
 	}
 	
 	private void setWidths()
@@ -181,36 +156,11 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 		scrollRectToVisible( getCellRect(selectedRow, 0, false));
 	}
 	
-	protected Comparator<T> reverseComparator(Comparator<T> comparator)
-	{
-		return (t1,t2) -> comparator.compare(t2, t1);
-	}	
-	
-	
-	
-	// TODO: Use this in GameTableModel and ResultTableModelS
-	@SuppressWarnings("unchecked")
-	protected Comparator<T> createDefaultComparator(int columnIndex)
-	{
-		if(Comparable.class.isAssignableFrom( getModel().getColumnClass(columnIndex) ) )
-		{
-			MyTableModel<T> tableModel = ((MyTableModel<T>) getModel());
-			// TODO: Type argument T is wrong here. Fix before continuing
-			return (t1,t2) -> ((Comparable<T>)tableModel.getColumnValue(t1, columnIndex)).compareTo((T) tableModel.getColumnValue(t2, columnIndex));
-		}
-		return null;
-	}
-	
-	//TODO: To replace this:
-	protected abstract Comparator<T> comparator(int columnIndex);
 
-	
-	
 	protected abstract boolean isThisRowSelected(int rowIndex);
 	protected abstract MyTableModel<T> createTableModel(List<T> tList);
 	protected abstract int columnWidth(int columnIndex);
 	protected abstract int columnAlignment(int columnIndex);
-	
 
 	/*
 	 * Key Listener Methods

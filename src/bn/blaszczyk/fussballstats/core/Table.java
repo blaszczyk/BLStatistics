@@ -48,14 +48,7 @@ public class Table implements Iterable<TeamResult>
 	{
 		return teamResults.get(index);
 	}
-	
-	public int getTeamIndex(String team)
-	{
-		for(int i = 0; i < teamResults.size(); i++)
-			if( teamResults.get(i).getTeam().equals(team))
-				return i;
-		return -1;
-	}
+
 	
 	public List<String> getTeamList()
 	{
@@ -77,6 +70,14 @@ public class Table implements Iterable<TeamResult>
 				t.consumeGame(game,pointsForWin);
 	}
 
+	private int getTeamIndex(String team)
+	{
+		for(int i = 0; i < teamResults.size(); i++)
+			if( teamResults.get(i).getTeam().equals(team))
+				return i;
+		return -1;
+	}
+	
 	@Override
 	public Iterator<TeamResult> iterator()
 	{
