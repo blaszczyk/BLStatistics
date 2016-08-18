@@ -21,13 +21,12 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	private ResultTable resultTable = new ResultTable();	
 
 	private JLabel header = new JLabel("Tabelle", SwingConstants.CENTER);
+	
 	private JCheckBox chbHome = new JCheckBox("Heimspiele",true);
 	private JCheckBox chbAway = new JCheckBox("Auswärtsspiele",true);
 	private JLabel lblWinPoints = new JLabel("Punkte pro Sieg:",SwingConstants.RIGHT);
 	private JComboBox<Integer> boxWinPoints = new JComboBox<>(POINTS_FOR_WIN_OPTIONS);
-	
-	private JCheckBox cboRelative = new JCheckBox("Nach Spielen gewichtet",false);
-	
+	private JCheckBox chbWeighted = new JCheckBox("Nach Spielen gewichtet",false);
 
 	private Iterable<Game> games;
 	private BiFilter<TeamResult, Game> filter = null;
@@ -51,8 +50,8 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		boxWinPoints.setSelectedIndex(1);
 		boxWinPoints.addItemListener(this);
 		
-		cboRelative.setBounds(650,60,250,30);
-		cboRelative.addItemListener(this);
+		chbWeighted.setBounds(650,60,250,30);
+		chbWeighted.addItemListener(this);
 		
 		JPanel optionsPanel = new JPanel();
 		optionsPanel.setLayout(null);
@@ -62,10 +61,16 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		optionsPanel.add(chbAway);
 		optionsPanel.add(lblWinPoints);
 		optionsPanel.add(boxWinPoints);
-		optionsPanel.add(cboRelative);
+		optionsPanel.add(chbWeighted);
 		
 		add(optionsPanel,BorderLayout.NORTH);
 		add(new JScrollPane(resultTable),BorderLayout.CENTER);
+	}
+	
+	public void setGames(Iterable<Game> games)
+	{
+		this.games = games;
+		setTable();
 	}
 	
 	public List<String> getSelectedTeams()
@@ -87,14 +92,7 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	{
 		resultTable.getSelectionModel().removeListSelectionListener(l);
 	}
-	
-	public void setSource(Iterable<Game> games)
-	{
-		this.games = games;
-		createTable();
-	}
-	
-	
+
 	private void setFilter()
 	{
 		if(chbHome.isSelected())
@@ -107,15 +105,14 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 				filter = TeamResultFilter.getAwayGameFilter();
 			else
 				filter = LogicalBiFilter.getFALSEBiFilter();
-		createTable();
+		setTable();
 	}
 	
-	
-	private void createTable()
+	private void setTable()
 	{
 		Table table = new Table(games, filter,(Integer)boxWinPoints.getSelectedItem());
 		table.sort();	
-		resultTable.setRelativeTable(cboRelative.isSelected());
+		resultTable.setRelativeTable(chbWeighted.isSelected());
 		resultTable.setSource(table);
 	}
 

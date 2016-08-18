@@ -156,8 +156,8 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 				for(Game game : season)
 					if(functionalFilterPanel.check(season, game))
 						gameList.add(game);
-		functionalGameTable.setGameList(gameList);
-		functionalResultTable.setSource(gameList);
+		functionalGameTable.setGames(gameList);
+		functionalResultTable.setGames(gameList);
 	}
 
 	private void exit()

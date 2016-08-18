@@ -23,7 +23,7 @@ public class FunctionalGameTable extends JPanel
 	private static final Font FONT = new Font("Arial",Font.BOLD,16);
 	
 	private JLabel header = new JLabel("Spiele", SwingConstants.CENTER);
-	private JPanel panelSummary = new JPanel();
+	private JPanel pnlSummary = new JPanel();
 	private GameTable gameTable = new GameTable();
 	
 	private int summaryRowCount = 0;
@@ -43,12 +43,21 @@ public class FunctionalGameTable extends JPanel
 		header.setBounds(0, 0, 620, 50);
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
-		panelSummary.setLayout(null);
-		panelSummary.setPreferredSize(new Dimension(350 , 7 * ROW_HEIGHT + ROW_BORDER));
+		pnlSummary.setLayout(null);
+		pnlSummary.setPreferredSize(new Dimension(350 , 7 * ROW_HEIGHT + ROW_BORDER));
 				
-		add(panelSummary, BorderLayout.NORTH);
+		add(pnlSummary, BorderLayout.NORTH);
 		add( new JScrollPane(gameTable), BorderLayout.CENTER);
 	}
+	
+	public void setGames( Iterable<Game> games)
+	{
+		gameTable.setSource(games);
+		clearStatistics();
+		for(Game game : games)
+			addToStatistics(game);
+		drawSummaryPanel();
+	}	
 
 	public void setSelectedTeams(List<String> teams)
 	{
@@ -58,6 +67,16 @@ public class FunctionalGameTable extends JPanel
 	public List<String> getSelectedTeams()
 	{
 		return gameTable.getSelectedTeams();
+	}
+	
+	public void addListSelectionListener(ListSelectionListener l)
+	{
+		gameTable.getSelectionModel().addListSelectionListener(l);
+	}
+	
+	public void removeListSelectionListener(ListSelectionListener l)
+	{
+		gameTable.getSelectionModel().removeListSelectionListener(l);
 	}
 
 	private void clearStatistics()
@@ -70,7 +89,7 @@ public class FunctionalGameTable extends JPanel
 		nrDraws = 0;
 		nrAwayWins = 0;
 	}
-	
+
 	private void addToStatistics(Game game)
 	{
 		nrGames++;
@@ -91,30 +110,11 @@ public class FunctionalGameTable extends JPanel
 		}
 	}
 	
-	public void setGameList( Iterable<Game> gameList)
-	{
-		gameTable.setSource(gameList);
-		clearStatistics();
-		for(Game game : gameList)
-			addToStatistics(game);
-		drawSummaryPanel();
-	}
-	
-
-	public void addListSelectionListener(ListSelectionListener l)
-	{
-		gameTable.getSelectionModel().addListSelectionListener(l);
-	}
-	
-	public void removeListSelectionListener(ListSelectionListener l)
-	{
-		gameTable.getSelectionModel().removeListSelectionListener(l);
-	}
 	private void drawSummaryPanel()
 	{
 		summaryRowCount = 0;
-		panelSummary.removeAll();
-		panelSummary.add(header);
+		pnlSummary.removeAll();
+		pnlSummary.add(header);
 		addSummaryRow("Spiele", nrGames);
 		addSummaryRow("Tore", nrGoals);
 		addSummaryRow("Heimtore", nrHomeGoals);
@@ -130,12 +130,12 @@ public class FunctionalGameTable extends JPanel
 		JLabel textLabel = new JLabel(text + ":", SwingConstants.RIGHT);
 		textLabel.setBounds(150, ROW_BORDER + summaryRowCount * ROW_HEIGHT, 150, ROW_HEIGHT);
 		textLabel.setFont(FONT);
-		panelSummary.add(textLabel);
+		pnlSummary.add(textLabel);
 		
 		JLabel valueLabel = new JLabel( NumberFormat.getIntegerInstance().format(value), SwingConstants.RIGHT);
 		valueLabel.setBounds(310, ROW_BORDER + summaryRowCount * ROW_HEIGHT, 80, ROW_HEIGHT);
 		valueLabel.setFont(FONT);
-		panelSummary.add(valueLabel);
+		pnlSummary.add(valueLabel);
 		
 		summaryRowCount++;
 	}
