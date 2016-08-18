@@ -30,7 +30,7 @@ public class Initiator
 		initLeagues(leagues);
 		for (League league : leagues)
 			seasonCount += league.getSeasonCount();
-		ProgressDialog progressDialog = new ProgressDialog(null, seasonCount, "Initiiere FussballStats", Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE) ), false,true);
+		ProgressDialog progressDialog = new ProgressDialog(null, seasonCount, "Initiiere FussballStats", Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE) ), true);
 		progressDialog.showDialog();
 		
 		progressDialog.appendInfo("Initialisiere Ligen");
@@ -109,8 +109,8 @@ public class Initiator
 
 			League league = new League(props[0].trim(), props[1].trim(), props[2].trim(), yearBounds);
 			leagues.add(league);
-			if(leagues.size() > 0)
-				break;
+//			if(leagues.size() > 0)
+//				break;
 		}
 		scanner.close();
 		return leagues;

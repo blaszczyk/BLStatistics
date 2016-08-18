@@ -1,6 +1,5 @@
 package bn.blaszczyk.fussballstats.gui.tools;
 
-import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,8 +12,7 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	
 	private JDialog owner;
 
-//	private JTextArea infoArea = new JTextArea();
-	private JTextArea infoArea = new JTextArea();
+	private JTextArea taInfo = new JTextArea();
 	private JProgressBar prograssBar;
 	private JLabel lblTimeLeft = new JLabel("geschätzte Restzeit: unbekannt");
 	private JButton btnCancel = new JButton("Abbrechen");
@@ -32,9 +30,9 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	private Timer timerSecs = new Timer(1000, e -> setSecsLeft());
 	
 
-	public ProgressDialog(JDialog owner, int maxValue, String title, Image icon, boolean modal, boolean showButton)
+	public ProgressDialog(JDialog owner, int maxValue, String title, Image icon, boolean showButton)
 	{
-		super(owner, title, modal);
+		super(owner, title, owner != null);
 		this.owner = owner;
 		this.maxValue = maxValue;
 		
@@ -45,10 +43,10 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		if(icon != null)
 			setIconImage( icon );
 
-		infoArea.setEditable(false);
-		infoArea.setLineWrap(true);
+		taInfo.setEditable(false);
+		taInfo.setLineWrap(true);
 
-		JScrollPane infoPane = new JScrollPane(infoArea);
+		JScrollPane infoPane = new JScrollPane(taInfo);
 		infoPane.setBounds(10, 10, 580, 200);
 		add(infoPane);
 		
@@ -90,17 +88,15 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	
 	public void appendInfo(String info)
 	{
-		infoArea.append(info);
-		infoArea.setCaretPosition(infoArea.getDocument().getLength());
+		taInfo.append(info);
+		taInfo.setCaretPosition(taInfo.getDocument().getLength());
 	}
 	
-	public void appendException(Exception e)
+	public void appendException(Throwable t)
 	{
-		Throwable t = e;
-		infoArea.setForeground(Color.RED);
 		while(t != null)
 		{
-			appendInfo("\n" + t.getMessage() );
+			appendInfo("\n>>" + t.getMessage() );
 			t = t.getCause();
 		}
 	}
@@ -144,8 +140,7 @@ public class ProgressDialog extends JDialog implements ActionListener {
 				secsLeft = (int)( (System.currentTimeMillis() - initTimeStamp) * (maxValue - value) / value )/1000;
 			lastValue = value;
 		}
-		SwingUtilities.invokeLater(() -> lblTimeLeft.setText(
-				String.format( "geschätzte Restzeit: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n") ) );
+		lblTimeLeft.setText( String.format( "geschätzte Restzeit: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n") );
 	}
 	
 	@Override

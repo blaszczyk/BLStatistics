@@ -37,12 +37,12 @@
 //
 //  NordOst
 //
-	Regionalliga NordOst	;	regionalliga-nordost-%4d-%4d			;	regionalliga/nordost		;	1995;2000;	2013
+	Regionalliga NO			;	regionalliga-nordost-%4d-%4d			;	regionalliga/nordost		;	1995;2000;	2013
 //
 //  SüdWest
 //
-	Regionalliga SüdWest	;	regionalliga-suedwest-1963-1974-%4d-%4d	;	regionalliga/suedwest		;	1964;1974
-	Regionalliga SüdWest	;	regionalliga-suedwest-%4d-%4d			;	regionalliga/suedwest		;	2013
+	Regionalliga SW			;	regionalliga-suedwest-1963-1974-%4d-%4d	;	regionalliga/suedwest		;	1964;1974
+	Regionalliga SW			;	regionalliga-suedwest-%4d-%4d			;	regionalliga/suedwest		;	2013
 //
 //  Bayern
 //

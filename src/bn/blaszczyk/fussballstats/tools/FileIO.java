@@ -5,8 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-import java.util.Stack;
 
 import bn.blaszczyk.fussballstats.core.*;
 
@@ -33,7 +34,7 @@ public class FileIO
 		}
 		catch (IOException e)
 		{
-			throw new FussballException("Error writing " + filename,e);
+			throw new FussballException("Schreibfehler: " + filename,e);
 		}
 	}
 	
@@ -55,33 +56,27 @@ public class FileIO
 			}
 			catch (FussballException e)
 			{
-				//TODO: NotifyUser
+				//TODO: NotifyUser ?
 				e.printStackTrace();
 			}
 	}
 	
 	private static boolean loadSeason(Season season) throws FussballException
 	{
-		if(season == null)
+		if(season == null || !isSeasonSaved(season))
 			return false;
 		String file = getFileName(season);
-		if(!isSeasonSaved(season))
-			return false;
 		try(Scanner scanner = new Scanner(new FileInputStream(file)))
 		{
-			Stack<Game> gameStack = new Stack<>();
+			List<Game> games = new ArrayList<>();
 			while (scanner.hasNextLine())
-				gameStack.push(new Game( scanner.nextLine() ));
-			season.consumeGames( gameStack );
+				games.add(new Game( scanner.nextLine() ));
+			season.setGames( games );
 			return true;
 		}
 		catch (FileNotFoundException e)
 		{
-			throw new FussballException("Error loading " + file, e );
-		}
-		catch(NumberFormatException e)
-		{
-			throw new FussballException("Wrong Filename " + file, e );
+			throw new FussballException("Ladefehler " + file, e );
 		}
 	}
 	

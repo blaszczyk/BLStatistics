@@ -49,19 +49,19 @@ public class Season implements Iterable<Game>
 		return games.size();
 	}	
 
-	public void consumeGames(Iterable<Game> source)
+	public void setGames(List<Game> games)
 	{
-		for(Game game : source)
-			consumeGame(game);
+		this.games = games;
+		matchDayCount = 0;
+		teams.clear();
+		for(Game game : games)
+		{
+			matchDayCount = Math.max(matchDayCount, game.getMatchDay());
+			addTeam(game.getTeamH());
+			addTeam(game.getTeamA());
+		}
 	}
 	
-	private void consumeGame(Game game)
-	{
-		matchDayCount = Math.max(matchDayCount, game.getMatchDay());
-		games.add(game);
-		addTeam(game.getTeamH());
-		addTeam(game.getTeamA());
-	}
 
 	private void addTeam(String team)
 	{

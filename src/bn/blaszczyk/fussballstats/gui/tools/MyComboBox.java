@@ -146,7 +146,7 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		switch(e.getKeyCode())
 		{
 		case KeyEvent.VK_DOWN:
-			moveSelection(1);
+			moveSelection(isPopupVisible() ? 0 : 1);
 			e.consume();
 			break;
 		case KeyEvent.VK_UP:
