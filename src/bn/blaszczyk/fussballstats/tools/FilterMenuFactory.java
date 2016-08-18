@@ -195,12 +195,10 @@ public class FilterMenuFactory
 		/*
 		 * Team Filters
 		 */
-		JMenu teamFilters = new JMenu("Team Filter");
+		JMenu teamFilters = new JMenu("Verein Filter");
 
-		addMenuItem(teamFilters,"Team", 
+		addMenuItem(teamFilters,"Verein", 
 			() -> setPanel( FilterPanelAdapter.getSecondArgAdapter( new TeamFilterPanel() ) ) );
-		addMenuItem(teamFilters,"Team Suche", 
-				() -> setPanel( FilterPanelAdapter.getSecondArgAdapter( new TeamSearchFilterPanel() ) ) );
 		addMenuItem(teamFilters,"Direkter Vergleich", 
 			() -> setPanel( FilterPanelAdapter.getSecondArgAdapter( new SubLeagueFilterPanel() ) ) );
 		
@@ -258,7 +256,7 @@ public class FilterMenuFactory
 	private static JMenuItem addMenuItem(JMenu menu, String label, MyAction createAction )
 	{
 		JMenuItem item = new JMenuItem(label);
-		MyAction panelActionCopy = panelAction;
+		final MyAction panelActionCopy = panelAction;
 		item.addActionListener( e ->{
 			createAction.doAction();
 			panelActionCopy.doAction();

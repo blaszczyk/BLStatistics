@@ -14,8 +14,8 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 {
 	public static final String NAME = "Runde";
 	
-	private JCheckBox first = new JCheckBox("Hinrunde",true);
-	private JCheckBox second = new JCheckBox("Rückrunde",true);
+	private JCheckBox boxFirst = new JCheckBox("Hinrunde",true);
+	private JCheckBox boxSecond = new JCheckBox("Rückrunde",true);
 
 	public RoundFilterPanel()
 	{
@@ -26,13 +26,13 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 	{
 		super(false);
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
-		first.addActionListener(setFilterListener);
-		first.setInheritsPopupMenu(true);
-		second.addActionListener(setFilterListener);
-		second.setInheritsPopupMenu(true);
+		boxFirst.addActionListener(setFilterListener);
+		boxFirst.setInheritsPopupMenu(true);
+		boxSecond.addActionListener(setFilterListener);
+		boxSecond.setInheritsPopupMenu(true);
 		
-		first.setSelected(firstRound);
-		second.setSelected(secondRound);
+		boxFirst.setSelected(firstRound);
+		boxSecond.setSelected(secondRound);
 		
 		setFilter();
 	}
@@ -53,19 +53,19 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 
 	public boolean isFirstRound()
 	{
-		return first.isSelected();
+		return boxFirst.isSelected();
 	}
 	
 	public boolean isSecondRound()
 	{
-		return second.isSelected();
+		return boxSecond.isSelected();
 	}
 	
 	@Override
 	protected void addComponents()
 	{
-		add(first);
-		add(second);
+		add(boxFirst);
+		add(boxSecond);
 	}
 	
 	@Override

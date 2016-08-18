@@ -22,8 +22,8 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 	
 	private final static List<String> LEAGUE_LIST = new ArrayList<>();
 	
-	private JComboBox<String> cboLeagues;
-	private JCheckBox boxContains = new JCheckBox("Alle",true);
+	private JComboBox<String> boxLeagues;
+	private JCheckBox chbContains = new JCheckBox("Alle",true);
 
 	public SingleLeagueFilterPanel()
 	{
@@ -35,28 +35,28 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		cboLeagues = new MyComboBox<>(LEAGUE_LIST,250,false);
-		cboLeagues.addActionListener(setFilterListener);
+		boxLeagues = new MyComboBox<>(LEAGUE_LIST,250,false);
+		boxLeagues.addActionListener(setFilterListener);
 
-		boxContains.setMinimumSize(new Dimension(60, 30));
-		boxContains.setMinimumSize(new Dimension(60, 30));
-		boxContains.setInheritsPopupMenu(true);
-		boxContains.addActionListener(setFilterListener);
+		chbContains.setMinimumSize(new Dimension(60, 30));
+		chbContains.setMinimumSize(new Dimension(60, 30));
+		chbContains.setInheritsPopupMenu(true);
+		chbContains.addActionListener(setFilterListener);
 		
-		cboLeagues.setSelectedItem(league);
-		boxContains.setSelected(isContains);
+		boxLeagues.setSelectedItem(league);
+		chbContains.setSelected(isContains);
 		
 		setFilter();
 	}
 	
 	public String getSelectedLeague()
 	{
-		return (String) cboLeagues.getSelectedItem();
+		return (String) boxLeagues.getSelectedItem();
 	}
 
 	public boolean isRecursive()
 	{
-		return boxContains.isSelected();
+		return chbContains.isSelected();
 	}
 
 	public static void setLeagueList(Iterable<String> leagueList)
@@ -68,11 +68,11 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 	
 	protected void setFilter()
 	{
-		String league = (String) cboLeagues.getSelectedItem();
+		String league = (String) boxLeagues.getSelectedItem();
 		Filter<Season> filter;
 		if(league == null)
 			filter = LogicalFilter.getTRUEFilter();
-		else if( boxContains.isSelected())
+		else if( chbContains.isSelected())
 			filter = SeasonFilter.getLeagueContainsFilter(league);
 		else
 			filter = SeasonFilter.getLeagueFilter(league);
@@ -82,8 +82,8 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 	@Override
 	protected void addComponents()
 	{
-		add(cboLeagues);
-		add(boxContains);
+		add(boxLeagues);
+		add(chbContains);
 	}
 	
 	@Override

@@ -19,8 +19,8 @@ import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> implements CompareToFilterPanel<T>, MouseWheelListener, KeyListener
 {
 	private JLabel label;
-	private JComboBox<String> operatorBox;
-	private JTextField valueField;
+	private JComboBox<String> boxOperator;
+	private JTextField tfValue;
 	private int defaultValue;
 
 	private IntegerValueFilterPanel(String labelText, int defaultValue)
@@ -31,14 +31,14 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		label = new JLabel(labelText);
 		label.setDisplayedMnemonic('f');
 		
-		operatorBox = new MyComboBox<>(OPERATORS,50,false);
-		operatorBox.addActionListener(setFilterListener);
+		boxOperator = new MyComboBox<>(OPERATORS,50,false);
+		boxOperator.addActionListener(setFilterListener);
 		
-		valueField = new JTextField(Integer.toString(defaultValue));
-		valueField.setMaximumSize(new Dimension(70,30));
-		valueField.setInheritsPopupMenu(true);
-		valueField.addKeyListener(this);
-		valueField.addMouseWheelListener(this);
+		tfValue = new JTextField(Integer.toString(defaultValue));
+		tfValue.setMaximumSize(new Dimension(70,30));
+		tfValue.setInheritsPopupMenu(true);
+		tfValue.addKeyListener(this);
+		tfValue.addMouseWheelListener(this);
 
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		setFilter();
@@ -49,21 +49,21 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	protected IntegerValueFilterPanel(String labelText, String operator, int defaultValue)
 	{
 		this(labelText,defaultValue);
-		operatorBox.setSelectedItem(operator);
+		boxOperator.setSelectedItem(operator);
 	}
 
 	@Override
 	protected void addComponents()
 	{
 		add(label);
-		add(operatorBox);
-		add(valueField);
+		add(boxOperator);
+		add(tfValue);
 	}
 	
 	@Override
 	public String getOperator()
 	{
-		return operatorBox.getSelectedItem().toString();
+		return boxOperator.getSelectedItem().toString();
 	}
 	
 	public int getReferenceInt()
@@ -71,7 +71,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		int result = defaultValue;
 		try
 		{
-			result = Integer.parseInt(valueField.getText());
+			result = Integer.parseInt(tfValue.getText());
 		}
 		catch(NumberFormatException e)
 		{
@@ -92,22 +92,22 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		switch(getOperator())
 		{
 		case EQ:
-			operatorBox.setSelectedItem(NEQ);
+			boxOperator.setSelectedItem(NEQ);
 			break;
 		case NEQ:
-			operatorBox.setSelectedItem(EQ);
+			boxOperator.setSelectedItem(EQ);
 			break;
 		case LEQ:
-			operatorBox.setSelectedItem(GG);
+			boxOperator.setSelectedItem(GG);
 			break;
 		case GG:
-			operatorBox.setSelectedItem(LEQ);
+			boxOperator.setSelectedItem(LEQ);
 			break;
 		case GEQ:
-			operatorBox.setSelectedItem(LL);
+			boxOperator.setSelectedItem(LL);
 			break;
 		case LL:
-			operatorBox.setSelectedItem(GEQ);
+			boxOperator.setSelectedItem(GEQ);
 			break;
 		}
 	}
@@ -148,15 +148,15 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-		if(e.getSource() == valueField)
+		if(e.getSource() == tfValue)
 		{
 			switch(e.getKeyCode())
 			{
 			case KeyEvent.VK_UP:
-				valueField.setText( Integer.parseInt(valueField.getText()) + 1 + ""  );
+				tfValue.setText( Integer.parseInt(tfValue.getText()) + 1 + ""  );
 				break;
 			case KeyEvent.VK_DOWN:
-				valueField.setText( Integer.parseInt(valueField.getText()) - 1 + ""  );
+				tfValue.setText( Integer.parseInt(tfValue.getText()) - 1 + ""  );
 				break;
 			}
 		}			

@@ -12,6 +12,13 @@ import bn.blaszczyk.fussballstats.filters.LogicalBiFilter;
 @SuppressWarnings("serial")
 public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFilterPanel<T,U>
 {
+	private final boolean varComponents;
+	private boolean isActive = true;
+	private boolean isPainted = false;
+	
+	private BiFilter<T,U> filter = LogicalBiFilter.getTRUEBiFilter();
+	private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
+
 	protected ActionListener setFilterListener = e ->
 	{
 		setFilter();
@@ -19,13 +26,10 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 			((JComponent)e.getSource()).requestFocusInWindow();
 	};
 	
-	private boolean isActive = true;
-	private final boolean varComponents;
-	private boolean isPainted = false;
 	
-	private BiFilter<T,U> filter = LogicalBiFilter.getTRUEBiFilter();
-	private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
-	
+	/*
+	 * Constructor
+	 */
 	public AbstractBiFilterPanel(boolean varComponents)
 	{
 		this.varComponents = varComponents;
@@ -43,13 +47,8 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		notifyListeners(new BiFilterEvent<>(this,oldName));
 	}
 	
-	protected void passFilterEvent(BiFilterEvent<T, U> e)
-	{
-		notifyListeners(e);
-	}	
-	
 
-	private void notifyListeners(BiFilterEvent<T,U> e)
+	protected void notifyListeners(BiFilterEvent<T,U> e)
 	{
 		List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
 		for(BiFilterListener<T, U> listener : listeners)
@@ -128,7 +127,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 			listeners.remove(i);
 	}
 
-	
 	@Override
 	public void replaceMe(BiFilterPanel<T, U> newPanel)
 	{

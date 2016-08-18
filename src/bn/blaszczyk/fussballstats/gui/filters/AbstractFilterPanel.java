@@ -21,6 +21,10 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	private Filter<T> filter = LogicalFilter.getTRUEFilter();
 	private List<FilterListener<T>> listeners = new ArrayList<>();
 	
+	private boolean active = true;
+	private boolean isPainted = false;
+	private final boolean varComponents;
+
 	protected ActionListener setFilterListener = e ->
 	{
 		setFilter();
@@ -28,19 +32,14 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 			((JComponent)e.getSource()).requestFocusInWindow();
 	};
 	
-	private boolean active = true;
-	private final boolean varComponents;
-	private boolean isPainted = false;
-	
 	/*
-	 * Constructors
+	 * Constructor
 	 */
 	public AbstractFilterPanel(boolean varComponents)
 	{
 		this.varComponents = varComponents;
 		setActive(true);
 	}
-
 
 	protected abstract void addComponents();
 	protected abstract void setFilter();

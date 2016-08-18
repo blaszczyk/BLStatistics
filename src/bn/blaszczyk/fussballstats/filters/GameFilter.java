@@ -1,8 +1,10 @@
 package bn.blaszczyk.fussballstats.filters;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import bn.blaszczyk.fussballstats.core.Game;
 
@@ -166,10 +168,13 @@ public abstract class GameFilter implements Filter<Game>
 	/*
 	 * DayOfWeek Filter
 	 */
-	@SuppressWarnings("deprecation")
 	public static Filter<Game> getDayOfWeekFilter(int dayOfWeek) // 0 = Sunday ... 6 = Saturday
 	{
-		Filter<Game> f = g -> g.getDate().getDay() == dayOfWeek;
+		Filter<Game> f = g -> {
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime(g.getDate()); 
+			return calendar.get(Calendar.DAY_OF_WEEK) == dayOfWeek;
+		};
 		return f;
 	}
 	

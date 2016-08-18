@@ -15,15 +15,15 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 	
 	private static final String[] DAYS_OF_WEEK = {"Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"};
 	
-	private JComboBox<String> dowBox;
+	private JComboBox<String> boxDayOfWeek;
 	
 	
 	public DayOfWeekFilterPanel()
 	{
 		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-		dowBox = new MyComboBox<>(DAYS_OF_WEEK,250,false);
-		dowBox.addActionListener(setFilterListener);
+		boxDayOfWeek = new MyComboBox<>(DAYS_OF_WEEK,250,false);
+		boxDayOfWeek.addActionListener(setFilterListener);
 		setFilter();
 	}
 	
@@ -31,7 +31,7 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 	public DayOfWeekFilterPanel(String dayOfWeek)
 	{
 		this();
-		dowBox.setSelectedItem(dayOfWeek);
+		boxDayOfWeek.setSelectedItem(dayOfWeek);
 		setFilter();
 	}
 
@@ -39,24 +39,24 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 	
 	protected void setFilter()
 	{
-		setFilter(GameFilter.getDayOfWeekFilter( dowBox.getSelectedIndex()));
+		setFilter(GameFilter.getDayOfWeekFilter( boxDayOfWeek.getSelectedIndex()));
 	}
 	
 	public String getDayOfWeek()
 	{
-		return dowBox.getSelectedItem().toString();
+		return boxDayOfWeek.getSelectedItem().toString();
 	}
 
 	@Override
 	protected void addComponents()
 	{
-		add(dowBox);
+		add(boxDayOfWeek);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return dowBox.getSelectedItem().toString();
+		return boxDayOfWeek.getSelectedItem().toString();
 	}
 	
 }

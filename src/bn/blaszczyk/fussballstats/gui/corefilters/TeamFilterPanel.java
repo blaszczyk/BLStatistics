@@ -18,12 +18,12 @@ import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 @SuppressWarnings({"serial"})
 public class TeamFilterPanel extends AbstractFilterPanel<Game>
 {
-	public static final String NAME = "Team";
+	public static final String NAME = "Verein";
 	private static final List<String> TEAM_LIST = new ArrayList<>();
 	
-	private JComboBox<String> teamBox;
-	private JCheckBox homeBox;
-	private JCheckBox awayBox;
+	private JComboBox<String> boxTeam;
+	private JCheckBox chbHome;
+	private JCheckBox chbAway;
 	
 	public TeamFilterPanel()
 	{
@@ -35,42 +35,42 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		teamBox = new MyComboBox<>(TEAM_LIST,250,false);
-		teamBox.addActionListener(setFilterListener);
+		boxTeam = new MyComboBox<>(TEAM_LIST,250,true);
+		boxTeam.addActionListener(setFilterListener);
 		
-		homeBox = new JCheckBox("H",true);
-		homeBox.setInheritsPopupMenu(true);
-		homeBox.addActionListener(setFilterListener);
-		homeBox.setMaximumSize(new Dimension(50,30));
-		homeBox.setMinimumSize(new Dimension(50,30));
+		chbHome = new JCheckBox("H",true);
+		chbHome.setInheritsPopupMenu(true);
+		chbHome.addActionListener(setFilterListener);
+		chbHome.setMaximumSize(new Dimension(50,30));
+		chbHome.setMinimumSize(new Dimension(50,30));
 		
-		awayBox = new JCheckBox("A",true);
-		awayBox.setInheritsPopupMenu(true);
-		awayBox.addActionListener(setFilterListener);
-		awayBox.setMaximumSize(new Dimension(50,30));
-		awayBox.setMinimumSize(new Dimension(50,30));
+		chbAway = new JCheckBox("A",true);
+		chbAway.setInheritsPopupMenu(true);
+		chbAway.addActionListener(setFilterListener);
+		chbAway.setMaximumSize(new Dimension(50,30));
+		chbAway.setMinimumSize(new Dimension(50,30));
 
 		setMaximumSize(new Dimension(350,30));
 		setMinimumSize(new Dimension(350,30));
-		teamBox.setSelectedItem(team);
-		homeBox.setSelected(home);
-		awayBox.setSelected(away);		
+		boxTeam.setSelectedItem(team);
+		chbHome.setSelected(home);
+		chbAway.setSelected(away);		
 		setFilter();
 	}
 	
 	public String getTeam()
 	{
-		return (String) teamBox.getSelectedItem();
+		return (String) boxTeam.getSelectedItem();
 	}
 
-	public boolean getHome()
+	public boolean isHome()
 	{
-		return homeBox.isSelected();
+		return chbHome.isSelected();
 	}
 	
-	public boolean getAway()
+	public boolean isAway()
 	{
-		return awayBox.isSelected();
+		return chbAway.isSelected();
 	}
 
 	public static void setTeamList(Iterable<String> teamList)
@@ -87,15 +87,15 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	
 	protected void setFilter()
 	{
-		String team = (String) teamBox.getSelectedItem();
+		String team = (String) boxTeam.getSelectedItem();
 		Filter<Game> filter = LogicalFilter.getFALSEFilter();
-		if(homeBox.isSelected())
-			if(awayBox.isSelected())
+		if(chbHome.isSelected())
+			if(chbAway.isSelected())
 				filter = GameFilter.getTeamFilter(team);
 			else
 				filter = GameFilter.getTeamHomeFilter(team);
 		else
-			if(awayBox.isSelected())
+			if(chbAway.isSelected())
 				filter = GameFilter.getTeamAwayFilter(team);
 		setFilter(filter);
 	}
@@ -104,15 +104,15 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	@Override
 	protected void addComponents()
 	{
-		add(teamBox);
-		add(homeBox);
-		add(awayBox);
+		add(boxTeam);
+		add(chbHome);
+		add(chbAway);
 	}	
 
 	@Override
 	public String toString()
 	{
-		return "Team " + teamBox.getSelectedItem();
+		return "Verein " + boxTeam.getSelectedItem();
 	}
 	
 }

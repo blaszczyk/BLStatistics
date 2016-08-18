@@ -2,17 +2,21 @@ package bn.blaszczyk.fussballstats.gui;
 
 import java.util.List;
 
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
+
 import bn.blaszczyk.fussballstats.core.TeamResult;
-import bn.blaszczyk.fussballstats.gui.tools.MyTableModel;
 import bn.blaszczyk.fussballstats.tools.TeamAlias;
 
 
-public class RelativeResultTableModel extends MyTableModel<TeamResult> 
+public class RelativeResultTableModel implements TableModel
 {
 
+	private List<TeamResult> results;
+	
 	public RelativeResultTableModel(List<TeamResult> results)
 	{
-		super(results);
+		this.results = results;
 	}	
 	
 	/*
@@ -59,10 +63,11 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 			return Double.class;
 		return Integer.class;
 	}
-	
+
 	@Override
-	public Object getColumnValue(TeamResult result, int columnIndex)
+	public Object getValueAt(int rowIndex, int columnIndex)
 	{
+		TeamResult result = results.get(rowIndex);
 		double value = 0;
 		switch(columnIndex)
 		{
@@ -99,6 +104,34 @@ public class RelativeResultTableModel extends MyTableModel<TeamResult>
 		if(result.getGames() == 0)
 			return 0.;
 		return  value / result.getGames() ;
+	}
+	
+	@Override
+	public int getRowCount()
+	{
+		return results.size();
+	}
+
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex)
+	{
+		return false;
+	}
+
+
+	@Override
+	public void addTableModelListener(TableModelListener l)
+	{
+	}
+	@Override
+	public void removeTableModelListener(TableModelListener l)
+	{
+	}
+
+
+	@Override
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+	{
 	}
 	
 	

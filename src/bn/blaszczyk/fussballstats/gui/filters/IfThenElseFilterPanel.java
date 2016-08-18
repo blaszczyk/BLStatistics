@@ -10,9 +10,9 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 {
 	public static final String NAME = "IfThenElse";
 	
-	private JLabel ifLabel = new JLabel("IF");
-	private JLabel thenLabel = new JLabel("THEN");
-	private JLabel elseLabel = new JLabel("ELSE");
+	private JLabel lblIf = new JLabel("IF");
+	private JLabel lblThen = new JLabel("THEN");
+	private JLabel lblElse = new JLabel("ELSE");
 	
 	private BiFilterPanel<T,U> ifFilter;
 	private BiFilterPanel<T,U> thenFilter;
@@ -23,9 +23,9 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 		super(true);
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		
-		ifLabel.setAlignmentX(LEFT_ALIGNMENT);
-		thenLabel.setAlignmentX(LEFT_ALIGNMENT);
-		elseLabel.setAlignmentX(LEFT_ALIGNMENT);
+		lblIf.setAlignmentX(LEFT_ALIGNMENT);
+		lblThen.setAlignmentX(LEFT_ALIGNMENT);
+		lblElse.setAlignmentX(LEFT_ALIGNMENT);
 		
 		setIfFilter(ifFilter);
 		setThenFilter(thenFilter);
@@ -88,11 +88,11 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	@Override
 	protected void addComponents()
 	{
-		add(ifLabel);
+		add(lblIf);
 		add(ifFilter.getPanel());
-		add(thenLabel);
+		add(lblThen);
 		add(thenFilter.getPanel());
-		add(elseLabel);
+		add(lblElse);
 		add(elseFilter.getPanel());
 	}
 
@@ -108,7 +108,7 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	@Override
 	public void filter(BiFilterEvent<T, U> e)
 	{
-		passFilterEvent(e);
+		notifyListeners(e);
 		if(e.getType() == BiFilterEvent.SET_PANEL && e.getSource() != null)
 		{
 			if(e.getSource().equals(ifFilter))

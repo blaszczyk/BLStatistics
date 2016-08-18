@@ -8,7 +8,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -41,6 +40,7 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	
 	private int charCounter = 0;
 	private char selectChar = '.';
+	private boolean editable;
 	private CycleListener listener = null;
 	private T[] tArray;
 	
@@ -58,6 +58,7 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	public MyComboBox(T[] tArray, int boxWidth, boolean editable)
 	{
 		super(tArray);
+		this.editable = editable;
 		this.tArray = tArray;
 		setMaximumSize(new Dimension(boxWidth,30));
 		setMinimumSize(new Dimension(boxWidth,30));
@@ -65,6 +66,7 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		addKeyListener(this);
 		setInheritsPopupMenu(true);
 		setEditable(editable);
+		
 		setFont( UIManager.getFont("ComboBox.font").deriveFont(Font.BOLD) );
 	}
 	
@@ -72,7 +74,6 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	{
 		this.listener = listener;
 	}
-	
 	
 	private void selectByChar(char c)
 	{
@@ -130,7 +131,6 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		T[] tArray = (T[]) new Object[tList.size()];
 		tList.toArray(tArray);
 		return tArray;
-		
 	}
 	
 	@Override
@@ -153,61 +153,62 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 			moveSelection(-1);
 			e.consume();
 			break;
-//		case KeyEvent.VK_RIGHT:
-//			setPopupVisible(true);
-//			break;
-//		case KeyEvent.VK_LEFT:
-//			setPopupVisible(false);
-//			break;
+		case KeyEvent.VK_RIGHT:
+			setPopupVisible(true);
+			break;
+		case KeyEvent.VK_LEFT:
+			setPopupVisible(false);
+			break;
 		}
-		setPopupVisible(true);
-//		requestFocusInWindow();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
-		e.consume();
+		if(!editable)
+			return;
 		char c = e.getKeyChar();
 		if( !Character.isISOControl(c) && !Character.isDigit(c) && !Character.isAlphabetic(c) )
 			return;
-		if(e.getSource() == getEditor().getEditorComponent() )
-		{
-			JTextField inputField = (JTextField)getEditor().getEditorComponent();
-			String input = inputField.getText();
-			int caret = inputField.getCaretPosition();
-			
+		/*
+		 * Save Status of ComboBox
+		 */
+		JTextField inputField = (JTextField)getEditor().getEditorComponent();
+		String input = inputField.getText();
+		int caret = inputField.getCaretPosition();
+		
 			ActionListener[] listeners = getActionListeners();
-			for(ActionListener listener : listeners)
-				removeActionListener(listener);
-			
-			removeAllItems();
-			for(T t : tArray)
+		for(ActionListener listener : listeners)
+			removeActionListener(listener);
+		
+		/*
+		 * Reset List
+		 */
+		removeAllItems();
+		for(T t : tArray)
 				if(t.toString().toLowerCase().contains(input.toLowerCase()))
-					addItem(t);
-			
-			inputField.setText(input);
-			inputField.setCaretPosition(caret);
-			setPopupVisible(true);
-			
-			for(ActionListener listener : listeners)
-				addActionListener(listener);
-		}
+				addItem(t);
+		/*
+		 * Reset Status
+		 */
+		inputField.setText(input);
+		inputField.setCaretPosition(caret);
+		for(ActionListener listener : listeners)
+			addActionListener(listener);
+		
 		setPopupVisible(true);
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e)
 	{
-		
-//		if(e.getSource() == this)
-//		{
-//			char keyChar = e.getKeyChar();
-//			if(e.getModifiers() == InputEvent.ALT_DOWN_MASK)
-//				return;
-//			if(Character.isAlphabetic(keyChar) || Character.isDigit(keyChar))
-//				selectByChar(Character.toLowerCase(keyChar));
-//			requestFocusInWindow();
-//		}
+		if(editable)
+			return;
+		char keyChar = e.getKeyChar();
+		if(e.getModifiers() == InputEvent.ALT_DOWN_MASK)
+			return;
+		if(Character.isAlphabetic(keyChar) || Character.isDigit(keyChar))
+			selectByChar(Character.toLowerCase(keyChar));
+		requestFocusInWindow();
 	}
 }

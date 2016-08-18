@@ -5,10 +5,11 @@ import java.util.List;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableModel;
 
 import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.gui.tools.MyTable;
-import bn.blaszczyk.fussballstats.gui.tools.MyTableModel;
+//import bn.blaszczyk.fussballstats.gui.tools.MyTableModel;
 
 @SuppressWarnings("serial")
 public class GameTable extends MyTable<Game>
@@ -49,7 +50,7 @@ public class GameTable extends MyTable<Game>
 	}
 
 	@Override
-	protected MyTableModel<Game> createTableModel(List<Game> tList)
+	protected TableModel createTableModel(List<Game> tList)
 	{
 		return new GameTableModel(tList);
 	}

@@ -101,12 +101,7 @@ public class FilterParser
 			else if (iFilter instanceof TeamFilterPanel)
 			{
 				TeamFilterPanel tFilter = (TeamFilterPanel) iFilter;
-				innerBuilder.append(String.format("%s;%s;%s;%s", TeamFilterPanel.NAME,  tFilter.getTeam(), tFilter.getHome(), tFilter.getAway()));
-			}
-			else if (iFilter instanceof TeamSearchFilterPanel)
-			{
-				TeamSearchFilterPanel tsFilter = (TeamSearchFilterPanel) iFilter;
-				innerBuilder.append(String.format("%s;%s;%s", TeamSearchFilterPanel.NAME,  tsFilter.getTeam(), tsFilter.isStrict()));
+				innerBuilder.append(String.format("%s;%s;%s;%s", TeamFilterPanel.NAME,  tFilter.getTeam(), tFilter.isHome(), tFilter.isAway()));
 			}
 			else if (iFilter instanceof SubLeagueFilterPanel)
 			{
@@ -123,7 +118,7 @@ public class FilterParser
 		}
 		else
 		{
-			System.err.println("Writing Unknown Filter: " + filter);
+			System.err.println("Unbekannter Filter: " + filter);
 		}
 		outerBuilder.append(String.format("F%d;%s\n", panelCount, innerBuilder.toString()));
 		return panelCount++;
@@ -135,7 +130,7 @@ public class FilterParser
 		String[] split = in.split(";");
 		BiFilterPanel<Season, Game> panel = new NoFilterPanel<>();
 		if (split.length < 2)
-			return null;
+			return panel;
 		switch (split[1])
 		{
 		case MultiOperatorFilterPanel.NAME:
@@ -186,9 +181,6 @@ public class FilterParser
 		case TeamFilterPanel.NAME:
 			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(split[2], Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4])) );
 			break;
-		case TeamSearchFilterPanel.NAME:
-			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamSearchFilterPanel(split[2], Boolean.parseBoolean(split[3])) );
-			break;
 		case SubLeagueFilterPanel.NAME:
 			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(Arrays.asList(split).subList(2, split.length)) );
 			break;
@@ -199,7 +191,7 @@ public class FilterParser
 			panel = FilterPanelAdapter.getSecondArgAdapter(new DayOfWeekFilterPanel(split[2]));
 			break;
 		default:
-			System.out.println("Unbekannter Filter:" + in);
+			System.err.println("Unbekannter Filter:" + in);
 		}
 		FilterMenuFactory.createPopupMenu(panel);
 		filters.put(split[0], panel);

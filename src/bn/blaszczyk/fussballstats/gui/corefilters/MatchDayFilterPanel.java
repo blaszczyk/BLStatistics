@@ -14,7 +14,7 @@ public class MatchDayFilterPanel extends IntegerValueFilterPanel<Game>
 	
 	public MatchDayFilterPanel()
 	{
-		super(NAME,"=",1);
+	super(NAME,EQ,1);
 	}
 	
 	public MatchDayFilterPanel(String operator, int refInt)

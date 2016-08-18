@@ -4,10 +4,10 @@ import java.util.*;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableModel;
 
 import bn.blaszczyk.fussballstats.core.TeamResult;
 import bn.blaszczyk.fussballstats.gui.tools.MyTable;
-import bn.blaszczyk.fussballstats.gui.tools.MyTableModel;
 
 @SuppressWarnings("serial")
 public class ResultTable extends MyTable<TeamResult>
@@ -45,7 +45,7 @@ public class ResultTable extends MyTable<TeamResult>
 	}
 
 	@Override
-	protected MyTableModel<TeamResult> createTableModel(List<TeamResult> ts)
+	protected TableModel createTableModel(List<TeamResult> ts)
 	{
 		if(isRelativeTable)
 			return new RelativeResultTableModel(ts); 

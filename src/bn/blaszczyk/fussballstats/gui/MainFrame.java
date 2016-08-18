@@ -22,7 +22,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 
@@ -103,7 +102,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 				functionalResultTable.setSelectedTeams(functionalGameTable.getSelectedTeams());
 		});
 		
-		JSplitPane spInner = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, new JScrollPane(functionalGameTable));
+		JSplitPane spInner = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, functionalGameTable);
 		spInner.setDividerLocation(940);
 		JSplitPane spOuter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalFilterPanel, spInner );
 		spOuter.setDividerLocation(355);

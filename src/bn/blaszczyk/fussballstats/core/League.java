@@ -2,14 +2,12 @@ package bn.blaszczyk.fussballstats.core;
 
 import java.util.*;
 
-import bn.blaszczyk.fussballstats.tools.FussballException;
 
 
 public class League implements Iterable<Season>
 {
-	private static final Date TODAY = new Date();
-	@SuppressWarnings("deprecation")
-	private static final int THIS_YEAR = 1900 + TODAY.getYear() + ( (TODAY.getMonth() > 6) ? 1 : 0  );		 
+	private static Calendar CALENDAR = new GregorianCalendar();
+	public static final int THIS_SEASON = CALENDAR.get(Calendar.YEAR) + ( (CALENDAR.get(Calendar.MONTH)  > Calendar.JUNE) ? 1 : 0  );		 
 	
 	private List<Season> seasons = new ArrayList<>();
 	private List<String> teams = new ArrayList<>();
@@ -26,7 +24,7 @@ public class League implements Iterable<Season>
 		int nrBounds = yearBounds.length;
 		for(int i = 0; i < nrBounds; i+=2)
 		{
-			int endYear = THIS_YEAR;
+			int endYear = THIS_SEASON;
 			if( i+1 < nrBounds) 
 				endYear = yearBounds[i+1];
 			for(int year = yearBounds[i]; year <= endYear; year++)
@@ -62,12 +60,12 @@ public class League implements Iterable<Season>
 		return false;
 	}
 	
-	public Season getSeason(int year) throws FussballException
+	public Season getSeason(int year)
 	{
 		for(Season s : this)
 			if(s.getYear() == year)
 				return s;
-		throw new FussballException("Season " + year + " of League " + name + " not found.");
+		return null;
 	}
 	
 	public List<Game> getAllGames()

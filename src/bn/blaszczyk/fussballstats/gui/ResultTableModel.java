@@ -2,15 +2,19 @@ package bn.blaszczyk.fussballstats.gui;
 
 import java.util.List;
 
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
+
 import bn.blaszczyk.fussballstats.core.TeamResult;
-import bn.blaszczyk.fussballstats.gui.tools.MyTableModel;
 import bn.blaszczyk.fussballstats.tools.TeamAlias;
 
-public class ResultTableModel extends MyTableModel<TeamResult> 
+public class ResultTableModel implements TableModel
 {	
+	private List<TeamResult> results;
+	
 	public ResultTableModel(List<TeamResult> results)
 	{
-		super(results);
+		this.results = results;
 	}
 	
 	
@@ -58,8 +62,9 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 	}
 
 	@Override
-	protected Object getColumnValue(TeamResult result, int columnIndex)
-	{	
+	public Object getValueAt(int rowIndex, int columnIndex)
+	{
+		TeamResult result = results.get(rowIndex);
 		switch(columnIndex)
 		{
 		case 0:
@@ -86,6 +91,34 @@ public class ResultTableModel extends MyTableModel<TeamResult>
 			return result.getOpponentGoals();		
 		}
 		return null;
+	}
+
+	@Override
+	public int getRowCount()
+	{
+		return results.size();
+	}
+
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex)
+	{
+		return false;
+	}
+
+
+	@Override
+	public void addTableModelListener(TableModelListener l)
+	{
+	}
+	@Override
+	public void removeTableModelListener(TableModelListener l)
+	{
+	}
+
+
+	@Override
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+	{
 	}
 	
 

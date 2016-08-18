@@ -23,8 +23,6 @@ import bn.blaszczyk.fussballstats.gui.tools.ProgressDialog;
 import bn.blaszczyk.fussballstats.tools.FussballException;
 import bn.blaszczyk.fussballstats.tools.DBConnection;
 import bn.blaszczyk.fussballstats.tools.DBTools;
-import bn.blaszczyk.fussballstats.tools.FileIO;
-import bn.blaszczyk.fussballstats.tools.SeasonRequest;
 import bn.blaszczyk.fussballstats.tools.WeltFussballRequest;
 
 @SuppressWarnings("serial")
@@ -74,12 +72,15 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	private JPanel actionPanel;
 
 	private JButton btnClose = new JButton("Schlieﬂen");
-	private JButton btnSelect = new JButton("Markieren");
+	private JButton btnUpdate = new JButton("Aktualisieren");
 	private JButton btnSeasonRequest = new JButton("Download");
+	
+	private List<League> leagues;
 	
 	public LeagueManager(JFrame owner, List<League> leagues)
 	{
 		super(owner, "Liga Manager", true);
+		this.leagues = leagues;
 		this.owner = owner;
 		setSize(654,405);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE)));
@@ -114,9 +115,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		btnSeasonRequest.setBounds(10, 10, 190, 30);
 		btnSeasonRequest.setMnemonic('d');
 		
-		btnSelect.addActionListener(this);
-		btnSelect.setBounds(220, 10, 190, 30);
-		btnSelect.setMnemonic('m');
+		btnUpdate.addActionListener(this);
+		btnUpdate.setBounds(220, 10, 190, 30);
+		btnUpdate.setMnemonic('a');
 		
 		btnClose.addActionListener(this);
 		btnClose.setBounds(430, 10, 190, 30);
@@ -126,7 +127,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		actionPanel.setLayout(null);
 		actionPanel.setBounds(10,320,630, 50);
 		actionPanel.add(btnSeasonRequest);
-		actionPanel.add(btnSelect);
+		actionPanel.add(btnUpdate);
 		actionPanel.add(btnClose);
 		
 		
@@ -148,7 +149,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	
 	private void populateSeasonTable(LeagueItem leagueItem)
 	{
-		Object[] columnNames = {"Saison","Vorhanden", "Teams", "Spiele"};
+		if(leagueItem == null)
+			return;
+		Object[] columnNames = {"Saison","Spieltage", "Teams", "Spiele"};
 		DefaultTableModel tm = new DefaultTableModel(columnNames,0){
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
@@ -159,8 +162,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		for(League league : leagueItem)
 			for(Season season : league)
 			{
-				String isSaved = FileIO.isSeasonSaved(season)? "Ja": "Nein";
-				Object[] rowData = {season.getYear(), isSaved, season.getTeamCount(), season.getGameCount()};
+				Object[] rowData = {season.getYear(), season.getMatchDayCount(), season.getTeamCount(), season.getGameCount()};
 				rows.add(rowData);
 			}
 		rows.sort((o1,o2) -> Integer.compare((Integer)o1[0], (Integer)o2[0]) );
@@ -169,25 +171,26 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		seasonTable.setModel(tm);
 	}
 	
-	private void selectUnloaded()
+	private void updateSeasons()
 	{
-		seasonTable.getSelectionModel().clearSelection();
-		for(int i = 0; i < seasonTable.getRowCount(); i++)
-			if(seasonTable.getModel().getValueAt(i, 1).equals("Nein"))
-				seasonTable.getSelectionModel().addSelectionInterval(i, i);
-				
+		List<Season> currentSeasons = new ArrayList<>();
+		for(League league : leagues)
+			if(league.hasSeason(League.THIS_SEASON))
+					currentSeasons.add(league.getSeason(League.THIS_SEASON));
+		requestSeasons(currentSeasons);
 	}
 	
 	private void requestSeasons()
 	{
-		try
+		List<Season> seasons = new ArrayList<>();
+		if(seasonTable.getSelectedRows().length == 0)
 		{
-			if(seasonTable.getSelectedRows().length == 0)
-			{
-				JOptionPane.showMessageDialog(this, "Keine Saisons markiert", "Fehler", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			List<Season> seasons = new ArrayList<>();
+			if(leagueList.getSelectedValue() != null)
+				for(League league : leagueList.getSelectedValue())
+					for(Season season : league)
+						seasons.add(season);
+		}
+		else
 			for( int i : seasonTable.getSelectedRows() )
 			{
 				int year = (int) seasonTable.getModel().getValueAt(i, 0);
@@ -195,12 +198,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 					if(league.hasSeason(year))
 						seasons.add( league.getSeason(year) );
 			}
-			requestSeasons(seasons);
-		}
-		catch (FussballException e)
-		{
-			e.printStackTrace();
-		}
+		requestSeasons(seasons);
 	}
 	
 
@@ -226,7 +224,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		{
 		Image icon = Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(DL_ICON_FILE) );
 		ProgressDialog progressDialog = new ProgressDialog(this, 2 * seasons.size(), "Download", icon, true,true);
-		SeasonRequest request = new WeltFussballRequest();
+		WeltFussballRequest request = new WeltFussballRequest();
 		try
 		{
 			SwingUtilities.invokeLater(() -> progressDialog.showDialog());
@@ -253,13 +251,13 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 				progressDialog.appendInfo(String.format("\nSchreibe Saison in Datenbank: %s - %4d", season.getLeague().toString(), season.getYear() ) );
 				DBTools.insertSeason(season);
 			}
+			progressDialog.appendInfo("\nDownloads Beendet");
 		}
 		catch( FussballException e)
 		{
-			progressDialog.appendInfo("\n" + e.getErrorMessage());
+			progressDialog.appendException(e);
 		}
 		DBConnection.closeConnection();
-		progressDialog.appendInfo("\nDownloads Beendet");
 		progressDialog.setFinished();
 		}).start();
 	}
@@ -280,13 +278,11 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	{
 		if(e.getSource() == btnClose)
 			dispose();
-		else if(e.getSource() == btnSelect)
-			selectUnloaded();
+		else if(e.getSource() == btnUpdate)
+			updateSeasons();
 		else if(e.getSource() == btnSeasonRequest)
-		{
 			requestSeasons();
-			populateSeasonTable( leagueList.getSelectedValue() );
-		}
+		populateSeasonTable( leagueList.getSelectedValue() );
 	}
 
 

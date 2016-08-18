@@ -1,19 +1,22 @@
 package bn.blaszczyk.fussballstats.gui;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
+
 import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.gui.tools.MyTableModel;
 import bn.blaszczyk.fussballstats.tools.TeamAlias;
 
-public class GameTableModel extends MyTableModel<Game>
+public class GameTableModel implements TableModel
 {	
+	private List<Game> games;
+	
 	public GameTableModel(List<Game> games)
 	{
-		super(games);
+		this.games = games;
 	}
-
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex)
@@ -46,9 +49,11 @@ public class GameTableModel extends MyTableModel<Game>
 		return null;
 	}
 
+
 	@Override
-	protected Object getColumnValue(Game game, int columnIndex)
+	public Object getValueAt(int rowIndex, int columnIndex)
 	{
+		Game game = games.get(rowIndex);
 		switch(columnIndex)
 		{
 		case 0:
@@ -65,6 +70,38 @@ public class GameTableModel extends MyTableModel<Game>
 			return TeamAlias.getAlias(game.getTeamA());
 		}
 		return "";
+	}
+
+
+
+
+	@Override
+	public int getRowCount()
+	{
+		return games.size();
+	}
+
+
+
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex)
+	{
+		return false;
+	}
+
+	@Override
+	public void addTableModelListener(TableModelListener l)
+	{
+	}
+
+	@Override
+	public void removeTableModelListener(TableModelListener l)
+	{
+	}
+
+	@Override
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+	{
 	}
 
 }

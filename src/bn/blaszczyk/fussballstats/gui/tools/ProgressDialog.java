@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.gui.tools;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +12,8 @@ public class ProgressDialog extends JDialog implements ActionListener {
 
 	
 	private JDialog owner;
-	
+
+//	private JTextArea infoArea = new JTextArea();
 	private JTextArea infoArea = new JTextArea();
 	private JProgressBar prograssBar;
 	private JLabel lblTimeLeft = new JLabel("geschätzte Restzeit: unbekannt");
@@ -68,12 +70,10 @@ public class ProgressDialog extends JDialog implements ActionListener {
 
 	public void showDialog()
 	{
-//		SwingUtilities.invokeLater(() -> {
-			timerDots.start();
-			timerSecs.start();
-			setLocationRelativeTo(owner);
-			setVisible(true);	
-//		});
+		timerDots.start();
+		timerSecs.start();
+		setLocationRelativeTo(owner);
+		setVisible(true);	
 	}
 
 	public void setValue(int value)
@@ -92,6 +92,17 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	{
 		infoArea.append(info);
 		infoArea.setCaretPosition(infoArea.getDocument().getLength());
+	}
+	
+	public void appendException(Exception e)
+	{
+		Throwable t = e;
+		infoArea.setForeground(Color.RED);
+		while(t != null)
+		{
+			appendInfo("\n" + t.getMessage() );
+			t = t.getCause();
+		}
 	}
 	
 	public boolean hasCancelRequest()

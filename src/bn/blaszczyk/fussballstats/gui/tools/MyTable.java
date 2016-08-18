@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 @SuppressWarnings("serial")
@@ -55,11 +56,12 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 			else if(value instanceof String)
 				text = (String) value;
 			
-			JLabel c = new JLabel(" " + text + " ", columnAlignment(column) );
+			JLabel c = new JLabel( text , columnAlignment(column) );
 			c.setOpaque(true);
 //			c.setMaximumSize(new Dimension(columnWidth(column),ODD_FONT.getSize() + 10 ));
 			if(row < 0 )
 			{
+				c.setText(" " + c.getText() + " ");
 				c.setFont(HEADER_FONT);
 				c.setBackground(HEADER_COLOR);
 				c.setBorder(BorderFactory.createEtchedBorder());
@@ -88,7 +90,7 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	};
 	
 	private List<T> tList;
-	protected TableRowSorter<MyTableModel<T>> sorter = new TableRowSorter<>();
+	protected TableRowSorter<TableModel> sorter = new TableRowSorter<>();
 
 	
 	public MyTable()
@@ -122,7 +124,7 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	
 	public void setModel()
 	{
-		MyTableModel<T> model = createTableModel(tList);
+		TableModel model = createTableModel(tList);
 		setModel(model);
 		sorter.setModel(model);
 		setCellRenderer();
@@ -156,9 +158,8 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 		scrollRectToVisible( getCellRect(selectedRow, 0, false));
 	}
 	
-
 	protected abstract boolean isThisRowSelected(int rowIndex);
-	protected abstract MyTableModel<T> createTableModel(List<T> tList);
+	protected abstract TableModel createTableModel(List<T> tList);
 	protected abstract int columnWidth(int columnIndex);
 	protected abstract int columnAlignment(int columnIndex);
 

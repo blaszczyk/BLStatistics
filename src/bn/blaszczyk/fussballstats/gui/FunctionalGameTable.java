@@ -23,7 +23,7 @@ public class FunctionalGameTable extends JPanel
 	private static final Font FONT = new Font("Arial",Font.BOLD,16);
 	
 	private JLabel header = new JLabel("Spiele", SwingConstants.CENTER);
-	private JPanel summaryPanel = new JPanel();
+	private JPanel panelSummary = new JPanel();
 	private GameTable gameTable = new GameTable();
 	
 	private int summaryRowCount = 0;
@@ -43,10 +43,10 @@ public class FunctionalGameTable extends JPanel
 		header.setBounds(0, 0, 620, 50);
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
-		summaryPanel.setLayout(null);
-		summaryPanel.setPreferredSize(new Dimension(350 , 7 * ROW_HEIGHT + ROW_BORDER));
+		panelSummary.setLayout(null);
+		panelSummary.setPreferredSize(new Dimension(350 , 7 * ROW_HEIGHT + ROW_BORDER));
 				
-		add(summaryPanel, BorderLayout.NORTH);
+		add(panelSummary, BorderLayout.NORTH);
 		add( new JScrollPane(gameTable), BorderLayout.CENTER);
 	}
 
@@ -113,8 +113,8 @@ public class FunctionalGameTable extends JPanel
 	private void drawSummaryPanel()
 	{
 		summaryRowCount = 0;
-		summaryPanel.removeAll();
-		summaryPanel.add(header);
+		panelSummary.removeAll();
+		panelSummary.add(header);
 		addSummaryRow("Spiele", nrGames);
 		addSummaryRow("Tore", nrGoals);
 		addSummaryRow("Heimtore", nrHomeGoals);
@@ -130,14 +130,13 @@ public class FunctionalGameTable extends JPanel
 		JLabel textLabel = new JLabel(text + ":", SwingConstants.RIGHT);
 		textLabel.setBounds(150, ROW_BORDER + summaryRowCount * ROW_HEIGHT, 150, ROW_HEIGHT);
 		textLabel.setFont(FONT);
-		summaryPanel.add(textLabel);
+		panelSummary.add(textLabel);
 		
 		JLabel valueLabel = new JLabel( NumberFormat.getIntegerInstance().format(value), SwingConstants.RIGHT);
 		valueLabel.setBounds(310, ROW_BORDER + summaryRowCount * ROW_HEIGHT, 80, ROW_HEIGHT);
 		valueLabel.setFont(FONT);
-		summaryPanel.add(valueLabel);
+		panelSummary.add(valueLabel);
 		
 		summaryRowCount++;
-		
 	}
 }

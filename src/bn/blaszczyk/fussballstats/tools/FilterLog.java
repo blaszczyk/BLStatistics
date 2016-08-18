@@ -9,8 +9,6 @@ import javax.swing.JMenuItem;
 
 import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.core.Season;
-import bn.blaszczyk.fussballstats.gui.corefilters.TeamFilterPanel;
-import bn.blaszczyk.fussballstats.gui.corefilters.TeamSearchFilterPanel;
 import bn.blaszczyk.fussballstats.gui.filters.*;
 
 public class FilterLog implements BiFilterListener<Season, Game>
@@ -106,7 +104,6 @@ public class FilterLog implements BiFilterListener<Season, Game>
 		final int panelIndex = index;
 		return e -> {
 			currentFilter = FilterParser.parseFilter( logFilter.get(panelIndex) );
-			TeamFilterPanel.setTeamList( TeamSearchFilterPanel.getTeamList());
 			selectedFilterIndex = panelIndex;
 			skipNext = true;
 			listener.actionPerformed(e);

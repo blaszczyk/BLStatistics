@@ -26,7 +26,7 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	private static final String[] OPERATORS = {AND,OR,XOR};
 	
 	private List<BiFilterPanel<T,U>> panels = new ArrayList<>();
-	private JComboBox<String> operatorBox;
+	private JComboBox<String> boxOperator;
 	
 	private JMenu miRemoveFilter = new JMenu("Filter Entfernen");
 
@@ -37,10 +37,10 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 			this.panels.add(panel);
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 	
-		operatorBox = new MyComboBox<>(OPERATORS,80,false);
-		operatorBox.setAlignmentX(LEFT_ALIGNMENT);
-		operatorBox.addActionListener(setFilterListener);
-		operatorBox.setSelectedItem(operator);
+		boxOperator = new MyComboBox<>(OPERATORS,80,false);
+		boxOperator.setAlignmentX(LEFT_ALIGNMENT);
+		boxOperator.addActionListener(setFilterListener);
+		boxOperator.setSelectedItem(operator);
 		
 		for(BiFilterPanel<T, U> panel : panels)
 			panel.addFilterListener(this);		
@@ -48,7 +48,7 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	
 	public String getOperator()
 	{
-		return (String)operatorBox.getSelectedItem();
+		return (String)boxOperator.getSelectedItem();
 	}
 
 	public void addPanel(BiFilterPanel<T,U> newPanel)
@@ -56,7 +56,7 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		newPanel.addFilterListener(this);
 		newPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
 		panels.add(newPanel);
-		passFilterEvent(new BiFilterEvent<>(null, newPanel));
+		notifyListeners(new BiFilterEvent<>(null, newPanel));
 		setFilter();
 	}
 	
@@ -113,12 +113,12 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	@Override
 	protected void addComponents()
 	{
-		add(operatorBox);
+		add(boxOperator);
 		for(int i = 0; i < panels.size(); i++)
 		{
 			if(i > 0)
 			{
-				JLabel label = new JLabel(operatorBox.getSelectedItem().toString());
+				JLabel label = new JLabel(boxOperator.getSelectedItem().toString());
 				label.setAlignmentX(LEFT_ALIGNMENT);
 				add(label);
 			}
@@ -137,7 +137,7 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	@Override
 	public void filter(BiFilterEvent<T, U> e)
 	{
-		passFilterEvent(e);
+		notifyListeners(e);
 		if(e.getType() == BiFilterEvent.SET_PANEL)
 			for(int i = 0; i < panels.size(); i++)
 				if(panels.get(i).equals(e.getSource()))
@@ -149,7 +149,7 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	@Override
 	public String toString()
 	{
-		return operatorBox.getSelectedItem().toString() + ": " + panels.size() + " Filter";
+		return boxOperator.getSelectedItem().toString() + ": " + panels.size() + " Filter";
 	}
 
 

@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.gui.corefilters;
 
+import bn.blaszczyk.fussballstats.core.League;
 import bn.blaszczyk.fussballstats.core.Season;
 import bn.blaszczyk.fussballstats.filters.Filter;
 import bn.blaszczyk.fussballstats.filters.LogicalFilter;
@@ -13,7 +14,7 @@ public class SeasonFilterPanel extends IntegerValueFilterPanel<Season>
 	
 	public SeasonFilterPanel()
 	{
-		this(EQ,2016);
+		this(EQ,League.THIS_SEASON);
 	}
 	
 	public SeasonFilterPanel( String operator, int refValue)

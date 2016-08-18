@@ -21,7 +21,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.core.Season;
 
-public class WeltFussballRequest implements SeasonRequest
+public class WeltFussballRequest
 {
 
 	private static final String	BASE_URL = "http://www.weltfussball.de/alle_spiele";
@@ -43,7 +43,6 @@ public class WeltFussballRequest implements SeasonRequest
 		webClient.getOptions().setPopupBlockerEnabled(true);
 	}
 	
-	@Override
 	public void requestData(Season season) throws FussballException
 	{
 		String innerPath = String.format(season.getLeague().getURLFormat(), season.getYear()-1, season.getYear());
@@ -71,20 +70,24 @@ public class WeltFussballRequest implements SeasonRequest
 	}
 	
 	
-	@Override
 	public Stack<Game> getGames() throws FussballException
 	{
 		Stack<Game> games = new Stack<>();
 		for(HtmlTableRow row :  tableBody.getRows())
 		{
 			List<HtmlTableCell> cells = row.getCells();
+			
+			/*
+			 * MatchDay
+			 */
 			if(cells.size() == 1)
 				matchDay = Integer.parseInt( ((HtmlAnchor)cells.get(0).getFirstElementChild()).getHrefAttribute().split("/")[3].trim() );
 			else if(cells.size() == 8)
-			{
-				String team1 = null;
-				String team2 = null;
-				String result = null;				
+			{		
+				
+				/*
+				 * Date
+				 */
 				DomElement tempElement = cells.get(0).getFirstElementChild();
 				if(tempElement instanceof HtmlAnchor)
 				{
@@ -98,30 +101,49 @@ public class WeltFussballRequest implements SeasonRequest
 						throw new FussballException("Wrong day format in " + temp,e);
 					}
 				}
+				
+				/*
+				 * Teams
+				 */
+				String teamH = null;
+				String teamA = null;
 				tempElement = cells.get(2).getFirstElementChild();
 				if(tempElement instanceof HtmlAnchor)
-					team1 =  ((HtmlAnchor)tempElement).getAttribute("title");
+					teamH =  ((HtmlAnchor)tempElement).getAttribute("title");
 				else
 					throw new FussballException("Wrong team1 format in " + tempElement);
 				tempElement = cells.get(4).getFirstElementChild();
 				if(tempElement instanceof HtmlAnchor)
-					team2 =  ((HtmlAnchor)tempElement).getAttribute("title");
+					teamA =  ((HtmlAnchor)tempElement).getAttribute("title");
 				else
 					throw new FussballException("Wrong team2 format in " + tempElement);
+				
+				/*
+				 * Result
+				 */
+				String result = null;	
 				HtmlTableDataCell dataCell = (HtmlTableDataCell) cells.get(5);
 				result = dataCell.getTextContent().trim();
-				String gameString =  String.format( "%2d. Spieltag  %s: %15s - %15s %s" , matchDay, DATE_FORMAT.format(date), team1, team2, result);
-				if(gameString.lastIndexOf("(") >= 0)
-					gameString = gameString.substring(0, gameString.lastIndexOf("("));
-				if(gameString.lastIndexOf("Wert.") >= 0)
-					gameString = gameString.substring(0, gameString.lastIndexOf("Wert."));
+				if(result.lastIndexOf("(") >= 0)
+					result = result.substring(0, result.lastIndexOf("("));
+				if(result.lastIndexOf("Wert.") >= 0)
+					result = result.substring(0, result.lastIndexOf("Wert."));
+				String[] split = result.split(":");
+				int goalsH, goalsA;
 				try
 				{
-					games.push(new Game(gameString));
+					goalsH = Integer.parseInt(split[0].trim());
+					goalsA = Integer.parseInt(split[1].trim());
 				}
-				catch(FussballException e)
+				catch(NumberFormatException | IndexOutOfBoundsException e)
 				{
+					throw new FussballException("Wrong result format in " + tempElement);
 				}
+				
+				/*
+				 * Create Game
+				 */
+				games.push(new Game(matchDay, date, teamH, teamA, goalsH, goalsA));
 			}
 		}
 		return games;

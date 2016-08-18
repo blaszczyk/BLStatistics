@@ -85,7 +85,7 @@ public class FilterIO
 			{
 				e.printStackTrace();
 			}
-		return FilterParser.parseFilter("NoFilter");
+		return FilterMenuFactory.createNoFilterPanel();
 	}
 
 
