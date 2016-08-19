@@ -244,6 +244,8 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 						// FileIO.saveSeason(season);
 						// End Local Drive IO
 						
+						if(!DBTools.tableExists(season.getLeague()));
+							DBTools.createTable(season.getLeague());
 						DBTools.insertSeason(season);
 						
 						progressDialog.appendInfo(".Fertig");

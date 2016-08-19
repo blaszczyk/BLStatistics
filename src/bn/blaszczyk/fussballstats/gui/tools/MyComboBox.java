@@ -23,24 +23,6 @@ import javax.swing.UIManager;
 public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, KeyListener, FocusListener
 {
 
-	public static interface CycleListener
-	{
-		public void cycle(CycleEvent e);
-	}
-	
-	public static class CycleEvent
-	{
-		private final int direction;
-		private CycleEvent(int direction)
-		{
-			this.direction = direction;
-		}
-		public int getDirection()
-		{
-			return direction;
-		}
-	}
-	
 	private int charCounter = 0;
 	private char selectChar = '.';
 	private final boolean editable;
@@ -83,7 +65,7 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	
 	public void repopulateBox(T[] items)
 	{
-		this.items = items;
+	//	this.items = items;
 		String input = "";
 		int caret = 0;
 		int selectedIndex = getSelectedIndex();
@@ -99,16 +81,16 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		removeAllItems();
 		for(T t : items)
 			addItem(t);
-		
+
+		if(selectedIndex < getItemCount())
+			setSelectedIndex(selectedIndex);
+		else
+			setSelectedIndex(getItemCount() - 1);
 		if(editable)
 		{
 			inputField.setText(input);
 			inputField.setCaretPosition(caret);
 		}
-		if(selectedIndex < getItemCount())
-			setSelectedIndex(selectedIndex);
-		else
-			setSelectedIndex(getItemCount() - 1);
 		for(ActionListener listener : listeners)
 			addActionListener(listener);
 	}
@@ -147,6 +129,8 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 
 	public void moveSelection(int steps)
 	{
+		if(getItemCount() == 0)
+			return;
 		int newIndex = getSelectedIndex() + steps;
 		if( newIndex < 0 )
 		{
@@ -261,4 +245,24 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	{
 		inputField.selectAll();
 	}
+	
+
+	public static interface CycleListener
+	{
+		public void cycle(CycleEvent e);
+	}
+	
+	public static class CycleEvent
+	{
+		private final int direction;
+		private CycleEvent(int direction)
+		{
+			this.direction = direction;
+		}
+		public int getDirection()
+		{
+			return direction;
+		}
+	}
+	
 }

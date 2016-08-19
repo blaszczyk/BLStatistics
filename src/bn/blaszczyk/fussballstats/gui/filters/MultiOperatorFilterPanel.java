@@ -118,7 +118,7 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		{
 			if(i > 0)
 			{
-				JLabel label = new JLabel(boxOperator.getSelectedItem().toString());
+				JLabel label = new JLabel(boxOperator.getSelectedItem().toString() + "     ");
 				label.setAlignmentX(LEFT_ALIGNMENT);
 				add(label);
 			}
