@@ -170,8 +170,8 @@ public abstract class GameFilter implements Filter<Game>
 	 */
 	public static Filter<Game> getDayOfWeekFilter(int dayOfWeek) // 0 = Sunday ... 6 = Saturday
 	{
+		final Calendar calendar = new GregorianCalendar();
 		Filter<Game> f = g -> {
-			Calendar calendar = new GregorianCalendar();
 			calendar.setTime(g.getDate()); 
 			return calendar.get(Calendar.DAY_OF_WEEK) == dayOfWeek;
 		};

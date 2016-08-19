@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -30,7 +32,11 @@ public class FileIO
 		try(FileWriter file = new FileWriter(filename))
 		{
 			for(Game game : season)
-				file.write(game.toString() + "\n");
+			{
+				String gameString = String.format("%d;%s;%s;%s;%d;%d\n", game.getMatchDay(), Game.DATE_FORMAT.format(game.getDate()),
+						game.getTeamH(), game.getTeamA(), game.getGoalsH(), game.getGoalsA() );
+				file.write(gameString);
+			}
 		}
 		catch (IOException e)
 		{
@@ -50,18 +56,10 @@ public class FileIO
 		if(!directory.exists())
 			directory.mkdirs();
 		for(Season season : league)
- 			try
-			{
-				loadSeason(season);
-			}
-			catch (FussballException e)
-			{
-				//TODO: NotifyUser ?
-				e.printStackTrace();
-			}
+			loadSeason(season);
 	}
 	
-	private static boolean loadSeason(Season season) throws FussballException
+	private static boolean loadSeason(Season season)
 	{
 		if(season == null || !isSeasonSaved(season))
 			return false;
@@ -70,14 +68,32 @@ public class FileIO
 		{
 			List<Game> games = new ArrayList<>();
 			while (scanner.hasNextLine())
-				games.add(new Game( scanner.nextLine() ));
+			{
+				String line = scanner.nextLine();
+				String[] split = line.split(";");
+				try
+				{
+					int matchDay = Integer.parseInt(split[0].trim());
+					Date date = Game.DATE_FORMAT.parse(split[1].trim());
+					String teamH = split[2].trim();
+					String teamA = split[3].trim();
+					int goalsH = Integer.parseInt(split[4].trim());
+					int goalsA = Integer.parseInt(split[5].trim());
+					games.add(new Game(matchDay, date, teamH, teamA, goalsH, goalsA));
+				}
+				catch(NumberFormatException | IndexOutOfBoundsException | ParseException e)
+				{
+					System.err.println("Falsches Spiel Format: " + line);
+					e.printStackTrace();
+				}
+			}
 			season.setGames( games );
 			return true;
 		}
 		catch (FileNotFoundException e)
 		{
-			throw new FussballException("Ladefehler " + file, e );
 		}
+		return false;
 	}
 	
 	private static String getFileName(Season season)

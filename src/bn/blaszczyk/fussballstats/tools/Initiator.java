@@ -54,16 +54,18 @@ public class Initiator
 
 			for (League league : leagues)
 			{
+				
 				if (!uniqueLeagueNames.contains(league.getName()))
 				{
 					uniqueLeagueNames.add(league.getName());
 					progressDialog.appendInfo("\nLade Liga: " + league.getName());
 				}
-				for (Season season : league)
-				{
-					progressDialog.incrementValue();
-					DBTools.loadSeason(season);
-				}
+				if(DBTools.tableExists(league))
+					for (Season season : league)
+					{
+						progressDialog.incrementValue();
+						DBTools.loadSeason(season);
+					}
 			}
 
 			progressDialog.appendInfo("\nSchliesse Verbindung zu Datenbank");

@@ -220,10 +220,11 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 			ProgressDialog progressDialog = new ProgressDialog(this, seasons.size(), "Download", icon, true);
 			WeltFussballRequest request = new WeltFussballRequest();
 			SwingUtilities.invokeLater(() -> progressDialog.showDialog());
-			progressDialog.appendInfo("Verbinde mit Datenbank");
 			try
 			{
+				progressDialog.appendInfo("Verbinde mit Datenbank");
 				DBTools.openMySQLDatabase();
+				
 				for (Season season : seasons)
 				{
 					if (progressDialog.hasCancelRequest())
@@ -238,7 +239,13 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 						request.requestData(season);
 						List<Game> games = request.getGames();
 						season.setGames(games);
+						
+						// Start Local Drive IO
+						// FileIO.saveSeason(season);
+						// End Local Drive IO
+						
 						DBTools.insertSeason(season);
+						
 						progressDialog.appendInfo(".Fertig");
 					}
 					catch (FussballException e)

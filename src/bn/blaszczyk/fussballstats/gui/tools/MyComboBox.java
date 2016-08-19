@@ -3,11 +3,14 @@ package bn.blaszczyk.fussballstats.gui.tools;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -17,7 +20,7 @@ import javax.swing.UIManager;
 
 
 @SuppressWarnings("serial")
-public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, KeyListener
+public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, KeyListener, FocusListener
 {
 
 	public static interface CycleListener
@@ -40,9 +43,11 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	
 	private int charCounter = 0;
 	private char selectChar = '.';
-	private boolean editable;
+	private final boolean editable;
+	private boolean wantPopupVisible = false;
 	private CycleListener listener = null;
-	private T[] tArray;
+	private JTextField inputField;
+	private T[] items;
 	
 	@SuppressWarnings("unchecked")
 	public MyComboBox(List<T> tList, int boxWidth, boolean editable)
@@ -50,29 +55,62 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		this( (T[]) new Object[0], boxWidth,  editable);
 		for(T t : tList)
 			addItem(t);
-		this.tArray = toArray(tList);
-		if(editable)
-			getEditor().getEditorComponent().addKeyListener(this);
+		this.items = toArray(tList);
 	}
 	
 	public MyComboBox(T[] tArray, int boxWidth, boolean editable)
 	{
 		super(tArray);
 		this.editable = editable;
-		this.tArray = tArray;
+		this.items = tArray;
 		setMaximumSize(new Dimension(boxWidth,30));
 		setMinimumSize(new Dimension(boxWidth,30));
 		addMouseWheelListener(this);
 		addKeyListener(this);
+		addFocusListener(this);
 		setInheritsPopupMenu(true);
 		setEditable(editable);
-		
+		inputField = (JTextField)getEditor().getEditorComponent();
+		if(editable)
+			inputField.addKeyListener(this);
 		setFont( UIManager.getFont("ComboBox.font").deriveFont(Font.BOLD) );
 	}
 	
 	public void setCycleListener(CycleListener listener)
 	{
 		this.listener = listener;
+	}
+	
+	public void repopulateBox(T[] items)
+	{
+		this.items = items;
+		String input = "";
+		int caret = 0;
+		int selectedIndex = getSelectedIndex();
+		if(editable)
+		{
+			input = inputField.getText();
+			caret = inputField.getCaretPosition();
+		}
+		ActionListener[] listeners = getActionListeners();
+		for(ActionListener listener : listeners)
+			removeActionListener(listener);
+		
+		removeAllItems();
+		for(T t : items)
+			addItem(t);
+		
+		if(editable)
+		{
+			inputField.setText(input);
+			inputField.setCaretPosition(caret);
+		}
+		if(selectedIndex < getItemCount())
+			setSelectedIndex(selectedIndex);
+		else
+			setSelectedIndex(getItemCount() - 1);
+		for(ActionListener listener : listeners)
+			addActionListener(listener);
 	}
 	
 	private void selectByChar(char c)
@@ -133,6 +171,16 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		return tArray;
 	}
 	
+	private void setMyPopupVisible(boolean v)
+	{
+		wantPopupVisible = v;
+		super.setPopupVisible(v);
+	}
+
+	/*
+	 * MouswWheelListener Method
+	 */
+	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
@@ -140,13 +188,17 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		moveSelection(steps);
 	}
 
+	/*
+	 * KeyListener Methods
+	 */
+	
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
 		switch(e.getKeyCode())
 		{
 		case KeyEvent.VK_DOWN:
-			moveSelection(isPopupVisible() ? 0 : 1);
+			moveSelection(1);
 			e.consume();
 			break;
 		case KeyEvent.VK_UP:
@@ -154,10 +206,12 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 			e.consume();
 			break;
 		case KeyEvent.VK_RIGHT:
-			setPopupVisible(true);
+			setMyPopupVisible(true);
 			break;
+		case KeyEvent.VK_ENTER:
 		case KeyEvent.VK_LEFT:
-			setPopupVisible(false);
+			setMyPopupVisible(false);
+			e.consume();
 			break;
 		}
 	}
@@ -169,34 +223,13 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 			return;
 		char c = e.getKeyChar();
 		if( !Character.isISOControl(c) && !Character.isDigit(c) && !Character.isAlphabetic(c) )
-			return;
-		/*
-		 * Save Status of ComboBox
-		 */
-		JTextField inputField = (JTextField)getEditor().getEditorComponent();
-		String input = inputField.getText();
-		int caret = inputField.getCaretPosition();
-		
-			ActionListener[] listeners = getActionListeners();
-		for(ActionListener listener : listeners)
-			removeActionListener(listener);
-		
-		/*
-		 * Reset List
-		 */
-		removeAllItems();
-		for(T t : tArray)
-				if(t.toString().toLowerCase().contains(input.toLowerCase()))
-				addItem(t);
-		/*
-		 * Reset Status
-		 */
-		inputField.setText(input);
-		inputField.setCaretPosition(caret);
-		for(ActionListener listener : listeners)
-			addActionListener(listener);
-		
-		setPopupVisible(true);
+			return;		
+		List<T> newItems = new ArrayList<>();
+		for(T t : items)
+			if(t.toString().toLowerCase().contains(inputField.getText().toLowerCase()))
+				newItems.add(t);
+		repopulateBox(toArray(newItems));
+		setMyPopupVisible(true);
 	}
 
 	@Override
@@ -210,5 +243,22 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		if(Character.isAlphabetic(keyChar) || Character.isDigit(keyChar))
 			selectByChar(Character.toLowerCase(keyChar));
 		requestFocusInWindow();
+	}
+	
+	/*
+	 * Focus Listener Methods
+	 */
+	
+	@Override
+	public void focusLost(FocusEvent e)
+	{
+		if(wantPopupVisible)
+			setPopupVisible(true);
+	}
+	
+	@Override
+	public void focusGained(FocusEvent e)
+	{
+		inputField.selectAll();
 	}
 }

@@ -123,13 +123,7 @@ public class DBTools
 		DBConnection.executeUpdate(sql);
 	}
 	
-	private static void removeSeason(Season season) throws FussballException
-	{
-		String sql = String.format("DELETE FROM %s WHERE %s = %4d", season.getLeague().getSQLName(), COL_SEASON, season.getYear() );
-		DBConnection.executeUpdate(sql);
-	}
-	
-	private static boolean tableExists(League league) throws FussballException
+	public static boolean tableExists(League league) throws FussballException
 	{
 		try
 		{
@@ -143,7 +137,12 @@ public class DBTools
 		}
 	}
 	
-
+	public static void removeSeason(Season season) throws FussballException
+	{
+		String sql = String.format("DELETE FROM %s WHERE %s = %4d", season.getLeague().getSQLName(), COL_SEASON, season.getYear() );
+		DBConnection.executeUpdate(sql);
+	}
+	
 	private static String quote(String value)
 	{
 		return "'" + value.replaceAll("'", "''") + "'";

@@ -120,7 +120,7 @@ public class FilterParser
 		{
 			System.err.println("Unbekannter Filter: " + filter);
 		}
-		outerBuilder.append(String.format("F%d;%s\n", panelCount, innerBuilder.toString()));
+		outerBuilder.append(String.format("F%d;%s;%s\n", panelCount, filter.isActive(), innerBuilder.toString()));
 		return panelCount++;
 	}
 
@@ -131,19 +131,19 @@ public class FilterParser
 		BiFilterPanel<Season, Game> panel = new NoFilterPanel<>();
 		if (split.length < 2)
 			return panel;
-		switch (split[1])
+		switch (split[2])
 		{
 		case MultiOperatorFilterPanel.NAME:
 			List<BiFilterPanel<Season, Game>> pList = new ArrayList<>();
-			for (int i = 3; i < split.length; i++)
+			for (int i = 4; i < split.length; i++)
 				pList.add(filters.get(split[i]));
-			panel = new MultiOperatorFilterPanel<>(pList, split[2]);
+			panel = new MultiOperatorFilterPanel<>(pList, split[3]);
 			break;
 		case IfThenElseFilterPanel.NAME:
-			panel = new IfThenElseFilterPanel<>(filters.get(split[2]), filters.get(split[3]), filters.get(split[4]));
+			panel = new IfThenElseFilterPanel<>(filters.get(split[3]), filters.get(split[4]), filters.get(split[5]));
 			break;
 		case UnaryOperatorFilterPanel.NAME:
-			panel = new UnaryOperatorFilterPanel<>(filters.get(split[2]));
+			panel = new UnaryOperatorFilterPanel<>(filters.get(split[3]));
 			break;
 		case AbsoluteOperatorFilterPanel.TRUE_NAME:
 			panel = new AbsoluteOperatorFilterPanel<>(true );
@@ -152,48 +152,49 @@ public class FilterParser
 			panel = new AbsoluteOperatorFilterPanel<>(false );
 			break;
 		case RoundFilterPanel.NAME:
-			panel = new RoundFilterPanel(Boolean.parseBoolean(split[2]), Boolean.parseBoolean(split[3]));
+			panel = new RoundFilterPanel(Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4]));
 			break;
 		case NoFilterPanel.NAME:
 			panel = new NoFilterPanel<Season, Game>();
 			break;
 		case SeasonFilterPanel.NAME:
-			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[2], Integer.parseInt(split[3])) );
+			panel = FilterPanelAdapter.getFirstArgAdapter(new SeasonFilterPanel(split[3], Integer.parseInt(split[4])) );
 			break;
 		case SingleLeagueFilterPanel.NAME:
-			panel = FilterPanelAdapter.getFirstArgAdapter(new SingleLeagueFilterPanel(split[2], Boolean.parseBoolean(split[3])) );
+			panel = FilterPanelAdapter.getFirstArgAdapter(new SingleLeagueFilterPanel(split[3], Boolean.parseBoolean(split[4])) );
 			break;
 		case MatchDayFilterPanel.NAME:
-			panel = FilterPanelAdapter.getSecondArgAdapter(new MatchDayFilterPanel(split[2], Integer.parseInt(split[3])) );
+			panel = FilterPanelAdapter.getSecondArgAdapter(new MatchDayFilterPanel(split[3], Integer.parseInt(split[4])) );
 			break;
 		case GoalFilterPanel.NAME_GOAL:
-			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalFilterPanel(split[2], Integer.parseInt(split[3])) );
+			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalFilterPanel(split[3], Integer.parseInt(split[4])) );
 			break;
 		case GoalFilterPanel.NAME_HOME_GOAL:
-			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getHomeGoalFilterPanel(split[2], Integer.parseInt(split[3])) );
+			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getHomeGoalFilterPanel(split[3], Integer.parseInt(split[4])) );
 			break;
 		case GoalFilterPanel.NAME_AWAY_GOAL:
-			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getAwayGoalFilterPanel(split[2], Integer.parseInt(split[3])) );
+			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getAwayGoalFilterPanel(split[3], Integer.parseInt(split[4])) );
 			break;
 		case GoalFilterPanel.NAME_GOAL_DIFF:
-			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalDiffFilterPanel(split[2], Integer.parseInt(split[3])) );
+			panel = FilterPanelAdapter.getSecondArgAdapter(GoalFilterPanel.getGoalDiffFilterPanel(split[3], Integer.parseInt(split[4])) );
 			break;
 		case TeamFilterPanel.NAME:
-			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(split[2], Boolean.parseBoolean(split[3]), Boolean.parseBoolean(split[4])) );
+			panel = FilterPanelAdapter.getSecondArgAdapter(new TeamFilterPanel(split[3], Boolean.parseBoolean(split[4]), Boolean.parseBoolean(split[5])) );
 			break;
 		case SubLeagueFilterPanel.NAME:
-			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(Arrays.asList(split).subList(2, split.length)) );
+			panel = FilterPanelAdapter.getSecondArgAdapter(new SubLeagueFilterPanel(Arrays.asList(split).subList(3, split.length)) );
 			break;
 		case DateFilterPanel.NAME:
-			panel = FilterPanelAdapter.getSecondArgAdapter(new DateFilterPanel(split[2], split[3] ) );
+			panel = FilterPanelAdapter.getSecondArgAdapter(new DateFilterPanel(split[3], split[4] ) );
 			break;
 		case DayOfWeekFilterPanel.NAME:
-			panel = FilterPanelAdapter.getSecondArgAdapter(new DayOfWeekFilterPanel(split[2]));
+			panel = FilterPanelAdapter.getSecondArgAdapter(new DayOfWeekFilterPanel(split[3]));
 			break;
 		default:
 			System.err.println("Unbekannter Filter:" + in);
 		}
 		FilterMenuFactory.createPopupMenu(panel);
+		panel.setActive(Boolean.parseBoolean(split[1]));
 		filters.put(split[0], panel);
 		panel.getPanel().setAlignmentX(Component.LEFT_ALIGNMENT);
 		return panel;
