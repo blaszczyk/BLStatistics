@@ -15,10 +15,10 @@ public class DBTools
 {
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-	private static final String SERVER = "localhost";
-	private static final String DB_NAME = "fussballspiele";
-	private static final String USER = "root";
-	private static final String PASSWORD = null;
+	private static String server = "localhost";
+	private static String dbName = "fussballspiele";
+	private static String user = "root";
+	private static String password = null;
 
 	private static final String COL_PRIMARY_KEY = "PRIMARY_KEY";
 	private static final String COL_TIMESTAMP = "TIMESTAMP";
@@ -33,13 +33,40 @@ public class DBTools
 	private static final String INDEX_NAME = "MY_INDEX";
 	
 
+	public static String getServer()
+	{
+		return server;
+	}
+
+	public static String getDbName()
+	{
+		return dbName;
+	}
+
+	public static String getUser()
+	{
+		return user;
+	}
+
+	public static String getPassword()
+	{
+		return password;
+	}
+
+	public static void setAccessData(String server, String dbName, String user, String password)
+	{
+		DBTools.server = server;
+		DBTools.dbName = dbName;
+		DBTools.user = user;
+		DBTools.password = password;
+	}
 	
 	public static void openMySQLDatabase() throws FussballException
 	{
 		String connectionString, classForName;
 		classForName = "com.mysql.jdbc.Driver";		
-		connectionString = "jdbc:mysql://" + SERVER + ":3306/" + DB_NAME;
-		DBConnection.connectToDatabase(classForName, connectionString, USER, PASSWORD);
+		connectionString = "jdbc:mysql://" + server + ":3306/" + dbName;
+		DBConnection.connectToDatabase(classForName, connectionString, user, password);
 	}
 
 	public static void insertSeason(Season season) throws FussballException

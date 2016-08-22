@@ -27,7 +27,7 @@ public class ResultTable extends MyTable<TeamResult>
 		{
 			selectedTeams = new ArrayList<>();
 			for(int row : getSelectedRows())
-				selectedTeams.add(getModel().getValueAt( row  , 1).toString());
+				selectedTeams.add(getModel().getValueAt( sorter.convertRowIndexToModel(row)  , 1).toString());
 		}
 		return selectedTeams;
 	}
@@ -92,7 +92,7 @@ public class ResultTable extends MyTable<TeamResult>
 	@Override
 	protected boolean isThisRowSelected(int rowIndex)
 	{
-		return getSelectedTeams().contains(getModel().getValueAt(rowIndex, 1));
+		return getSelectedTeams().contains(getModel().getValueAt(sorter.convertRowIndexToModel(rowIndex), 1));
 	}
 
 }

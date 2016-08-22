@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.prefs.Preferences;
 
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -13,6 +14,8 @@ import javax.swing.UIManager;
 import bn.blaszczyk.fussballstats.FussballStats;
 import bn.blaszczyk.fussballstats.core.League;
 import bn.blaszczyk.fussballstats.core.Season;
+import bn.blaszczyk.fussballstats.gui.FunctionalFilterPanel;
+import bn.blaszczyk.fussballstats.gui.LeagueManager;
 import bn.blaszczyk.fussballstats.gui.corefilters.SingleLeagueFilterPanel;
 import bn.blaszczyk.fussballstats.gui.corefilters.TeamFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.ProgressDialog;
@@ -21,6 +24,8 @@ public class Initiator
 {
 	private static final String LEAGUES_FILE = "data/leagues.dat";
 	private static final String ICON_FILE = "data/icon.png";
+	
+	private static boolean dbMode;
 
 	public static boolean initAll(List<League> leagues)
 	{
@@ -32,21 +37,27 @@ public class Initiator
 			seasonCount += league.getSeasonCount();
 		ProgressDialog progressDialog = new ProgressDialog(null, seasonCount, "Initiiere FussballStats", Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE) ), true);
 		progressDialog.showDialog();
-		
+
+
 		progressDialog.appendInfo("Initialisiere Ligen");
 
+		progressDialog.appendInfo("Lade Einstellungen");
+		initPrefs();
+		
 		progressDialog.appendInfo("\nInitialisiere UIManager");
 		initUIManager();
 
 		progressDialog.appendInfo("\nInitialisiere TeamAlias");
 		TeamAlias.loadAliases();
 
+		
 		// Start Local Drive IO
 		// progressDialog.appendInfo("\nLade Ligen");
 		// FileIO.loadLeagues(leagues);
 		// End Local Drive IO
 
 		// Start Database IO
+		
 		try
 		{
 			progressDialog.appendInfo("\nVerbinde mit Datenbank");
@@ -111,8 +122,6 @@ public class Initiator
 
 			League league = new League(props[0].trim(), props[1].trim(), props[2].trim(), yearBounds);
 			leagues.add(league);
-//			if(leagues.size() > 0)
-//				break;
 		}
 		scanner.close();
 		return leagues;
@@ -152,14 +161,26 @@ public class Initiator
 		UIManager.put("List.font", plainFont);
 		UIManager.put("PopupMenu.font", plainFont);
 		UIManager.put("TextField.font", plainFont);
+		UIManager.put("RadioButton.font", boldFont);
+		UIManager.put("RadioButtonMenuItem.font", boldFont);
 
-		// UIManager.put("JTree.font", plainFont);
-		// UIManager.put("TabbedPane.font", plainFont);
-		// UIManager.put("Tree.font", plainFont);
-		// UIManager.put("RadioButton.font", plainFont);
-		// UIManager.put("RadioButtonMenuItem.font", plainFont);
 	}
 
+	private static void initPrefs()
+	{
+		Preferences prefs = Preferences.userNodeForPackage(FussballStats.class);
+		String server = prefs.get("server", "localhost");
+		String dbName = prefs.get("dbName", "fussballspiele");
+		String user = prefs.get("user", "root");
+		String password = prefs.get("password", null);
+		DBTools.setAccessData(server, dbName, user, password);
+		
+		dbMode = prefs.getBoolean("dbMode", false);
+		LeagueManager.setDbMode(dbMode);
+		TeamAlias.setUseAliases( prefs.getBoolean("useAliases", false) );
+		FunctionalFilterPanel.setSaveLastFilter(prefs.getBoolean("saveLastFilter", false));	
+	}
+	
 	private static boolean initLists(Iterable<League> leagues)
 	{
 		List<String> teams = new ArrayList<>();

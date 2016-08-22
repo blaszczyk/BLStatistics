@@ -12,8 +12,7 @@ public class FussballStats
 	public static void main(String[] args)
 	{
 		List<League> leagues = new ArrayList<>();
-		if(!Initiator.initAll(leagues))
-			return;
+		Initiator.initAll(leagues);
 		MainFrame mf = new MainFrame(leagues);
 		mf.showFrame();
 	}

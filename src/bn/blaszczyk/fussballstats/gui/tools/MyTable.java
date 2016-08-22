@@ -17,6 +17,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter.SortKey;
+import javax.swing.SortOrder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -42,6 +44,8 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	private static final Font HEADER_FONT = new Font("Arial",Font.BOLD,16);
 	private static final Color HEADER_COLOR = new Color(238,238,238);
 	
+	
+	
 	private final TableCellRenderer cellRenderer = new TableCellRenderer(){
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -58,7 +62,6 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 			
 			JLabel c = new JLabel( text , columnAlignment(column) );
 			c.setOpaque(true);
-//			c.setMaximumSize(new Dimension(columnWidth(column),ODD_FONT.getSize() + 10 ));
 			if(row < 0 )
 			{
 				c.setText(" " + c.getText() + " ");
@@ -125,8 +128,17 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	public void setModel()
 	{
 		TableModel model = createTableModel(tList);
+		List<? extends SortKey> sortKeys = sorter.getSortKeys();
+		if(sortKeys.isEmpty())
+		{
+			List<SortKey> newSortKeys = new ArrayList<SortKey>();
+			newSortKeys.add(new SortKey(0, SortOrder.ASCENDING));
+			sortKeys = newSortKeys;
+		}
 		setModel(model);
 		sorter.setModel(model);
+		sorter.setSortKeys(sortKeys);
+		sorter.sort();
 		setCellRenderer();
 		setWidths();
 		repaint();

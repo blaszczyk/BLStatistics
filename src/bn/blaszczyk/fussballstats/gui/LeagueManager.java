@@ -23,45 +23,12 @@ import bn.blaszczyk.fussballstats.gui.tools.ProgressDialog;
 import bn.blaszczyk.fussballstats.tools.FussballException;
 import bn.blaszczyk.fussballstats.tools.DBConnection;
 import bn.blaszczyk.fussballstats.tools.DBTools;
+import bn.blaszczyk.fussballstats.tools.FileIO;
 import bn.blaszczyk.fussballstats.tools.WeltFussballRequest;
 
 @SuppressWarnings("serial")
 public class LeagueManager extends JDialog implements ListSelectionListener, ActionListener 
 {
-	private class LeagueItem implements Iterable<League> 
-	{
-		private String			path;
-		private List<League>	leagues;
-		
-		private LeagueItem(League league)
-		{
-			leagues = new ArrayList<>();
-			leagues.add(league);
-			path = league.getPathName();
-		}
-		
-		private boolean addLeague(League league)
-		{
-			if (!league.getPathName().equals(path))
-				return false;
-			leagues.add(league);
-			return true;
-		}
-		
-		@Override
-		public Iterator<League> iterator()
-		{
-			return leagues.iterator();
-		}
-		
-		@Override
-		public String toString()
-		{
-			return path;
-		}		
-		
-	}
-	
 	private static final String	ICON_FILE			= "data/manager.png";
 	private static final String	DL_ICON_FILE		= "data/download.png";
 	
@@ -75,6 +42,8 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	private JButton				btnSeasonRequest	= new JButton("Download");
 	
 	private List<League>		leagues;
+	
+	private static boolean dbMode = false;
 	
 	public LeagueManager(JFrame owner, List<League> leagues)
 	{
@@ -145,6 +114,16 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		repaint();
 	}
 	
+	public static boolean isDbMode()
+	{
+		return dbMode;
+	}
+
+	public static void setDbMode(boolean dbMode)
+	{
+		LeagueManager.dbMode = dbMode;
+	}
+
 	private void populateSeasonTable(LeagueItem leagueItem)
 	{
 		if (leagueItem == null)
@@ -222,9 +201,11 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 			SwingUtilities.invokeLater(() -> progressDialog.showDialog());
 			try
 			{
-				progressDialog.appendInfo("Verbinde mit Datenbank");
-				DBTools.openMySQLDatabase();
-				
+				if(dbMode)
+				{
+					progressDialog.appendInfo("Verbinde mit Datenbank");
+					DBTools.openMySQLDatabase();
+				}
 				for (Season season : seasons)
 				{
 					if (progressDialog.hasCancelRequest())
@@ -240,13 +221,14 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 						List<Game> games = request.getGames();
 						season.setGames(games);
 						
-						// Start Local Drive IO
-						// FileIO.saveSeason(season);
-						// End Local Drive IO
-						
-						if(!DBTools.tableExists(season.getLeague()));
-							DBTools.createTable(season.getLeague());
-						DBTools.insertSeason(season);
+						if(dbMode)
+						{
+							if(!DBTools.tableExists(season.getLeague()));
+								DBTools.createTable(season.getLeague());
+							DBTools.insertSeason(season);
+						}
+						else
+							FileIO.saveSeason(season);
 						
 						progressDialog.appendInfo(".Fertig");
 					}
@@ -263,7 +245,8 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 			}
 			
 			progressDialog.appendInfo("\nDownloads Beendet");
-			DBConnection.closeConnection();
+			if(dbMode)
+				DBConnection.closeConnection();
 			progressDialog.setFinished();
 		}).start();
 	}
@@ -289,5 +272,40 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 			requestSeasons();
 		populateSeasonTable(listLeagues.getSelectedValue());
 	}
+	
+	private class LeagueItem implements Iterable<League> 
+	{
+		private String			path;
+		private List<League>	leagues;
+		
+		private LeagueItem(League league)
+		{
+			leagues = new ArrayList<>();
+			leagues.add(league);
+			path = league.getPathName();
+		}
+		
+		private boolean addLeague(League league)
+		{
+			if (!league.getPathName().equals(path))
+				return false;
+			leagues.add(league);
+			return true;
+		}
+		
+		@Override
+		public Iterator<League> iterator()
+		{
+			return leagues.iterator();
+		}
+		
+		@Override
+		public String toString()
+		{
+			return path;
+		}		
+		
+	}
+	
 	
 }

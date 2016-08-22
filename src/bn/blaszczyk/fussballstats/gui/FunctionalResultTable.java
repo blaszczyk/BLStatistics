@@ -12,6 +12,7 @@ import javax.swing.event.ListSelectionListener;
 
 import bn.blaszczyk.fussballstats.core.*;
 import bn.blaszczyk.fussballstats.filters.*;
+import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 
 @SuppressWarnings("serial")
 public class FunctionalResultTable extends JPanel implements ItemListener
@@ -25,7 +26,7 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	private JCheckBox chbHome = new JCheckBox("Heimspiele",true);
 	private JCheckBox chbAway = new JCheckBox("Auswärtsspiele",true);
 	private JLabel lblWinPoints = new JLabel("Punkte pro Sieg:",SwingConstants.RIGHT);
-	private JComboBox<Integer> boxWinPoints = new JComboBox<>(POINTS_FOR_WIN_OPTIONS);
+	private JComboBox<Integer> boxWinPoints = new MyComboBox<>(POINTS_FOR_WIN_OPTIONS,70,false);
 	private JCheckBox chbWeighted = new JCheckBox("Nach Spielen gewichtet",false);
 
 	private Iterable<Game> games;

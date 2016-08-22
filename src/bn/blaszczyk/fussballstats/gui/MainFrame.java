@@ -37,12 +37,13 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	private static final String LOAD_ICON = "data/load.png";
 	private static final String SAVE_ICON = "data/save.png";
 	private static final String MANAGER_ICON = "data/manager.png";
+	private static final String SETTINGS_ICON = "data/settings.png";
 	private static final String EXIT_ICON = "data/exit.png";
 	private static final String UNDO_ICON = "data/undo.png";
 	private static final String REDO_ICON = "data/redo.png";
 	
 	private JMenuBar menuBar = new JMenuBar();
-	private JMenuItem newFilter, loadFilter, saveFilter, showLeagueManager, exit;
+	private JMenuItem newFilter, loadFilter, saveFilter, showLeagueManager, showPreferences, exit;
 	private JMenu menuUndo = new JMenu("Rückgängig");
 	private JMenu menuRedo = new JMenu("Wiederholen");
 	
@@ -87,6 +88,14 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		lm.showDialog();
 		resetTable();
 	}
+
+	private void showPreferences()
+	{
+		PrefsDialog pd = new PrefsDialog(this);
+		pd.showDialog();
+	}
+	
+	
 	
 	private void initComponents()
 	{
@@ -131,6 +140,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		saveFilter = createMenuItem(mainMenu, "Filter Speichern", 'S',KeyEvent.VK_S,SAVE_ICON);
 		mainMenu.addSeparator();
 		showLeagueManager = createMenuItem(mainMenu, "Liga Manager", 'M',KeyEvent.VK_M, MANAGER_ICON);
+		showPreferences = createMenuItem(mainMenu, "Einstellungen", 'E',KeyEvent.VK_E, SETTINGS_ICON);
 		mainMenu.addSeparator();
 		exit = createMenuItem(mainMenu, "Beenden", 'B',KeyEvent.VK_B,EXIT_ICON);
 		
@@ -191,6 +201,8 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 			functionalFilterPanel.saveFilter();
 		else if(e.getSource() == showLeagueManager)
 			showLeagueManager();
+		else if(e.getSource() == showPreferences)
+			showPreferences();
 		else if(e.getSource() == exit)
 			exit();
 	}

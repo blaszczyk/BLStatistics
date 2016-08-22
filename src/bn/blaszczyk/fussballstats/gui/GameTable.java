@@ -9,7 +9,6 @@ import javax.swing.table.TableModel;
 
 import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.gui.tools.MyTable;
-//import bn.blaszczyk.fussballstats.gui.tools.MyTableModel;
 
 @SuppressWarnings("serial")
 public class GameTable extends MyTable<Game>
@@ -21,6 +20,19 @@ public class GameTable extends MyTable<Game>
 	{
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		getSelectionModel().addListSelectionListener( e -> repaint());
+//		List<? extends SortKey> sortKeys = sorter.getSortKeys();
+		
+//		
+//		List<SortKey> sortKeys = new ArrayList<>();
+//		SortKey sk = new SortKey(2, SortOrder.ASCENDING);
+//		sortKeys.add(sk);
+//		
+//
+//		List <RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+//		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+//		sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+//		
+//		sorter.setSortKeys(sortKeys);
 	}
 
 	public List<String> getSelectedTeams()
@@ -28,9 +40,10 @@ public class GameTable extends MyTable<Game>
 		int selectedIndex = getSelectionModel().getAnchorSelectionIndex();
 		if(selectedIndex < 0)
 			return selectedTeams;
+		int modelSelectedIndex = sorter.convertRowIndexToModel(selectedIndex);
 		selectedTeams = new ArrayList<>();
-		selectedTeams.add( (String)getModel().getValueAt(selectedIndex, 1) );
-		selectedTeams.add( (String)getModel().getValueAt(selectedIndex, 5) );
+		selectedTeams.add( (String)getModel().getValueAt(modelSelectedIndex, 1) );
+		selectedTeams.add( (String)getModel().getValueAt(modelSelectedIndex, 5) );
 		return selectedTeams;
 	}
 	
@@ -46,7 +59,9 @@ public class GameTable extends MyTable<Game>
 	{
 		if(selectedTeams == null)
 			return false;
-		return selectedTeams.contains(getModel().getValueAt(rowIndex, 1)) || selectedTeams.contains(getModel().getValueAt(rowIndex, 5));
+		int modelRowIndex = sorter.convertRowIndexToModel(rowIndex);
+		return selectedTeams.contains(getModel().getValueAt(modelRowIndex, 1)) 
+				|| selectedTeams.contains(getModel().getValueAt(modelRowIndex, 5));
 	}
 
 	@Override
