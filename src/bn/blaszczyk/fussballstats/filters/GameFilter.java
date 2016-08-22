@@ -89,25 +89,19 @@ public abstract class GameFilter implements Filter<Game>
 	 */
 	public static Filter<Game> getTeamFilter(String team) 
 	{
-		Filter<Game> f = g -> g.containsTeam(team);
+		Filter<Game> f = g ->g.getTeamHAlias().equals(team) || g.getTeamAAlias().equals(team);
 		return f;
 	}
 	
 	public static Filter<Game> getTeamHomeFilter(String team) 
 	{
-		Filter<Game> f = g -> g.getTeamH().equals(team);
+		Filter<Game> f = g -> g.getTeamHAlias().equals(team);
 		return f;
 	}
 	
 	public static Filter<Game> getTeamAwayFilter(String team) 
 	{
-		Filter<Game> f = g -> g.getTeamA().equals(team);
-		return f;
-	}
-
-	public static Filter<Game> getTeamContainsFilter(String team) 
-	{
-		Filter<Game> f = g -> g.getTeamH().toLowerCase().contains(team.toLowerCase()) || g.getTeamA().toLowerCase().contains(team.toLowerCase());
+		Filter<Game> f = g -> g.getTeamAAlias().equals(team);
 		return f;
 	}
 	
@@ -116,7 +110,7 @@ public abstract class GameFilter implements Filter<Game>
 	 */	
 	public static Filter<Game> getSubLeagueFilter(Collection<String> teams)
 	{
-		Filter<Game> f = g -> teams.contains(g.getTeamH()) && teams.contains(g.getTeamA());
+		Filter<Game> f = g -> teams.contains(g.getTeamHAlias()) && teams.contains(g.getTeamAAlias());
 		return f;
 	}
 	

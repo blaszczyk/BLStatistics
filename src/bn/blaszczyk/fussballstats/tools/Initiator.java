@@ -6,106 +6,116 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
-import java.util.prefs.Preferences;
 
-import javax.swing.Timer;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import bn.blaszczyk.fussballstats.FussballStats;
 import bn.blaszczyk.fussballstats.core.League;
 import bn.blaszczyk.fussballstats.core.Season;
-import bn.blaszczyk.fussballstats.gui.FunctionalFilterPanel;
 import bn.blaszczyk.fussballstats.gui.LeagueManager;
+import bn.blaszczyk.fussballstats.gui.PrefsDialog;
 import bn.blaszczyk.fussballstats.gui.corefilters.SingleLeagueFilterPanel;
 import bn.blaszczyk.fussballstats.gui.corefilters.TeamFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.ProgressDialog;
 
-public class Initiator
-{
-	private static final String LEAGUES_FILE = "data/leagues.dat";
-	private static final String ICON_FILE = "data/icon.png";
+public class Initiator {
+	private static final String	LEAGUES_FILE	= "data/leagues.dat";
+	private static final String	ICON_FILE		= "data/icon.png";
 	
-	private static boolean dbMode;
-
+	private static ProgressDialog progressDialog;
+	
 	public static boolean initAll(List<League> leagues)
 	{
 		int seasonCount = 0;
 		List<String> uniqueLeagueNames = new ArrayList<>();
+
+		initUIManager();
 		
 		initLeagues(leagues);
 		for (League league : leagues)
 			seasonCount += league.getSeasonCount();
-		ProgressDialog progressDialog = new ProgressDialog(null, seasonCount, "Initiiere FussballStats", Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE) ), true);
+		progressDialog = new ProgressDialog(null, seasonCount, "Initiiere FussballStats",
+				Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE)), true);
 		progressDialog.showDialog();
-
-
-		progressDialog.appendInfo("Initialisiere Ligen");
-
+		
 		progressDialog.appendInfo("Lade Einstellungen");
-		initPrefs();
+		initPrefs();		
 		
-		progressDialog.appendInfo("\nInitialisiere UIManager");
-		initUIManager();
-
-		progressDialog.appendInfo("\nInitialisiere TeamAlias");
-		TeamAlias.loadAliases();
-
-		
-		// Start Local Drive IO
-		// progressDialog.appendInfo("\nLade Ligen");
-		// FileIO.loadLeagues(leagues);
-		// End Local Drive IO
-
-		// Start Database IO
+		boolean databaseExists = false;
+		while(LeagueManager.isDbMode() && ! databaseExists)
+		{
+			try
+			{
+				progressDialog.appendInfo("\nVerbinde mit Datenbank");
+				databaseExists = checkDB();
+			}
+			catch(FussballException e)
+			{
+				progressDialog.appendException(e);
+				JOptionPane.showMessageDialog(progressDialog, e.getMessage(), "Keine Verbindung zur Datenbank", JOptionPane.ERROR_MESSAGE);
+			}
+			if(!databaseExists)
+				new PrefsDialog(null).showDialog();
+		}
 		
 		try
-		{
-			progressDialog.appendInfo("\nVerbinde mit Datenbank");
-			DBTools.openMySQLDatabase();
-
-			for (League league : leagues)
+		{	
+			if (LeagueManager.isDbMode())
 			{
-				
-				if (!uniqueLeagueNames.contains(league.getName()))
+				DBTools.openMySQLDatabase();		
+				for (League league : leagues)
 				{
-					uniqueLeagueNames.add(league.getName());
-					progressDialog.appendInfo("\nLade Liga: " + league.getName());
-				}
-				if(DBTools.tableExists(league))
-					for (Season season : league)
+					
+					if (!uniqueLeagueNames.contains(league.getName()))
 					{
-						progressDialog.incrementValue();
-						DBTools.loadSeason(season);
+						uniqueLeagueNames.add(league.getName());
+						progressDialog.appendInfo("\nLade Liga: " + league.getName());
 					}
+					if (DBTools.tableExists(league))
+						for (Season season : league)
+						{
+							progressDialog.incrementValue();
+							DBTools.loadSeason(season);
+						}
+				}
+				
+				progressDialog.appendInfo("\nSchliesse Verbindung zu Datenbank");
+				DBConnection.closeConnection();
 			}
-
-			progressDialog.appendInfo("\nSchliesse Verbindung zu Datenbank");
-			DBConnection.closeConnection();
+			else
+			{
+				progressDialog.appendInfo("\nLade Ligen");
+				FileIO.loadLeagues(leagues);
+			}
 		}
 		catch (FussballException e)
 		{
 			progressDialog.appendException(e);
-			final Timer timer = new Timer(100, null);
-			timer.addActionListener( ev -> {
-				if(progressDialog.hasCancelRequest())
-				{
-					progressDialog.disposeDialog();
-					timer.stop();
-				}
-			});
-			timer.start();
+			progressDialog.setFinished();
 			return false;
 		}
-		// End Database IO
-
+		
+		progressDialog.appendInfo("\nInitialisiere TeamAlias");
+		TeamAlias.loadAliases();
+				
 		progressDialog.appendInfo("\nLade Listen");
-		initLists(leagues);
-
+		if(!initLists(leagues))
+		{
+			int reply = JOptionPane.showConfirmDialog(progressDialog, "Liga Manager öffnen?", 
+					"Keine Spiele vorhanden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(reply == JOptionPane.YES_OPTION)
+			{
+				new LeagueManager(null, leagues).showDialog();
+				initLists(leagues);
+			}
+		}
+		
 		progressDialog.disposeDialog();
 		
 		return true;
 	}
-
+	
 	private static List<League> initLeagues(List<League> leagues)
 	{
 		Scanner scanner = new Scanner(FussballStats.class.getResourceAsStream(LEAGUES_FILE));
@@ -119,31 +129,31 @@ public class Initiator
 			int[] yearBounds = new int[props.length - 3];
 			for (int i = 0; i < yearBounds.length; i++)
 				yearBounds[i] = Integer.parseInt(props[i + 3].trim());
-
+			
 			League league = new League(props[0].trim(), props[1].trim(), props[2].trim(), yearBounds);
 			leagues.add(league);
 		}
 		scanner.close();
 		return leagues;
 	}
-
+	
 	private static void initUIManager()
 	{
-//		try
-//		{
-//			UIManager.setLookAndFeel( new NimbusLookAndFeel());
-//		}
-//		catch (UnsupportedLookAndFeelException e)
-//		{
-//			e.printStackTrace();
-//		}
+		// try
+		// {
+		// UIManager.setLookAndFeel( new NimbusLookAndFeel());
+		// }
+		// catch (UnsupportedLookAndFeelException e)
+		// {
+		// e.printStackTrace();
+		// }
 		
 		Font plainFont = new Font("Arial", Font.PLAIN, 16);
 		Font boldFont = new Font("Arial", Font.BOLD, 16);
 		Font tableFont = new Font("Arial", Font.PLAIN, 14);
-
+		
 		UIManager.put("Table.font", tableFont);
-
+		
 		UIManager.put("TableHeader.font", boldFont);
 		UIManager.put("Label.font", boldFont);
 		UIManager.put("Button.font", boldFont);
@@ -155,7 +165,7 @@ public class Initiator
 		UIManager.put("MenuItem.font", boldFont);
 		UIManager.put("ComboBox.font", boldFont);
 		UIManager.put("PopupMenu.font", boldFont);
-
+		
 		UIManager.put("TextPane.font", plainFont);
 		UIManager.put("OptionPane.messageFont", plainFont);
 		UIManager.put("List.font", plainFont);
@@ -163,22 +173,31 @@ public class Initiator
 		UIManager.put("TextField.font", plainFont);
 		UIManager.put("RadioButton.font", boldFont);
 		UIManager.put("RadioButtonMenuItem.font", boldFont);
-
+		
 	}
-
+	
+	private static boolean checkDB() throws FussballException
+	{
+		DBTools.connectToSQLServer();
+		boolean exists = DBTools.databaseExists();
+		if(!exists)
+		{
+			int reply = JOptionPane.showConfirmDialog(progressDialog, "Soll die Datenbank '" + DBTools.getDbName() + "' erstellt werden?", 
+					"Datenbank nicht vorhanden.", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(reply == JOptionPane.YES_OPTION)
+			{
+				DBTools.createDatabase();
+				exists = true;
+			}
+		}
+		DBConnection.closeConnection();
+		return exists;
+	}
+	
 	private static void initPrefs()
 	{
-		Preferences prefs = Preferences.userNodeForPackage(FussballStats.class);
-		String server = prefs.get("server", "localhost");
-		String dbName = prefs.get("dbName", "fussballspiele");
-		String user = prefs.get("user", "root");
-		String password = prefs.get("password", null);
-		DBTools.setAccessData(server, dbName, user, password);
-		
-		dbMode = prefs.getBoolean("dbMode", false);
-		LeagueManager.setDbMode(dbMode);
-		TeamAlias.setUseAliases( prefs.getBoolean("useAliases", false) );
-		FunctionalFilterPanel.setSaveLastFilter(prefs.getBoolean("saveLastFilter", false));	
+		while(!PrefsDialog.initPrefs())
+			new PrefsDialog(null).showDialog();;
 	}
 	
 	private static boolean initLists(Iterable<League> leagues)
@@ -198,5 +217,5 @@ public class Initiator
 		TeamFilterPanel.setTeamList(teams);
 		return teams.size() != 0;
 	}
-
+	
 }

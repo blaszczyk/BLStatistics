@@ -22,14 +22,20 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	private long initTimeStamp = System.currentTimeMillis();
 	
 	private boolean cancelRequest = false;
+	private boolean selfClosable = false;
 
 	private int value = 0;
 	private int lastValue = 0;
 	
 	private Timer timerDots = new Timer(100, e -> appendInfo("."));
 	private Timer timerSecs = new Timer(1000, e -> setSecsLeft());
-	
 
+
+	public ProgressDialog(JDialog owner, String title, Image icon, boolean showButton)
+	{
+		this(owner,1,title,icon,showButton);
+	}
+	
 	public ProgressDialog(JDialog owner, int maxValue, String title, Image icon, boolean showButton)
 	{
 		super(owner, title, owner != null);
@@ -74,6 +80,12 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		setVisible(true);	
 	}
 
+	public void setMaxValue(int maxValue)
+	{
+		this.maxValue = maxValue;
+		prograssBar.setMaximum(maxValue);
+	}
+	
 	public void setValue(int value)
 	{
 		this.value = value;
@@ -115,9 +127,9 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	
 	public void setFinished()
 	{
-		cancelRequest = true;
+		selfClosable = true;
 		btnCancel.setEnabled(true);
-		btnCancel.setText("Fertig");
+		btnCancel.setText("Schließen");
 		timerDots.stop();
 		timerSecs.stop();
 		lblTimeLeft.setText("Gesamtdauer: " + (System.currentTimeMillis() - initTimeStamp) / 1000 + " Sekunden");
@@ -129,7 +141,7 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		timerSecs.stop();
 		dispose();
 	}
-
+	
 	private void setSecsLeft()
 	{
 		if(value == lastValue && secsLeft > 0)
@@ -146,7 +158,7 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if(cancelRequest)
+		if(selfClosable)
 			disposeDialog();
 		else
 		{

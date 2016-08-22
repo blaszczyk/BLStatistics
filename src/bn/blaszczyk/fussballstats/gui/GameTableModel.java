@@ -7,7 +7,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.tools.TeamAlias;
 
 public class GameTableModel implements TableModel
 {	
@@ -59,7 +58,7 @@ public class GameTableModel implements TableModel
 		case 0:
 			return game.getDate();
 		case 1:
-			return TeamAlias.getAlias(game.getTeamH());
+			return game.getTeamHAlias();
 		case 2:
 			return game.getGoalsH();
 		case 3:
@@ -67,7 +66,7 @@ public class GameTableModel implements TableModel
 		case 4:
 			return game.getGoalsA();
 		case 5:
-			return TeamAlias.getAlias(game.getTeamA());
+			return game.getTeamAAlias();
 		}
 		return "";
 	}

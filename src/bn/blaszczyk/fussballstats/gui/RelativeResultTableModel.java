@@ -6,7 +6,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import bn.blaszczyk.fussballstats.core.TeamResult;
-import bn.blaszczyk.fussballstats.tools.TeamAlias;
 
 
 public class RelativeResultTableModel implements TableModel
@@ -74,7 +73,7 @@ public class RelativeResultTableModel implements TableModel
 		case 0:
 			return result.getPosition();
 		case 1:
-			return TeamAlias.getAlias(result.getTeam());
+			return result.getTeam();
 		case 2:
 			return result.getGames();
 		case 9:

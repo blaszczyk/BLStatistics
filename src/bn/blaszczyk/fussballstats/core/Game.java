@@ -69,12 +69,23 @@ public class Game
 	{
 		return goalsH + goalsA;
 	}
-	
+
 	public String getTeamH()
+	{
+		return teamH;
+	}
+	
+	public String getTeamA()
+	{
+		return teamA;
+	}
+	
+	public String getTeamHAlias()
 	{
 		return TeamAlias.getAlias(teamH);
 	}
-	public String getTeamA()
+	
+	public String getTeamAAlias()
 	{
 		return TeamAlias.getAlias(teamA);
 	}
@@ -107,13 +118,6 @@ public class Game
 		return 0;
 		//Simpler but unsafe:		
 //		return Integer.signum(goals1-goals2);
-	}
-	
-	public boolean containsTeam(String team)
-	{
-		if(team != null)	
-			return team.equals(getTeamH()) || team.equals(getTeamA());
-		return false;
 	}
 
 }

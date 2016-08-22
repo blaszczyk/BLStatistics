@@ -61,10 +61,10 @@ public class Table implements Iterable<TeamResult>
 	
 	private void consumeGame(Game game, BiFilter<TeamResult,Game> teamResultFilter)
 	{
-		if(getTeamIndex(game.getTeamH())<0)
-			teamResults.add( new TeamResult(game.getTeamH()));
-		if(getTeamIndex(game.getTeamA())<0)
-			teamResults.add( new TeamResult(game.getTeamA()));
+		if(getTeamIndex(game.getTeamHAlias())<0)
+			teamResults.add( new TeamResult(game.getTeamHAlias()));
+		if(getTeamIndex(game.getTeamAAlias())<0)
+			teamResults.add( new TeamResult(game.getTeamAAlias()));
 		for(TeamResult t : teamResults)
 			if(teamResultFilter.check(t, game))
 				t.consumeGame(game,pointsForWin);

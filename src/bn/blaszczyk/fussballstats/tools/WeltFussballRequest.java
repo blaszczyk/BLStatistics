@@ -120,7 +120,7 @@ public class WeltFussballRequest
 					result = result.substring(0, result.lastIndexOf("("));
 				if(result.lastIndexOf("Wert.") >= 0)
 					result = result.substring(0, result.lastIndexOf("Wert."));
-				if(result.equals("-:-"))
+				if(result.equals("-:-") || result.equals("annull.") || result.equals("n.gesp."))
 					continue;
 				String[] split = result.split(":");
 				int goalsH, goalsA;

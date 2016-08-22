@@ -85,7 +85,7 @@ public class TeamResult
 	
 	public void consumeGame(Game game, int pointsForWin)
 	{
-		if(team.equals(game.getTeamH()))
+		if(team.equals(game.getTeamHAlias()))
 		{
 			switch(game.getWinner())
 			{
@@ -105,7 +105,7 @@ public class TeamResult
 			teamGoals += game.getGoalsH();
 			opponentGoals += game.getGoalsA();
 		}
-		if(team.equals(game.getTeamA()))
+		if(team.equals(game.getTeamAAlias()))
 		{
 			switch(game.getWinner())
 			{

@@ -2,6 +2,7 @@ package bn.blaszczyk.fussballstats.core;
 
 import java.util.*;
 
+
 public class Season implements Iterable<Game>
 {
 	private int year;
@@ -57,8 +58,8 @@ public class Season implements Iterable<Game>
 		for(Game game : games)
 		{
 			matchDayCount = Math.max(matchDayCount, game.getMatchDay());
-			addTeam(game.getTeamH());
-			addTeam(game.getTeamA());
+			addTeam(game.getTeamHAlias());
+			addTeam(game.getTeamAAlias());
 		}
 	}
 	

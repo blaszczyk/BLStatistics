@@ -190,5 +190,49 @@ public class DBTools
 		}
 		return 1;
 	}
+	
+	public static void connectToSQLServer() throws FussballException
+	{
+		String connectionString, classForName;
+		classForName = "com.mysql.jdbc.Driver";		
+		connectionString = "jdbc:mysql://" + server + ":3306";
+		DBConnection.connectToDatabase(classForName, connectionString, user, password);
+	}
+	
+	public static boolean databaseExists() throws FussballException
+	{
+		ResultSet rs;
+		try
+		{
+			rs = DBConnection.getConnection().getMetaData().getCatalogs();
+			while(rs.next())
+				if(rs.getString(1).equals(dbName))
+					return true;
+		}
+		catch (SQLException e)
+		{
+			throw new FussballException("Fehler beim Zugriff auf SQL Server",e);
+		}
+		return false;
+	}
+	
+	public static void createDatabase() throws FussballException
+	{
+		String sql = "CREATE DATABASE " + dbName;
+		DBConnection.executeUpdate(sql);
+	}
+	
+	public static void main(String[] args) throws Exception
+	{
+		String connectionString, classForName;
+		classForName = "com.mysql.jdbc.Driver";		
+		connectionString = "jdbc:mysql://" + server + ":3306/" + dbName;
+		DBConnection.connectToDatabase(classForName, connectionString, user, password);
+		
+		ResultSet rs = DBConnection.getConnection().getMetaData().getCatalogs();
+		while(rs.next())
+			System.out.println(rs.getString(1) );
+		DBConnection.closeConnection();
+	}
 
 }

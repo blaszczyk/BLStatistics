@@ -28,6 +28,9 @@ public class FileIO
 	{
 		if(season == null)
 			return;
+		File directory = new File(BASE_FOLDER + "/" + season.getLeague().getPathName() + "/");
+		if(!directory.exists())
+			directory.mkdirs();
 		String filename = getFileName(season);
 		try(FileWriter file = new FileWriter(filename))
 		{
@@ -54,7 +57,7 @@ public class FileIO
 	{
 		File directory = new File(BASE_FOLDER + "/" + league.getPathName() + "/");
 		if(!directory.exists())
-			directory.mkdirs();
+			return;
 		for(Season season : league)
 			loadSeason(season);
 	}

@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.gui;
 
+import java.awt.Toolkit;
 import java.util.prefs.Preferences;
 
 import javax.swing.ButtonGroup;
@@ -12,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import bn.blaszczyk.fussballstats.FussballStats;
 import bn.blaszczyk.fussballstats.tools.DBTools;
@@ -20,27 +22,28 @@ import bn.blaszczyk.fussballstats.tools.TeamAlias;
 @SuppressWarnings("serial")
 public class PrefsDialog extends JDialog
 {
-	public static final String KEY_SERVER = "server";
-	public static final String KEY_DB_NAME = "dbName";
-	public static final String KEY_USER = "user";
-	public static final String KEY_PASSWORD = "password";
-	public static final String KEY_DB_MODE = "dbMode";
-	public static final String KEY_USE_ALIASES = "useAliases";
-	public static final String KEY_SAVE_LAST_FILTER = "saveLastFilter";
+	private static final String KEY_SERVER = "server";
+	private static final String KEY_DB_NAME = "db_name";
+	private static final String KEY_USER = "user";
+	private static final String KEY_PASSWORD = "password";
+	private static final String KEY_DB_MODE = "db_mode";
+	private static final String KEY_USE_ALIASES = "use_aliases";
+	private static final String KEY_SAVE_LAST_FILTER = "save_last_filter";
 	
+	private static final String ICON_FILE = "data/settings.png";
 	
 	private JFrame owner;
 	
 	private JTextField tfServer, tfDbName, tfUser, tfPassword;
 	
 	private JButton btnSave = new JButton("Speichern");
-	private JButton btnCancel = new JButton("Abbrechen");
+	private JButton btnClose = new JButton("Schließen");
 	
 	private JRadioButton rbHardDrive = new JRadioButton("Festplatte", !LeagueManager.isDbMode());
 	private JRadioButton rbDataBase = new JRadioButton("Datenbank", LeagueManager.isDbMode());
 	
-	private JCheckBox chbAliases = new JCheckBox("Vereinsumbenennungen berücksichtigen", TeamAlias.isUseAliases());
-	private JCheckBox chbSaveLastFilter = new JCheckBox("Filter beim Schließen speichern", FunctionalFilterPanel.isSaveLastFilter());
+	private JCheckBox chbAliases = new JCheckBox("Vereinsumbenennungen beachten", TeamAlias.isUseAliases());
+	private JCheckBox chbSaveLastFilter = new JCheckBox("Filter beim Beenden speichern", FunctionalFilterPanel.isSaveLastFilter());
 
 	public PrefsDialog(JFrame owner)
 	{
@@ -51,8 +54,9 @@ public class PrefsDialog extends JDialog
 		setSize(360, 410);
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE)));
 
-		addComponentRow(new JLabel("Spiele laden von"), 0, 100);
+		addComponentRow(new JLabel("Spiele laden von"), 0, 170);
 		addComponentRow(rbHardDrive, 1, 150);
 		addComponentRow(rbDataBase, 2, 150);
 		
@@ -67,6 +71,7 @@ public class PrefsDialog extends JDialog
 		tfDbName = createTextFieldRow("Datenbank", DBTools.getDbName(), 4, false);
 		tfUser = createTextFieldRow("Benutzer", DBTools.getUser(), 5, false);
 		tfPassword = createTextFieldRow("Passwort", DBTools.getPassword(), 6, true);
+		setDbAccessDataEnabled(LeagueManager.isDbMode());
 		
 		addComponentRow(chbAliases, 7, 350);
 		addComponentRow(chbSaveLastFilter, 8, 300);
@@ -75,12 +80,12 @@ public class PrefsDialog extends JDialog
 		btnSave.setMnemonic('S');
 		btnSave.setBounds(10, 330, 150, 30);
 		
-		btnCancel.addActionListener(e -> cancel());
-		btnCancel.setMnemonic('A');
-		btnCancel.setBounds(180, 330, 150, 30);
+		btnClose.addActionListener(e -> cancel());
+		btnClose.setMnemonic('C');
+		btnClose.setBounds(180, 330, 150, 30);
 		
 		add(btnSave);
-		add(btnCancel);
+		add(btnClose);
 	}
 
 
@@ -89,10 +94,29 @@ public class PrefsDialog extends JDialog
 		setLocationRelativeTo(owner);
 		setVisible(true);	
 	}
+	
+	public static boolean initPrefs()
+	{
+		Preferences prefs = Preferences.userNodeForPackage(FussballStats.class);
+		
+		if(prefs.get(KEY_DB_MODE, null) == null)
+			return false;
+		
+		String server = prefs.get(KEY_SERVER, "localhost");
+		String dbName = prefs.get(KEY_DB_NAME, "fussballspiele");
+		String user = prefs.get(KEY_USER, "root");
+		String password = prefs.get(KEY_PASSWORD, null);
+		DBTools.setAccessData(server, dbName, user, password);
+		
+		LeagueManager.setDbMode(prefs.getBoolean(KEY_DB_MODE, false));
+		TeamAlias.setUseAliases(prefs.getBoolean(KEY_USE_ALIASES, false));
+		FunctionalFilterPanel.setSaveLastFilter(prefs.getBoolean(KEY_SAVE_LAST_FILTER, false));
+		return true;
+	}
 
 	private JTextField createTextFieldRow(String labelText, String defText, int column, boolean isPassword)
 	{
-		JLabel label = new JLabel(labelText);
+		JLabel label = new JLabel(labelText,SwingConstants.RIGHT);
 		JTextField textField;
 		if(isPassword)
 			textField = new JPasswordField(defText);

@@ -12,13 +12,13 @@ public abstract class TeamResultFilter
 
 	public static BiFilter<TeamResult,Game> getHomeGameFilter()
 	{
-		BiFilter<TeamResult,Game> f = (tr,g) ->tr.getTeam().equals(g.getTeamH());
+		BiFilter<TeamResult,Game> f = (tr,g) ->tr.getTeam().equals(g.getTeamHAlias());
 		return f;
 	}
 	
 	public static BiFilter<TeamResult,Game> getAwayGameFilter()
 	{
-		BiFilter<TeamResult,Game> f = (tr,g) ->tr.getTeam().equals(g.getTeamA());
+		BiFilter<TeamResult,Game> f = (tr,g) ->tr.getTeam().equals(g.getTeamAAlias());
 		return f;
 	}
 	
