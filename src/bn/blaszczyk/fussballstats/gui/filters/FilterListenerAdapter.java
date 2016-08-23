@@ -33,6 +33,7 @@ public class FilterListenerAdapter
 						FilterPanelAdapter.getFirstArgAdapter(e.getNewPanel()), e.getType()));
 				break;
 			case FilterEvent.SET_FILTER:
+			case FilterEvent.SET_ACTIVE:
 				listener.filter(new BiFilterEvent<T,U>(FilterPanelAdapter.getFirstArgAdapter(e.getSource()),
 						FilterAdapter.getFirstArgAdapter(e.getFilter()), e.getType()));
 				break;
@@ -59,6 +60,7 @@ public class FilterListenerAdapter
 						FilterPanelAdapter.getSecondArgAdapter(e.getNewPanel()), e.getType()));
 				break;
 			case FilterEvent.SET_FILTER:
+			case FilterEvent.SET_ACTIVE:
 				listener.filter(new BiFilterEvent<T,U>(FilterPanelAdapter.getSecondArgAdapter(e.getSource()),
 						FilterAdapter.getSecondArgAdapter(e.getFilter()), e.getType()));
 				break;

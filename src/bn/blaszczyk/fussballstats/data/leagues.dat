@@ -69,13 +69,14 @@
 	Oberliga Niedersachsen	;	niedersachsenliga-%4d-%4d				;	oberliga/niedersachsen		;	2011;2013
 	Oberliga Niedersachsen	;	oberliga-niedersachsen-%4d-%4d			;	oberliga/niedersachsen		;	2014
 	Oberliga Schleswig Holstein;	schleswig-holstein-liga-%4d-%4d		;	oberliga/schleswigholstein	;	2009
-	Oberliga Bremen			;	bremenliga-%4d-%4d						;	oberliga/bremen				;	2009
+	Oberliga Bremen			;	oberliga-bremen-%4d-%4d					;	oberliga/bremen				;	2009;2009
+	Oberliga Bremen			;	bremenliga-%4d-%4d						;	oberliga/bremen				;	2010
 	Oberliga Hamburg		;	oberliga-hamburg-%4d-%4d				;	oberliga/hamburg			;	2009
 //
 //  RV West
 //	
 	Oberliga West			;	oberliga-west-1947-63-%4d-%4d			;	oberliga/west				;	1948;1963
-	Oberliga Westfalen		;	oberliga-westfalen-%4d-%4d				;	oberliga/westfalen			;	1993;2008;	2013
+	Oberliga Westfalen		;	oberliga-westfalen-%4d-%4d				;	oberliga/westfalen			;	1994;2008;	2013
 	Oberliga Mittelrhein	;	oberliga-mittelrhein-%4d-%4d			;	oberliga/mittelrhein		;	2013
 	Oberliga Niederrhein	;	oberliga-niederrhein-%4d-%4d			;	oberliga/niederrhein		;	2013
 	Oberliga Nordrhein		;	oberliga-nordrhein-%4d-%4d				;	oberliga/nordrhein			;	1995;2002;	2005;2008
@@ -89,11 +90,13 @@
 //  RV Süd
 //	
 	Oberliga Süd			;	oberliga-sued-1945-63-%4d-%4d			;	oberliga/sued				;	1946;1963
-	Oberliga Bayern			;	bayernliga-%4d-%4d						;	oberliga/bayern				;	1995;2012
+	Oberliga Bayern			;	oberliga-bayern-%4d-%4d					;	oberliga/bayern				;	1995;2009
+	Oberliga Bayern			;	bayernliga-%4d-%4d						;	oberliga/bayern				;	2010;2012
 	Oberliga Bayern Nord	;	bayernliga-nord-%4d-%4d					;	oberliga/bayern/nord		;	2013
 	Oberliga Bayern Süd		;	bayernliga-sued-%4d-%4d					;	oberliga/bayern/sued		;	2013
-	Oberliga Hessen			;	hessenliga-%4d-%4d						;	oberliga/hessen				;	1995
-	Oberliga Baden Württemberg;	oberliga-baden-wuerttemberg-%4d-%4d		;	oberliga/badenwuerttemberg	;	1994
+	Oberliga Hessen			;	oberliga-hessen-%4d-%4d					;	oberliga/hessen				;	1995;2009
+	Oberliga Hessen			;	hessenliga-%4d-%4d						;	oberliga/hessen				;	2010
+	Oberliga Baden Württemberg;	oberliga-baden-wuerttemberg-%4d-%4d		;	oberliga/badenwuerttemberg	;	1995
 //
 //  RV NordOst
 //	

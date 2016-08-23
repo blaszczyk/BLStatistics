@@ -43,7 +43,8 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	protected void setFilter(BiFilter<T,U> filter)
 	{
 		this.filter = filter;
-		notifyListeners(new BiFilterEvent<>(this,filter,BiFilterEvent.SET_FILTER ));
+		if(isActive())
+			notifyListeners(new BiFilterEvent<>(this,filter,BiFilterEvent.SET_FILTER ));
 	}
 	
 

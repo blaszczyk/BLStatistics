@@ -61,7 +61,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		listLeagues.addListSelectionListener(this);
 		
 		JScrollPane spLeagues = new JScrollPane(listLeagues);
-		spLeagues.setBounds(10, 10, 210, 300);
+		spLeagues.setBounds(10, 10, 230, 300);
 		
 		tableSeasons = new JTable() {
 			DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
@@ -81,7 +81,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		tableSeasons.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		
 		JScrollPane spSeasons = new JScrollPane(tableSeasons);
-		spSeasons.setBounds(230, 10, 410, 300);
+		spSeasons.setBounds(250, 10, 390, 300);
 		
 		btnSeasonRequest.addActionListener(this);
 		btnSeasonRequest.setBounds(10, 10, 190, 30);

@@ -54,9 +54,12 @@ public class WeltFussballRequest
 			domElement = getChildElement(domElement, 0);
 			domElement = getChildElement(domElement, 0);
 			tableBody = (HtmlTableBody) getChildElement(domElement, 0);
+				
 		}
-		catch (FailingHttpStatusCodeException | IOException | NullPointerException e)
+		catch (FailingHttpStatusCodeException | IOException | NullPointerException | ClassCastException e)
 		{
+			System.out.println(url);
+			e.printStackTrace();
 			throw new FussballException("Fehler beim Download von Saison " + season,e);
 		}
 	}
@@ -120,7 +123,7 @@ public class WeltFussballRequest
 					result = result.substring(0, result.lastIndexOf("("));
 				if(result.lastIndexOf("Wert.") >= 0)
 					result = result.substring(0, result.lastIndexOf("Wert."));
-				if(result.equals("-:-") || result.equals("annull.") || result.equals("n.gesp."))
+				if(result.equals("-:-") || result.equals("annull.") || result.equals("n.gesp.") || result.equals( "verl.") || result.equals("abgebr."))
 					continue;
 				String[] split = result.split(":");
 				int goalsH, goalsA;
