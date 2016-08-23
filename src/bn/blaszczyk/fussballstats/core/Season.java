@@ -9,7 +9,8 @@ public class Season implements Iterable<Game>
 	private League league; 
 	private List<String> teams = new ArrayList<>();
 	private List<Game> games = new ArrayList<>();
-	private int matchDayCount = 0;
+	private int matchDayMin = 0;
+	private int matchDayMax = -1;
 
 	/*
 	 * Constructor
@@ -26,7 +27,7 @@ public class Season implements Iterable<Game>
 
 	public int getMatchDayCount()
 	{
-		return matchDayCount;
+		return matchDayMax - matchDayMin + 1;
 	}
 
 	public int getTeamCount()
@@ -52,11 +53,15 @@ public class Season implements Iterable<Game>
 	public void setGames(List<Game> games)
 	{
 		this.games = games;
-		matchDayCount = 0;
 		teams.clear();
+		matchDayMin = 1;
+		matchDayMax = 0;
+		if(!games.isEmpty())
+			matchDayMin = matchDayMax = games.get(0).getMatchDay();
 		for(Game game : games)
 		{
-			matchDayCount = Math.max(matchDayCount, game.getMatchDay());
+			matchDayMin = Math.min(matchDayMin, game.getMatchDay());
+			matchDayMax = Math.max(matchDayMax, game.getMatchDay());
 			addTeam(game.getTeamHAlias());
 			addTeam(game.getTeamAAlias());
 		}

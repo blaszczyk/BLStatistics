@@ -1,6 +1,7 @@
 package bn.blaszczyk.fussballstats.gui;
 
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.util.prefs.Preferences;
 
 import javax.swing.AbstractButton;
@@ -8,7 +9,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
@@ -34,7 +34,7 @@ public class PrefsDialog extends JDialog
 	
 	private static final Preferences PREFERENCES = Preferences.userNodeForPackage(FussballStats.class);
 	
-	private JFrame owner;
+	private Window owner;
 	
 	private JTextField tfServer, tfDbName, tfUser, tfPassword;
 	
@@ -47,11 +47,12 @@ public class PrefsDialog extends JDialog
 	private JButton btnSave = new JButton("Speichern");
 	private JButton btnClose = new JButton("Schlieﬂen");
 	
-	public PrefsDialog(JFrame owner)
+	public PrefsDialog(Window owner)
 	{
-		super(owner, "Einstellungen", true);
+		super(owner, ModalityType.APPLICATION_MODAL);
 		this.owner = owner;
-		
+
+		setTitle("Einstellungen");
 		setLayout(null);
 		setSize(360, 410);
 		setResizable(false);

@@ -56,7 +56,7 @@ public class Initiator {
 				JOptionPane.showMessageDialog(progressDialog, e.getMessage(), "Keine Verbindung zur Datenbank", JOptionPane.ERROR_MESSAGE);
 			}
 			if(!databaseExists)
-				new PrefsDialog(null).showDialog();
+				new PrefsDialog(progressDialog).showDialog();
 		}
 		
 		try
@@ -106,7 +106,7 @@ public class Initiator {
 					"Keine Spiele vorhanden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if(reply == JOptionPane.YES_OPTION)
 			{
-				new LeagueManager(null, leagues).showDialog();
+				new LeagueManager(progressDialog, leagues).showDialog();
 				initLists(leagues);
 			}
 		}
@@ -188,7 +188,7 @@ public class Initiator {
 	private static void initPrefs()
 	{
 		while(!PrefsDialog.initPrefs())
-			new PrefsDialog(null).showDialog();;
+			new PrefsDialog(progressDialog).showDialog();;
 	}
 	
 	private static boolean initLists(Iterable<League> leagues)

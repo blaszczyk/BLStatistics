@@ -15,13 +15,6 @@ public class FilterLog
 	private String currentFilterString;
 	private int currentFilterIndex = 0;
 	
-	private final int maxLog;
-
-	public FilterLog( int maxLog)
-	{
-		this.maxLog = maxLog;
-	}
-	
 	public boolean hasUndo()
 	{
 		return currentFilterIndex > 0;
@@ -64,8 +57,6 @@ public class FilterLog
 			return;
 		this.currentFilterString = newFilterString;
 		chopLog(currentFilterIndex+1);
-		if(logFilter.size() > maxLog)
-			logFilter.remove(0);
 		logFilter.add(newFilterString);
 		currentFilterIndex = logFilter.size() - 1;
 	}

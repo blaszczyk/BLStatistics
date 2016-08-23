@@ -2,6 +2,7 @@ package bn.blaszczyk.fussballstats.gui;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	private static final String	ICON_FILE			= "data/manager.png";
 	private static final String	DL_ICON_FILE		= "data/download.png";
 	
-	private JFrame				owner;
+	private Window				owner;
 	
 	private JList<LeagueItem>	listLeagues;
 	private JTable				tableSeasons;
@@ -45,11 +46,12 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	
 	private static boolean dbMode = false;
 	
-	public LeagueManager(JFrame owner, List<League> leagues)
+	public LeagueManager(Window owner, List<League> leagues)
 	{
-		super(owner, "Liga Manager", true);
+		super(owner, ModalityType.APPLICATION_MODAL);
 		this.leagues = leagues;
 		this.owner = owner;
+		setTitle("Liga Manager");
 		setSize(654, 405);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE)));
 		setLayout(null);
@@ -128,7 +130,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	{
 		if (leagueItem == null)
 			return;
-		Object[] columnNames = { "Saison", "Spieltage", "Teams", "Spiele" };
+		Object[] columnNames = { "Saison", "Vereine", "Spieltage", "Spiele" };
 		DefaultTableModel tm = new DefaultTableModel(columnNames, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column)
@@ -139,7 +141,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		List<Object[]> rows = new ArrayList<>();
 		for (League league : leagueItem)
 			for (Season season : league)
-				rows.add(new Object[]{ season.getYear(), season.getMatchDayCount(), season.getTeamCount(), season.getGameCount() });
+				rows.add(new Object[]{ season.getYear(), season.getTeamCount(), season.getMatchDayCount(), season.getGameCount() });
 		rows.sort((o1, o2) -> Integer.compare((Integer) o1[0], (Integer) o2[0]));
 		for (Object[] rowData : rows)
 			tm.addRow(rowData);

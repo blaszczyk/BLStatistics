@@ -42,10 +42,12 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	private static final String EXIT_ICON = "data/exit.png";
 	private static final String UNDO_ICON = "data/undo.png";
 	private static final String REDO_ICON = "data/redo.png";
+	private static final String HELP_ICON = "data/help.png";
 	
 	private JMenuBar menuBar = new JMenuBar();
-	private JMenuItem newFilter, loadFilter, saveFilter, showLeagueManager, showPreferences, exit;
-	private JMenuItem menuUndo, menuRedo;
+	private JMenuItem miNewFilter, miLoadFilter, miSaveFilter, miShowLeagueManager, miShowPreferences, miExit;
+	private JMenuItem miUndo, miRedo;
+	private JMenuItem miHelp;
 	
 	private FunctionalFilterPanel functionalFilterPanel;
 	private FunctionalGameTable functionalGameTable = new FunctionalGameTable();
@@ -94,13 +96,20 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	{
 		PrefsDialog pd = new PrefsDialog(this);
 		pd.showDialog();
+		resetTable();
+	}
+	
+	private void showHelp()
+	{
+		HelpDialog hd = new HelpDialog(this);
+		hd.showDialog();
 	}
 	
 	
 	
 	private void initComponents()
 	{
-		filterLog = new FilterLog(100);
+		filterLog = new FilterLog();
 		
 		functionalFilterPanel= new FunctionalFilterPanel(filterLog);
 		functionalFilterPanel.setFilterListener(this);
@@ -138,28 +147,33 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	{
 		JMenu mainMenu = new JMenu("Fussball Statistiken");
 		mainMenu.setMnemonic('S');
-		
-		newFilter = createMenuItem(mainMenu,"Neuer Filter",'N',KeyEvent.VK_N, NEW_ICON);
-		loadFilter = createMenuItem(mainMenu, "Filter Laden", 'L',KeyEvent.VK_L,LOAD_ICON);
-		saveFilter = createMenuItem(mainMenu, "Filter Speichern", 'S',KeyEvent.VK_S,SAVE_ICON);
-		mainMenu.addSeparator();
-		showLeagueManager = createMenuItem(mainMenu, "Liga Manager", 'M',KeyEvent.VK_M, MANAGER_ICON);
-		showPreferences = createMenuItem(mainMenu, "Einstellungen", 'E',KeyEvent.VK_E, SETTINGS_ICON);
-		mainMenu.addSeparator();
-		exit = createMenuItem(mainMenu, "Beenden", 'B',KeyEvent.VK_B,EXIT_ICON);
-		
 		menuBar.add(mainMenu);
+		
+		miNewFilter = createMenuItem(mainMenu,"Neuer Filter",'N',KeyEvent.VK_N, NEW_ICON);
+		miLoadFilter = createMenuItem(mainMenu, "Filter Laden", 'L',KeyEvent.VK_L,LOAD_ICON);
+		miSaveFilter = createMenuItem(mainMenu, "Filter Speichern", 'S',KeyEvent.VK_S,SAVE_ICON);
+		mainMenu.addSeparator();
+		miShowLeagueManager = createMenuItem(mainMenu, "Liga Manager", 'M',KeyEvent.VK_M, MANAGER_ICON);
+		miShowPreferences = createMenuItem(mainMenu, "Einstellungen", 'E',KeyEvent.VK_E, SETTINGS_ICON);
+		mainMenu.addSeparator();
+		miExit = createMenuItem(mainMenu, "Beenden", 'B',KeyEvent.VK_B,EXIT_ICON);
+		
 		
 		JMenu editMenu = new JMenu("Bearbeiten");
 		editMenu.setMnemonic('B');
-
-		menuUndo = createMenuItem(editMenu, "Rückgängig", 'R', KeyEvent.VK_Z,UNDO_ICON );
-		menuRedo = createMenuItem(editMenu, "Wiederholen", 'W', KeyEvent.VK_Y,REDO_ICON );
-		
-		menuUndo.setEnabled(false);
-		menuRedo.setEnabled(false);
-		
 		menuBar.add(editMenu);
+
+		miUndo = createMenuItem(editMenu, "Rückgängig", 'R', KeyEvent.VK_Z,UNDO_ICON );
+		miUndo.setEnabled(false);
+		miRedo = createMenuItem(editMenu, "Wiederholen", 'W', KeyEvent.VK_Y,REDO_ICON );
+		miRedo.setEnabled(false);
+		
+
+		JMenu helpMenu = new JMenu("Hilfe");
+		helpMenu.setMnemonic('H');
+		menuBar.add(helpMenu);
+		
+		miHelp = createMenuItem(helpMenu, "Hilfe", 'H', KeyEvent.VK_H, HELP_ICON);
 	}
 
 	private void resetTable()
@@ -183,8 +197,8 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	@Override
 	public void filter(BiFilterEvent<Season,Game> e)
 	{
-		menuUndo.setEnabled(filterLog.hasUndo());
-		menuRedo.setEnabled(filterLog.hasRedo());
+		miUndo.setEnabled(filterLog.hasUndo());
+		miRedo.setEnabled(filterLog.hasRedo());
 		resetTable();
 	}
 
@@ -197,21 +211,23 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if(e.getSource() == newFilter)
+		if(e.getSource() == miNewFilter)
 			functionalFilterPanel.newFilter();
-		if(e.getSource() == loadFilter)
+		if(e.getSource() == miLoadFilter)
 			functionalFilterPanel.loadFilter();
-		else if(e.getSource() == saveFilter)
+		else if(e.getSource() == miSaveFilter)
 			functionalFilterPanel.saveFilter();
-		else if(e.getSource() == showLeagueManager)
+		else if(e.getSource() == miShowLeagueManager)
 			showLeagueManager();
-		else if(e.getSource() == showPreferences)
+		else if(e.getSource() == miShowPreferences)
 			showPreferences();
-		else if(e.getSource() == menuUndo)
+		else if(e.getSource() == miUndo)
 			functionalFilterPanel.setFilterPanel(filterLog.undo());
-		else if(e.getSource() == menuRedo)
+		else if(e.getSource() == miRedo)
 			functionalFilterPanel.setFilterPanel(filterLog.redo());
-		else if(e.getSource() == exit)
+		else if(e.getSource() == miHelp)
+			showHelp();
+		else if(e.getSource() == miExit)
 			exit();
 	}
 }
