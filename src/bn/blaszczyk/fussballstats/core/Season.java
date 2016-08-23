@@ -44,7 +44,6 @@ public class Season implements Iterable<Game>
 		return league;
 	}
 
-
 	public int getGameCount()
 	{
 		return games.size();
@@ -78,4 +77,9 @@ public class Season implements Iterable<Game>
 		return games.iterator();
 	}
 	
+	@Override
+	public String toString()
+	{
+		return league.getName() + " - " + year;
+	}
 }

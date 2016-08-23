@@ -46,9 +46,8 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	
 	protected void setFilter(Filter<T> filter)
 	{
-		String oldName = toString();
 		this.filter = filter;
-		notifyListeners(new FilterEvent<>(this,oldName));
+		notifyListeners(new FilterEvent<>(this,filter,FilterEvent.SET_FILTER));
 	}
 	
 	@Override
@@ -64,7 +63,7 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 			setBorder(INACTIVE_BORDER);
 			this.active = false;
 		}
-		notifyListeners(new FilterEvent<T>(this));
+		notifyListeners(new FilterEvent<T>(this,filter,FilterEvent.SET_ACTIVE));
 	}
 	
 	@Override

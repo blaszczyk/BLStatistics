@@ -27,12 +27,12 @@ public class Initiator {
 	
 	public static boolean initAll(List<League> leagues)
 	{
-		int seasonCount = 0;
 		List<String> uniqueLeagueNames = new ArrayList<>();
 
 		initUIManager();
 		
 		initLeagues(leagues);
+		int seasonCount = 0;
 		for (League league : leagues)
 			seasonCount += league.getSeasonCount();
 		progressDialog = new ProgressDialog(null, seasonCount, "Initiiere FussballStats",
@@ -138,16 +138,7 @@ public class Initiator {
 	}
 	
 	private static void initUIManager()
-	{
-		// try
-		// {
-		// UIManager.setLookAndFeel( new NimbusLookAndFeel());
-		// }
-		// catch (UnsupportedLookAndFeelException e)
-		// {
-		// e.printStackTrace();
-		// }
-		
+	{	
 		Font plainFont = new Font("Arial", Font.PLAIN, 16);
 		Font boldFont = new Font("Arial", Font.BOLD, 16);
 		Font tableFont = new Font("Arial", Font.PLAIN, 14);
@@ -217,5 +208,30 @@ public class Initiator {
 		TeamFilterPanel.setTeamList(teams);
 		return teams.size() != 0;
 	}
+	
+	
+	/*
+	 * Writes Games from Harddisk to DB
+	 */
+	
+//	public static void main(String[] args) throws FussballException
+//	{
+//		List<League> leagues = new ArrayList<>();
+//		initLeagues(leagues);
+//		FileIO.loadLeagues(leagues);
+//		checkDB();
+//		DBTools.openMySQLDatabase();
+//		for(League league : leagues)
+//		{
+//			if(!DBTools.tableExists(league))
+//				DBTools.createTable(league);
+//			for(Season season : league)
+//			{
+//				DBTools.insertSeason(season);
+//				System.out.println("Season " + season + " inserted");
+//			}		
+//		}
+//		DBConnection.closeConnection();
+//	}
 	
 }

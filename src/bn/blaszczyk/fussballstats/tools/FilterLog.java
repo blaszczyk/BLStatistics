@@ -1,198 +1,73 @@
 package bn.blaszczyk.fussballstats.tools;
 
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.core.Season;
 import bn.blaszczyk.fussballstats.gui.filters.*;
 
-public class FilterLog implements BiFilterListener<Season, Game>
+public class FilterLog
 {
-
-	private List<String> logUndoLabel = new ArrayList<>();
-	private List<String> logRedoLabel = new ArrayList<>();
 	private List<String> logFilter = new ArrayList<>();
 	
-	private BiFilterPanel<Season,Game> lastSource;
-	private BiFilterPanel<Season, Game> currentFilter;
+	private String currentFilterString;
+	private int currentFilterIndex = 0;
 	
-	private ActionListener listener;
-	
-	private int selectedFilterIndex;
-	private int maxLog;
-	private boolean skipNext = false;
+	private final int maxLog;
 
-	public FilterLog( int maxLog, ActionListener listener)
+	public FilterLog( int maxLog)
 	{
 		this.maxLog = maxLog;
-		this.listener = listener;
-	}
-
-
-	public void populateUndoMenu(JMenu menuUndo)
-	{
-		menuUndo.removeAll();
-		menuUndo.setEnabled( selectedFilterIndex > 0  );
-		for(int i = selectedFilterIndex - 1  ; i >= 0; i--)
-		{
-			JMenuItem mi = new JMenuItem( logUndoLabel.get(i + 1) );
-			mi.addActionListener(createIndexedListener(i));
-			menuUndo.add(mi);
-		}
-	}
-
-	public void populateRedoMenu(JMenu menuRedo)
-	{
-		menuRedo.removeAll();
-		menuRedo.setEnabled( selectedFilterIndex + 1< logFilter.size() );
-		for(int i = selectedFilterIndex + 1; i < logFilter.size(); i++)
-		{
-			JMenuItem mi = new JMenuItem( logRedoLabel.get(i).toString() );
-			mi.addActionListener( createIndexedListener(i) );
-			menuRedo.add(mi);
-		}
 	}
 	
-	public BiFilterPanel<Season,Game> getFilterPanel()
+	public boolean hasUndo()
 	{
-		return currentFilter;
+		return currentFilterIndex > 0;
 	}
 	
-	private void addLogItem(String text)
+	public BiFilterPanel<Season, Game> undo()
 	{
-		addLogItem(text, text);
+		return reconstructFilter(currentFilterIndex-1);
 	}
 	
-	
-	
-	
-	private void addLogItem(String undoLabel, String redoLabel)
+	public boolean hasRedo()
 	{
-		chopLog(selectedFilterIndex+1);
-		if(logFilter.size() > maxLog)
-		{
-			logFilter.remove(0);
-			logUndoLabel.remove(0);
-			logRedoLabel.remove(0);
-		}
-		logUndoLabel.add(undoLabel);
-		logRedoLabel.add(redoLabel);
-		logFilter.add(FilterParser.writeFilter(currentFilter));
-		selectedFilterIndex = logFilter.size() - 1;
-
-		System.out.println(undoLabel);
-		System.out.println(redoLabel);
-		System.out.println(logFilter.size());
-		System.out.println(logUndoLabel);
-		System.out.println(logRedoLabel);
-		System.out.println();
+		return currentFilterIndex < logFilter.size() - 1;
 	}
-
 	
-	private void setLastUndoLabel(String undoLabel)
+	public BiFilterPanel<Season, Game> redo()
 	{
-		logUndoLabel.set(selectedFilterIndex,undoLabel);		
+		return reconstructFilter(currentFilterIndex+1);
 	}
-		
-	private ActionListener createIndexedListener(int index)
+	
+	private BiFilterPanel<Season, Game> reconstructFilter(int index)
 	{
-		final int panelIndex = index;
-		return e -> {
-			currentFilter = FilterParser.parseFilter( logFilter.get(panelIndex) );
-			selectedFilterIndex = panelIndex;
-			skipNext = true;
-			listener.actionPerformed(e);
-		};
+		currentFilterIndex = index;
+		currentFilterString = logFilter.get(index);
+		return FilterParser.parseFilter(currentFilterString);
 	}
 	
 	private void chopLog(int chopIndex)
 	{
-		while(logFilter.size() > chopIndex)
-		{
-			System.out.println("CHOP: " + logFilter.size() + " to " + chopIndex);
-			logFilter.remove(chopIndex);
-			logUndoLabel.remove(chopIndex);
-			logRedoLabel.remove(chopIndex);
-		}
+		if(chopIndex >= 0)
+			while(logFilter.size() > chopIndex)
+				logFilter.remove(chopIndex);
 	}
 
 
-	public void setLastFilter(BiFilterPanel<Season, Game> currentFilter)
+	public void logFilter(BiFilterPanel<Season, Game> currentFilter)
 	{
-		this.currentFilter = currentFilter;
-	}
-
-
-	@Override
-	public void filter(BiFilterEvent<Season, Game> e)
-	{
-		if( "K".toLowerCase().equals("k"))
+		String newFilterString = FilterParser.writeFilter(currentFilter);
+		if(newFilterString.equals(currentFilterString))
 			return;
-		BiFilterPanel<Season, Game> source = e.getSource();
-		if(lastSource != null && lastSource.equals(source))
-		{
-//			chopLog(selectedFilterIndex);
-		}
-		
-		/*
-		 * 	 F0
-		 * |U0 |R0
-		 * 	 F1
-		 * |U1 |R1
-		 * 	 F2
-		 * 
-		 * 
-		 */
-		
-		if(skipNext)
-		{
-			System.out.println("SKIP");
-			skipNext = false;
-			return;
-		}
-		if(e.getType() == BiFilterEvent.SET_PANEL)
-		{
-			skipNext = true;
-			BiFilterPanel<Season, Game> newPanel = e.getNewPanel();
-			if(source == null || source instanceof NoFilterPanel)
-			{
-				addLogItem("Neuer Filter: " + newPanel);
-				lastSource = newPanel;
-			}
-			else if(newPanel == null || newPanel instanceof NoFilterPanel)
-			{
-				addLogItem("Entferne Filter: " + source);
-				lastSource = source;
-			}
-			else
-			{
-				addLogItem("Ersetzte Filter: " + source);
-				lastSource = newPanel;
-			}
-		}
-		else if (e.getType() == BiFilterEvent.SET_FILTER)
-		{
-			if( lastSource == null || !lastSource.equals(source))
-			{
-				setLastUndoLabel("Ändere Filter: " + e.getOldSourceName());
-				lastSource = source;
-			}
-			else
-			{
-				System.out.println();
-				System.out.println("Same Source");
-				System.out.println(logFilter.size());
-				chopLog(selectedFilterIndex);
-				System.out.println(logFilter.size());
-				System.out.println();
-			}
-			addLogItem("Ändere Filter: " + e.getOldSourceName());
-		}
+		this.currentFilterString = newFilterString;
+		chopLog(currentFilterIndex+1);
+		if(logFilter.size() > maxLog)
+			logFilter.remove(0);
+		logFilter.add(newFilterString);
+		currentFilterIndex = logFilter.size() - 1;
 	}
 
 }

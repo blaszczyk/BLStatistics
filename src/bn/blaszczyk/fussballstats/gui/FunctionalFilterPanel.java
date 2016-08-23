@@ -29,9 +29,9 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	private BiFilterListener<Season,Game> listener = null;
 	private FilterLog filterLog;
 	
-	private static boolean saveLastFilter;
+	private static boolean loadLastFilter;
 	
-	public FunctionalFilterPanel()
+	public FunctionalFilterPanel(FilterLog filterLog)
 	{
 		super(new BorderLayout(5,5));
 		setPreferredSize(new Dimension(300,700));		
@@ -39,25 +39,23 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		header.setPreferredSize(new Dimension(355, 50));
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
-		filterLog = new FilterLog( 10, e -> setFilterPanel(filterLog.getFilterPanel()) );
-		if(saveLastFilter)
+		this.filterLog = filterLog;
+		
+		if(loadLastFilter)
 			setFilterPanel(FilterIO.loadFilter(LAST_FILTER));
 		else
 			setFilterPanel(FilterMenuFactory.createNoFilterPanel());
-		notifyLog(new BiFilterEvent<Season, Game>(null,filterPanel));
 	}
 
 	public void newFilter()
 	{
 		BiFilterPanel<Season, Game> newFilter = FilterMenuFactory.createNoFilterPanel();
-		notifyLog(new BiFilterEvent<Season, Game>(filterPanel,newFilter));
 		setFilterPanel(newFilter);
 	}
 
 	public void loadFilter()
 	{
 		BiFilterPanel<Season, Game> newFilter = FilterIO.loadFilter();
-		notifyLog(new BiFilterEvent<Season, Game>(filterPanel,newFilter));
 		setFilterPanel(newFilter);
 	}
 	
@@ -69,13 +67,8 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 
 	public void saveLastFilter()
 	{
-		if(saveLastFilter)
+		if(loadLastFilter)
 			FilterIO.saveFilter(filterPanel,LAST_FILTER);
-	}
-
-	public FilterLog getFilterLog()
-	{
-		return filterLog;
 	}
 
 	public void setFilterListener(BiFilterListener<Season, Game> listener)
@@ -83,14 +76,14 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		this.listener = listener;
 	}
 	
-	public static boolean isSaveLastFilter()
+	public static boolean isLoadLastFilter()
 	{
-		return saveLastFilter;
+		return loadLastFilter;
 	}
 
-	public static void setSaveLastFilter(boolean saveLastFilter)
+	public static void setLoadLastFilter(boolean loadLastFilter)
 	{
-		FunctionalFilterPanel.saveLastFilter = saveLastFilter;
+		FunctionalFilterPanel.loadLastFilter = loadLastFilter;
 	}
 	
 	private void paint()
@@ -102,34 +95,37 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		revalidate();
 	}
 	
-	private void setFilterPanel(BiFilterPanel<Season,Game> panel)
+	public void setFilterPanel(BiFilterPanel<Season,Game> panel)
 	{
 		if(panel == null)
 			return;
 		if(this.filterPanel != null)
 			this.filterPanel.removeFilterListener(this);
+		if(listener != null)
+			listener.filter(new BiFilterEvent<Season,Game>(filterPanel,panel, BiFilterEvent.SET_PANEL));
 		this.filterPanel = panel;
 		panel.addFilterListener(this);
 		panel.getPanel().setPreferredSize(new Dimension(300,1000));
 		paint();
-		if(listener != null)
-			listener.filter(new BiFilterEvent<Season,Game>(panel,panel));
+		notifyLog();
 	}
 	
-	private void notifyLog(BiFilterEvent<Season, Game> e)
+	private void notifyLog()
 	{
-		filterLog.setLastFilter(filterPanel);
-		filterLog.filter(e);
+		if(filterLog != null)
+			filterLog.logFilter(filterPanel);
 	}
 	
 	@Override
 	public void filter(BiFilterEvent<Season, Game> e)
 	{
-		notifyLog(e);
 		if(e.getType() == BiFilterEvent.SET_PANEL && filterPanel.equals(e.getSource()))
 			setFilterPanel(e.getNewPanel());
 		else
+		{
 			filterPanel.paint();
+			notifyLog();
+		}
 		if(listener != null)
 			listener.filter(e);
 	}

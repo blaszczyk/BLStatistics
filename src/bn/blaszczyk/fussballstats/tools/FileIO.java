@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,8 +19,10 @@ public class FileIO
 {
 	private static final String BASE_FOLDER = "leagues";
 	private static final String FILE_EXTENSION = "bls";
+
+	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
 	
-	public static void loadLeagues(Iterable<League> leagues)
+	public static void loadLeagues(Iterable<League> leagues) throws FussballException
 	{
 		for(League league : leagues)
 			loadSeasons(league);
@@ -36,7 +40,7 @@ public class FileIO
 		{
 			for(Game game : season)
 			{
-				String gameString = String.format("%d;%s;%s;%s;%d;%d\n", game.getMatchDay(), Game.DATE_FORMAT.format(game.getDate()),
+				String gameString = String.format("%d;%s;%s;%s;%d;%d\n", game.getMatchDay(), DATE_FORMAT.format(game.getDate()),
 						game.getTeamH(), game.getTeamA(), game.getGoalsH(), game.getGoalsA() );
 				file.write(gameString);
 			}
@@ -53,7 +57,7 @@ public class FileIO
 	}
 	
 
-	private static void loadSeasons(League league)
+	private static void loadSeasons(League league) throws FussballException
 	{
 		File directory = new File(BASE_FOLDER + "/" + league.getPathName() + "/");
 		if(!directory.exists())
@@ -62,7 +66,7 @@ public class FileIO
 			loadSeason(season);
 	}
 	
-	private static boolean loadSeason(Season season)
+	private static boolean loadSeason(Season season) throws FussballException
 	{
 		if(season == null || !isSeasonSaved(season))
 			return false;
@@ -77,7 +81,7 @@ public class FileIO
 				try
 				{
 					int matchDay = Integer.parseInt(split[0].trim());
-					Date date = Game.DATE_FORMAT.parse(split[1].trim());
+					Date date = DATE_FORMAT.parse(split[1].trim());
 					String teamH = split[2].trim();
 					String teamA = split[3].trim();
 					int goalsH = Integer.parseInt(split[4].trim());
@@ -95,8 +99,8 @@ public class FileIO
 		}
 		catch (FileNotFoundException e)
 		{
+			throw new FussballException("Fehler beim Laden der Ligen", e);
 		}
-		return false;
 	}
 	
 	private static String getFileName(Season season)

@@ -1,5 +1,7 @@
 package bn.blaszczyk.fussballstats.gui.filters;
 
+import bn.blaszczyk.fussballstats.filters.FilterAdapter;
+
 public class FilterListenerAdapter 
 {
 	public static <T,U> FilterListener<T> getFirstArgAdapter(BiFilterListener<T,U> listener )
@@ -28,14 +30,11 @@ public class FilterListenerAdapter
 			{
 			case FilterEvent.SET_PANEL:
 				listener.filter(new BiFilterEvent<T,U>(FilterPanelAdapter.getFirstArgAdapter(e.getSource()),
-						FilterPanelAdapter.getFirstArgAdapter(e.getNewPanel())));
+						FilterPanelAdapter.getFirstArgAdapter(e.getNewPanel()), e.getType()));
 				break;
 			case FilterEvent.SET_FILTER:
 				listener.filter(new BiFilterEvent<T,U>(FilterPanelAdapter.getFirstArgAdapter(e.getSource()),
-						e.getOldSourceName()));
-				break;
-			case FilterEvent.SET_ACTIVE:
-				listener.filter(new BiFilterEvent<T,U>(FilterPanelAdapter.getFirstArgAdapter(e.getSource())));
+						FilterAdapter.getFirstArgAdapter(e.getFilter()), e.getType()));
 				break;
 			}
 		}
@@ -49,6 +48,7 @@ public class FilterListenerAdapter
 			this.listener = listener;
 		}
 
+
 		@Override
 		public void filter(FilterEvent<U> e)
 		{
@@ -56,14 +56,11 @@ public class FilterListenerAdapter
 			{
 			case FilterEvent.SET_PANEL:
 				listener.filter(new BiFilterEvent<T,U>(FilterPanelAdapter.getSecondArgAdapter(e.getSource()),
-						FilterPanelAdapter.getSecondArgAdapter(e.getNewPanel())));
+						FilterPanelAdapter.getSecondArgAdapter(e.getNewPanel()), e.getType()));
 				break;
 			case FilterEvent.SET_FILTER:
 				listener.filter(new BiFilterEvent<T,U>(FilterPanelAdapter.getSecondArgAdapter(e.getSource()),
-						e.getOldSourceName()));
-				break;
-			case FilterEvent.SET_ACTIVE:
-				listener.filter(new BiFilterEvent<T,U>(FilterPanelAdapter.getSecondArgAdapter(e.getSource())));
+						FilterAdapter.getSecondArgAdapter(e.getFilter()), e.getType()));
 				break;
 			}
 		}

@@ -1,7 +1,5 @@
 package bn.blaszczyk.fussballstats.core;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import bn.blaszczyk.fussballstats.tools.TeamAlias;
@@ -17,11 +15,6 @@ public class Game
 	
 	public static final int WIN = HOME;
 	public static final int LOSS = AWAY;
-	
-	/*
-	 * Standard Date Format
-	 */
-	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
 	
 	/*
 	 * Object Properties

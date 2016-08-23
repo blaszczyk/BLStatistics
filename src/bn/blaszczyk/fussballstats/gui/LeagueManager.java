@@ -217,7 +217,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 							progressDialog.undoCancelRequest();
 					try
 					{
-						progressDialog.appendInfo(String.format("\nLade Saison: %s - %4d", season.getLeague().toString(), season.getYear()));
+						progressDialog.appendInfo("\nLade Saison: " + season);
 						request.requestData(season);
 						List<Game> games = request.getGames();
 						season.setGames(games);

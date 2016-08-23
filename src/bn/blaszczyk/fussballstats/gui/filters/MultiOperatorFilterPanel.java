@@ -56,7 +56,7 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		newPanel.addFilterListener(this);
 		newPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
 		panels.add(newPanel);
-		notifyListeners(new BiFilterEvent<>(null, newPanel));
+		notifyListeners(new BiFilterEvent<>(null, newPanel, BiFilterEvent.SET_PANEL));
 		setFilter();
 	}
 	

@@ -42,9 +42,8 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	
 	protected void setFilter(BiFilter<T,U> filter)
 	{
-		String oldName = toString();
 		this.filter = filter;
-		notifyListeners(new BiFilterEvent<>(this,oldName));
+		notifyListeners(new BiFilterEvent<>(this,filter,BiFilterEvent.SET_FILTER ));
 	}
 	
 
@@ -87,7 +86,7 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 			setBorder(AbstractFilterPanel.INACTIVE_BORDER);
 			this.isActive = false;
 		}
-		notifyListeners(new BiFilterEvent<T, U>(this));
+		notifyListeners(new BiFilterEvent<T, U>(this,filter,BiFilterEvent.SET_ACTIVE));
 	}
 
 	@Override
@@ -130,6 +129,6 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	@Override
 	public void replaceMe(BiFilterPanel<T, U> newPanel)
 	{
-		notifyListeners(new BiFilterEvent<>(this, newPanel));
+		notifyListeners(new BiFilterEvent<>(this, newPanel, BiFilterEvent.SET_PANEL));
 	}
 }

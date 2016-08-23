@@ -94,7 +94,7 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		@Override
 		public void replaceMe(BiFilterPanel<T, U> panel)
 		{
-			BiFilterEvent<T, U> e = new BiFilterEvent<>(this, panel);
+			BiFilterEvent<T, U> e = new BiFilterEvent<>(this, panel, BiFilterEvent.SET_PANEL);
 			List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
 			for(BiFilterListener<T, U> listener : listeners)
 				copy.add(listener);
@@ -197,7 +197,7 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		@Override
 		public void replaceMe(BiFilterPanel<T, U> panel)
 		{
-			BiFilterEvent<T, U> e = new BiFilterEvent<>(this, panel);
+			BiFilterEvent<T, U> e = new BiFilterEvent<>(this, panel, BiFilterEvent.SET_PANEL);
 			List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
 			for(BiFilterListener<T, U> listener : listeners)
 				copy.add(listener);

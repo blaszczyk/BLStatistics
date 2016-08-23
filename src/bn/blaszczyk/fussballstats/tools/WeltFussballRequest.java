@@ -57,7 +57,7 @@ public class WeltFussballRequest
 		}
 		catch (FailingHttpStatusCodeException | IOException | NullPointerException e)
 		{
-			throw new FussballException("Fehler beim Download von Saison " + season.getLeague() + " - "+ season.getYear(),e);
+			throw new FussballException("Fehler beim Download von Saison " + season,e);
 		}
 	}
 	

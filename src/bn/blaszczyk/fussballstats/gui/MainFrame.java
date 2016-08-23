@@ -28,6 +28,7 @@ import javax.swing.KeyStroke;
 import bn.blaszczyk.fussballstats.FussballStats;
 import bn.blaszczyk.fussballstats.core.*;
 import bn.blaszczyk.fussballstats.gui.filters.*;
+import bn.blaszczyk.fussballstats.tools.FilterLog;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, ActionListener
@@ -44,13 +45,13 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenuItem newFilter, loadFilter, saveFilter, showLeagueManager, showPreferences, exit;
-	private JMenu menuUndo = new JMenu("Rückgängig");
-	private JMenu menuRedo = new JMenu("Wiederholen");
+	private JMenuItem menuUndo, menuRedo;
 	
-	
-	private FunctionalFilterPanel functionalFilterPanel = new FunctionalFilterPanel();
+	private FunctionalFilterPanel functionalFilterPanel;
 	private FunctionalGameTable functionalGameTable = new FunctionalGameTable();
 	private FunctionalResultTable functionalResultTable = new FunctionalResultTable();
+	
+	private FilterLog filterLog;
 	
 	private List<League> leagues;
 	
@@ -99,6 +100,9 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	
 	private void initComponents()
 	{
+		filterLog = new FilterLog(100);
+		
+		functionalFilterPanel= new FunctionalFilterPanel(filterLog);
 		functionalFilterPanel.setFilterListener(this);
 
 		functionalResultTable.addListSelectionListener( e -> {
@@ -148,12 +152,12 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		
 		JMenu editMenu = new JMenu("Bearbeiten");
 		editMenu.setMnemonic('B');
+
+		menuUndo = createMenuItem(editMenu, "Rückgängig", 'R', KeyEvent.VK_Z,UNDO_ICON );
+		menuRedo = createMenuItem(editMenu, "Wiederholen", 'W', KeyEvent.VK_Y,REDO_ICON );
+		
 		menuUndo.setEnabled(false);
-		menuUndo.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(UNDO_ICON))));
-		editMenu.add(menuUndo);
 		menuRedo.setEnabled(false);
-		menuRedo.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(REDO_ICON))));
-		editMenu.add(menuRedo);
 		
 		menuBar.add(editMenu);
 	}
@@ -179,8 +183,8 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	@Override
 	public void filter(BiFilterEvent<Season,Game> e)
 	{
-		functionalFilterPanel.getFilterLog().populateUndoMenu(menuUndo);
-		functionalFilterPanel.getFilterLog().populateRedoMenu(menuRedo);
+		menuUndo.setEnabled(filterLog.hasUndo());
+		menuRedo.setEnabled(filterLog.hasRedo());
 		resetTable();
 	}
 
@@ -203,6 +207,10 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 			showLeagueManager();
 		else if(e.getSource() == showPreferences)
 			showPreferences();
+		else if(e.getSource() == menuUndo)
+			functionalFilterPanel.setFilterPanel(filterLog.undo());
+		else if(e.getSource() == menuRedo)
+			functionalFilterPanel.setFilterPanel(filterLog.redo());
 		else if(e.getSource() == exit)
 			exit();
 	}

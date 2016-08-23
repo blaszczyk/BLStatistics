@@ -6,7 +6,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import bn.blaszczyk.fussballstats.core.TeamResult;
-import bn.blaszczyk.fussballstats.tools.TeamAlias;
 
 public class ResultTableModel implements TableModel
 {	

@@ -41,7 +41,6 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		label.setAlignmentX(LEFT_ALIGNMENT);
-		label.setDisplayedMnemonic('d');
 		
 		btnNewTeam.setMaximumSize(new Dimension(250,30));
 		btnNewTeam.setMinimumSize(new Dimension(250,30));
@@ -52,8 +51,6 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		
 		for(String team : selectedTeams)
 			addTeamBox(team);
-		if(teamBoxes.size() > 0)
-			label.setLabelFor(teamBoxes.get(0));
 	}
 	
 	public int getTeamCount()
@@ -85,6 +82,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 			box.setSelectedItem(team);
 		teamBoxes.add(box);
 		setFilter();
+		box.requestFocusInWindow();
 		return box;
 	}
 

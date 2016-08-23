@@ -1,5 +1,7 @@
 package bn.blaszczyk.fussballstats.gui.filters;
 
+import bn.blaszczyk.fussballstats.filters.BiFilter;
+
 public class BiFilterEvent<T,U>
 {
 	public static final int SET_FILTER = 1;
@@ -8,27 +10,15 @@ public class BiFilterEvent<T,U>
 	
 	private int type;
 	private BiFilterPanel<T,U> source;
-	private String oldSourceName;
-	private BiFilterPanel<T,U> newPanel;
+	private BiFilter<T,U> filter;
 
-	public BiFilterEvent(BiFilterPanel<T,U> source, String oldSourceName)
+	public BiFilterEvent(BiFilterPanel<T,U> source, BiFilter<T,U> filter, int type)
 	{
-		type = SET_FILTER;
-		this.oldSourceName = oldSourceName;
+		if(type == SET_PANEL && !(filter instanceof BiFilterPanel ))
+			throw new UnsupportedOperationException("Type SET_PANEL requires BiFilterPanel");
+		this.type = type;
 		this.source = source;
-	}
-	
-	public BiFilterEvent(BiFilterPanel<T,U> source)
-	{
-		type = SET_ACTIVE;
-		this.source = source;
-	}
-	
-	public BiFilterEvent(BiFilterPanel<T,U> source, BiFilterPanel<T,U> newPanel)
-	{
-		type = SET_PANEL;
-		this.source = source;
-		this.newPanel = newPanel;
+		this.filter = filter;
 	}
 
 	public int getType()
@@ -36,12 +26,6 @@ public class BiFilterEvent<T,U>
 		return type;
 	}
 
-	public String getOldSourceName()
-	{
-		if(type != SET_FILTER)
-			throw new UnsupportedOperationException("OldSourceName only available for type SET_FILTER");
-		return oldSourceName;
-	}
 	
 	public BiFilterPanel<T,U> getSource()
 	{
@@ -52,6 +36,11 @@ public class BiFilterEvent<T,U>
 	{
 		if(type != SET_PANEL)
 			throw new UnsupportedOperationException("NewPanel only available for type SET_PANEL");
-		return newPanel;
+		return (BiFilterPanel<T, U>) filter;
+	}
+	
+	public BiFilter<T,U> getFilter()
+	{
+		return filter;
 	}
 }

@@ -203,10 +203,12 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
+		e.consume();
+		char keyChar = e.getKeyChar();
 		if(!editable)
 			return;
-		char c = e.getKeyChar();
-		if( !Character.isISOControl(c) && !Character.isDigit(c) && !Character.isAlphabetic(c) )
+//		if(keyChar == '\n')
+		if( !Character.isISOControl(keyChar) && !Character.isDigit(keyChar) && !Character.isAlphabetic(keyChar) )
 			return;		
 		List<T> newItems = new ArrayList<>();
 		for(T t : items)
@@ -219,9 +221,9 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	@Override
 	public void keyTyped(KeyEvent e)
 	{
+		char keyChar = e.getKeyChar();
 		if(editable)
 			return;
-		char keyChar = e.getKeyChar();
 		if(e.getModifiers() == InputEvent.ALT_DOWN_MASK)
 			return;
 		if(Character.isAlphabetic(keyChar) || Character.isDigit(keyChar))
