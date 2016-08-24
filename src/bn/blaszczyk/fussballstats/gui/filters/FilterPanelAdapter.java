@@ -10,18 +10,27 @@ import javax.swing.JPanel;
 public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 {
 
+	/*
+	 * This Method depends on First/Second-Arg Poperty
+	 */
 	public abstract FilterPanel<?> getInnerPanel();
 	
-	public static <T,U> BiFilterPanel<T, U> getFirstArgAdapter(FilterPanel<T> panel)
+	/*
+	 * Factory Methods
+	 */
+	public static <T,U> BiFilterPanel<T, U> createFirstArgAdapter(FilterPanel<T> panel)
 	{
 		return new FirstArgAdapter<T,U>(panel);
 	}
 
-	public static <T,U> BiFilterPanel<T, U> getSecondArgAdapter(FilterPanel<U> panel)
+	public static <T,U> BiFilterPanel<T, U> createSecondArgAdapter(FilterPanel<U> panel)
 	{
 		return new SecondArgAdapter<T,U>(panel);
 	}
 
+	/*
+	 * Adapter Classes
+	 */
 	public static class FirstArgAdapter<T, U> extends FilterPanelAdapter<T, U>
 	{
 		private FilterPanel<T> innerPanel;
@@ -55,18 +64,12 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		{
 			return innerPanel.getPanel();
 		}
-		
-		@Override
-		public String toString()
-		{
-			return String.valueOf(innerPanel);
-		}
 
 		@Override
 		public void addFilterListener(BiFilterListener<T, U> listener)
 		{
 			listeners.add(listener);
-			innerPanel.addFilterListener( FilterListenerAdapter.getFirstArgAdapter(listener));
+			innerPanel.addFilterListener( FilterListenerAdapterFactory.createFirstArgAdapter(listener));
 		}
 
 		@Override
@@ -75,9 +78,8 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 			int i = listeners.indexOf(listener);
 			if( i >= 0 )
 				listeners.remove(i);
-			innerPanel.removeFilterListener( FilterListenerAdapter.getFirstArgAdapter(listener));
+			innerPanel.removeFilterListener( FilterListenerAdapterFactory.createFirstArgAdapter(listener));
 		}
-
 
 		@Override
 		public void setActive(boolean active)
@@ -102,6 +104,12 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 				listener.filter(e);		
 		}
 
+		@Override
+		public String toString()
+		{
+			return String.valueOf(innerPanel);
+		}
+		
 		@Override
 		public boolean equals(Object obj)
 		{
@@ -148,18 +156,12 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		{
 			return innerPanel.getPanel();
 		}
-		
-		@Override
-		public String toString()
-		{
-			return String.valueOf(innerPanel);
-		}
 
 		@Override
 		public void addFilterListener(BiFilterListener<T, U> listener)
 		{
 			listeners.add(listener);
-			innerPanel.addFilterListener( FilterListenerAdapter.getSecondArgAdapter(listener));
+			innerPanel.addFilterListener( FilterListenerAdapterFactory.createSecondArgAdapter(listener));
 		}
 
 		@Override
@@ -168,7 +170,7 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 			int i = listeners.indexOf(listener);
 			if( i >= 0 )
 				listeners.remove(i);
-			innerPanel.removeFilterListener( FilterListenerAdapter.getSecondArgAdapter(listener));
+			innerPanel.removeFilterListener( FilterListenerAdapterFactory.createSecondArgAdapter(listener));
 		}
 
 		@Override
@@ -184,17 +186,6 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		}
 
 		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-				return true;
-			if (!(obj instanceof SecondArgAdapter))
-				return false;
-			SecondArgAdapter<?,?> that = (SecondArgAdapter<?,?>) obj;
-			return innerPanel.equals(that.innerPanel);
-		}
-
-		@Override
 		public void replaceMe(BiFilterPanel<T, U> panel)
 		{
 			BiFilterEvent<T, U> e = new BiFilterEvent<>(this, panel, BiFilterEvent.SET_PANEL);
@@ -203,6 +194,23 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 				copy.add(listener);
 			for(BiFilterListener<T, U> listener : copy)
 				listener.filter(e);		
+		}
+		
+		@Override
+		public String toString()
+		{
+			return String.valueOf(innerPanel);
+		}
+		
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+				return true;
+			if (!(obj instanceof SecondArgAdapter))
+				return false;
+			SecondArgAdapter<?,?> that = (SecondArgAdapter<?,?>) obj;
+			return innerPanel.equals(that.innerPanel);
 		}
 	}
 }

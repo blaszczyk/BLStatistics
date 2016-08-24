@@ -30,11 +30,20 @@ import bn.blaszczyk.fussballstats.tools.WeltFussballRequest;
 @SuppressWarnings("serial")
 public class LeagueManager extends JDialog implements ListSelectionListener, ActionListener 
 {
+	/*
+	 * Constatns
+	 */
 	private static final String	ICON_FILE			= "data/manager.png";
 	private static final String	DL_ICON_FILE		= "data/download.png";
+
+	/*
+	 * Global Variables
+	 */
+	private static boolean dbMode = false;
 	
-	private Window				owner;
-	
+	/*
+	 * Components
+	 */
 	private JList<LeagueItem>	listLeagues;
 	private JTable				tableSeasons;
 	
@@ -42,10 +51,16 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	private JButton				btnUpdate			= new JButton("Aktualisieren");
 	private JButton				btnSeasonRequest	= new JButton("Download");
 	
+
+	/*
+	 * Variables
+	 */
+	private Window				owner;
 	private List<League>		leagues;
 	
-	private static boolean dbMode = false;
-	
+	/*
+	 * Constructors
+	 */
 	public LeagueManager(Window owner, List<League> leagues)
 	{
 		super(owner, ModalityType.APPLICATION_MODAL);
@@ -109,6 +124,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		
 	}
 	
+	/*
+	 * Show on Screen
+	 */
 	public void showDialog()
 	{
 		setLocationRelativeTo(owner);
@@ -116,6 +134,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		repaint();
 	}
 	
+	/*
+	 * Global Getters, Setters
+	 */
 	public static boolean isDbMode()
 	{
 		return dbMode;
@@ -126,6 +147,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		LeagueManager.dbMode = dbMode;
 	}
 
+	/*
+	 * Internal Methods
+	 */
 	private void populateSeasonTable(LeagueItem leagueItem)
 	{
 		if (leagueItem == null)
@@ -255,6 +279,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		}).start();
 	}
 	
+	/*
+	 * ListSelectionListener Methods
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e)
 	{
@@ -264,7 +291,10 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 				populateSeasonTable(listLeagues.getSelectedValue());
 		}
 	}
-	
+
+	/*
+	 * ActionSelectionListener Methods
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
@@ -277,6 +307,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		populateSeasonTable(listLeagues.getSelectedValue());
 	}
 	
+	/*
+	 * Internal Class for LeagueList
+	 */
 	private class LeagueItem implements Iterable<League> 
 	{
 		private String			path;
@@ -310,6 +343,5 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		}		
 		
 	}
-	
 	
 }

@@ -14,27 +14,23 @@ import bn.blaszczyk.fussballstats.gui.tools.MyTable;
 public class GameTable extends MyTable<Game>
 {
 
+	/*
+	 * Variables
+	 */
 	private List<String> selectedTeams;
 	
+	/*
+	 * Constructor
+	 */
 	public GameTable()
 	{
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		getSelectionModel().addListSelectionListener( e -> repaint());
-//		List<? extends SortKey> sortKeys = sorter.getSortKeys();
-		
-//		
-//		List<SortKey> sortKeys = new ArrayList<>();
-//		SortKey sk = new SortKey(2, SortOrder.ASCENDING);
-//		sortKeys.add(sk);
-//		
-//
-//		List <RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
-//		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-//		sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
-//		
-//		sorter.setSortKeys(sortKeys);
 	}
 
+	/*
+	 * Getters, Setters
+	 */
 	public List<String> getSelectedTeams()
 	{
 		int selectedIndex = getSelectionModel().getAnchorSelectionIndex();
@@ -54,6 +50,9 @@ public class GameTable extends MyTable<Game>
 		repaint();
 	}
 	
+	/*
+	 * MyTable Methods
+	 */
 	@Override
 	protected boolean isThisRowSelected(int rowIndex)
 	{
@@ -86,7 +85,7 @@ public class GameTable extends MyTable<Game>
 			return 20;
 		default:
 			return 230;	
-		}								//Teams
+		}
 	}
 
 	@Override
@@ -106,6 +105,5 @@ public class GameTable extends MyTable<Game>
 		}
 		return 0;
 	}
-
 
 }

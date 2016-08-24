@@ -17,15 +17,24 @@ import bn.blaszczyk.fussballstats.core.Game;
 @SuppressWarnings("serial")
 public class FunctionalGameTable extends JPanel
 {
+	/*
+	 * Constants
+	 */
 	private static final int ROW_HEIGHT = 25;
 	private static final int ROW_BORDER = 50;
 	
 	private static final Font FONT = new Font("Arial",Font.BOLD,16);
 	
+	/*
+	 * Components
+	 */
 	private JLabel header = new JLabel("Spiele", SwingConstants.CENTER);
 	private JPanel pnlSummary = new JPanel();
 	private GameTable gameTable = new GameTable();
 	
+	/*
+	 * Variables
+	 */
 	private int summaryRowCount = 0;
 	private int nrGames;
 	private int nrGoals;
@@ -35,7 +44,9 @@ public class FunctionalGameTable extends JPanel
 	private int nrDraws;
 	private int nrAwayWins;
 	
-	
+	/*
+	 * Constructor
+	 */
 	public FunctionalGameTable()
 	{
 		super(new BorderLayout(5,5));
@@ -50,6 +61,9 @@ public class FunctionalGameTable extends JPanel
 		add( new JScrollPane(gameTable), BorderLayout.CENTER);
 	}
 	
+	/*
+	 * Getters, Setters, Adders
+	 */
 	public void setGames( Iterable<Game> games)
 	{
 		gameTable.setSource(games);
@@ -79,6 +93,9 @@ public class FunctionalGameTable extends JPanel
 		gameTable.getSelectionModel().removeListSelectionListener(l);
 	}
 
+	/*
+	 * Internal Statistic Methods
+	 */
 	private void clearStatistics()
 	{
 		nrGames = 0;

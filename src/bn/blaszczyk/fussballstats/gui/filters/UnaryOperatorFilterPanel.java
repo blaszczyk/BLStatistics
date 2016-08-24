@@ -3,16 +3,25 @@ package bn.blaszczyk.fussballstats.gui.filters;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
-import bn.blaszczyk.fussballstats.filters.LogicalBiFilter;
+import bn.blaszczyk.fussballstats.filters.LogicalBiFilterFactory;
 
 @SuppressWarnings("serial")
 public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> implements BiFilterListener<T, U>
 {
+	/*
+	 * Constants
+	 */
 	public static final String NAME = "UnaryOperator";
 
-	private BiFilterPanel<T,U> innerPanel;
+	/*
+	 * Components
+	 */
 	private JLabel label = new JLabel("NOT");
+	private BiFilterPanel<T,U> innerPanel;
 	
+	/*
+	 * Constructors
+	 */
 	public UnaryOperatorFilterPanel(BiFilterPanel<T, U> originalPanel) 
 	{
 		super(true);
@@ -21,11 +30,17 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
 
+	/*
+	 * Getters
+	 */
 	public BiFilterPanel<T, U> getInnerPanel()
 	{
 		return innerPanel;
 	}
 	
+	/*
+	 * Internal Methods
+	 */
 	private void setInnerPanel(BiFilterPanel<T,U> innerPanel)
 	{
 		if(innerPanel instanceof UnaryOperatorFilterPanel)
@@ -41,9 +56,13 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		setFilter();
 	}
 	
+	/*
+	 * AbstractBiFilterPanel Methods
+	 */
+	@Override
 	protected void setFilter()
 	{
-		setFilter(LogicalBiFilter.getNOTBiFilter(innerPanel));
+		setFilter(LogicalBiFilterFactory.createNOTBiFilter(innerPanel));
 	}
 
 	@Override
@@ -53,7 +72,6 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		add(innerPanel.getPanel());
 	}
 
-	
 	@Override
 	public void paint()
 	{
@@ -71,6 +89,9 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 				setInnerPanel(e.getNewPanel());
 	}
 
+	/*
+	 * Object Methods
+	 */
 	@Override
 	public String toString()
 	{

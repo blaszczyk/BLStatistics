@@ -7,18 +7,25 @@ import java.util.List;
 import javax.swing.*;
 
 import bn.blaszczyk.fussballstats.filters.BiFilter;
-import bn.blaszczyk.fussballstats.filters.LogicalBiFilter;
+import bn.blaszczyk.fussballstats.filters.LogicalBiFilterFactory;
 
 @SuppressWarnings("serial")
 public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFilterPanel<T,U>
 {
+	/*
+	 * Variables
+	 */
 	private final boolean varComponents;
-	private boolean isActive = true;
+	private boolean active = true;
 	private boolean isPainted = false;
 	
-	private BiFilter<T,U> filter = LogicalBiFilter.getTRUEBiFilter();
+	private BiFilter<T,U> filter = LogicalBiFilterFactory.createTRUEBiFilter();
+	
 	private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
 
+	/*
+	 * For Subclasses to use for its Components
+	 */
 	protected ActionListener setFilterListener = e ->
 	{
 		setFilter();
@@ -26,9 +33,8 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 			((JComponent)e.getSource()).requestFocusInWindow();
 	};
 	
-	
 	/*
-	 * Constructor
+	 * Constructors
 	 */
 	public AbstractBiFilterPanel(boolean varComponents)
 	{
@@ -37,9 +43,15 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		setAlignmentX(LEFT_ALIGNMENT);
 	}
 
+	/*
+	 * Abstract Methods
+	 */
 	protected abstract void setFilter();
 	protected abstract void addComponents();
 	
+	/*
+	 * Methods to use for Subclasses
+	 */
 	protected void setFilter(BiFilter<T,U> filter)
 	{
 		this.filter = filter;
@@ -62,31 +74,22 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 //			listener.filter(e);
 	}	
 	
-	/*
-	 * BiFilter Methods
-	 */
-	@Override
-	public boolean check(T t, U u)
-	{
-		return !isActive || filter.check(t, u);
-	}
 	
 	/*
 	 * BiFilterPanel Methods
 	 */
-
 	@Override
 	public void setActive(boolean active)
 	{
 		if(active)
 		{
 			setBorder(AbstractFilterPanel.ACTIVE_BORDER);
-			this.isActive = true;
+			this.active = true;
 		}
 		else
 		{
 			setBorder(AbstractFilterPanel.INACTIVE_BORDER);
-			this.isActive = false;
+			this.active = false;
 		}
 		notifyListeners(new BiFilterEvent<T, U>(this,filter,BiFilterEvent.SET_ACTIVE));
 	}
@@ -94,7 +97,7 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	@Override
 	public boolean isActive()
 	{
-		return isActive;
+		return active;
 	}
 	@Override
 	public JPanel getPanel()
@@ -132,5 +135,14 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	public void replaceMe(BiFilterPanel<T, U> newPanel)
 	{
 		notifyListeners(new BiFilterEvent<>(this, newPanel, BiFilterEvent.SET_PANEL));
+	}
+	
+	/*
+	 * BiFilter Methods
+	 */
+	@Override
+	public boolean check(T t, U u)
+	{
+		return !active || filter.check(t, u);
 	}
 }

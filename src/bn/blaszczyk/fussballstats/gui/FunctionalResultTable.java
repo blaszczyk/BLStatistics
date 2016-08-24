@@ -17,9 +17,14 @@ import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 @SuppressWarnings("serial")
 public class FunctionalResultTable extends JPanel implements ItemListener
 {
+	/*
+	 * Constants
+	 */
 	private static final Integer[] POINTS_FOR_WIN_OPTIONS = {2,3};
 	
-	private ResultTable resultTable = new ResultTable();	
+	/*
+	 * Components
+	 */
 
 	private JLabel header = new JLabel("Tabelle", SwingConstants.CENTER);
 	
@@ -29,9 +34,14 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	private JComboBox<Integer> boxWinPoints = new MyComboBox<>(POINTS_FOR_WIN_OPTIONS,70,false);
 	private JCheckBox chbWeighted = new JCheckBox("Nach Spielen gewichtet",false);
 
+	private ResultTable resultTable = new ResultTable();	
+	
 	private Iterable<Game> games;
 	private BiFilter<TeamResult, Game> filter = null;
 
+	/*
+	 * Constructor
+	 */
 	public FunctionalResultTable()
 	{
 		super(new BorderLayout(5, 5));		
@@ -68,6 +78,9 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		add(new JScrollPane(resultTable),BorderLayout.CENTER);
 	}
 	
+	/*
+	 * Getters, Setters, Adders
+	 */
 	public void setGames(Iterable<Game> games)
 	{
 		this.games = games;
@@ -94,18 +107,21 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		resultTable.getSelectionModel().removeListSelectionListener(l);
 	}
 
+	/*
+	 * Internal Methods
+	 */
 	private void setFilter()
 	{
 		if(chbHome.isSelected())
 			if(chbAway.isSelected())
-				filter = LogicalBiFilter.getTRUEBiFilter();
+				filter = LogicalBiFilterFactory.createTRUEBiFilter();
 			else
-				filter = TeamResultFilter.getHomeGameFilter();
+				filter = TeamResultFilterFactory.createHomeGameFilter();
 		else
 			if(chbAway.isSelected())
-				filter = TeamResultFilter.getAwayGameFilter();
+				filter = TeamResultFilterFactory.createAwayGameFilter();
 			else
-				filter = LogicalBiFilter.getFALSEBiFilter();
+				filter = LogicalBiFilterFactory.createFALSEBiFilter();
 		setTable();
 	}
 	
@@ -117,6 +133,9 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		resultTable.setSource(table);
 	}
 
+	/*
+	 * ItemListener Methods
+	 */
 	@Override
 	public void itemStateChanged(ItemEvent e)
 	{

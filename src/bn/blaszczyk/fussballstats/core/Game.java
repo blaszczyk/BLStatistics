@@ -7,7 +7,7 @@ import bn.blaszczyk.fussballstats.tools.TeamAlias;
 public class Game
 {
 	/*
-	 * Entsprechend der Rückgabe von getWinner()
+	 * Corresponding to getWinner()
 	 */
 	public static final int HOME = 1;
 	public static final int DRAW = 0;
@@ -17,7 +17,7 @@ public class Game
 	public static final int LOSS = AWAY;
 	
 	/*
-	 * Object Properties
+	 * Variables
 	 */
 	private int matchDay;
 	private Date date;
@@ -29,7 +29,6 @@ public class Game
 	/*
 	 * Constructors
 	 */
-	
 
 	public Game(int matchDay, Date date, String teamH, String teamA, int goalsH, int goalsA)
 	{
@@ -93,9 +92,8 @@ public class Game
 		return matchDay;
 	}
 	
-
 	/*
-	 * Specific useful Methods
+	 * Who won the game?
 	 */
 	public int getWinner()
 	{
@@ -110,7 +108,16 @@ public class Game
 		}
 		return 0;
 		//Simpler but unsafe:		
-//		return Integer.signum(goals1-goals2);
+//		return Integer.signum(goalsH-goalsA);
+	}
+	
+	/*
+	 * Object Method
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("%2d. Spieltag, %s% : %30s - %30s %2d:%2d" , matchDay, date, teamH, teamA, goalsH, goalsA);
 	}
 
 }

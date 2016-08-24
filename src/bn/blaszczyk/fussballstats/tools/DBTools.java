@@ -13,14 +13,9 @@ import bn.blaszczyk.fussballstats.core.Season;
 
 public class DBTools
 {
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
-	private static String server = "localhost";
-	private static String port = "3306";
-	private static String dbName = "fussballspiele";
-	private static String user = "root";
-	private static String password = null;
-
+	/*
+	 * Constatns
+	 */
 	private static final String COL_PRIMARY_KEY = "PRIMARY_KEY";
 	private static final String COL_TIMESTAMP = "TIMESTAMP";
 	private static final String COL_SEASON = "SAISON";
@@ -32,8 +27,20 @@ public class DBTools
 	private static final String COL_GOALS_A = "TORE_A";
 	
 	private static final String INDEX_NAME = "MY_INDEX";
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	
+	/*
+	 * Global Variables
+	 */
+	private static String server = "localhost";
+	private static String port = "3306";
+	private static String dbName = "fussballspiele";
+	private static String user = "root";
+	private static String password = null;
 
+	/*
+	 * Global Getters, Setters
+	 */
 	public static String getServer()
 	{
 		return server;
@@ -68,6 +75,9 @@ public class DBTools
 		DBTools.password = password;
 	}
 	
+	/*
+	 * Static DB Methods
+	 */
 	public static void openMySQLDatabase() throws FussballException
 	{
 		String connectionString, classForName;
@@ -135,7 +145,7 @@ public class DBTools
 			while(rSet.next())
 			{
 				int matchDay = rSet.getInt(COL_MATCHDAY);
-				java.util.Date date = new Date( rSet.getDate(COL_DATE).getTime() );
+				Date date = new Date( rSet.getDate(COL_DATE).getTime() );
 				String teamH = rSet.getString(COL_TEAM_H);
 				String teamA = rSet.getString(COL_TEAM_A);
 				int goalsH = rSet.getInt(COL_GOALS_H);

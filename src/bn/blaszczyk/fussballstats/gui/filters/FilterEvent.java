@@ -4,15 +4,24 @@ import bn.blaszczyk.fussballstats.filters.Filter;
 
 public class FilterEvent<T>
 {
+	/*
+	 * Constants
+	 */
 	public static final int SET_FILTER = 1;
 	public static final int SET_PANEL = 2;
 	public static final int SET_ACTIVE = 3;
-	
+
+	/*
+	 * Variables
+	 */
 	private int type;
 	private FilterPanel<T> source;
 	private Filter<T> filter;
 	private boolean filterModified = true;
 
+	/*
+	 * Constructor
+	 */
 	public FilterEvent(FilterPanel<T> source, Filter<T> filter, int type)
 	{
 		if(type == SET_PANEL && !(filter instanceof FilterPanel ))
@@ -22,6 +31,9 @@ public class FilterEvent<T>
 		this.filter = filter;
 	}
 
+	/*
+	 * Getters, Setter
+	 */
 	public int getType()
 	{
 		return type;

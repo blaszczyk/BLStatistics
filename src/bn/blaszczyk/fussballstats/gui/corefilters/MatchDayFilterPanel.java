@@ -2,19 +2,25 @@ package bn.blaszczyk.fussballstats.gui.corefilters;
 
 import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.filters.Filter;
-import bn.blaszczyk.fussballstats.filters.GameFilter;
-import bn.blaszczyk.fussballstats.filters.LogicalFilter;
+import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
+import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.IntegerValueFilterPanel;
 
 @SuppressWarnings("serial")
 public class MatchDayFilterPanel extends IntegerValueFilterPanel<Game>
 {
-
+	
+	/*
+	 * Constants
+	 */
 	public static final String NAME = "Spieltag";
 	
+	/*
+	 * Constructors
+	 */
 	public MatchDayFilterPanel()
 	{
-	super(NAME,EQ,1,0,40);
+		super(NAME,EQ,1,0,40);
 	}
 	
 	public MatchDayFilterPanel(String operator, int refInt)
@@ -23,6 +29,9 @@ public class MatchDayFilterPanel extends IntegerValueFilterPanel<Game>
 	}
 
 
+	/*
+	 * IntegerValueFilterPanel Method
+	 */
 	@Override
 	protected Filter<Game> getFilter()
 	{
@@ -30,20 +39,19 @@ public class MatchDayFilterPanel extends IntegerValueFilterPanel<Game>
 		switch(getOperator())
 		{
 		case EQ:
-			return GameFilter.getMatchDayFilter(matchDay);
+			return GameFilterFactory.createMatchDayFilter(matchDay);
 		case NEQ:
-			return LogicalFilter.getNOTFilter(GameFilter.getMatchDayFilter(matchDay));
+			return LogicalFilterFactory.createNOTFilter(GameFilterFactory.createMatchDayFilter(matchDay));
 		case GEQ:
-			return GameFilter.getMatchDayMinFilter(matchDay);
+			return GameFilterFactory.createMatchDayMinFilter(matchDay);
 		case LL:
-			return LogicalFilter.getNOTFilter(GameFilter.getMatchDayMinFilter(matchDay));
+			return LogicalFilterFactory.createNOTFilter(GameFilterFactory.createMatchDayMinFilter(matchDay));
 		case LEQ:
-			return GameFilter.getMatchDayMaxFilter(matchDay);
+			return GameFilterFactory.createMatchDayMaxFilter(matchDay);
 		case GG:
-			return LogicalFilter.getNOTFilter(GameFilter.getMatchDayMaxFilter(matchDay));
+			return LogicalFilterFactory.createNOTFilter(GameFilterFactory.createMatchDayMaxFilter(matchDay));
 		}
-		return LogicalFilter.getTRUEFilter();
+		return LogicalFilterFactory.createTRUEFilter();
 	}
-	
 	
 }

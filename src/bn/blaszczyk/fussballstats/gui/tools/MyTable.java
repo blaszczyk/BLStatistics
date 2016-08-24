@@ -26,6 +26,9 @@ import javax.swing.table.TableRowSorter;
 @SuppressWarnings("serial")
 public abstract class MyTable<T> extends JTable implements KeyListener
 {
+	/*
+	 * Constants
+	 */
 	private static final DateFormat  DATE_FORMAT = new SimpleDateFormat("dd.MM.YY");
 	private static final NumberFormat INT_FORMAT = NumberFormat.getIntegerInstance();
 	
@@ -44,8 +47,9 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	private static final Font HEADER_FONT = new Font("Arial",Font.BOLD,16);
 	private static final Color HEADER_COLOR = new Color(238,238,238);
 	
-	
-	
+	/*
+	 * Custom Cell Renderer
+	 */
 	private final TableCellRenderer cellRenderer = new TableCellRenderer(){
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -92,10 +96,15 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 		}
 	};
 	
+	/*
+	 * Variables
+	 */
 	private List<T> tList;
 	protected TableRowSorter<TableModel> sorter = new TableRowSorter<>();
 
-	
+	/*
+	 * Constructor
+	 */
 	public MyTable()
 	{
 		setShowGrid(false);
@@ -107,6 +116,9 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 		addKeyListener(this);
 	}
 
+	/*
+	 * set Source for Table
+	 */
 	public void setSource(Iterable<T> source)
 	{
 		tList = new ArrayList<>();
@@ -114,18 +126,19 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 			tList.add(t);	
 		setModel();
 	}
+
+	/*
+	 * Abstract Methods
+	 */
+	protected abstract boolean isThisRowSelected(int rowIndex);
+	protected abstract TableModel createTableModel(List<T> tList);
+	protected abstract int columnWidth(int columnIndex);
+	protected abstract int columnAlignment(int columnIndex);
 	
-	protected void setCellRenderer()
-	{
-		getTableHeader().setPreferredSize(new Dimension(getWidth(), 30));
-		getTableHeader().setDefaultRenderer(cellRenderer);
-		for(int columnIndex = 0; columnIndex < getColumnCount(); columnIndex++)
-			getColumnModel().getColumn(columnIndex).setCellRenderer( cellRenderer );
-	}
-	
-	
-	
-	public void setModel()
+	/*
+	 * Internal Setters
+	 */
+	private void setModel()
 	{
 		TableModel model = createTableModel(tList);
 		List<? extends SortKey> sortKeys = sorter.getSortKeys();
@@ -142,6 +155,14 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 		setCellRenderer();
 		setWidths();
 		repaint();
+	}
+	
+	private void setCellRenderer()
+	{
+		getTableHeader().setPreferredSize(new Dimension(getWidth(), 30));
+		getTableHeader().setDefaultRenderer(cellRenderer);
+		for(int columnIndex = 0; columnIndex < getColumnCount(); columnIndex++)
+			getColumnModel().getColumn(columnIndex).setCellRenderer( cellRenderer );
 	}
 	
 	private void setWidths()
@@ -170,24 +191,17 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 		scrollRectToVisible( getCellRect(selectedRow, 0, false));
 	}
 	
-	protected abstract boolean isThisRowSelected(int rowIndex);
-	protected abstract TableModel createTableModel(List<T> tList);
-	protected abstract int columnWidth(int columnIndex);
-	protected abstract int columnAlignment(int columnIndex);
-
 	/*
 	 * Key Listener Methods
 	 */
 	@Override
 	public void keyTyped(KeyEvent e)
 	{
-		e.consume();
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-		e.consume();
 		switch(e.getKeyCode())
 		{
 		case KeyEvent.VK_UP:
@@ -208,7 +222,6 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
-		e.consume();
 	}
 	
 }

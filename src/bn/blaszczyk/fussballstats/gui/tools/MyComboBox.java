@@ -23,14 +23,23 @@ import javax.swing.UIManager;
 public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, KeyListener, FocusListener
 {
 
+	/*
+	 * Variables
+	 */
+	private final boolean editable;
+	
 	private int charCounter = 0;
 	private char selectChar = '.';
-	private final boolean editable;
 	private boolean wantPopupVisible = false;
-	private CycleListener listener = null;
-	private JTextField inputField;
-	private T[] items;
 	
+	private T[] items;
+	private CycleListener listener = null;
+	
+	private final JTextField inputField = (JTextField)getEditor().getEditorComponent();
+	
+	/*
+	 * Constructors
+	 */
 	@SuppressWarnings("unchecked")
 	public MyComboBox(List<T> tList, int boxWidth, boolean editable)
 	{
@@ -52,20 +61,22 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		addFocusListener(this);
 		setInheritsPopupMenu(true);
 		setEditable(editable);
-		inputField = (JTextField)getEditor().getEditorComponent();
 		if(editable)
 			inputField.addKeyListener(this);
 		setFont( UIManager.getFont("ComboBox.font").deriveFont(Font.BOLD) );
 	}
+	
 	
 	public void setCycleListener(CycleListener listener)
 	{
 		this.listener = listener;
 	}
 	
+	/*
+	 * Special Methods
+	 */
 	public void repopulateBox(T[] items)
 	{
-	//	this.items = items;
 		String input = "";
 		int caret = 0;
 		int selectedIndex = getSelectedIndex();
@@ -94,7 +105,30 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		for(ActionListener listener : listeners)
 			addActionListener(listener);
 	}
+
+	public void moveSelection(int steps)
+	{
+		if(getItemCount() == 0)
+			return;
+		int newIndex = getSelectedIndex() + steps;
+		if( newIndex < 0 )
+		{
+			if(listener != null)
+				listener.cycle(new CycleEvent(1));
+			newIndex = getItemCount()-1;
+		}
+		else if( newIndex >= getItemCount())
+		{
+			if(listener != null)
+				listener.cycle(new CycleEvent(-1));
+			newIndex = 0;
+		}
+		setSelectedIndex( newIndex );
+	}
 	
+	/*
+	 * Internal Methods
+	 */
 	private void selectByChar(char c)
 	{
 		boolean hasChar = false;
@@ -126,26 +160,6 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		if(hasChar)
 			selectByChar(c);
 	}
-
-	public void moveSelection(int steps)
-	{
-		if(getItemCount() == 0)
-			return;
-		int newIndex = getSelectedIndex() + steps;
-		if( newIndex < 0 )
-		{
-			if(listener != null)
-				listener.cycle(new CycleEvent(1));
-			newIndex = getItemCount()-1;
-		}
-		else if( newIndex >= getItemCount())
-		{
-			if(listener != null)
-				listener.cycle(new CycleEvent(-1));
-			newIndex = 0;
-		}
-		setSelectedIndex( newIndex );
-	}
 	
 	@SuppressWarnings("unchecked")
 	private T[] toArray(List<T> tList)
@@ -164,7 +178,6 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	/*
 	 * MouswWheelListener Method
 	 */
-	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
@@ -175,7 +188,6 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	/*
 	 * KeyListener Methods
 	 */
-	
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
@@ -207,7 +219,6 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		char keyChar = e.getKeyChar();
 		if(!editable)
 			return;
-//		if(keyChar == '\n')
 		if( !Character.isISOControl(keyChar) && !Character.isDigit(keyChar) && !Character.isAlphabetic(keyChar) )
 			return;		
 		List<T> newItems = new ArrayList<>();
@@ -248,7 +259,9 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		inputField.selectAll();
 	}
 	
-
+	/*
+	 * inner Classes for Cycling the Box
+	 */
 	public static interface CycleListener
 	{
 		public void cycle(CycleEvent e);

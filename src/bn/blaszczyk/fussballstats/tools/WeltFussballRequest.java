@@ -18,16 +18,24 @@ import bn.blaszczyk.fussballstats.core.Season;
 public class WeltFussballRequest
 {
 
+	/*
+	 * Constatns
+	 */
 	private static final String	BASE_URL = "http://www.weltfussball.de/alle_spiele";
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
+	/*
+	 * Variables
+	 */
 	private int matchDay;
 	private Date date;
 
 	private WebClient webClient = new WebClient();
 	private HtmlTableBody tableBody;
-
 	
+	/*
+	 * Construtor
+	 */
 	public WeltFussballRequest()
 	{
 		webClient.getOptions().setAppletEnabled(false);
@@ -36,6 +44,9 @@ public class WeltFussballRequest
 		webClient.getOptions().setPopupBlockerEnabled(true);
 	}
 	
+	/*
+	 * Request Data From Webpage
+	 */
 	public void requestData(Season season) throws FussballException
 	{
 		String urlPath = String.format(season.getLeague().getURLFormat(), season.getYear()-1, season.getYear());
@@ -64,7 +75,9 @@ public class WeltFussballRequest
 		}
 	}
 	
-	
+	/*
+	 * Extract GameList From Requested Data
+	 */
 	public List<Game> getGames() throws FussballException
 	{
 		List<Game> games = new ArrayList<>();
@@ -146,13 +159,18 @@ public class WeltFussballRequest
 		return games;
 	}
 	
-
+	/*
+	 * Close Browser on Destruction
+	 */
 	@Override
 	protected void finalize() throws Throwable
 	{
 		webClient.close();
 	}
 	
+	/*
+	 * Internal Methods
+	 */
 	private static DomElement getChildElement(DomElement parent, int i) throws NullPointerException
 	{
 		for(DomElement child : parent.getChildElements() )

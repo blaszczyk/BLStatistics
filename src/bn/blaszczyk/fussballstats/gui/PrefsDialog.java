@@ -22,6 +22,9 @@ import bn.blaszczyk.fussballstats.tools.TeamAlias;
 @SuppressWarnings("serial")
 public class PrefsDialog extends JDialog
 {
+	/*
+	 * Constants
+	 */
 	private static final String KEY_SERVER = "server";
 	private static final String KEY_PORT = "port";
 	private static final String KEY_DB_NAME = "db_name";
@@ -35,8 +38,9 @@ public class PrefsDialog extends JDialog
 	
 	private static final Preferences PREFERENCES = Preferences.userNodeForPackage(FussballStats.class);
 	
-	private Window owner;
-	
+	/*
+	 * Components
+	 */
 	private JTextField tfServer, tfPort, tfDbName, tfUser, tfPassword;
 	
 	private JRadioButton rbHardDrive = new JRadioButton();
@@ -48,6 +52,14 @@ public class PrefsDialog extends JDialog
 	private JButton btnSave = new JButton("Speichern");
 	private JButton btnDismiss = new JButton("Verwerfen");
 	
+	/*
+	 * Variables
+	 */
+	private Window owner;
+	
+	/*
+	 * Constructor
+	 */
 	public PrefsDialog(Window owner)
 	{
 		super(owner, ModalityType.APPLICATION_MODAL);
@@ -96,13 +108,18 @@ public class PrefsDialog extends JDialog
 		add(btnDismiss);
 	}
 
-
+	/*
+	 * Show on Screen
+	 */
 	public void showDialog()
 	{
 		setLocationRelativeTo(owner);
 		setVisible(true);	
 	}
 	
+	/*
+	 * Static Initializer
+	 */
 	public static boolean initPrefs()
 	{
 		if(PREFERENCES.get(KEY_DB_MODE, null) == null)
@@ -121,6 +138,9 @@ public class PrefsDialog extends JDialog
 		return true;
 	}
 
+	/*
+	 * Internal Methods
+	 */
 	private JTextField createTextFieldRow(String labelText, String defText, char mnemonic, int column, boolean isPassword)
 	{
 		JLabel label = new JLabel(labelText,SwingConstants.RIGHT);

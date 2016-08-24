@@ -15,8 +15,8 @@ import javax.swing.JLabel;
 
 import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.core.League;
-import bn.blaszczyk.fussballstats.filters.GameFilter;
-import bn.blaszczyk.fussballstats.filters.LogicalFilter;
+import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
+import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.fussballstats.gui.filters.CompareToFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
@@ -24,22 +24,32 @@ import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 @SuppressWarnings( "serial" )
 public class DateFilterPanel extends AbstractFilterPanel<Game> implements CompareToFilterPanel<Game>
 {
+	/*
+	 * Constatns
+	 */
 	public static final String NAME = "Datum";
-
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
 	private static final Calendar TODAY = new GregorianCalendar();
-	
 	private static final String[] MONTH_NAMES =
 		{"Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"};
 
+	/*
+	 * Components
+	 */
 	private JLabel label = new JLabel(NAME);
 	private JComboBox<String> boxOperator = new MyComboBox<>(OPERATORS,50,false);
 	private MyComboBox<Integer> boxDate;
 	private MyComboBox<String> boxMonth;
 	private MyComboBox<Integer> boxYear;
 
+	/*
+	 * To deal with Dates
+	 */
 	private Calendar calendar = new GregorianCalendar();
 	
+	/*
+	 * Fills boxDate according to Month and Year
+	 */
 	private ActionListener refreshDateBox = e -> {
 		int year = TODAY.get(Calendar.YEAR) - boxYear.getSelectedIndex() + 1;
 		int month = boxMonth.getSelectedIndex();
@@ -48,6 +58,9 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 		((Component)e.getSource()).requestFocusInWindow();
 	};
 
+	/*
+	 * Constructors
+	 */
 	public DateFilterPanel()
 	{
 		this(EQ,(Date)null);
@@ -84,34 +97,11 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 		setFilter();
 	}
 
-	protected void setFilter()
-	{
-		Date date = getDate();
-		switch(getOperator())
-		{
-		case EQ:
-			setFilter(GameFilter.getDateFilter(date));
-			break;
-		case NEQ:
-			setFilter(LogicalFilter.getNOTFilter(GameFilter.getDateFilter(date)));
-			break;
-		case GEQ:
-			setFilter(GameFilter.getDateMinFilter(date));
-			break;
-		case LL:
-			setFilter(LogicalFilter.getNOTFilter(GameFilter.getDateMinFilter(date)));
-			break;
-		case LEQ:
-			setFilter(GameFilter.getDateMaxFilter(date));
-			break;
-		case GG:
-			setFilter(LogicalFilter.getNOTFilter(GameFilter.getDateMaxFilter(date)));
-			break;
-		}
-	}
 
-	
-	public Date getDate() 
+	/*
+	 * Internal Methods
+	 */
+	private Date getDate() 
 	{
 		int year = TODAY.get(Calendar.YEAR) - boxYear.getSelectedIndex() + 1;
 		int month = boxMonth.getSelectedIndex();
@@ -128,7 +118,7 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 		boxMonth.setSelectedIndex( calendar.get(Calendar.MONTH) );
 		boxDate.setSelectedIndex( calendar.get(Calendar.DAY_OF_MONTH) - 1 );
 	}
-
+	
 	private static Date parseDate(String in)
 	{
 		try
@@ -175,7 +165,10 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 			return 31;	
 		}
 	}
-
+	
+	/*
+	 * AbstractFilterPanel Methods
+	 */
 	@Override
 	protected void addComponents()
 	{
@@ -186,7 +179,37 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 		add(boxMonth);
 		add(boxYear);
 	}
-	
+
+	@Override
+	protected void setFilter()
+	{
+		Date date = getDate();
+		switch(getOperator())
+		{
+		case EQ:
+			setFilter(GameFilterFactory.createDateFilter(date));
+			break;
+		case NEQ:
+			setFilter(LogicalFilterFactory.createNOTFilter(GameFilterFactory.createDateFilter(date)));
+			break;
+		case GEQ:
+			setFilter(GameFilterFactory.createDateMinFilter(date));
+			break;
+		case LL:
+			setFilter(LogicalFilterFactory.createNOTFilter(GameFilterFactory.createDateMinFilter(date)));
+			break;
+		case LEQ:
+			setFilter(GameFilterFactory.createDateMaxFilter(date));
+			break;
+		case GG:
+			setFilter(LogicalFilterFactory.createNOTFilter(GameFilterFactory.createDateMaxFilter(date)));
+			break;
+		}
+	}
+
+	/*
+	 * CompareToFilterPanel Methods
+	 */
 	@Override
 	public void invertOperator()
 	{
@@ -231,6 +254,9 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 		return DATE_FORMAT.format(getDate());
 	}
 	
+	/*
+	 * Object Method
+	 */
 	@Override
 	public String toString()
 	{

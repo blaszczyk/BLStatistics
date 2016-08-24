@@ -4,7 +4,9 @@ import java.util.Comparator;
 
 public class TeamResult
 {	
-
+	/*
+	 * Compares Results according to Bundesliga Standard
+	 */
 	public static final Comparator<TeamResult> COMPARE_POSITION = (tr1,tr2) -> {
 			int result = 0;
 			result += 4 * Integer.compare(tr2.getPoints(), tr1.getPoints());
@@ -13,6 +15,9 @@ public class TeamResult
 			return Integer.signum(result);
 	};
 	
+	/*
+	 * Variables
+	 */
 	private String team;
 	private int points=0;
 	private int games=0;
@@ -23,11 +28,17 @@ public class TeamResult
 	private int opponentGoals=0;
 	private int position=0;
 	
+	/*
+	 * Constructor
+	 */
 	public TeamResult(String team)
 	{
 		this.team = team;
 	}
 	
+	/*
+	 * Getters, Setter
+	 */
 	public int getPosition()
 	{
 		return position;
@@ -83,6 +94,9 @@ public class TeamResult
 		return teamGoals - opponentGoals;
 	}
 	
+	/*
+	 * Special Method
+	 */
 	public void consumeGame(Game game, int pointsForWin)
 	{
 		if(team.equals(game.getTeamHAlias()))
@@ -127,6 +141,9 @@ public class TeamResult
 		}
 	}
 	
+	/*
+	 * Object Method
+	 */
 	@Override
 	public String toString()
 	{

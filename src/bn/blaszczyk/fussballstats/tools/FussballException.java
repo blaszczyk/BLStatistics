@@ -8,7 +8,6 @@ public class FussballException extends Exception
 		super(errorMessage);
 	}
 
-
 	public FussballException(String errorMessage, Throwable cause)
 	{
 		super(errorMessage,cause);

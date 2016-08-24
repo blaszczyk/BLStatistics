@@ -3,13 +3,19 @@ package bn.blaszczyk.fussballstats.gui.filters;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
-import bn.blaszczyk.fussballstats.filters.LogicalBiFilter;
+import bn.blaszczyk.fussballstats.filters.LogicalBiFilterFactory;
 
 @SuppressWarnings("serial")
 public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> implements BiFilterListener<T, U>
 {
+	/*
+	 * Constants
+	 */
 	public static final String NAME = "IfThenElse";
 	
+	/*
+	 * Components
+	 */
 	private JLabel lblIf = new JLabel("IF");
 	private JLabel lblThen = new JLabel("THEN");
 	private JLabel lblElse = new JLabel("ELSE");
@@ -18,6 +24,9 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	private BiFilterPanel<T,U> thenFilter;
 	private BiFilterPanel<T,U> elseFilter;
 
+	/*
+	 * Constructors
+	 */
 	public IfThenElseFilterPanel( BiFilterPanel<T,U> ifFilter, BiFilterPanel<T,U> thenFilter, BiFilterPanel<T,U> elseFilter)
 	{
 		super(true);
@@ -34,6 +43,9 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 		setFilter();
 	}
 
+	/*
+	 * Getters, Setters
+	 */
 	public BiFilterPanel<T, U> getIfFilter()
 	{
 		return ifFilter;
@@ -80,9 +92,13 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 		setFilter();
 	}
 	
+	/*
+	 * AbstractBiFilterPanel Methods
+	 */
+	@Override
 	protected void setFilter()
 	{
-		setFilter( LogicalBiFilter.getIF_THEN_ELSEBiFilter(ifFilter, thenFilter, elseFilter));
+		setFilter( LogicalBiFilterFactory.createIF_THEN_ELSEBiFilter(ifFilter, thenFilter, elseFilter));
 	}
 
 	@Override
@@ -105,6 +121,9 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 		super.paint();
 	}
 
+	/*
+	 * BiFilterListener Methods
+	 */
 	@Override
 	public void filter(BiFilterEvent<T, U> e)
 	{
@@ -120,6 +139,9 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 		}
 	}
 	
+	/*
+	 * Object Methods
+	 */
 	@Override
 	public String toString()
 	{

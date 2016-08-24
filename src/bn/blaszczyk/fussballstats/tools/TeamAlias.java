@@ -7,12 +7,20 @@ import bn.blaszczyk.fussballstats.FussballStats;
 
 public class TeamAlias
 {
+	/*
+	 * Resource
+	 */
 	private static final String ALIAS_FILE = "data/teamAliases.dat";
 	
+	/*
+	 * Variables
+	 */
 	private static Map<String,String> aliasMap = new HashMap<>();
-	
 	private static boolean useAliases;
 	
+	/*
+	 * Init
+	 */
 	public static void loadAliases()
 	{
 		Scanner scanner = new Scanner( FussballStats.class.getResourceAsStream(ALIAS_FILE) );
@@ -26,6 +34,9 @@ public class TeamAlias
 		scanner.close();
 	}
 
+	/*
+	 * Global Getters, Setters
+	 */
 	public static String getAlias(String team)
 	{
 		if(useAliases && aliasMap.containsKey(team))

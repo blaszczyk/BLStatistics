@@ -8,8 +8,14 @@ import java.sql.Statement;
 
 public class DBConnection
 {
+	/*
+	 * DataBase Connection
+	 */
 	private static Connection dbConn;
 
+	/*
+	 * Static DB Access Methods
+	 */
 	public static void connectToDatabase(String classForName, String connectionString, String userID, String passWord) throws FussballException
 	{
 		try
@@ -23,7 +29,6 @@ public class DBConnection
 			throw new FussballException("Fehler beim Zugriff auf die Datenbank", e);
 		}
 	}
-	
 	
 	public static void closeConnection()
 	{

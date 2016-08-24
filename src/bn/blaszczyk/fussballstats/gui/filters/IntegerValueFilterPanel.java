@@ -18,13 +18,23 @@ import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 @SuppressWarnings("serial")
 public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> implements CompareToFilterPanel<T>, MouseWheelListener, KeyListener
 {
+	/*
+	 * Components
+	 */
 	private JLabel label;
 	private JComboBox<String> boxOperator;
 	private JTextField tfValue;
+	
+	/*
+	 * Variables
+	 */
 	private int defaultValue;
 	private int minValue;
 	private int maxValue;
 
+	/*
+	 * Constructor
+	 */
 	private IntegerValueFilterPanel(String labelText, int defaultValue, int minValue, int maxValue)
 	{
 		super(false);
@@ -47,8 +57,6 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		setFilter();
 	}
-
-	protected abstract Filter<T> getFilter();
 	
 	protected IntegerValueFilterPanel(String labelText, String operator, int defaultValue, int minValue, int maxValue)
 	{
@@ -56,21 +64,10 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		boxOperator.setSelectedItem(operator);
 	}
 
-	@Override
-	protected void addComponents()
-	{
-		add(label);
-		add(boxOperator);
-		add(tfValue);
-	}
-	
-	@Override
-	public String getOperator()
-	{
-		return boxOperator.getSelectedItem().toString();
-	}
-	
-	public int getReferenceInt()
+	/*
+	 * Getter
+	 */
+	protected int getReferenceInt()
 	{
 		int result = defaultValue;
 		try
@@ -83,6 +80,15 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		return result;
 	}
 	
+	/*
+	 * Abstract Mehtods
+	 */
+	protected abstract Filter<T> getFilter();
+
+
+	/*
+	 * Internal Methods
+	 */
 	private void checkValueBounds()
 	{
 		int refValue = getReferenceInt();
@@ -91,12 +97,23 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		else if(refValue > maxValue)
 			tfValue.setText(maxValue + "");
 	}	
+	
 	private void shiftReverenceValue(int diff)
 	{
 		int newValue = getReferenceInt() + diff;
 		tfValue.setText( newValue + "" );
 		checkValueBounds();
 		setFilter();
+	}
+	
+	
+	/*
+	 * CompareToFilterPanel Methods
+	 */
+	@Override
+	public String getOperator()
+	{
+		return boxOperator.getSelectedItem().toString();
 	}
 	
 	@Override
@@ -136,6 +153,17 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	{
 		return label.getText();
 	}
+
+	/*
+	 * AbstractFilterPanel Methods
+	 */
+	@Override
+	protected void addComponents()
+	{
+		add(label);
+		add(boxOperator);
+		add(tfValue);
+	}
 	
 	@Override
 	protected void setFilter()
@@ -143,20 +171,28 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		setFilter(getFilter());
 	}
 
+	/*
+	 * Object Methods
+	 */
 	@Override
 	public String toString()
 	{
 		return getLabel() + " " + getOperator() + " " + getReferenceInt();
 	}
 
+	/*
+	 * MouseWheelListener Methods
+	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
 		int diff = (int) (4 * e.getPreciseWheelRotation());
 		shiftReverenceValue(diff);
 	}
-	
 
+	/*
+	 * KeyListener Methods
+	 */
 	@Override
 	public void keyPressed(KeyEvent e)
 	{

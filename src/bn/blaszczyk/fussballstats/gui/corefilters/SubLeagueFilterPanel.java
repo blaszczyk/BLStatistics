@@ -13,23 +13,34 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.filters.GameFilter;
+import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 
 @SuppressWarnings("serial")
 public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 
+	/*
+	 * Constants
+	 */
 	public static final String NAME = "DirekterVergleich";
-	
 	private static final String[] EMPTY_TWO_ARRAY = {"",""};
 	
+	/*
+	 * Components
+	 */
 	private JLabel label = new JLabel("Direkter Vergleich");
 	private List<JComboBox<String>> teamBoxes = new ArrayList<>();
 	private JButton btnNewTeam = new JButton("Verein Hinzufügen");
 
+	/*
+	 * Menus
+	 */
 	private JMenu menuRemoveTeam = new JMenu("Verein Entfernen");
 	
+	/*
+	 * Constructors
+	 */
 	public SubLeagueFilterPanel()
 	{
 		this(Arrays.asList(EMPTY_TWO_ARRAY));
@@ -53,6 +64,9 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 			addTeamBox(team);
 	}
 	
+	/*
+	 * Getters, Delegates
+	 */
 	public int getTeamCount()
 	{
 		return teamBoxes.size();
@@ -62,17 +76,14 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	{
 		return (String) teamBoxes.get(index).getSelectedItem();
 	}
-	
-	protected void setFilter()
+
+	public JMenuItem getMenuRemoveTeam()
 	{
-		List<String> teams = new ArrayList<>();
-		for(JComboBox<String> box : teamBoxes)
-			if(box.getSelectedItem() != null )
-				teams.add(box.getSelectedItem().toString());
-		setRemoveMenu();
-		setFilter(GameFilter.getSubLeagueFilter(teams));
+		return menuRemoveTeam;
 	}
-	
+	/*
+	 * Internal Methods
+	 */
 	private JComboBox<String> addTeamBox(String team)
 	{
 		JComboBox<String> box =  new MyComboBox<>(TeamFilterPanel.getTeamList(),250,true);
@@ -103,6 +114,19 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		}
 	}
 	
+	/*
+	 * AbstractFilterPanel Methods
+	 */
+	@Override
+	protected void setFilter()
+	{
+		List<String> teams = new ArrayList<>();
+		for(JComboBox<String> box : teamBoxes)
+			if(box.getSelectedItem() != null )
+				teams.add(box.getSelectedItem().toString());
+		setRemoveMenu();
+		setFilter(GameFilterFactory.createSubLeagueFilter(teams));
+	}
 	
 	@Override
 	protected void addComponents()
@@ -113,14 +137,13 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		add(btnNewTeam);			
 	}
 
+	/*
+	 * Object Methods
+	 */
 	@Override
 	public String toString()
 	{
 		return "Direkter Vergleich " + getTeamCount() + " Vereine";
 	}
 
-	public JMenuItem getMiRemoveTeam()
-	{
-		return menuRemoveTeam;
-	}
 }

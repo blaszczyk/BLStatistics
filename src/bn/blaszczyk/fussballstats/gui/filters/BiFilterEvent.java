@@ -4,15 +4,24 @@ import bn.blaszczyk.fussballstats.filters.BiFilter;
 
 public class BiFilterEvent<T,U>
 {
+	/*
+	 * Constants
+	 */
 	public static final int SET_FILTER = 1;
 	public static final int SET_PANEL = 2;
 	public static final int SET_ACTIVE = 3;
 	
+	/*
+	 * Variables
+	 */
 	private int type;
 	private BiFilterPanel<T,U> source;
 	private BiFilter<T,U> filter;
 	private boolean filterModified = true;
 
+	/*
+	 * Constructor
+	 */
 	public BiFilterEvent(BiFilterPanel<T,U> source, BiFilter<T,U> filter, int type)
 	{
 		if(type == SET_PANEL && !(filter instanceof BiFilterPanel ))
@@ -22,11 +31,13 @@ public class BiFilterEvent<T,U>
 		this.filter = filter;
 	}
 
+	/*
+	 * Getters, Setter
+	 */
 	public int getType()
 	{
 		return type;
 	}
-
 	
 	public BiFilterPanel<T,U> getSource()
 	{

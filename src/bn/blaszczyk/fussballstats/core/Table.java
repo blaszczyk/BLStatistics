@@ -5,6 +5,10 @@ import bn.blaszczyk.fussballstats.filters.*;
 
 public class Table implements Iterable<TeamResult>
 {
+	
+	/*
+	 * Variables
+	 */
 	private List<TeamResult> teamResults = new ArrayList<>();
 	private int pointsForWin = 3;
 
@@ -20,11 +24,47 @@ public class Table implements Iterable<TeamResult>
 	{
 		this.pointsForWin = pointsForWin;
 		if(teamResultFilter == null)
-			teamResultFilter = LogicalBiFilter.getTRUEBiFilter();
+			teamResultFilter = LogicalBiFilterFactory.createTRUEBiFilter();
 		for(Game game : games)
 			consumeGame(game,teamResultFilter);
 	}
 
+	/*
+	 * Getters, Delegates
+	 */
+
+	public int getTeamCount()
+	{
+		return teamResults.size();
+	}
+	
+	public TeamResult getTeamResult(int index)
+	{
+		return teamResults.get(index);
+	}
+
+
+	private int getTeamIndex(String team)
+	{
+		for(int i = 0; i < teamResults.size(); i++)
+			if( teamResults.get(i).getTeam().equals(team))
+				return i;
+		return -1;
+	}
+	
+	public List<String> getTeamList()
+	{
+		List<String> teamList = new ArrayList<>();
+		for(TeamResult tr : this)
+			teamList.add(tr.getTeam());
+		Collections.sort(teamList);
+		return teamList;
+	}
+	
+	/*
+	 * Special Methods
+	 */
+	
 	public void sort()
 	{
 		if(teamResults == null || teamResults.isEmpty())
@@ -39,26 +79,6 @@ public class Table implements Iterable<TeamResult>
 				getTeamResult(i).setPosition(lastPos = i + 1);	
 	}
 	
-	public int getTeamCount()
-	{
-		return teamResults.size();
-	}
-	
-	public TeamResult getTeamResult(int index)
-	{
-		return teamResults.get(index);
-	}
-
-	
-	public List<String> getTeamList()
-	{
-		List<String> teamList = new ArrayList<>();
-		for(TeamResult tr : this)
-			teamList.add(tr.getTeam());
-		Collections.sort(teamList);
-		return teamList;
-	}
-	
 	private void consumeGame(Game game, BiFilter<TeamResult,Game> teamResultFilter)
 	{
 		if(getTeamIndex(game.getTeamHAlias())<0)
@@ -69,15 +89,10 @@ public class Table implements Iterable<TeamResult>
 			if(teamResultFilter.check(t, game))
 				t.consumeGame(game,pointsForWin);
 	}
-
-	private int getTeamIndex(String team)
-	{
-		for(int i = 0; i < teamResults.size(); i++)
-			if( teamResults.get(i).getTeam().equals(team))
-				return i;
-		return -1;
-	}
 	
+	/*
+	 * Iterator Method
+	 */
 	@Override
 	public Iterator<TeamResult> iterator()
 	{

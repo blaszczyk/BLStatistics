@@ -5,6 +5,10 @@ import java.util.*;
 
 public class Season implements Iterable<Game>
 {
+	
+	/*
+	 * Variables
+	 */
 	private int year;
 	private League league; 
 	private List<String> teams = new ArrayList<>();
@@ -22,7 +26,7 @@ public class Season implements Iterable<Game>
 	}
 
 	/*
-	 * Getters
+	 * Getters, Setters, Delegates
 	 */
 
 	public int getMatchDayCount()
@@ -67,7 +71,6 @@ public class Season implements Iterable<Game>
 		}
 	}
 	
-
 	private void addTeam(String team)
 	{
 		if(teams.contains(team))
@@ -76,12 +79,18 @@ public class Season implements Iterable<Game>
 		league.addTeam(team);
 	}
 	
+	/*
+	 * Iterator Method
+	 */
 	@Override
 	public Iterator<Game> iterator()
 	{
 		return games.iterator();
 	}
 	
+	/*
+	 * Object Method
+	 */
 	@Override
 	public String toString()
 	{

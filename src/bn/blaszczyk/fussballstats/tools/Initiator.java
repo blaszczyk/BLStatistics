@@ -20,11 +20,20 @@ import bn.blaszczyk.fussballstats.gui.corefilters.TeamFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.ProgressDialog;
 
 public class Initiator {
+	/*
+	 * Constatns
+	 */
 	private static final String	LEAGUES_FILE	= "data/leagues.dat";
 	private static final String	ICON_FILE		= "data/icon.png";
 	
+	/*
+	 * Displaying Component
+	 */
 	private static ProgressDialog progressDialog;
 	
+	/*
+	 * Full Initialization
+	 */
 	public static boolean initAll(List<League> leagues)
 	{
 		List<String> uniqueLeagueNames = new ArrayList<>();
@@ -126,6 +135,9 @@ public class Initiator {
 		return true;
 	}
 	
+	/*
+	 * Init Known Leagues From Resource
+	 */
 	private static List<League> initLeagues(List<League> leagues)
 	{
 		Scanner scanner = new Scanner(FussballStats.class.getResourceAsStream(LEAGUES_FILE));
@@ -153,6 +165,9 @@ public class Initiator {
 		return leagues;
 	}
 	
+	/*
+	 * Inits UI
+	 */
 	private static void initUIManager()
 	{	
 		Font plainFont = new Font("Arial", Font.PLAIN, 16);
@@ -183,6 +198,9 @@ public class Initiator {
 		
 	}
 	
+	/*
+	 * Creates DB in Requested
+	 */
 	private static boolean checkDB() throws FussballException
 	{
 		DBTools.connectToSQLServer();
@@ -201,6 +219,9 @@ public class Initiator {
 		return exists;
 	}
 	
+	/*
+	 * Init Preferences
+	 */
 	private static void initPrefs()
 	{
 		int triesLeft = 3;
@@ -212,6 +233,9 @@ public class Initiator {
 		}
 	}
 	
+	/*
+	 * Init Lists for ComboBox Users
+	 */
 	private static boolean initLists(Iterable<League> leagues)
 	{
 		List<String> teams = new ArrayList<>();
@@ -229,30 +253,5 @@ public class Initiator {
 		TeamFilterPanel.setTeamList(teams);
 		return teams.size() != 0;
 	}
-	
-	
-	/*
-	 * Writes Games from Folder to DB
-	 */
-	
-//	public static void main(String[] args) throws FussballException
-//	{
-//		List<League> leagues = new ArrayList<>();
-//		initLeagues(leagues);
-//		FileIO.loadLeagues(leagues);
-//		checkDB();
-//		DBTools.openMySQLDatabase();
-//		for(League league : leagues)
-//		{
-//			if(!DBTools.tableExists(league))
-//				DBTools.createTable(league);
-//			for(Season season : league)
-//			{
-//				DBTools.insertSeason(season);
-//				System.out.println("Season " + season + " inserted");
-//			}		
-//		}
-//		DBConnection.closeConnection();
-//	}
 	
 }

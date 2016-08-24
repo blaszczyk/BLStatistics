@@ -1,13 +1,5 @@
 package bn.blaszczyk.fussballstats.gui;
 
-/*
- * TODO
- * icon source: https://www.iconfinder.com/iconsets/32x32-free-design-icons
- * free licence
- * include link to origin
- */
-
-
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +25,9 @@ import bn.blaszczyk.fussballstats.tools.FilterLog;
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, ActionListener
 {
+	/*
+	 * Constatns
+	 */
 	private static final String ICON_FILE = "data/icon.png";
 	private static final String NEW_ICON = "data/new.png";
 	private static final String LOAD_ICON = "data/load.png";
@@ -44,19 +39,30 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	private static final String REDO_ICON = "data/redo.png";
 	private static final String HELP_ICON = "data/help.png";
 	
+	/*
+	 * Menu
+	 */
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenuItem miNewFilter, miLoadFilter, miSaveFilter, miShowLeagueManager, miShowPreferences, miExit;
 	private JMenuItem miUndo, miRedo;
 	private JMenuItem miInfo;
 	
+	/*
+	 * Components
+	 */
 	private FunctionalFilterPanel functionalFilterPanel;
 	private FunctionalGameTable functionalGameTable = new FunctionalGameTable();
 	private FunctionalResultTable functionalResultTable = new FunctionalResultTable();
 	
+	/*
+	 * Variables
+	 */
 	private FilterLog filterLog;
-	
 	private List<League> leagues;
 	
+	/*
+	 * Constructors
+	 */
 	public MainFrame(List<League> leagues)
 	{
 		super("Fussball Statistiken");
@@ -76,37 +82,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		});
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
-	
-	public void showFrame()
-	{
-		resetTable();
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		pack();
-		setVisible(true);
-	}
 
-	private void showLeagueManager()
-	{
-		LeagueManager lm = new LeagueManager(this, leagues);
-		lm.showDialog();
-		resetTable();
-	}
-
-	private void showPreferences()
-	{
-		PrefsDialog pd = new PrefsDialog(this);
-		pd.showDialog();
-		resetTable();
-	}
-	
-	private void showInfo()
-	{
-		InfoDialog hd = new InfoDialog(this);
-		hd.showDialog();
-	}
-	
-	
-	
 	private void initComponents()
 	{
 		filterLog = new FilterLog();
@@ -132,6 +108,48 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	}
 	
 	
+	/*
+	 * Show On Screen
+	 */
+	public void showFrame()
+	{
+		resetGameList();
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		pack();
+		setVisible(true);
+	}
+
+	/*
+	 * Menu Actions
+	 */
+	private void showLeagueManager()
+	{
+		LeagueManager lm = new LeagueManager(this, leagues);
+		lm.showDialog();
+		resetGameList();
+	}
+
+	private void showPreferences()
+	{
+		PrefsDialog pd = new PrefsDialog(this);
+		pd.showDialog();
+		resetGameList();
+	}
+	
+	private void showInfo()
+	{
+		InfoDialog hd = new InfoDialog(this);
+		hd.showDialog();
+	}
+
+	private void exit()
+	{
+		functionalFilterPanel.saveLastFilter();
+		System.exit(0);
+	}
+	/*
+	 * Menu Methods
+	 */
 	private JMenuItem createMenuItem(JMenu menu, String name, char mnemonic, int acceleratorKeyCode, String iconFile )
 	{
 		JMenuItem mi = new JMenuItem(name);
@@ -176,7 +194,10 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		miInfo = createMenuItem(infoMenu, "Info", 'H', KeyEvent.VK_H, HELP_ICON);
 	}
 
-	private void resetTable()
+	/*
+	 * Internal Methods
+	 */
+	private void resetGameList()
 	{
 		List<Game> gameList = new ArrayList<>();
 		for(League league : leagues)
@@ -188,27 +209,22 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		functionalResultTable.setGames(gameList);
 	}
 
-	private void exit()
-	{
-		functionalFilterPanel.saveLastFilter();
-		System.exit(0);
-	}
-	
+	/*
+	 * BiFilterListener Methods
+	 */
 	@Override
 	public void filter(BiFilterEvent<Season,Game> e)
 	{
 		miUndo.setEnabled(filterLog.hasUndo());
 		miRedo.setEnabled(filterLog.hasRedo());
 		if(e.isFilterModified())
-			resetTable();
+			resetGameList();
 	}
 
-	@Override
-	public String toString()
-	{
-		return "MainFrame";
-	}
-	
+
+	/*
+	 * ActionListener Methods
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{

@@ -5,18 +5,27 @@ import javax.swing.JCheckBox;
 
 import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.core.Season;
-import bn.blaszczyk.fussballstats.filters.LogicalBiFilter;
-import bn.blaszczyk.fussballstats.filters.SeasonFilter;
+import bn.blaszczyk.fussballstats.filters.LogicalBiFilterFactory;
+import bn.blaszczyk.fussballstats.filters.SeasonFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.AbstractBiFilterPanel;
 
 @SuppressWarnings("serial")
 public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 {
+	/*
+	 * Constants
+	 */
 	public static final String NAME = "Runde";
 	
+	/*
+	 * Components
+	 */
 	private JCheckBox boxFirst = new JCheckBox("Hinrunde",true);
 	private JCheckBox boxSecond = new JCheckBox("Rückrunde",true);
 
+	/*
+	 * Constructors
+	 */
 	public RoundFilterPanel()
 	{
 		this(true,true);
@@ -37,20 +46,9 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 		setFilter();
 	}
 	
-	protected void setFilter()
-	{
-		if(isFirstRound())
-			if(isSecondRound())
-				setFilter(LogicalBiFilter.getTRUEBiFilter());
-			else
-				setFilter(SeasonFilter.getFirstRoundFilter());
-		else
-			if(isSecondRound())
-				setFilter(SeasonFilter.getSecondRoundFilter());
-			else
-				setFilter(LogicalBiFilter.getFALSEBiFilter());
-	}
-
+	/*
+	 * Getters
+	 */
 	public boolean isFirstRound()
 	{
 		return boxFirst.isSelected();
@@ -61,13 +59,34 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 		return boxSecond.isSelected();
 	}
 	
+	/*
+	 * AbstractBiFilterPanel Methods
+	 */
+	@Override
+	protected void setFilter()
+	{
+		if(isFirstRound())
+			if(isSecondRound())
+				setFilter(LogicalBiFilterFactory.createTRUEBiFilter());
+			else
+				setFilter(SeasonFilterFactory.createFirstRoundFilter());
+		else
+			if(isSecondRound())
+				setFilter(SeasonFilterFactory.createSecondRoundFilter());
+			else
+				setFilter(LogicalBiFilterFactory.createFALSEBiFilter());
+	}
+	
 	@Override
 	protected void addComponents()
 	{
 		add(boxFirst);
 		add(boxSecond);
 	}
-	
+
+	/*
+	 * Object Methods
+	 */
 	@Override
 	public String toString()
 	{

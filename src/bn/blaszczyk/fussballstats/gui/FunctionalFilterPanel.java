@@ -21,17 +21,30 @@ import bn.blaszczyk.fussballstats.tools.FilterMenuFactory;
 @SuppressWarnings("serial")
 public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Season,Game>, BiFilter<Season,Game>
 {
-	
+	/*
+	 * Constatns
+	 */
 	public static final String LAST_FILTER = "last";
 
+	/*
+	 * Global Variables
+	 */
+	private static boolean loadLastFilter;
+	/*
+	 * Components
+	 */
 	private JLabel header = new JLabel("Filter", SwingConstants.CENTER);
 	private BiFilterPanel<Season,Game> filterPanel;
 	
+	/*
+	 * Variables
+	 */
 	private BiFilterListener<Season,Game> listener = null;
 	private FilterLog filterLog;
 	
-	private static boolean loadLastFilter;
-	
+	/*
+	 * Constructor
+	 */
 	public FunctionalFilterPanel(FilterLog filterLog)
 	{
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -49,6 +62,23 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 			setFilterPanel(FilterMenuFactory.createNoFilterPanel());
 	}
 
+
+	/*
+	 * Global Getter, Setter
+	 */
+	public static boolean isLoadLastFilter()
+	{
+		return loadLastFilter;
+	}
+
+	public static void setLoadLastFilter(boolean loadLastFilter)
+	{
+		FunctionalFilterPanel.loadLastFilter = loadLastFilter;
+	}
+	
+	/*
+	 * Filter Control Methods
+	 */
 	public void newFilter()
 	{
 		BiFilterPanel<Season, Game> newFilter = FilterMenuFactory.createNoFilterPanel();
@@ -73,19 +103,12 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 			FilterIO.saveFilter(filterPanel,LAST_FILTER);
 	}
 
+	/*
+	 * Setters
+	 */
 	public void setFilterListener(BiFilterListener<Season, Game> listener)
 	{
 		this.listener = listener;
-	}
-	
-	public static boolean isLoadLastFilter()
-	{
-		return loadLastFilter;
-	}
-
-	public static void setLoadLastFilter(boolean loadLastFilter)
-	{
-		FunctionalFilterPanel.loadLastFilter = loadLastFilter;
 	}
 	
 	public void setFilterPanel(BiFilterPanel<Season,Game> filterPanel)
@@ -104,6 +127,9 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 			listener.filter(new BiFilterEvent<Season,Game>(this.filterPanel,filterPanel, BiFilterEvent.SET_PANEL));
 	}
 
+	/*
+	 * Internal Methods
+	 */
 	private void paint()
 	{
 		filterPanel.paint();
@@ -120,6 +146,9 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 			filterLog.logFilter(filterPanel);
 	}
 	
+	/*
+	 * BiFilterListener Methods
+	 */
 	@Override
 	public void filter(BiFilterEvent<Season, Game> e)
 	{
@@ -134,16 +163,13 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 			listener.filter(e);
 	}
 	
+	/*
+	 * BiFilter Methods
+	 */
 	@Override
 	public boolean check(Season s, Game g)
 	{
 		return filterPanel.check(s, g);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "FunctionalFilterPanel";
 	}
 
 }

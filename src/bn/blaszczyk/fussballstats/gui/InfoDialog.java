@@ -16,22 +16,30 @@ import bn.blaszczyk.fussballstats.FussballStats;
 public class InfoDialog extends JDialog
 {
 
+	/*
+	 * Constants
+	 */
 	private static final String ICON_FILE = "data/help.png";
 	private static final String LOGO_FILE = "data/icon.png";
 	private static final Font TITLEFONT = new Font("Arial",Font.BOLD,26);
 	private static final Font FONT = new Font("Arial",Font.PLAIN,14);
-
 	
+	private static final JLabel title = new JLabel("FussballStats", new ImageIcon(FussballStats.class.getResource(LOGO_FILE)),SwingConstants.CENTER);
+	private static final String info1 = "Entwickelt von: Michael Blaszczyk (michael.i.blaszczyk@gmail.com)";
+	private static final String info2 = "Mit Unterstützung von: alfatraining (www.alfatraining.de)" ;
+	private static final String info3 = "Fussballdaten bezogen von: www.weltfussball.de";
+	private static final String info4 = "Icons von: www.iconfinder.com";
+	
+	private static final String[] infos = {info1,info2,info3,info4};
+	
+	/*
+	 * Variables
+	 */
 	private Window owner;
 	
-	private JLabel title = new JLabel("FussballStats", new ImageIcon(FussballStats.class.getResource(LOGO_FILE)),SwingConstants.CENTER);
-	private String info1 = "Entwickelt von: Michael Blaszczyk (michael.i.blaszczyk@gmail.com)";
-	private String info2 = "Mit Unterstützung von: alfatraining (www.alfatraining.de)" ;
-	private String info3 = "Fussballdaten bezogen von: www.weltfussball.de";
-	private String info4 = "Icons von: www.iconfinder.com";
-	
-	private String[] infos = {info1,info2,info3,info4};
-	
+	/*
+	 * Constructors
+	 */
 	public InfoDialog(Window owner)
 	{
 		super(owner, ModalityType.APPLICATION_MODAL);
@@ -63,6 +71,9 @@ public class InfoDialog extends JDialog
 		
 	}
 	
+	/*
+	 * Show on Screen
+	 */
 	public void showDialog()
 	{
 		setLocationRelativeTo(owner);

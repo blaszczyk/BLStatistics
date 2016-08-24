@@ -13,14 +13,16 @@ import bn.blaszczyk.fussballstats.gui.filters.*;
 
 public class FilterMenuFactory  
 {
-	private interface MyAction
-	{
-		public void doAction();
-	}
 	
-	private static MyAction panelAction;
+	/*
+	 * Global Variables
+	 */
+	private static Runnable panelAction;
 	private static BiFilterPanel<Season,Game> panel;
 	
+	/*
+	 * Gives BiFilterPanel a PopupMenu according to its Type
+	 */
 	public static void createPopupMenu(BiFilterPanel<Season, Game> panel)
 	{
 		JPopupMenu popupMenu = new JPopupMenu();
@@ -56,7 +58,7 @@ public class FilterMenuFactory
 			setPanelAction( () -> moPanel.addPanel(getPanel()));
 			addMenuItems(miAddFilter);
 			popupMenu.add(miAddFilter);
-			popupMenu.add(moPanel.getMiRemoveFilter());
+			popupMenu.add(moPanel.getMenuRemoveFilter());
 			popupMenu.addSeparator();
 		}
 		/*
@@ -102,7 +104,7 @@ public class FilterMenuFactory
 				((FilterPanelAdapter<Season,Game>)panel).getInnerPanel() instanceof SubLeagueFilterPanel)
 		{
 			SubLeagueFilterPanel slPanel = (SubLeagueFilterPanel) ((FilterPanelAdapter<Season,Game>)panel).getInnerPanel();
-			popupMenu.add( slPanel.getMiRemoveTeam() );
+			popupMenu.add( slPanel.getMenuRemoveTeam() );
 			popupMenu.addSeparator();
 		}
 		
@@ -162,6 +164,9 @@ public class FilterMenuFactory
 	}
 	
 	
+	/*
+	 * Adds Create-Buttons for known Filters
+	 */
 	private static void addMenuItems(JMenu menu)
 	{
 
@@ -186,9 +191,9 @@ public class FilterMenuFactory
 		JMenu seasonFilters = new JMenu("Saison Filter");
 
 		addMenuItem(seasonFilters,"Liga", 
-			() -> setPanel( FilterPanelAdapter.getFirstArgAdapter( new SingleLeagueFilterPanel()) ));
+			() -> setPanel( FilterPanelAdapter.createFirstArgAdapter( new SingleLeagueFilterPanel()) ));
 		addMenuItem(seasonFilters,"Saison", 
-			() -> setPanel( FilterPanelAdapter.getFirstArgAdapter( new SeasonFilterPanel()) ));
+			() -> setPanel( FilterPanelAdapter.createFirstArgAdapter( new SeasonFilterPanel()) ));
 		addMenuItem(seasonFilters,"Hin-/Rückrunde", 
 			() -> setPanel( new RoundFilterPanel() ));
 
@@ -198,9 +203,9 @@ public class FilterMenuFactory
 		JMenu teamFilters = new JMenu("Verein Filter");
 
 		addMenuItem(teamFilters,"Verein", 
-			() -> setPanel( FilterPanelAdapter.getSecondArgAdapter( new TeamFilterPanel() ) ) );
+			() -> setPanel( FilterPanelAdapter.createSecondArgAdapter( new TeamFilterPanel() ) ) );
 		addMenuItem(teamFilters,"Direkter Vergleich", 
-			() -> setPanel( FilterPanelAdapter.getSecondArgAdapter( new SubLeagueFilterPanel() ) ) );
+			() -> setPanel( FilterPanelAdapter.createSecondArgAdapter( new SubLeagueFilterPanel() ) ) );
 		
 		/*
 		 * Date Filters
@@ -208,11 +213,11 @@ public class FilterMenuFactory
 		JMenu dateFilters = new JMenu("Spieltag Filter");
 
 		addMenuItem(dateFilters,"Spieltag", 
-			() -> setPanel(FilterPanelAdapter.getSecondArgAdapter( new MatchDayFilterPanel())));
+			() -> setPanel(FilterPanelAdapter.createSecondArgAdapter( new MatchDayFilterPanel())));
 		addMenuItem(dateFilters, "Datum", 
-			() -> setPanel(FilterPanelAdapter.getSecondArgAdapter(new DateFilterPanel())));
+			() -> setPanel(FilterPanelAdapter.createSecondArgAdapter(new DateFilterPanel())));
 		addMenuItem(dateFilters, "Wochentag", 
-			() -> setPanel(FilterPanelAdapter.getSecondArgAdapter(new DayOfWeekFilterPanel())));
+			() -> setPanel(FilterPanelAdapter.createSecondArgAdapter(new DayOfWeekFilterPanel())));
 
 		/*
 		 * Goal Filters
@@ -220,13 +225,13 @@ public class FilterMenuFactory
 		JMenu goalFilters = new JMenu("Tor Filter");
 
 		addMenuItem(goalFilters,"Tore",
-			()-> setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getGoalFilterPanel("=",0) ) ) );
+			()-> setPanel( FilterPanelAdapter.createSecondArgAdapter( GoalFilterPanelFactory.createGoalFilterPanel("=",0) ) ) );
 		addMenuItem(goalFilters,"Heimtore", 
-			()-> setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getHomeGoalFilterPanel("=",0) ) ));
+			()-> setPanel( FilterPanelAdapter.createSecondArgAdapter( GoalFilterPanelFactory.createHomeGoalFilterPanel("=",0) ) ));
 		addMenuItem(goalFilters,"Auswärtstore", 
-			() -> setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getAwayGoalFilterPanel("=",0) ) ));
+			() -> setPanel( FilterPanelAdapter.createSecondArgAdapter( GoalFilterPanelFactory.createAwayGoalFilterPanel("=",0) ) ));
 		addMenuItem(goalFilters,"Tordifferenz", 
-			() -> setPanel( FilterPanelAdapter.getSecondArgAdapter( GoalFilterPanel.getGoalDiffFilterPanel("=",0) ) ) );
+			() -> setPanel( FilterPanelAdapter.createSecondArgAdapter( GoalFilterPanelFactory.createGoalDiffFilterPanel("=",0) ) ) );
 		
 		menu.add(logicalFilters);
 		menu.addSeparator();
@@ -235,12 +240,16 @@ public class FilterMenuFactory
 		menu.add(dateFilters);
 		menu.add(goalFilters);
 		menu.addSeparator();
+		
 		/*
 		 * Load Filter
 		 */
 		addMenuItem(menu,"Lade Filter", () -> setPanel( FilterIO.loadFilter() ));
 	}
 
+	/*
+	 * Creates Blank Filter
+	 */
 	public static BiFilterPanel<Season,Game> createNoFilterPanel()
 	{
 		BiFilterPanel<Season, Game> noPanel = new NoFilterPanel<>();
@@ -248,18 +257,21 @@ public class FilterMenuFactory
 		return noPanel;
 	}
 	
+	/*
+	 * Internal Methods
+	 */
 	private static BiFilterPanel<Season,Game> getPanel()
 	{
 		return panel;
 	}
 	
-	private static JMenuItem addMenuItem(JMenu menu, String label, MyAction createAction )
+	private static JMenuItem addMenuItem(JMenu menu, String label, Runnable createAction )
 	{
 		JMenuItem item = new JMenuItem(label);
-		final MyAction panelActionCopy = panelAction;
+		final Runnable panelActionCopy = panelAction;
 		item.addActionListener( e ->{
-			createAction.doAction();
-			panelActionCopy.doAction();
+			createAction.run();
+			panelActionCopy.run();
 		});
 		menu.add(item);
 		return item;
@@ -271,7 +283,7 @@ public class FilterMenuFactory
 		FilterMenuFactory.panel = panel;
 	}
 	
-	private static void setPanelAction(MyAction panelAction)
+	private static void setPanelAction(Runnable panelAction)
 	{
 		FilterMenuFactory.panelAction = panelAction;
 	}

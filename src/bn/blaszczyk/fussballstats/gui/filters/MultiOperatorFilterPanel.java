@@ -11,13 +11,15 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 
-import bn.blaszczyk.fussballstats.filters.LogicalBiFilter;
+import bn.blaszczyk.fussballstats.filters.LogicalBiFilterFactory;
 import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 
 @SuppressWarnings("serial")
 public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> implements BiFilterListener<T, U>, Iterable<BiFilterPanel<T,U>> 
 {
-
+	/*
+	 * Constants
+	 */
 	public static final String NAME = "MultiOperator";
 	
 	public static final String AND = "AND";
@@ -25,11 +27,20 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	public static final String XOR = "XOR";
 	private static final String[] OPERATORS = {AND,OR,XOR};
 	
-	private List<BiFilterPanel<T,U>> panels = new ArrayList<>();
+	/*
+	 * Components
+	 */
 	private JComboBox<String> boxOperator;
+	private List<BiFilterPanel<T,U>> panels = new ArrayList<>();
 	
-	private JMenu miRemoveFilter = new JMenu("Filter Entfernen");
+	/*
+	 * Menu
+	 */
+	private JMenu menuRemoveFilter = new JMenu("Filter Entfernen");
 
+	/*
+	 * Constructor
+	 */
 	public MultiOperatorFilterPanel(Iterable<BiFilterPanel<T, U>> panels, String operator) 
 	{
 		super(true);
@@ -46,9 +57,17 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 			panel.addFilterListener(this);		
 	}
 	
+	/*
+	 * Getters, 
+	 */
 	public String getOperator()
 	{
 		return (String)boxOperator.getSelectedItem();
+	}
+
+	public JMenu getMenuRemoveFilter()
+	{
+		return menuRemoveFilter;
 	}
 
 	public void addPanel(BiFilterPanel<T,U> newPanel)
@@ -60,6 +79,9 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		setFilter();
 	}
 	
+	/*
+	 * Internal Methods
+	 */
 	private void replacePanel(int index, BiFilterPanel<T,U> newPanel)
 	{
 		if(index < 0 || index >= panels.size())
@@ -79,37 +101,36 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	
 	private void setDeleteMenu()
 	{
-		miRemoveFilter.removeAll();
+		menuRemoveFilter.removeAll();
 		for(BiFilterPanel<T, U> panel : panels)
 		{
 			JMenuItem remove = new JMenuItem(panel.toString());
 			remove.addActionListener( e -> panel.replaceMe(null) );
-			miRemoveFilter.add(remove);
+			menuRemoveFilter.add(remove);
 		}
 	}
 	
+	/*
+	 * AbstractBiFilterPanel Methods
+	 */
+	@Override
 	protected void setFilter()
 	{
 		setDeleteMenu();
 		switch(getOperator())
 		{
 		case AND:
-			setFilter(LogicalBiFilter.getANDBiFilter(panels));
+			setFilter(LogicalBiFilterFactory.createANDBiFilter(panels));
 			break;
 		case OR:
-			setFilter(LogicalBiFilter.getORBiFilter(panels));
+			setFilter(LogicalBiFilterFactory.createORBiFilter(panels));
 			break;
 		case XOR:
-			setFilter(LogicalBiFilter.getXORBiFilter(panels));
+			setFilter(LogicalBiFilterFactory.createXORBiFilter(panels));
 			break;
 		}		
 	}
-
-	public JMenu getMiRemoveFilter()
-	{
-		return miRemoveFilter;
-	}
-
+	
 	@Override
 	protected void addComponents()
 	{
@@ -146,13 +167,18 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 			setDeleteMenu();
 	}
 	
+	/*
+	 * Object Methods
+	 */
 	@Override
 	public String toString()
 	{
 		return boxOperator.getSelectedItem().toString() + ": " + panels.size() + " Filter";
 	}
 
-
+	/*
+	 * Iterable Method
+	 */
 	@Override
 	public Iterator<BiFilterPanel<T, U>> iterator()
 	{

@@ -4,20 +4,27 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 
 import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.filters.GameFilter;
+import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 
 @SuppressWarnings("serial")
 public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game> 
 {
+	/*
+	 * Constants
+	 */
 	public static final String NAME = "Wochentag";
-	
 	private static final String[] DAYS_OF_WEEK = {"Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"};
 	
+	/*
+	 * Components
+	 */
 	private JComboBox<String> boxDayOfWeek;
 	
-	
+	/*
+	 * Constructors
+	 */
 	public DayOfWeekFilterPanel()
 	{
 		super(false);
@@ -26,7 +33,6 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 		boxDayOfWeek.addActionListener(setFilterListener);
 		setFilter();
 	}
-	
 
 	public DayOfWeekFilterPanel(String dayOfWeek)
 	{
@@ -35,24 +41,33 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 		setFilter();
 	}
 
-	
-	
-	protected void setFilter()
-	{
-		setFilter(GameFilter.getDayOfWeekFilter( boxDayOfWeek.getSelectedIndex()));
-	}
-	
+	/*
+	 * Getter
+	 */
 	public String getDayOfWeek()
 	{
 		return boxDayOfWeek.getSelectedItem().toString();
 	}
+	
+	/*
+	 * AbstractFilterPanel Methods
+	 */
+	@Override
+	protected void setFilter()
+	{
+		setFilter(GameFilterFactory.createDayOfWeekFilter( boxDayOfWeek.getSelectedIndex()));
+	}
+	
 
 	@Override
 	protected void addComponents()
 	{
 		add(boxDayOfWeek);
 	}
-	
+
+	/*
+	 * Object Methods
+	 */
 	@Override
 	public String toString()
 	{

@@ -3,15 +3,21 @@ package bn.blaszczyk.fussballstats.gui.corefilters;
 import bn.blaszczyk.fussballstats.core.League;
 import bn.blaszczyk.fussballstats.core.Season;
 import bn.blaszczyk.fussballstats.filters.Filter;
-import bn.blaszczyk.fussballstats.filters.LogicalFilter;
-import bn.blaszczyk.fussballstats.filters.SeasonFilter;
+import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;
+import bn.blaszczyk.fussballstats.filters.SeasonFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.IntegerValueFilterPanel;
 
 @SuppressWarnings("serial")
 public class SeasonFilterPanel extends IntegerValueFilterPanel<Season>
 {
+	/*
+	 * Constants
+	 */
 	public static final String NAME = "Saison";
 	
+	/*
+	 * Constructors
+	 */
 	public SeasonFilterPanel()
 	{
 		this(EQ,League.THIS_SEASON);
@@ -22,7 +28,9 @@ public class SeasonFilterPanel extends IntegerValueFilterPanel<Season>
 		super(NAME,operator,refValue,1945,League.THIS_SEASON);
 	}
 
-
+	/*
+	 * IntegerValueFilterPanel Methods
+	 */
 	@Override
 	protected Filter<Season> getFilter()
 	{
@@ -30,20 +38,19 @@ public class SeasonFilterPanel extends IntegerValueFilterPanel<Season>
 		switch(getOperator())
 		{
 		case EQ:
-			return SeasonFilter.getSeasonFilter(year);
+			return SeasonFilterFactory.createSeasonFilter(year);
 		case NEQ:
-			return LogicalFilter.getNOTFilter(SeasonFilter.getSeasonFilter(year));
+			return LogicalFilterFactory.createNOTFilter(SeasonFilterFactory.createSeasonFilter(year));
 		case GEQ:
-			return SeasonFilter.getSeasonMinFilter(year);
+			return SeasonFilterFactory.createSeasonMinFilter(year);
 		case LL:
-			return LogicalFilter.getNOTFilter(SeasonFilter.getSeasonMinFilter(year));
+			return LogicalFilterFactory.createNOTFilter(SeasonFilterFactory.createSeasonMinFilter(year));
 		case LEQ:
-			return SeasonFilter.getSeasonMaxFilter(year);
+			return SeasonFilterFactory.createSeasonMaxFilter(year);
 		case GG:
-			return LogicalFilter.getNOTFilter(SeasonFilter.getSeasonMaxFilter(year));
+			return LogicalFilterFactory.createNOTFilter(SeasonFilterFactory.createSeasonMaxFilter(year));
 		}
-		return LogicalFilter.getTRUEFilter();
+		return LogicalFilterFactory.createTRUEFilter();
 	}
 	
-
 }

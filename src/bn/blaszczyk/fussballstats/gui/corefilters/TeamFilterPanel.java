@@ -10,21 +10,30 @@ import javax.swing.JComboBox;
 
 import bn.blaszczyk.fussballstats.core.Game;
 import bn.blaszczyk.fussballstats.filters.Filter;
-import bn.blaszczyk.fussballstats.filters.GameFilter;
-import bn.blaszczyk.fussballstats.filters.LogicalFilter;
+import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
+import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 
 @SuppressWarnings({"serial"})
 public class TeamFilterPanel extends AbstractFilterPanel<Game>
 {
+	/*
+	 * Constants
+	 */
 	public static final String NAME = "Verein";
 	private static final List<String> TEAM_LIST = new ArrayList<>();
 	
+	/*
+	 * Components
+	 */
 	private JComboBox<String> boxTeam;
 	private JCheckBox chbHome;
 	private JCheckBox chbAway;
 	
+	/*
+	 * Constructors
+	 */
 	public TeamFilterPanel()
 	{
 		this("",true,true);
@@ -58,6 +67,9 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 		setFilter();
 	}
 	
+	/*
+	 * Getters
+	 */
 	public String getTeam()
 	{
 		return (String) boxTeam.getSelectedItem();
@@ -73,6 +85,9 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 		return chbAway.isSelected();
 	}
 
+	/*
+	 * Static Methods for TeamList
+	 */
 	public static void setTeamList(Iterable<String> teamList)
 	{
 		TEAM_LIST.clear();
@@ -85,21 +100,24 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 		return TeamFilterPanel.TEAM_LIST;
 	}
 	
+	/*
+	 * AbstractFilterPanel Methods
+	 */
+	@Override
 	protected void setFilter()
 	{
 		String team = (String) boxTeam.getSelectedItem();
-		Filter<Game> filter = LogicalFilter.getFALSEFilter();
+		Filter<Game> filter = LogicalFilterFactory.createFALSEFilter();
 		if(chbHome.isSelected())
 			if(chbAway.isSelected())
-				filter = GameFilter.getTeamFilter(team);
+				filter = GameFilterFactory.createTeamFilter(team);
 			else
-				filter = GameFilter.getTeamHomeFilter(team);
+				filter = GameFilterFactory.createTeamHomeFilter(team);
 		else
 			if(chbAway.isSelected())
-				filter = GameFilter.getTeamAwayFilter(team);
+				filter = GameFilterFactory.createTeamAwayFilter(team);
 		setFilter(filter);
 	}
-	
 	
 	@Override
 	protected void addComponents()
@@ -109,6 +127,9 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 		add(chbAway);
 	}	
 
+	/*
+	 * Object Methods
+	 */
 	@Override
 	public String toString()
 	{

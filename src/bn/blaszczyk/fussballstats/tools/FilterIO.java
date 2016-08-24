@@ -16,10 +16,15 @@ import bn.blaszczyk.fussballstats.gui.filters.*;
 
 public class FilterIO
 {
+	/*
+	 * Constatns
+	 */
 	private static final String FOLDER = "filters";
 	private static final String EXTENSION = "flt";
 	
-
+	/*
+	 * Static IO Methods
+	 */
 	public static void saveFilter(BiFilterPanel<Season, Game> filter)
 	{
 		if (filter == null || filter instanceof NoFilterPanel)
@@ -87,6 +92,5 @@ public class FilterIO
 			}
 		return FilterMenuFactory.createNoFilterPanel();
 	}
-
 
 }

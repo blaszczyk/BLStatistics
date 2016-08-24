@@ -12,15 +12,24 @@ import bn.blaszczyk.fussballstats.gui.tools.MyTable;
 @SuppressWarnings("serial")
 public class ResultTable extends MyTable<TeamResult>
 {
+	/*
+	 * Variables
+	 */
 	private boolean isRelativeTable = false;
 	List<String> selectedTeams = new ArrayList<>();
 	
+	/*
+	 * Constructor
+	 */
 	public ResultTable()
 	{
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		getSelectionModel().addListSelectionListener( e -> repaint());
 	}
 
+	/*
+	 * Getters, Setters
+	 */
 	public List<String> getSelectedTeams()
 	{
 		if( getSelectedRows().length != 0 )
@@ -44,6 +53,9 @@ public class ResultTable extends MyTable<TeamResult>
 		this.isRelativeTable = isRelativeTable;
 	}
 
+	/*
+	 * MyTable Methods
+	 */
 	@Override
 	protected TableModel createTableModel(List<TeamResult> ts)
 	{

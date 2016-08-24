@@ -17,11 +17,17 @@ import bn.blaszczyk.fussballstats.core.*;
 
 public class FileIO
 {
+	/*
+	 * Constatns
+	 */
 	private static final String BASE_FOLDER = "leagues";
 	private static final String FILE_EXTENSION = "bls";
 
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
 	
+	/*
+	 * Static IO Methods
+	 */
 	public static void saveSeason(Season season) throws FussballException
 	{
 		if(season == null)

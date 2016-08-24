@@ -10,11 +10,17 @@ import bn.blaszczyk.fussballstats.gui.filters.*;
 
 public class FilterLog
 {
+	/*
+	 * Variables
+	 */
 	private List<String> logFilter = new ArrayList<>();
 	
 	private String currentFilterString;
 	private int currentFilterIndex = 0;
 	
+	/*
+	 * Undo, Redo
+	 */
 	public boolean hasUndo()
 	{
 		return currentFilterIndex > 0;
@@ -34,7 +40,24 @@ public class FilterLog
 	{
 		return reconstructFilter(currentFilterIndex+1);
 	}
+
+	/*
+	 * Adds Filter To Log
+	 */
+	public void logFilter(BiFilterPanel<Season, Game> currentFilter)
+	{
+		String newFilterString = FilterParser.writeFilter(currentFilter);
+		if(newFilterString.equals(currentFilterString))
+			return;
+		this.currentFilterString = newFilterString;
+		chopLog(currentFilterIndex+1);
+		logFilter.add(newFilterString);
+		currentFilterIndex = logFilter.size() - 1;
+	}
 	
+	/*
+	 * Internal Methods
+	 */
 	private BiFilterPanel<Season, Game> reconstructFilter(int index)
 	{
 		currentFilterIndex = index;
@@ -47,18 +70,6 @@ public class FilterLog
 		if(chopIndex >= 0)
 			while(logFilter.size() > chopIndex)
 				logFilter.remove(chopIndex);
-	}
-
-
-	public void logFilter(BiFilterPanel<Season, Game> currentFilter)
-	{
-		String newFilterString = FilterParser.writeFilter(currentFilter);
-		if(newFilterString.equals(currentFilterString))
-			return;
-		this.currentFilterString = newFilterString;
-		chopLog(currentFilterIndex+1);
-		logFilter.add(newFilterString);
-		currentFilterIndex = logFilter.size() - 1;
 	}
 
 }

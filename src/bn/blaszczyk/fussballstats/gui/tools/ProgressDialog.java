@@ -9,14 +9,19 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class ProgressDialog extends JDialog implements ActionListener {
 
-	
-	private JDialog owner;
 
+	/*
+	 * Components
+	 */
 	private JTextArea taInfo = new JTextArea();
 	private JProgressBar prograssBar;
 	private JLabel lblTimeLeft = new JLabel("geschätzte Restzeit: unbekannt");
 	private JButton btnCancel = new JButton("Abbrechen");
-	
+
+	/*
+	 * Variables
+	 */
+	private JDialog owner;
 	private int secsLeft = 0;
 	private int maxValue;
 	private long initTimeStamp = System.currentTimeMillis();
@@ -31,6 +36,9 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	private Timer timerSecs = new Timer(1000, e -> setSecsLeft());
 
 
+	/*
+	 * Constructors
+	 */
 	public ProgressDialog(JDialog owner, String title, Image icon, boolean showButton)
 	{
 		this(owner,1,title,icon,showButton);
@@ -72,6 +80,9 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		}
 	}
 
+	/*
+	 * show on Screen
+	 */
 	public void showDialog()
 	{
 		timerDots.start();
@@ -80,6 +91,9 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		setVisible(true);	
 	}
 
+	/*
+	 * Getters, Setters
+	 */
 	public void setMaxValue(int maxValue)
 	{
 		this.maxValue = maxValue;
@@ -124,7 +138,6 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		btnCancel.setEnabled(true);
 	}
 	
-	
 	public void setFinished()
 	{
 		selfClosable = true;
@@ -135,6 +148,9 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		lblTimeLeft.setText("Gesamtdauer: " + (System.currentTimeMillis() - initTimeStamp) / 1000 + " Sekunden");
 	}
 	
+	/*
+	 * dispose 
+	 */
 	public void disposeDialog()
 	{
 		timerDots.stop();
@@ -142,6 +158,9 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		dispose();
 	}
 	
+	/*
+	 * Internal Method
+	 */
 	private void setSecsLeft()
 	{
 		if(value == lastValue && secsLeft > 0)
@@ -155,6 +174,9 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		lblTimeLeft.setText( String.format( "geschätzte Restzeit: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n") );
 	}
 	
+	/*
+	 * ActionListener Method
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
