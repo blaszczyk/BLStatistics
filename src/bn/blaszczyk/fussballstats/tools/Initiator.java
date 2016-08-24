@@ -43,9 +43,9 @@ public class Initiator {
 		initPrefs();		
 		
 		boolean databaseExists = false;
-		boolean dbMode;
+		boolean dbMode = LeagueManager.isDbMode();
 		int triesLeft = 3;
-		while(dbMode = LeagueManager.isDbMode() && ! databaseExists)
+		while((dbMode = LeagueManager.isDbMode()) && ! databaseExists)
 		{
 			try
 			{
@@ -77,7 +77,7 @@ public class Initiator {
 					uniqueLeagueNames.add(league.getName());
 					progressDialog.appendInfo("\nLade Liga: " + league.getName());
 				}
-				boolean leagueAvailable = dbMode ? DBTools.tableExists(league) : FileIO.folderExists(league);
+				boolean leagueAvailable = (dbMode ? DBTools.tableExists(league) : FileIO.folderExists(league));
 				if(leagueAvailable)
 					for (Season season : league)
 					{
@@ -203,8 +203,13 @@ public class Initiator {
 	
 	private static void initPrefs()
 	{
+		int triesLeft = 3;
 		while(!PrefsDialog.initPrefs())
-			new PrefsDialog(progressDialog).showDialog();;
+		{
+			if(--triesLeft < 0)
+				return;
+			new PrefsDialog(progressDialog).showDialog();
+		}
 	}
 	
 	private static boolean initLists(Iterable<League> leagues)

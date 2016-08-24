@@ -228,18 +228,5 @@ public class DBTools
 		String sql = "CREATE DATABASE " + dbName;
 		DBConnection.executeUpdate(sql);
 	}
-	
-	public static void main(String[] args) throws Exception
-	{
-		String connectionString, classForName;
-		classForName = "com.mysql.jdbc.Driver";		
-		connectionString = "jdbc:mysql://" + server + ":3306/" + dbName;
-		DBConnection.connectToDatabase(classForName, connectionString, user, password);
-		
-		ResultSet rs = DBConnection.getConnection().getMetaData().getCatalogs();
-		while(rs.next())
-			System.out.println(rs.getString(1) );
-		DBConnection.closeConnection();
-	}
 
 }
