@@ -134,7 +134,7 @@ public class FilterMenuFactory
 		});
 		popupMenu.add(miInvert);
 
-		JMenuItem miSetActive = new JMenuItem("Deaktivieren");
+		JMenuItem miSetActive = new JMenuItem(panel.isActive() ? "Deaktivieren" : "Aktivieren");
 		miSetActive.addActionListener(e -> {
 			if(panel.isActive())
 			{

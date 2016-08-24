@@ -22,11 +22,15 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	private JComboBox<String> boxOperator;
 	private JTextField tfValue;
 	private int defaultValue;
+	private int minValue;
+	private int maxValue;
 
-	private IntegerValueFilterPanel(String labelText, int defaultValue)
+	private IntegerValueFilterPanel(String labelText, int defaultValue, int minValue, int maxValue)
 	{
 		super(false);
 		this.defaultValue = defaultValue;
+		this.minValue = minValue;
+		this.maxValue = maxValue;
 		
 		label = new JLabel(labelText);
 		label.setDisplayedMnemonic('f');
@@ -46,9 +50,9 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 
 	protected abstract Filter<T> getFilter();
 	
-	protected IntegerValueFilterPanel(String labelText, String operator, int defaultValue)
+	protected IntegerValueFilterPanel(String labelText, String operator, int defaultValue, int minValue, int maxValue)
 	{
-		this(labelText,defaultValue);
+		this(labelText,defaultValue, minValue, maxValue);
 		boxOperator.setSelectedItem(operator);
 	}
 
@@ -75,9 +79,24 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		}
 		catch(NumberFormatException e)
 		{
-//			JOptionPane.showMessageDialog(valueField, "Falschens Zahlenformat", "Error", JOptionPane.ERROR_MESSAGE);
 		}	
 		return result;
+	}
+	
+	private void checkValueBounds()
+	{
+		int refValue = getReferenceInt();
+		if( refValue < minValue)
+			tfValue.setText(minValue + "");
+		else if(refValue > maxValue)
+			tfValue.setText(maxValue + "");
+	}	
+	private void shiftReverenceValue(int diff)
+	{
+		int newValue = getReferenceInt() + diff;
+		tfValue.setText( newValue + "" );
+		checkValueBounds();
+		setFilter();
 	}
 	
 	@Override
@@ -118,7 +137,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		return label.getText();
 	}
 	
-	
+	@Override
 	protected void setFilter()
 	{
 		setFilter(getFilter());
@@ -134,57 +153,45 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
 		int diff = (int) (4 * e.getPreciseWheelRotation());
-		if (e.getSource() instanceof JTextField)
-		{
-			JTextField tf = (JTextField) e.getSource();
-			int newVal = diff + Integer.parseInt(tf.getText());
-			tf.setText("" + newVal);
-			setFilter();
-		}
-		
+		shiftReverenceValue(diff);
 	}
 	
 
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-		if(e.getSource() == tfValue)
+		switch(e.getKeyCode())
 		{
-			switch(e.getKeyCode())
-			{
-			case KeyEvent.VK_UP:
-				tfValue.setText( Integer.parseInt(tfValue.getText()) + 1 + ""  );
-				break;
-			case KeyEvent.VK_DOWN:
-				tfValue.setText( Integer.parseInt(tfValue.getText()) - 1 + ""  );
-				break;
-			}
-		}			
+		case KeyEvent.VK_UP:
+			shiftReverenceValue(1);
+			break;
+		case KeyEvent.VK_DOWN:
+			shiftReverenceValue(-1);
+			break;
+		}
+		tfValue.requestFocusInWindow();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
-		if (e.getSource() instanceof JTextField)
+		if(e.getKeyCode() == KeyEvent.VK_ENTER)
 		{
+			checkValueBounds();
 			setFilter();
-			((JTextField)e.getSource()).requestFocusInWindow();
 		}
+		tfValue.requestFocusInWindow();
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e)
 	{
-		if (e.getSource() instanceof JTextField)
+		tfValue.replaceSelection(null);
+		char c = e.getKeyChar();
+		if (!Character.isISOControl(c) && !Character.isDigit(c) && c!='-')
 		{
-			JTextField tf = (JTextField) e.getSource();
-			tf.replaceSelection(null);
-			char c = e.getKeyChar();
-			if (!Character.isISOControl(c) && !Character.isDigit(c) )
-			{
-				Toolkit.getDefaultToolkit().beep();
-				e.consume();
-			}
+			Toolkit.getDefaultToolkit().beep();
+			e.consume();
 		}
 	}
 

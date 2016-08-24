@@ -22,12 +22,6 @@ public class FileIO
 
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
 	
-	public static void loadLeagues(Iterable<League> leagues) throws FussballException
-	{
-		for(League league : leagues)
-			loadSeasons(league);
-	}
-	
 	public static void saveSeason(Season season) throws FussballException
 	{
 		if(season == null)
@@ -56,17 +50,12 @@ public class FileIO
 		return new File(getFileName(season)).exists();
 	}
 	
-
-	private static void loadSeasons(League league) throws FussballException
+	public static boolean folderExists(League league)
 	{
-		File directory = new File(BASE_FOLDER + "/" + league.getPathName() + "/");
-		if(!directory.exists())
-			return;
-		for(Season season : league)
-			loadSeason(season);
+		return new File(BASE_FOLDER + "/" + league.getPathName() + "/").exists();
 	}
 	
-	private static boolean loadSeason(Season season) throws FussballException
+	public static boolean loadSeason(Season season) throws FussballException
 	{
 		if(season == null || !isSeasonSaved(season))
 			return false;

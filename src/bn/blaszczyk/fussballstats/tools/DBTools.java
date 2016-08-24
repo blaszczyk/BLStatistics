@@ -16,6 +16,7 @@ public class DBTools
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	private static String server = "localhost";
+	private static String port = "3306";
 	private static String dbName = "fussballspiele";
 	private static String user = "root";
 	private static String password = null;
@@ -38,6 +39,11 @@ public class DBTools
 		return server;
 	}
 
+	public static String getPort()
+	{
+		return port;
+	}
+
 	public static String getDbName()
 	{
 		return dbName;
@@ -53,9 +59,10 @@ public class DBTools
 		return password;
 	}
 
-	public static void setAccessData(String server, String dbName, String user, String password)
+	public static void setAccessData(String server, String port, String dbName, String user, String password)
 	{
 		DBTools.server = server;
+		DBTools.port = port;
 		DBTools.dbName = dbName;
 		DBTools.user = user;
 		DBTools.password = password;
@@ -65,7 +72,7 @@ public class DBTools
 	{
 		String connectionString, classForName;
 		classForName = "com.mysql.jdbc.Driver";		
-		connectionString = "jdbc:mysql://" + server + ":3306/" + dbName;
+		connectionString = String.format("jdbc:mysql://%s:%s/%s", server, port, dbName);
 		DBConnection.connectToDatabase(classForName, connectionString, user, password);
 	}
 

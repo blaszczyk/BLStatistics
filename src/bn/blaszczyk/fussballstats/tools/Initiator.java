@@ -43,7 +43,9 @@ public class Initiator {
 		initPrefs();		
 		
 		boolean databaseExists = false;
-		while(LeagueManager.isDbMode() && ! databaseExists)
+		boolean dbMode;
+		int triesLeft = 3;
+		while(dbMode = LeagueManager.isDbMode() && ! databaseExists)
 		{
 			try
 			{
@@ -55,38 +57,46 @@ public class Initiator {
 				progressDialog.appendException(e);
 				JOptionPane.showMessageDialog(progressDialog, e.getMessage(), "Keine Verbindung zur Datenbank", JOptionPane.ERROR_MESSAGE);
 			}
+			if(--triesLeft < 0)
+			{
+				progressDialog.setFinished();
+				return false;
+			}
 			if(!databaseExists)
 				new PrefsDialog(progressDialog).showDialog();
 		}
 		
 		try
 		{	
-			if (LeagueManager.isDbMode())
+			if(dbMode)
+				DBTools.openMySQLDatabase();
+			for (League league : leagues)
 			{
-				DBTools.openMySQLDatabase();		
-				for (League league : leagues)
+				if (!uniqueLeagueNames.contains(league.getName()))
 				{
-					
-					if (!uniqueLeagueNames.contains(league.getName()))
-					{
-						uniqueLeagueNames.add(league.getName());
-						progressDialog.appendInfo("\nLade Liga: " + league.getName());
-					}
-					if (DBTools.tableExists(league))
-						for (Season season : league)
-						{
-							progressDialog.incrementValue();
-							DBTools.loadSeason(season);
-						}
+					uniqueLeagueNames.add(league.getName());
+					progressDialog.appendInfo("\nLade Liga: " + league.getName());
 				}
-				
+				boolean leagueAvailable = dbMode ? DBTools.tableExists(league) : FileIO.folderExists(league);
+				if(leagueAvailable)
+					for (Season season : league)
+					{
+						progressDialog.incrementValue();
+						if(dbMode)
+							DBTools.loadSeason(season);
+						else
+							FileIO.loadSeason(season);
+					}
+				else
+				{
+					seasonCount -= league.getSeasonCount();
+					progressDialog.setMaxValue(seasonCount);
+				}
+			}		
+			if (dbMode)
+			{		
 				progressDialog.appendInfo("\nSchliesse Verbindung zu Datenbank");
 				DBConnection.closeConnection();
-			}
-			else
-			{
-				progressDialog.appendInfo("\nLade Ligen");
-				FileIO.loadLeagues(leagues);
 			}
 		}
 		catch (FussballException e)
@@ -119,19 +129,25 @@ public class Initiator {
 	private static List<League> initLeagues(List<League> leagues)
 	{
 		Scanner scanner = new Scanner(FussballStats.class.getResourceAsStream(LEAGUES_FILE));
+		boolean ignore = false;
 		while (scanner.hasNextLine())
 		{
 			String props[] = scanner.nextLine().split(";");
-			if (props[0].startsWith("/"))
+			if(props[0].contains("/*"))
+				ignore = true;
+			if(props[0].contains("*/"))
+				ignore = false;
+			if (props[0].startsWith("/") || props.length < 3)
 				continue;
-			if (props.length < 3)
-				break;
-			int[] yearBounds = new int[props.length - 3];
-			for (int i = 0; i < yearBounds.length; i++)
-				yearBounds[i] = Integer.parseInt(props[i + 3].trim());
-			
-			League league = new League(props[0].trim(), props[1].trim(), props[2].trim(), yearBounds);
-			leagues.add(league);
+			if(!ignore)
+			{
+				int[] yearBounds = new int[props.length - 3];
+				for (int i = 0; i < yearBounds.length; i++)
+					yearBounds[i] = Integer.parseInt(props[i + 3].trim());
+				
+				League league = new League(props[0].trim(), props[1].trim(), props[2].trim(), yearBounds);
+				leagues.add(league);
+			}
 		}
 		scanner.close();
 		return leagues;
@@ -211,7 +227,7 @@ public class Initiator {
 	
 	
 	/*
-	 * Writes Games from Harddisk to DB
+	 * Writes Games from Folder to DB
 	 */
 	
 //	public static void main(String[] args) throws FussballException

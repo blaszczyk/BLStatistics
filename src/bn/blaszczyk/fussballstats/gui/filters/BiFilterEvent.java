@@ -11,6 +11,7 @@ public class BiFilterEvent<T,U>
 	private int type;
 	private BiFilterPanel<T,U> source;
 	private BiFilter<T,U> filter;
+	private boolean filterModified = true;
 
 	public BiFilterEvent(BiFilterPanel<T,U> source, BiFilter<T,U> filter, int type)
 	{
@@ -42,5 +43,15 @@ public class BiFilterEvent<T,U>
 	public BiFilter<T,U> getFilter()
 	{
 		return filter;
+	}
+	
+	public void setFilterModified(boolean filterModified)
+	{
+		this.filterModified = filterModified;
+	}
+	
+	public boolean isFilterModified()
+	{
+		return filterModified;
 	}
 }

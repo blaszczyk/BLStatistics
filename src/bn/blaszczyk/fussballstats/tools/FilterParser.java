@@ -193,10 +193,10 @@ public class FilterParser
 		default:
 			System.err.println("Unbekannter Filter:" + in);
 		}
-		FilterMenuFactory.createPopupMenu(panel);
-		panel.setActive(Boolean.parseBoolean(split[1]));
-		filters.put(split[0], panel);
 		panel.getPanel().setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.setActive(Boolean.parseBoolean(split[1]));
+		FilterMenuFactory.createPopupMenu(panel);
+		filters.put(split[0], panel);
 		return panel;
 	}
 }

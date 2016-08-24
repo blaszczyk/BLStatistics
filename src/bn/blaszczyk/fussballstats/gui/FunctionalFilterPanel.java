@@ -1,9 +1,10 @@
 package bn.blaszczyk.fussballstats.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -33,10 +34,11 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	
 	public FunctionalFilterPanel(FilterLog filterLog)
 	{
-		super(new BorderLayout(5,5));
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setPreferredSize(new Dimension(300,700));		
-		
-		header.setPreferredSize(new Dimension(355, 50));
+
+		header.setMinimumSize(new Dimension(355, 50));
+		header.setMaximumSize(new Dimension(355, 50));
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
 		this.filterLog = filterLog;
@@ -95,7 +97,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		if(oldFilter != null)
 			oldFilter.removeFilterListener(this);
 		filterPanel.addFilterListener(this);
-		filterPanel.getPanel().setPreferredSize(new Dimension(300,1000));
+		filterPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
 		paint();
 		notifyLog();
 		if(listener != null)
@@ -106,8 +108,9 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	{
 		filterPanel.paint();
 		removeAll();
-		add(header, BorderLayout.NORTH);
-		add(filterPanel.getPanel(),BorderLayout.CENTER);
+		add(header);
+		add(Box.createVerticalStrut(30));
+		add(filterPanel.getPanel());
 		revalidate();
 	}
 	

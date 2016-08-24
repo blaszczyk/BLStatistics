@@ -56,6 +56,8 @@
 //  Berlin
 //
 	Regionalliga Berlin		;	regionalliga-berlin-1963-1974-%4d-%4d	;	regionalliga/berlin			;	1964;1974
+	
+	/*
 //
 //  Oberligen
 //
@@ -102,4 +104,4 @@
 //	
 	Oberliga NOFV Nord		;	oberliga-nofv-nord-%4d-%4d				;	oberliga/nofv/nord			;	1995
 	Oberliga NOFV Süd		;	oberliga-nofv-sued-%4d-%4d				;	oberliga/nofv/sued			;	1995
-	
+	*/

@@ -11,6 +11,7 @@ public class FilterEvent<T>
 	private int type;
 	private FilterPanel<T> source;
 	private Filter<T> filter;
+	private boolean filterModified = true;
 
 	public FilterEvent(FilterPanel<T> source, Filter<T> filter, int type)
 	{
@@ -42,5 +43,15 @@ public class FilterEvent<T>
 	public Filter<T> getFilter()
 	{
 		return filter;
+	}
+	
+	public void setFilterModified(boolean filterModified)
+	{
+		this.filterModified = filterModified;
+	}
+	
+	public boolean isFilterModified()
+	{
+		return filterModified;
 	}
 }

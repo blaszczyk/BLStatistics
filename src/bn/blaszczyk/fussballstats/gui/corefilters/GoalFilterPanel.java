@@ -18,7 +18,7 @@ public abstract class GoalFilterPanel
 	@SuppressWarnings("serial")
 	public static FilterPanel<Game> getGoalFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>(NAME_GOAL,operator,refInt)
+		return new IntegerValueFilterPanel<Game>(NAME_GOAL,operator,refInt,0,20)
 		{
 			@Override
 			protected Filter<Game> getFilter()
@@ -46,7 +46,7 @@ public abstract class GoalFilterPanel
 	@SuppressWarnings("serial")
 	public static FilterPanel<Game> getHomeGoalFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>(NAME_HOME_GOAL,operator,refInt)
+		return new IntegerValueFilterPanel<Game>(NAME_HOME_GOAL,operator,refInt,0,20)
 		{
 			@Override
 			protected Filter<Game> getFilter()
@@ -74,7 +74,7 @@ public abstract class GoalFilterPanel
 	@SuppressWarnings("serial")
 	public static FilterPanel<Game> getAwayGoalFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>(NAME_AWAY_GOAL,operator,refInt)
+		return new IntegerValueFilterPanel<Game>(NAME_AWAY_GOAL,operator,refInt,0,20)
 		{
 
 			@Override
@@ -103,7 +103,7 @@ public abstract class GoalFilterPanel
 	@SuppressWarnings("serial")
 	public static FilterPanel<Game> getGoalDiffFilterPanel(String operator, int refInt)
 	{
-		return new IntegerValueFilterPanel<Game>(NAME_GOAL_DIFF,operator,refInt)
+		return new IntegerValueFilterPanel<Game>(NAME_GOAL_DIFF,operator,refInt,-20,20)
 		{
 			@Override
 			protected Filter<Game> getFilter()

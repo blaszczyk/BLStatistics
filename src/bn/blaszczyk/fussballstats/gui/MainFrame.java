@@ -47,7 +47,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenuItem miNewFilter, miLoadFilter, miSaveFilter, miShowLeagueManager, miShowPreferences, miExit;
 	private JMenuItem miUndo, miRedo;
-	private JMenuItem miHelp;
+	private JMenuItem miInfo;
 	
 	private FunctionalFilterPanel functionalFilterPanel;
 	private FunctionalGameTable functionalGameTable = new FunctionalGameTable();
@@ -99,9 +99,9 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		resetTable();
 	}
 	
-	private void showHelp()
+	private void showInfo()
 	{
-		HelpDialog hd = new HelpDialog(this);
+		InfoDialog hd = new InfoDialog(this);
 		hd.showDialog();
 	}
 	
@@ -169,11 +169,11 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		miRedo.setEnabled(false);
 		
 
-		JMenu helpMenu = new JMenu("Hilfe");
-		helpMenu.setMnemonic('H');
-		menuBar.add(helpMenu);
+		JMenu infoMenu = new JMenu("Info");
+		infoMenu.setMnemonic('H');
+		menuBar.add(infoMenu);
 		
-		miHelp = createMenuItem(helpMenu, "Hilfe", 'H', KeyEvent.VK_H, HELP_ICON);
+		miInfo = createMenuItem(infoMenu, "Info", 'H', KeyEvent.VK_H, HELP_ICON);
 	}
 
 	private void resetTable()
@@ -199,7 +199,8 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	{
 		miUndo.setEnabled(filterLog.hasUndo());
 		miRedo.setEnabled(filterLog.hasRedo());
-		resetTable();
+		if(e.isFilterModified())
+			resetTable();
 	}
 
 	@Override
@@ -225,8 +226,8 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 			functionalFilterPanel.setFilterPanel(filterLog.undo());
 		else if(e.getSource() == miRedo)
 			functionalFilterPanel.setFilterPanel(filterLog.redo());
-		else if(e.getSource() == miHelp)
-			showHelp();
+		else if(e.getSource() == miInfo)
+			showInfo();
 		else if(e.getSource() == miExit)
 			exit();
 	}

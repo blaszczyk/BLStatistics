@@ -43,13 +43,14 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	protected void setFilter(BiFilter<T,U> filter)
 	{
 		this.filter = filter;
-		if(isActive())
-			notifyListeners(new BiFilterEvent<>(this,filter,BiFilterEvent.SET_FILTER ));
+		notifyListeners(new BiFilterEvent<>(this,filter,BiFilterEvent.SET_FILTER ));
 	}
 	
 
 	protected void notifyListeners(BiFilterEvent<T,U> e)
 	{
+		if(!isActive())
+			e.setFilterModified(false);
 		List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
 		for(BiFilterListener<T, U> listener : listeners)
 			copy.add(listener);

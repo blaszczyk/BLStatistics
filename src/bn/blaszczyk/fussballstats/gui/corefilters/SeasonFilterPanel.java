@@ -19,7 +19,7 @@ public class SeasonFilterPanel extends IntegerValueFilterPanel<Season>
 	
 	public SeasonFilterPanel( String operator, int refValue)
 	{
-		super(NAME,operator,refValue);
+		super(NAME,operator,refValue,1945,League.THIS_SEASON);
 	}
 
 

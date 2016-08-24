@@ -23,6 +23,7 @@ import bn.blaszczyk.fussballstats.tools.TeamAlias;
 public class PrefsDialog extends JDialog
 {
 	private static final String KEY_SERVER = "server";
+	private static final String KEY_PORT = "port";
 	private static final String KEY_DB_NAME = "db_name";
 	private static final String KEY_USER = "user";
 	private static final String KEY_PASSWORD = "password";
@@ -36,7 +37,7 @@ public class PrefsDialog extends JDialog
 	
 	private Window owner;
 	
-	private JTextField tfServer, tfDbName, tfUser, tfPassword;
+	private JTextField tfServer, tfPort, tfDbName, tfUser, tfPassword;
 	
 	private JRadioButton rbHardDrive = new JRadioButton();
 	private JRadioButton rbDataBase = new JRadioButton();
@@ -45,7 +46,7 @@ public class PrefsDialog extends JDialog
 	private JCheckBox chbLoadLastFilter = new JCheckBox();
 
 	private JButton btnSave = new JButton("Speichern");
-	private JButton btnClose = new JButton("Schließen");
+	private JButton btnDismiss = new JButton("Verwerfen");
 	
 	public PrefsDialog(Window owner)
 	{
@@ -54,7 +55,7 @@ public class PrefsDialog extends JDialog
 
 		setTitle("Einstellungen");
 		setLayout(null);
-		setSize(360, 410);
+		setSize(345, 433);
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE)));
@@ -64,7 +65,7 @@ public class PrefsDialog extends JDialog
 		add(label);
 		
 		addButtonRow(rbHardDrive,"Festplatte", !LeagueManager.isDbMode(),'F', 1, 150);
-		addButtonRow(rbDataBase,"Datenbank", LeagueManager.isDbMode(),'D', 2, 150);
+		addButtonRow(rbDataBase,"SQL Datenbank", LeagueManager.isDbMode(),'D', 2, 150);
 		
 		ButtonGroup bgDbMode = new ButtonGroup();
 		bgDbMode.add(rbHardDrive);
@@ -72,26 +73,27 @@ public class PrefsDialog extends JDialog
 
 		rbHardDrive.addItemListener( e -> setDbAccessDataEnabled(false));
 		rbDataBase.addItemListener( e -> setDbAccessDataEnabled(true));
-		
+
 		tfServer = createTextFieldRow("Server", DBTools.getServer(),'R',  3, false);
-		tfDbName = createTextFieldRow("Datenbank", DBTools.getDbName(),'T', 4, false);
-		tfUser = createTextFieldRow("Benutzer", DBTools.getUser(),'U', 5, false);
-		tfPassword = createTextFieldRow("Passwort", DBTools.getPassword(),'P', 6, true);
+		tfPort = createTextFieldRow("Port", DBTools.getPort(),'P',  4, false);
+		tfDbName = createTextFieldRow("Datenbank", DBTools.getDbName(),'T', 5, false);
+		tfUser = createTextFieldRow("Benutzer", DBTools.getUser(),'B', 6, false);
+		tfPassword = createTextFieldRow("Passwort", DBTools.getPassword(),'W', 7, true);
 		setDbAccessDataEnabled(LeagueManager.isDbMode());
 		
-		addButtonRow(chbAliases,"Vereinsumbenennungen beachten", TeamAlias.isUseAliases(), 'V',7, 350);
-		addButtonRow(chbLoadLastFilter,"Letzten Filter beim Start laden", FunctionalFilterPanel.isLoadLastFilter(),'L', 8, 300);
+		addButtonRow(chbAliases,"Vereinsumbenennungen beachten", TeamAlias.isUseAliases(), 'U',8, 350);
+		addButtonRow(chbLoadLastFilter,"Letzten Filter beim Start laden", FunctionalFilterPanel.isLoadLastFilter(),'L', 9, 300);
 		
 		btnSave.addActionListener(e -> save());
 		btnSave.setMnemonic('S');
-		btnSave.setBounds(10, 330, 150, 30);
+		btnSave.setBounds(10, 365, 150, 30);
 		
-		btnClose.addActionListener(e -> cancel());
-		btnClose.setMnemonic('C');
-		btnClose.setBounds(180, 330, 150, 30);
+		btnDismiss.addActionListener(e -> dispose());
+		btnDismiss.setMnemonic('V');
+		btnDismiss.setBounds(180, 365, 150, 30);
 		
 		add(btnSave);
-		add(btnClose);
+		add(btnDismiss);
 	}
 
 
@@ -105,12 +107,13 @@ public class PrefsDialog extends JDialog
 	{
 		if(PREFERENCES.get(KEY_DB_MODE, null) == null)
 			return false;
-		
+
 		String server = PREFERENCES.get(KEY_SERVER, "localhost");
+		String port = PREFERENCES.get(KEY_PORT, "3306");
 		String dbName = PREFERENCES.get(KEY_DB_NAME, "fussballspiele");
 		String user = PREFERENCES.get(KEY_USER, "root");
 		String password = PREFERENCES.get(KEY_PASSWORD, null);
-		DBTools.setAccessData(server, dbName, user, password);
+		DBTools.setAccessData(server, port, dbName, user, password);
 		
 		LeagueManager.setDbMode(PREFERENCES.getBoolean(KEY_DB_MODE, false));
 		TeamAlias.setUseAliases(PREFERENCES.getBoolean(KEY_USE_ALIASES, false));
@@ -148,6 +151,7 @@ public class PrefsDialog extends JDialog
 	private void setDbAccessDataEnabled(boolean enabled)
 	{
 		tfServer.setEnabled(enabled);
+		tfPort.setEnabled(enabled);
 		tfDbName.setEnabled(enabled);
 		tfUser.setEnabled(enabled);
 		tfPassword.setEnabled(enabled);
@@ -157,12 +161,13 @@ public class PrefsDialog extends JDialog
 	{
 		boolean dbMode = rbDataBase.isSelected();
 		LeagueManager.setDbMode(dbMode);
-		
+
 		String server = tfServer.getText();
+		String port = tfPort.getText();
 		String dbName = tfDbName.getText();
 		String user = tfUser.getText();
 		String password = tfPassword.getText();
-		DBTools.setAccessData(server, dbName, user, password);
+		DBTools.setAccessData(server, port, dbName, user, password);
 
 		boolean useAliases = chbAliases.isSelected();
 		TeamAlias.setUseAliases( useAliases );
@@ -172,17 +177,13 @@ public class PrefsDialog extends JDialog
 	
 		PREFERENCES.putBoolean(KEY_DB_MODE, dbMode);
 		PREFERENCES.put(KEY_SERVER, server);
+		PREFERENCES.put(KEY_PORT, port);
 		PREFERENCES.put(KEY_DB_NAME, dbName);
 		PREFERENCES.put(KEY_USER, user);
 		PREFERENCES.put(KEY_PASSWORD, password);
 		PREFERENCES.putBoolean(KEY_USE_ALIASES, useAliases);
 		PREFERENCES.putBoolean(KEY_SAVE_LAST_FILTER, saveLastFilter);
 
-		dispose();
-	}
-	
-	private void cancel()
-	{
 		dispose();
 	}
 
