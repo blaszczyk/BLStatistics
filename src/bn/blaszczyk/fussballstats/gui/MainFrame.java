@@ -70,7 +70,9 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		
 		populateMenuBar();
 		setJMenuBar(menuBar);
+		
 		initComponents();
+		
 		setIconImage( Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE) )  );
 		
 		addWindowListener(new WindowAdapter() {
@@ -188,10 +190,10 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		
 
 		JMenu infoMenu = new JMenu("Info");
-		infoMenu.setMnemonic('H');
+		infoMenu.setMnemonic('I');
 		menuBar.add(infoMenu);
 		
-		miInfo = createMenuItem(infoMenu, "Info", 'H', KeyEvent.VK_H, HELP_ICON);
+		miInfo = createMenuItem(infoMenu, "Info", 'I', KeyEvent.VK_H, HELP_ICON);
 	}
 
 	/*
@@ -230,7 +232,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	{
 		if(e.getSource() == miNewFilter)
 			functionalFilterPanel.newFilter();
-		if(e.getSource() == miLoadFilter)
+		else if(e.getSource() == miLoadFilter)
 			functionalFilterPanel.loadFilter();
 		else if(e.getSource() == miSaveFilter)
 			functionalFilterPanel.saveFilter();

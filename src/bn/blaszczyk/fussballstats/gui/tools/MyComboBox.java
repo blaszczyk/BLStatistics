@@ -23,6 +23,7 @@ import javax.swing.UIManager;
 public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, KeyListener, FocusListener
 {
 
+
 	/*
 	 * Variables
 	 */

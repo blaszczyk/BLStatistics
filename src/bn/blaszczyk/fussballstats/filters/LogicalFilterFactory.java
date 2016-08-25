@@ -32,7 +32,7 @@ public class LogicalFilterFactory
 	/*
 	 * AND
 	 */
-	public static <T> Filter<T> createANDFilter(Iterable<Filter<T>> filters)
+	public static <T,V extends Filter<T>> Filter<T> createANDFilter(Iterable<V> filters)
 	{
 		Filter<T> f = t ->
 		{
@@ -47,7 +47,7 @@ public class LogicalFilterFactory
 	/*
 	 * OR
 	 */
-	public static <T> Filter<T> createORFilter(Iterable<Filter<T>> filters)
+	public static <T,V extends Filter<T>> Filter<T> createORFilter(Iterable<V> filters)
 	{
 		Filter<T> f = t ->
 		{

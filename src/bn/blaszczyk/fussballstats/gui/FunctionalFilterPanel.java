@@ -138,6 +138,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		add(Box.createVerticalStrut(30));
 		add(filterPanel.getPanel());
 		revalidate();
+		repaint();
 	}
 	
 	private void notifyLog()
@@ -157,7 +158,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 			setFilterPanel(e.getNewPanel());
 			return;
 		}
-		filterPanel.paint();
+		paint();
 		notifyLog();
 		if(listener != null)
 			listener.filter(e);
