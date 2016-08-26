@@ -22,7 +22,7 @@ public class FilterListenerAdapterFactory
 	 */
 	private static class FirstArgAdapter<T,U> implements FilterListener<T>
 	{
-		BiFilterListener<T,U> listener;
+		private final BiFilterListener<T,U> listener;
 		public FirstArgAdapter( BiFilterListener<T,U> listener)
 		{
 			this.listener = listener;
@@ -44,16 +44,26 @@ public class FilterListenerAdapterFactory
 				break;
 			}
 		}
+		
+		@Override
+		public boolean equals(Object obj)
+		{
+			if(obj == null)
+				return false;
+			if(obj == this)
+				return true;
+			return obj instanceof FirstArgAdapter && ((FirstArgAdapter<?,?>)obj).listener.equals(listener);
+		}
 	}
 	
 	private static class SecondArgAdapter<T,U> implements FilterListener<U>
 	{
-		BiFilterListener<T,U> listener;
+		private final BiFilterListener<T,U> listener;
+		
 		public SecondArgAdapter( BiFilterListener<T,U> listener)
 		{
 			this.listener = listener;
 		}
-
 
 		@Override
 		public void filter(FilterEvent<U> e)
@@ -70,6 +80,16 @@ public class FilterListenerAdapterFactory
 						FilterAdapterFaytory.createSecondArgAdapter(e.getFilter()), e.getType()));
 				break;
 			}
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if(obj == null)
+				return false;
+			if(obj == this)
+				return true;
+			return obj instanceof SecondArgAdapter && ((SecondArgAdapter<?,?>)obj).listener.equals(listener);
 		}
 	}
 

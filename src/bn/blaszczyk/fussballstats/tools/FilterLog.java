@@ -13,7 +13,7 @@ public class FilterLog
 	/*
 	 * Variables
 	 */
-	private List<String> logFilter = new ArrayList<>();
+	private final List<String> logFilter = new ArrayList<>();
 	
 	private String currentFilterString;
 	private int currentFilterIndex = 0;

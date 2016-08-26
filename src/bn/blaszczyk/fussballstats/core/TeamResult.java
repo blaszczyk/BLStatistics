@@ -18,7 +18,7 @@ public class TeamResult
 	/*
 	 * Variables
 	 */
-	private String team;
+	private final String team;
 	private int points=0;
 	private int games=0;
 	private int wins=0;

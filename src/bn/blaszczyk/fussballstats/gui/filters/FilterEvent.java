@@ -14,9 +14,9 @@ public class FilterEvent<T>
 	/*
 	 * Variables
 	 */
-	private int type;
-	private FilterPanel<T> source;
-	private Filter<T> filter;
+	private final int type;
+	private final FilterPanel<T> source;
+	private final Filter<T> filter;
 	private boolean filterModified = true;
 
 	/*

@@ -9,9 +9,9 @@ public class Season implements Iterable<Game>
 	/*
 	 * Variables
 	 */
-	private int year;
-	private League league; 
-	private List<String> teams = new ArrayList<>();
+	private final int year;
+	private final League league; 
+	private final List<String> teams = new ArrayList<>();
 	private List<Game> games = new ArrayList<>();
 	private int matchDayMin = 0;
 	private int matchDayMax = -1;

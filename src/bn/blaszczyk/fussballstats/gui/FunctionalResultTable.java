@@ -26,15 +26,15 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	 * Components
 	 */
 
-	private JLabel header = new JLabel("Tabelle", SwingConstants.CENTER);
+	private final JLabel header = new JLabel("Tabelle", SwingConstants.CENTER);
 	
-	private JCheckBox chbHome = new JCheckBox("Heimspiele",true);
-	private JCheckBox chbAway = new JCheckBox("Auswärtsspiele",true);
-	private JLabel lblWinPoints = new JLabel("Punkte pro Sieg:",SwingConstants.RIGHT);
-	private JComboBox<Integer> boxWinPoints = new MyComboBox<>(POINTS_FOR_WIN_OPTIONS,70,false);
-	private JCheckBox chbWeighted = new JCheckBox("Nach Spielen gewichtet",false);
+	private final JCheckBox chbHome = new JCheckBox("Heimspiele",true);
+	private final JCheckBox chbAway = new JCheckBox("Auswärtsspiele",true);
+	private final JLabel lblWinPoints = new JLabel("Punkte pro Sieg:",SwingConstants.RIGHT);
+	private final JComboBox<Integer> boxWinPoints = new MyComboBox<>(POINTS_FOR_WIN_OPTIONS,70,false);
+	private final JCheckBox chbWeighted = new JCheckBox("Nach Spielen gewichtet",false);
 
-	private ResultTable resultTable = new ResultTable();	
+	private final ResultTable resultTable = new ResultTable();	
 	
 	private Iterable<Game> games;
 	private BiFilter<TeamResult, Game> filter = null;

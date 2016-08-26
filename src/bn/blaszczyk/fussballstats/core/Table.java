@@ -9,8 +9,8 @@ public class Table implements Iterable<TeamResult>
 	/*
 	 * Variables
 	 */
-	private List<TeamResult> teamResults = new ArrayList<>();
-	private int pointsForWin = 3;
+	private final List<TeamResult> teamResults = new ArrayList<>();
+	private final int pointsForWin;
 
 	/*
 	 * Constructors

@@ -34,12 +34,12 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	
 	private Filter<T> filter = LogicalFilterFactory.createTRUEFilter();
 	
-	private List<FilterListener<T>> listeners = new ArrayList<>();
+	private final List<FilterListener<T>> listeners = new ArrayList<>();
 
 	/*
 	 * For Subclasses to use for its Components
 	 */
-	protected ActionListener setFilterListener = e ->
+	protected final ActionListener setFilterListener = e ->
 	{
 		setFilter();
 		if(e.getSource() instanceof JComponent)

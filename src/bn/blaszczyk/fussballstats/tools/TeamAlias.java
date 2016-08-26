@@ -15,7 +15,7 @@ public class TeamAlias
 	/*
 	 * Variables
 	 */
-	private static Map<String,String> aliasMap = new HashMap<>();
+	private static final Map<String,String> ALIAS_MAP = new HashMap<>();
 	private static boolean useAliases;
 	
 	/*
@@ -29,7 +29,7 @@ public class TeamAlias
 			String team[] = scanner.nextLine().split(";");
 			if(team[0].startsWith("/") || team.length < 2)
 				continue;
-			aliasMap.put(team[0].trim(), team[1].trim());
+			ALIAS_MAP.put(team[0].trim(), team[1].trim());
 		}
 		scanner.close();
 	}
@@ -39,8 +39,8 @@ public class TeamAlias
 	 */
 	public static String getAlias(String team)
 	{
-		if(useAliases && aliasMap.containsKey(team))
-			return aliasMap.get(team);
+		if(useAliases && ALIAS_MAP.containsKey(team))
+			return ALIAS_MAP.get(team);
 		return team;
 	}
 

@@ -20,7 +20,7 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	/*
 	 * Components
 	 */
-	private JLabel label = new JLabel("NOT");
+	private final JLabel label = new JLabel("NOT");
 	private BiFilterPanel<T,U> innerPanel;
 	
 	/*
@@ -47,13 +47,13 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	 */
 	private void setInnerPanel(BiFilterPanel<T,U> innerPanel)
 	{
+		if(this.innerPanel != null)
+			this.innerPanel.removeFilterListener(this);
 		if(innerPanel instanceof UnaryOperatorFilterPanel)
 		{
 			replaceMe(((UnaryOperatorFilterPanel<T, U>)innerPanel).getInnerPanel());
 			return;
 		}
-		if(this.innerPanel != null)
-			this.innerPanel.removeFilterListener(this);
 		innerPanel.addFilterListener(this);
 		innerPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
 		this.innerPanel = innerPanel;

@@ -17,7 +17,7 @@ public class GameTable extends MyTable<Game>
 	/*
 	 * Variables
 	 */
-	private List<String> selectedTeams;
+	private List<String> selectedTeams = new ArrayList<>();
 	
 	/*
 	 * Constructor
@@ -37,7 +37,6 @@ public class GameTable extends MyTable<Game>
 		if(selectedIndex < 0)
 			return selectedTeams;
 		int modelSelectedIndex = sorter.convertRowIndexToModel(selectedIndex);
-		selectedTeams = new ArrayList<>();
 		selectedTeams.add( (String)getModel().getValueAt(modelSelectedIndex, 1) );
 		selectedTeams.add( (String)getModel().getValueAt(modelSelectedIndex, 5) );
 		return selectedTeams;

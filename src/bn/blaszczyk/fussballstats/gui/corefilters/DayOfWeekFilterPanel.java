@@ -20,7 +20,7 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 	/*
 	 * Components
 	 */
-	private JComboBox<String> boxDayOfWeek;
+	private final JComboBox<String> boxDayOfWeek = new MyComboBox<>(DAYS_OF_WEEK,250,false);;
 	
 	/*
 	 * Constructors
@@ -29,7 +29,6 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 	{
 		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-		boxDayOfWeek = new MyComboBox<>(DAYS_OF_WEEK,250,false);
 		boxDayOfWeek.addActionListener(setFilterListener);
 		setFilter();
 	}

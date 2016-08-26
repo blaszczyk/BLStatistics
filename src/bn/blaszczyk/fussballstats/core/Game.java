@@ -19,12 +19,12 @@ public class Game
 	/*
 	 * Variables
 	 */
-	private int matchDay;
-	private Date date;
-	private String teamH;
-	private String teamA;
-	private int goalsH;
-	private int goalsA;
+	private final int matchDay;
+	private final Date date;
+	private final String teamH;
+	private final String teamA;
+	private final int goalsH;
+	private final int goalsA;
 	
 	/*
 	 * Constructors

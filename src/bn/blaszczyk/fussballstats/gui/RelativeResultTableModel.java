@@ -11,7 +11,7 @@ import bn.blaszczyk.fussballstats.core.TeamResult;
 public class RelativeResultTableModel implements TableModel
 {
 
-	private List<TeamResult> results;
+	private final List<TeamResult> results;
 	
 	public RelativeResultTableModel(List<TeamResult> results)
 	{

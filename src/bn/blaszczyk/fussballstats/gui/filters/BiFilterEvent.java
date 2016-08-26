@@ -14,9 +14,9 @@ public class BiFilterEvent<T,U>
 	/*
 	 * Variables
 	 */
-	private int type;
-	private BiFilterPanel<T,U> source;
-	private BiFilter<T,U> filter;
+	private final int type;
+	private final BiFilterPanel<T,U> source;
+	private final BiFilter<T,U> filter;
 	private boolean filterModified = true;
 
 	/*

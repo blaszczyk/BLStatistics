@@ -33,13 +33,13 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	/*
 	 * Components
 	 */
-	private JComboBox<String> boxOperator;
-	private List<BiFilterPanel<T,U>> panels = new ArrayList<>();
+	private final JComboBox<String> boxOperator = new MyComboBox<>(OPERATORS,80,false);;
+	private final List<BiFilterPanel<T,U>> panels = new ArrayList<>();
 	
 	/*
 	 * Menu
 	 */
-	private JMenu menuRemoveFilter = new JMenu("Filter Entfernen");
+	private final JMenu menuRemoveFilter = new JMenu("Filter Entfernen");
 
 	/*
 	 * Constructor
@@ -51,7 +51,6 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 			this.panels.add(panel);
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 	
-		boxOperator = new MyComboBox<>(OPERATORS,80,false);
 		boxOperator.setAlignmentX(LEFT_ALIGNMENT);
 		boxOperator.addActionListener(setFilterListener);
 		boxOperator.setSelectedItem(operator);
@@ -163,9 +162,11 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	{
 		notifyListeners(e);
 		if(e.getType() == BiFilterEvent.SET_PANEL)
+		{
 			for(int i = 0; i < panels.size(); i++)
 				if(panels.get(i).equals(e.getSource()))
 					replacePanel(i, e.getNewPanel());
+		}
 		else
 			setDeleteMenu();
 	}

@@ -30,7 +30,7 @@ public class WeltFussballRequest
 	private int matchDay;
 	private Date date;
 
-	private WebClient webClient = new WebClient();
+	private final WebClient webClient = new WebClient();
 	private HtmlTableBody tableBody;
 	
 	/*

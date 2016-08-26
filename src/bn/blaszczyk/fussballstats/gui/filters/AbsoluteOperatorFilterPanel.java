@@ -16,7 +16,7 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 	/*
 	 * Components
 	 */
-	private JLabel label = new JLabel();
+	private final JLabel label = new JLabel();
 	
 	/*
 	 * Constructor

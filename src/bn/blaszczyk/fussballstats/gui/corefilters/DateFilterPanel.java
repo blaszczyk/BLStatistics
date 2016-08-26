@@ -34,18 +34,18 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 		{"Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"};
 
 	/*
-	 * Components
-	 */
-	private JLabel label = new JLabel(NAME);
-	private JComboBox<String> boxOperator = new MyComboBox<>(OPERATORS,50,false);
-	private MyComboBox<Integer> boxDate;
-	private MyComboBox<String> boxMonth;
-	private MyComboBox<Integer> boxYear;
-
-	/*
 	 * To deal with Dates
 	 */
-	private Calendar calendar = new GregorianCalendar();
+	private final Calendar calendar = new GregorianCalendar();
+	
+	/*
+	 * Components
+	 */
+	private final JLabel label = new JLabel(NAME);
+	private final JComboBox<String> boxOperator = new MyComboBox<>(OPERATORS,50,false);
+	private final MyComboBox<Integer> boxDate = new MyComboBox<>( intSequence( 1, getNrOfDays(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH) ) ),50,false );
+	private final MyComboBox<String> 	boxMonth =  new MyComboBox<>(MONTH_NAMES,150,false);
+	private final MyComboBox<Integer> boxYear = new MyComboBox<>( intSequence( League.THIS_SEASON, 1945 ),80,false );
 	
 	/*
 	 * Fills boxDate according to Month and Year
@@ -82,14 +82,11 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 		
 		boxOperator.addActionListener(setFilterListener);
 
-		boxYear = new MyComboBox<>( intSequence( League.THIS_SEASON, 1963 ),80,false );
 		boxYear.addActionListener(refreshDateBox);
 		
-		boxMonth =  new MyComboBox<>(MONTH_NAMES,150,false);
 		boxMonth.addActionListener(refreshDateBox);
 		boxMonth.setCycleListener(e -> boxYear.moveSelection(e.getDirection()));
 		
-		boxDate = new MyComboBox<>( intSequence( 1, getNrOfDays(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH) ) ),50,false );
 		boxDate.addActionListener(setFilterListener);
 		boxDate.setCycleListener(e -> boxMonth.moveSelection(-e.getDirection()));
 		

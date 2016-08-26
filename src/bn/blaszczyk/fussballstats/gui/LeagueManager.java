@@ -44,12 +44,12 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	/*
 	 * Components
 	 */
-	private JList<LeagueItem>	listLeagues;
-	private JTable				tableSeasons;
+	private final JList<LeagueItem>	listLeagues;
+	private final JTable tableSeasons;
 	
-	private JButton				btnClose			= new JButton("Schlieﬂen");
-	private JButton				btnUpdate			= new JButton("Aktualisieren");
-	private JButton				btnSeasonRequest	= new JButton("Download");
+	private final JButton btnClose = new JButton("Schlieﬂen");
+	private final JButton btnUpdate = new JButton("Aktualisieren");
+	private final JButton btnSeasonRequest = new JButton("Download");
 	
 
 	/*

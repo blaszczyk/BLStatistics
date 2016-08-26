@@ -10,7 +10,7 @@ import bn.blaszczyk.fussballstats.core.Game;
 
 public class GameTableModel implements TableModel
 {	
-	private List<Game> games;
+	private final List<Game> games;
 	
 	public GameTableModel(List<Game> games)
 	{

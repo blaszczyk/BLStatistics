@@ -27,8 +27,8 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 	/*
 	 * Components
 	 */
-	private JComboBox<String> boxLeagues;
-	private JCheckBox chbContains = new JCheckBox("Alle",true);
+	private final JComboBox<String> boxLeagues = new MyComboBox<>(LEAGUE_LIST,250,false);
+	private final JCheckBox chbContains = new JCheckBox("Alle",true);
 
 	/*
 	 * Constructors
@@ -43,7 +43,6 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		boxLeagues = new MyComboBox<>(LEAGUE_LIST,250,false);
 		boxLeagues.addActionListener(setFilterListener);
 
 		chbContains.setMinimumSize(new Dimension(60, 30));

@@ -22,7 +22,7 @@ import bn.blaszczyk.fussballstats.gui.tools.ProgressDialog;
 
 public class Initiator {
 	/*
-	 * Constatns
+	 * Constants
 	 */
 	private static final String	LEAGUES_FILE	= "data/leagues.dat";
 	private static final String	ICON_FILE		= "data/icon.png";
@@ -40,8 +40,9 @@ public class Initiator {
 		List<String> uniqueLeagueNames = new ArrayList<>();
 
 		initUIManager();
-		
+		TeamAlias.loadAliases();		
 		initLeagues(leagues);
+		
 		int seasonCount = 0;
 		for (League league : leagues)
 			seasonCount += league.getSeasonCount();
@@ -115,14 +116,11 @@ public class Initiator {
 			progressDialog.setFinished();
 			return false;
 		}
-		
-		progressDialog.appendInfo("\nInitialisiere TeamAlias");
-		TeamAlias.loadAliases();
 				
-		progressDialog.appendInfo("\nLade Listen");
+		progressDialog.appendInfo("\nErstelle Listen");
 		if(!initLists(leagues))
 		{
-			int reply = JOptionPane.showConfirmDialog(progressDialog, "Liga Manager öffnen?", 
+			int reply = JOptionPane.showConfirmDialog(progressDialog, "Liga Manager öffnen und Spiele Downloaden?", 
 					"Keine Spiele vorhanden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if(reply == JOptionPane.YES_OPTION)
 			{
