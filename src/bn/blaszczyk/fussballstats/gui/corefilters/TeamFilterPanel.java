@@ -49,12 +49,14 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 		
 		chbHome = new JCheckBox("H",true);
 		chbHome.setInheritsPopupMenu(true);
+		chbHome.setOpaque(false);
 		chbHome.addActionListener(setFilterListener);
 		chbHome.setMaximumSize(new Dimension(50,30));
 		chbHome.setMinimumSize(new Dimension(50,30));
 		
 		chbAway = new JCheckBox("A",true);
 		chbAway.setInheritsPopupMenu(true);
+		chbAway.setOpaque(false);
 		chbAway.addActionListener(setFilterListener);
 		chbAway.setMaximumSize(new Dimension(50,30));
 		chbAway.setMinimumSize(new Dimension(50,30));

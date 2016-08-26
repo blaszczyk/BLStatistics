@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
@@ -173,6 +174,8 @@ public class Initiator {
 		Font plainFont = new Font("Arial", Font.PLAIN, 16);
 		Font boldFont = new Font("Arial", Font.BOLD, 16);
 		Font tableFont = new Font("Arial", Font.PLAIN, 14);
+
+		Locale.setDefault(Locale.GERMAN);
 		
 		UIManager.put("Table.font", tableFont);
 		

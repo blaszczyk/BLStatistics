@@ -1,5 +1,7 @@
 package bn.blaszczyk.fussballstats.gui.filters;
 
+import java.awt.Color;
+
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
@@ -12,6 +14,8 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	 * Constants
 	 */
 	public static final String NAME = "UnaryOperator";
+
+	public static final Color ACTIVE_BG = new Color(255,200,200);
 
 	/*
 	 * Components
@@ -89,6 +93,12 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 				setInnerPanel(e.getNewPanel());
 	}
 
+	@Override
+	protected Color getActiveBG()
+	{
+		return ACTIVE_BG;
+	}
+	
 	/*
 	 * Object Methods
 	 */

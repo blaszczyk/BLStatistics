@@ -112,6 +112,7 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		getTableHeader().setFont(HEADER_FONT);
 		setRowSorter(sorter);
+		
 		setRowHeight(ODD_FONT.getSize() + 10);
 		addKeyListener(this);
 	}

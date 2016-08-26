@@ -55,10 +55,19 @@ public class FunctionalGameTable extends JPanel
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
 		pnlSummary.setLayout(null);
+		pnlSummary.setOpaque(false);
 		pnlSummary.setPreferredSize(new Dimension(350 , 7 * ROW_HEIGHT + ROW_BORDER));
 				
+		setOpaque(false);
+		
+		gameTable.setOpaque(false);
+		
+		JScrollPane scrollPane = new JScrollPane(gameTable);
+		scrollPane.setOpaque(false);
+		scrollPane.getViewport().setOpaque(false);
+		
 		add(pnlSummary, BorderLayout.NORTH);
-		add( new JScrollPane(gameTable), BorderLayout.CENTER);
+		add(scrollPane,BorderLayout.CENTER);
 	}
 	
 	/*

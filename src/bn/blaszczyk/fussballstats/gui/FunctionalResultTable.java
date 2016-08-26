@@ -50,9 +50,11 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		header.setFont(new Font("Arial", Font.BOLD, 28));
 		
 		chbHome.setBounds(10, 60, 150, 30);
+		chbHome.setOpaque(false);
 		chbHome.addItemListener(this);
 		
 		chbAway.setBounds(160, 60, 150, 30);
+		chbAway.setOpaque(false);
 		chbAway.addItemListener(this);
 		
 		lblWinPoints.setBounds(370, 60, 150, 30);
@@ -62,9 +64,11 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		boxWinPoints.addItemListener(this);
 		
 		chbWeighted.setBounds(650,60,250,30);
+		chbWeighted.setOpaque(false);
 		chbWeighted.addItemListener(this);
 		
 		JPanel optionsPanel = new JPanel();
+		optionsPanel.setOpaque(false);
 		optionsPanel.setLayout(null);
 		optionsPanel.setPreferredSize(new Dimension(1000, 100));
 		optionsPanel.add(header);
@@ -74,8 +78,13 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 		optionsPanel.add(boxWinPoints);
 		optionsPanel.add(chbWeighted);
 		
+		JScrollPane scrollPane = new JScrollPane(resultTable);
+		scrollPane.setOpaque(false);
+		scrollPane.getViewport().setOpaque(false);
+
+		setOpaque(false);
 		add(optionsPanel,BorderLayout.NORTH);
-		add(new JScrollPane(resultTable),BorderLayout.CENTER);
+		add(scrollPane,BorderLayout.CENTER);
 	}
 	
 	/*

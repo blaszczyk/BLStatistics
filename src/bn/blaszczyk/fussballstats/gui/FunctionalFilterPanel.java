@@ -49,6 +49,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	{
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setPreferredSize(new Dimension(300,700));		
+		setOpaque(false);
 
 		header.setMinimumSize(new Dimension(355, 50));
 		header.setMaximumSize(new Dimension(355, 50));

@@ -7,7 +7,9 @@ import java.awt.Window;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 
 import bn.blaszczyk.fussballstats.FussballStats;
@@ -25,10 +27,10 @@ public class InfoDialog extends JDialog
 	private static final Font FONT = new Font("Arial",Font.PLAIN,14);
 	
 	private static final JLabel title = new JLabel("FussballStats", new ImageIcon(FussballStats.class.getResource(LOGO_FILE)),SwingConstants.CENTER);
-	private static final String info1 = "Entwickelt von: Michael Blaszczyk (michael.i.blaszczyk@gmail.com)";
-	private static final String info2 = "Mit Unterstützung von: alfatraining (www.alfatraining.de)" ;
-	private static final String info3 = "Fussballdaten bezogen von: www.weltfussball.de";
-	private static final String info4 = "Icons von: www.iconfinder.com";
+	private static final String info1 = "<html>von Michael Blaszczyk (<font color=\"blue\">michael.i.blaszczyk@gmail.com</font>)";
+	private static final String info2 = "<html>Mit Unterstützung von: alfatraining (<font color=\"blue\">www.alfatraining.de</font>)" ;
+	private static final String info3 = "<html>Fussballdaten von: <font color=\"blue\">www.weltfussball.de</font>";
+	private static final String info4 = "<html>Icons von: <font color=\"blue\">www.iconfinder.com</font>";
 	
 	private static final String[] infos = {info1,info2,info3,info4};
 	
@@ -56,10 +58,10 @@ public class InfoDialog extends JDialog
 		title.setFont(TITLEFONT);
 		add(title);
 		
+		
 		for(int i = 0; i < infos.length; i++)
 		{
-			JLabel label = new JLabel(infos[i]);
-			label.setFont(FONT);
+			JTextPane  label = new CopyableLabel(infos[i]);
 			label.setBounds(10, 100 + 30 * i, 450, 30);
 			add(label);
 		}
@@ -80,4 +82,18 @@ public class InfoDialog extends JDialog
 		setVisible(true);
 	}
 
+	/*
+	 * Inner Classes
+	 */
+	private static class CopyableLabel extends JTextPane {
+
+	    public CopyableLabel(String text) {
+	        setContentType("text/html");
+	        setFont(FONT);
+	        setEditable(false);
+	        setOpaque(false);
+	        putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
+	        setText(text);
+	    }
+	}
 }

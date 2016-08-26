@@ -1,5 +1,7 @@
 package bn.blaszczyk.fussballstats.gui.filters;
 
+import java.awt.Color;
+
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
@@ -12,7 +14,8 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	 * Constants
 	 */
 	public static final String NAME = "IfThenElse";
-	
+
+	private static final Color ACTIVE_BG = new Color(255,255,220);
 	/*
 	 * Components
 	 */
@@ -121,6 +124,12 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 		super.paint();
 	}
 
+	@Override
+	protected Color getActiveBG()
+	{
+		return ACTIVE_BG;
+	}
+	
 	/*
 	 * BiFilterListener Methods
 	 */

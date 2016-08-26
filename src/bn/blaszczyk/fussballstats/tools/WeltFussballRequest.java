@@ -69,8 +69,6 @@ public class WeltFussballRequest
 		}
 		catch (FailingHttpStatusCodeException | IOException | NullPointerException | ClassCastException e)
 		{
-			System.out.println(url);
-			e.printStackTrace();
 			throw new FussballException("Fehler beim Download von Saison " + season,e);
 		}
 	}

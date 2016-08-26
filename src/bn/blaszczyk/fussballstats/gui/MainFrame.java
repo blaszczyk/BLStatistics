@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.gui;
 
+import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -104,8 +105,10 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		
 		JSplitPane spInner = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalResultTable, functionalGameTable);
 		spInner.setDividerLocation(940);
+		spInner.setOpaque(false);
 		JSplitPane spOuter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalFilterPanel, spInner );
 		spOuter.setDividerLocation(355);
+		spOuter.setBackground(new Color(227,255,227));
 		add(spOuter);
 	}
 	
@@ -193,7 +196,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		infoMenu.setMnemonic('I');
 		menuBar.add(infoMenu);
 		
-		miInfo = createMenuItem(infoMenu, "Info", 'I', KeyEvent.VK_H, HELP_ICON);
+		miInfo = createMenuItem(infoMenu, "Info", 'I', KeyEvent.VK_I, HELP_ICON);
 	}
 
 	/*
@@ -219,7 +222,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	{
 		miUndo.setEnabled(filterLog.hasUndo());
 		miRedo.setEnabled(filterLog.hasRedo());
-		if(e.isFilterModified())
+		if(e.isFilterModified() || e.getType() == BiFilterEvent.SET_ACTIVE)
 			resetGameList();
 	}
 

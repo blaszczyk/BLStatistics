@@ -49,6 +49,7 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 		chbContains.setMinimumSize(new Dimension(60, 30));
 		chbContains.setMinimumSize(new Dimension(60, 30));
 		chbContains.setInheritsPopupMenu(true);
+		chbContains.setOpaque(false);
 		chbContains.addActionListener(setFilterListener);
 		
 		boxLeagues.setSelectedItem(league);

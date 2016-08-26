@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.gui.filters;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.Box;
@@ -14,6 +15,8 @@ public class NoFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>
 	 * Constants
 	 */
 	public static final String NAME = "NoFilter";
+	
+	private static final Color ACTIVE_BG = new Color(246,246,246);
 	
 	/*
 	 * Constructor
@@ -38,6 +41,12 @@ public class NoFilterPanel<T,U> extends AbstractBiFilterPanel<T, U>
 	@Override
 	protected void setFilter()
 	{
+	}
+	
+	@Override
+	protected Color getActiveBG()
+	{
+		return ACTIVE_BG;
 	}
 
 	/*

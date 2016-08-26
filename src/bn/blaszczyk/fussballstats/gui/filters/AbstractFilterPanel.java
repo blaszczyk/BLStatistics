@@ -1,6 +1,7 @@
 package bn.blaszczyk.fussballstats.gui.filters;
 
 
+import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,10 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	 */
 	public static final Border ACTIVE_BORDER = new BevelBorder(BevelBorder.LOWERED);
 	public static final Border INACTIVE_BORDER = new BevelBorder(BevelBorder.RAISED);
-	
 
+	public static final Color ACTIVE_BG = new Color(220,220,255);
+	public static final Color INACTIVE_BG = new Color(220,220,220);
+	
 	/*
 	 * Variables
 	 */
@@ -49,6 +52,7 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 	public AbstractFilterPanel(boolean varComponents)
 	{
 		this.varComponents = varComponents;
+		setBackground(ACTIVE_BG);
 		setActive(true);
 	}
 
@@ -92,11 +96,13 @@ public abstract class AbstractFilterPanel<T> extends JPanel implements FilterPan
 		if(active)
 		{
 			setBorder(ACTIVE_BORDER);
+			setBackground(ACTIVE_BG);
 			this.active = true;
 		}
 		else
 		{
 			setBorder(INACTIVE_BORDER);
+			setBackground(INACTIVE_BG);
 			this.active = false;
 		}
 		notifyListeners(new FilterEvent<T>(this,filter,FilterEvent.SET_ACTIVE));

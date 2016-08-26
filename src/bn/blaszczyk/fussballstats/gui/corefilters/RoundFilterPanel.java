@@ -37,8 +37,10 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		boxFirst.addActionListener(setFilterListener);
 		boxFirst.setInheritsPopupMenu(true);
+		boxFirst.setOpaque(false);
 		boxSecond.addActionListener(setFilterListener);
 		boxSecond.setInheritsPopupMenu(true);
+		boxSecond.setOpaque(false);
 		
 		boxFirst.setSelected(firstRound);
 		boxSecond.setSelected(secondRound);

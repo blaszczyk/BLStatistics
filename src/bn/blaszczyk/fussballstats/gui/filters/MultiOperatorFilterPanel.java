@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.gui.filters;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,8 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	 * Constants
 	 */
 	public static final String NAME = "MultiOperator";
+
+	private static final Color ACTIVE_BG = new Color(255,230,255);
 	
 	public static final String AND = "AND";
 	public static final String OR = "OR";
@@ -165,6 +168,12 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 					replacePanel(i, e.getNewPanel());
 		else
 			setDeleteMenu();
+	}
+
+	@Override
+	protected Color getActiveBG()
+	{
+		return ACTIVE_BG;
 	}
 	
 	/*

@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.gui.filters;
 
+import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	{
 		this.varComponents = varComponents;
 		setBorder(AbstractFilterPanel.ACTIVE_BORDER);
+		setBackground(getActiveBG());
 		setAlignmentX(LEFT_ALIGNMENT);
 	}
 
@@ -74,6 +76,10 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 //			listener.filter(e);
 	}	
 	
+	protected Color getActiveBG()
+	{
+		return AbstractFilterPanel.ACTIVE_BG;
+	}
 	
 	/*
 	 * BiFilterPanel Methods
@@ -84,16 +90,18 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 		if(active)
 		{
 			setBorder(AbstractFilterPanel.ACTIVE_BORDER);
+			setBackground(getActiveBG());
 			this.active = true;
 		}
 		else
 		{
 			setBorder(AbstractFilterPanel.INACTIVE_BORDER);
+			setBackground(AbstractFilterPanel.INACTIVE_BG);
 			this.active = false;
 		}
 		notifyListeners(new BiFilterEvent<T, U>(this,filter,BiFilterEvent.SET_ACTIVE));
-	}
-
+	}	
+	
 	@Override
 	public boolean isActive()
 	{
