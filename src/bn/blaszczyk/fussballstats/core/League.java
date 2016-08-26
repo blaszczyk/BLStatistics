@@ -14,11 +14,11 @@ public class League implements Iterable<Season>
 	/*
 	 * Variables
 	 */
-	private List<Season> seasons = new ArrayList<>();
-	private List<String> teams = new ArrayList<>();
-	private String pathName;
-	private String urlFormat;
-	private String name;
+	private final List<Season> seasons = new ArrayList<>();
+	private final List<String> teams = new ArrayList<>();
+	private final String pathName;
+	private final String urlFormat;
+	private final String name;
 
 	/*
 	 * Constructor

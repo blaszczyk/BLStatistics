@@ -43,19 +43,19 @@ public class PrefsDialog extends JDialog
 	 */
 	private JTextField tfServer, tfPort, tfDbName, tfUser, tfPassword;
 	
-	private JRadioButton rbHardDrive = new JRadioButton();
-	private JRadioButton rbDataBase = new JRadioButton();
+	private final JRadioButton rbHardDrive = new JRadioButton();
+	private final JRadioButton rbDataBase = new JRadioButton();
 	
-	private JCheckBox chbAliases = new JCheckBox();
-	private JCheckBox chbLoadLastFilter = new JCheckBox();
+	private final JCheckBox chbAliases = new JCheckBox();
+	private final JCheckBox chbLoadLastFilter = new JCheckBox();
 
-	private JButton btnSave = new JButton("Speichern");
-	private JButton btnDismiss = new JButton("Verwerfen");
+	private final JButton btnSave = new JButton("Speichern");
+	private final JButton btnDismiss = new JButton("Verwerfen");
 	
 	/*
 	 * Variables
 	 */
-	private Window owner;
+	private final Window owner;
 	
 	/*
 	 * Constructor

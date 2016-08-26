@@ -19,9 +19,9 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	/*
 	 * Components
 	 */
-	private JLabel lblIf = new JLabel("IF");
-	private JLabel lblThen = new JLabel("THEN");
-	private JLabel lblElse = new JLabel("ELSE");
+	private final JLabel lblIf = new JLabel("IF");
+	private final JLabel lblThen = new JLabel("THEN");
+	private final JLabel lblElse = new JLabel("ELSE");
 	
 	private BiFilterPanel<T,U> ifFilter;
 	private BiFilterPanel<T,U> thenFilter;
@@ -34,10 +34,6 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	{
 		super(true);
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-		
-		lblIf.setAlignmentX(LEFT_ALIGNMENT);
-		lblThen.setAlignmentX(LEFT_ALIGNMENT);
-		lblElse.setAlignmentX(LEFT_ALIGNMENT);
 		
 		setIfFilter(ifFilter);
 		setThenFilter(thenFilter);

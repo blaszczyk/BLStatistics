@@ -37,7 +37,7 @@ public class InfoDialog extends JDialog
 	/*
 	 * Variables
 	 */
-	private Window owner;
+	private final  Window owner;
 	
 	/*
 	 * Constructors

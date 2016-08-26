@@ -7,11 +7,14 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -31,6 +34,7 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	 */
 	private static final DateFormat  DATE_FORMAT = new SimpleDateFormat("dd.MM.YY");
 	private static final NumberFormat INT_FORMAT = NumberFormat.getIntegerInstance();
+	private static final NumberFormat DOUBLE_FORMAT = new DecimalFormat("0.000",DecimalFormatSymbols.getInstance(Locale.GERMAN));
 	
 	private static final Color ODD_COLOR = new Color(247,247,247);
 	private static final Color EVEN_COLOR = Color.WHITE;
@@ -45,7 +49,7 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	private static final Color SELECTED_FONT_COLOR = Color.BLACK;
 
 	private static final Font HEADER_FONT = new Font("Arial",Font.BOLD,16);
-	private static final Color HEADER_COLOR = new Color(238,238,238);
+	private static final Color HEADER_COLOR = new Color(238,238,255);
 	
 	/*
 	 * Custom Cell Renderer
@@ -58,7 +62,7 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 			if(value instanceof Date)
 				text = DATE_FORMAT.format(value);
 			else if(value instanceof Double)
-				text = String.format("%1.3f", value);
+				text = DOUBLE_FORMAT.format(value);
 			else if(value instanceof Integer)
 				text = INT_FORMAT.format(value);
 			else if(value instanceof String)
@@ -100,7 +104,7 @@ public abstract class MyTable<T> extends JTable implements KeyListener
 	 * Variables
 	 */
 	private List<T> tList;
-	protected TableRowSorter<TableModel> sorter = new TableRowSorter<>();
+	protected final TableRowSorter<TableModel> sorter = new TableRowSorter<>();
 
 	/*
 	 * Constructor

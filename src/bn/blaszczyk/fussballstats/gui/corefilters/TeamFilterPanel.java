@@ -27,9 +27,9 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	/*
 	 * Components
 	 */
-	private JComboBox<String> boxTeam;
-	private JCheckBox chbHome;
-	private JCheckBox chbAway;
+	private final JComboBox<String> boxTeam = new MyComboBox<>(TEAM_LIST,250,true);
+	private final JCheckBox chbHome = new JCheckBox("H",true);
+	private final JCheckBox chbAway = new JCheckBox("A",true);
 	
 	/*
 	 * Constructors
@@ -44,17 +44,14 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		
-		boxTeam = new MyComboBox<>(TEAM_LIST,250,true);
 		boxTeam.addActionListener(setFilterListener);
 		
-		chbHome = new JCheckBox("H",true);
 		chbHome.setInheritsPopupMenu(true);
 		chbHome.setOpaque(false);
 		chbHome.addActionListener(setFilterListener);
 		chbHome.setMaximumSize(new Dimension(50,30));
 		chbHome.setMinimumSize(new Dimension(50,30));
 		
-		chbAway = new JCheckBox("A",true);
 		chbAway.setInheritsPopupMenu(true);
 		chbAway.setOpaque(false);
 		chbAway.addActionListener(setFilterListener);

@@ -33,14 +33,14 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	/*
 	 * Components
 	 */
-	private JLabel header = new JLabel("Filter", SwingConstants.CENTER);
+	private final JLabel header = new JLabel("Filter", SwingConstants.CENTER);
 	private BiFilterPanel<Season,Game> filterPanel;
 	
 	/*
 	 * Variables
 	 */
 	private BiFilterListener<Season,Game> listener = null;
-	private FilterLog filterLog;
+	private final FilterLog filterLog;
 	
 	/*
 	 * Constructor

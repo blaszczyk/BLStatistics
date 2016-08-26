@@ -40,26 +40,28 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	private static final String REDO_ICON = "data/redo.png";
 	private static final String HELP_ICON = "data/help.png";
 	
+	private static final Color BG_COLOR = new Color(227,255,227);
+	
 	/*
 	 * Menu
 	 */
-	private JMenuBar menuBar = new JMenuBar();
+	private final JMenuBar menuBar = new JMenuBar();
 	private JMenuItem miNewFilter, miLoadFilter, miSaveFilter, miShowLeagueManager, miShowPreferences, miExit;
 	private JMenuItem miUndo, miRedo;
 	private JMenuItem miInfo;
+
+	/*
+	 * Variables
+	 */
+	private final FilterLog filterLog = new FilterLog();
+	private final List<League> leagues;
 	
 	/*
 	 * Components
 	 */
-	private FunctionalFilterPanel functionalFilterPanel;
-	private FunctionalGameTable functionalGameTable = new FunctionalGameTable();
-	private FunctionalResultTable functionalResultTable = new FunctionalResultTable();
-	
-	/*
-	 * Variables
-	 */
-	private FilterLog filterLog;
-	private List<League> leagues;
+	private final FunctionalFilterPanel functionalFilterPanel= new FunctionalFilterPanel(filterLog);
+	private final FunctionalGameTable functionalGameTable = new FunctionalGameTable();
+	private final FunctionalResultTable functionalResultTable = new FunctionalResultTable();
 	
 	/*
 	 * Constructors
@@ -88,9 +90,6 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 
 	private void initComponents()
 	{
-		filterLog = new FilterLog();
-		
-		functionalFilterPanel= new FunctionalFilterPanel(filterLog);
 		functionalFilterPanel.setFilterListener(this);
 
 		functionalResultTable.addListSelectionListener( e -> {
@@ -108,7 +107,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		spInner.setOpaque(false);
 		JSplitPane spOuter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, functionalFilterPanel, spInner );
 		spOuter.setDividerLocation(355);
-		spOuter.setBackground(new Color(227,255,227));
+		spOuter.setBackground(BG_COLOR);
 		add(spOuter);
 	}
 	

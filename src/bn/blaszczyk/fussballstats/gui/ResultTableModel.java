@@ -9,7 +9,7 @@ import bn.blaszczyk.fussballstats.core.TeamResult;
 
 public class ResultTableModel implements TableModel
 {	
-	private List<TeamResult> results;
+	private final List<TeamResult> results;
 	
 	public ResultTableModel(List<TeamResult> results)
 	{

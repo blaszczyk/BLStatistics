@@ -21,16 +21,16 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 	/*
 	 * Components
 	 */
-	private JLabel label;
-	private JComboBox<String> boxOperator;
-	private JTextField tfValue;
+	private final JLabel label = new JLabel();
+	private final JComboBox<String> boxOperator = new MyComboBox<>(OPERATORS,50,false);;
+	private final JTextField tfValue = new JTextField();
 	
 	/*
 	 * Variables
 	 */
-	private int defaultValue;
-	private int minValue;
-	private int maxValue;
+	private final int defaultValue;
+	private final int minValue;
+	private final int maxValue;
 
 	/*
 	 * Constructor
@@ -42,13 +42,12 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		
-		label = new JLabel(labelText);
+		label.setText(labelText);
 		label.setDisplayedMnemonic('f');
 		
-		boxOperator = new MyComboBox<>(OPERATORS,50,false);
 		boxOperator.addActionListener(setFilterListener);
 		
-		tfValue = new JTextField(Integer.toString(defaultValue));
+		tfValue.setText(Integer.toString(defaultValue));
 		tfValue.setMaximumSize(new Dimension(70,30));
 		tfValue.setInheritsPopupMenu(true);
 		tfValue.addKeyListener(this);

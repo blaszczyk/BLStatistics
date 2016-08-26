@@ -28,9 +28,9 @@ public class FunctionalGameTable extends JPanel
 	/*
 	 * Components
 	 */
-	private JLabel header = new JLabel("Spiele", SwingConstants.CENTER);
-	private JPanel pnlSummary = new JPanel();
-	private GameTable gameTable = new GameTable();
+	private final JLabel header = new JLabel("Spiele", SwingConstants.CENTER);
+	private final JPanel pnlSummary = new JPanel();
+	private final GameTable gameTable = new GameTable();
 	
 	/*
 	 * Variables

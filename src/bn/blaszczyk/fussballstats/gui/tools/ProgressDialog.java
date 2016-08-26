@@ -13,15 +13,15 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	/*
 	 * Components
 	 */
-	private JTextArea taInfo = new JTextArea();
-	private JProgressBar prograssBar;
-	private JLabel lblTimeLeft = new JLabel("geschätzte Restzeit: unbekannt");
-	private JButton btnCancel = new JButton("Abbrechen");
+	private final JTextArea taInfo = new JTextArea();
+	private final JProgressBar progressBar = new JProgressBar();
+	private final JLabel lblTimeLeft = new JLabel("geschätzte Restzeit: unbekannt");
+	private final JButton btnCancel = new JButton("Abbrechen");
 
 	/*
 	 * Variables
 	 */
-	private JDialog owner;
+	private final JDialog owner;
 	private int secsLeft = 0;
 	private int maxValue;
 	private long initTimeStamp = System.currentTimeMillis();
@@ -64,10 +64,11 @@ public class ProgressDialog extends JDialog implements ActionListener {
 		infoPane.setBounds(10, 10, 580, 200);
 		add(infoPane);
 		
-		prograssBar = new JProgressBar(0, maxValue);
-		prograssBar.setStringPainted(true);
-		prograssBar.setBounds(10, 210, 580, 40);
-		add(prograssBar);
+		progressBar.setMinimum(0);
+		progressBar.setMaximum(maxValue);
+		progressBar.setStringPainted(true);
+		progressBar.setBounds(10, 210, 580, 40);
+		add(progressBar);
 		
 		lblTimeLeft.setBounds(10, 260, 300, 30);
 		add(lblTimeLeft);
@@ -97,19 +98,19 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	public void setMaxValue(int maxValue)
 	{
 		this.maxValue = maxValue;
-		prograssBar.setMaximum(maxValue);
+		progressBar.setMaximum(maxValue);
 	}
 	
 	public void setValue(int value)
 	{
 		this.value = value;
-		prograssBar.setValue(value);
+		progressBar.setValue(value);
 	}
 	
 	public void incrementValue()
 	{
 		value++;
-		prograssBar.setValue(value);
+		progressBar.setValue(value);
 	}
 	
 	public void appendInfo(String info)

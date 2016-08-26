@@ -22,12 +22,12 @@ public abstract class AbstractBiFilterPanel<T,U> extends JPanel implements BiFil
 	
 	private BiFilter<T,U> filter = LogicalBiFilterFactory.createTRUEBiFilter();
 	
-	private List<BiFilterListener<T,U>> listeners = new ArrayList<>();
+	private final List<BiFilterListener<T,U>> listeners = new ArrayList<>();
 
 	/*
 	 * For Subclasses to use for its Components
 	 */
-	protected ActionListener setFilterListener = e ->
+	protected final ActionListener setFilterListener = e ->
 	{
 		setFilter();
 		if(e.getSource() instanceof JComponent)
