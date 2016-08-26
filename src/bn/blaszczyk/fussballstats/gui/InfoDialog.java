@@ -28,11 +28,10 @@ public class InfoDialog extends JDialog
 	
 	private static final JLabel title = new JLabel("FussballStats", new ImageIcon(FussballStats.class.getResource(LOGO_FILE)),SwingConstants.CENTER);
 	private static final String info1 = "<html>von Michael Blaszczyk (<font color=\"blue\">michael.i.blaszczyk@gmail.com</font>)";
-	private static final String info2 = "<html>Mit Unterstützung von: alfatraining (<font color=\"blue\">www.alfatraining.de</font>)" ;
-	private static final String info3 = "<html>Fussballdaten von: <font color=\"blue\">www.weltfussball.de</font>";
-	private static final String info4 = "<html>Icons von: <font color=\"blue\">www.iconfinder.com</font>";
+	private static final String info2 = "<html>Fussballdaten von: <font color=\"blue\">www.weltfussball.de</font>";
+	private static final String info3 = "<html>Icons von: <font color=\"blue\">www.iconfinder.com</font>";
 	
-	private static final String[] infos = {info1,info2,info3,info4};
+	private static final String[] infos = {info1,info2,info3};
 	
 	/*
 	 * Variables
@@ -49,7 +48,7 @@ public class InfoDialog extends JDialog
 		
 		setTitle("Über Fussballstats");
 		setLayout(null);
-		setSize(470,340);
+		setSize(470,310);
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE)));
@@ -67,8 +66,9 @@ public class InfoDialog extends JDialog
 		}
 		
 		JButton btnClose = new JButton("Schliessen");
+		btnClose.setMnemonic('S');
 		btnClose.addActionListener(e -> dispose());
-		btnClose.setBounds(100, 260, 270, 30);
+		btnClose.setBounds(100, 230, 270, 30);
 		add(btnClose);
 		
 	}

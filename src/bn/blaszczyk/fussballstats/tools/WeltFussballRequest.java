@@ -34,7 +34,7 @@ public class WeltFussballRequest
 	private HtmlTableBody tableBody;
 	
 	/*
-	 * Construtor
+	 * Constructor
 	 */
 	public WeltFussballRequest()
 	{
