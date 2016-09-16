@@ -2,9 +2,12 @@
 
 Tool zur Anzeige von Fussball Statistiken
 
-
+Als Archiv: [FussballStats.jar](https://drive.google.com/open?id=0B6f9u0DqUQ5-SUZ6NVlncmNBWTQ)
 ## Beschreibung
-Zeigt Statistiken über Fussballspielen an. Mit Hilfe von individuell erstellbaren Filtern wird eine Liste von Spielen erstellt. Aus dieser Liste wird die Abschlusstabelle berechnet. Fussballspiele können online abgefragt werden und in einer (MySQL) Datenbank oder auf Festplatte gespeichert werden.
+Zeigt Statistiken über Fussballspielen an. 
+Mit Hilfe von individuell erstellbaren Filtern wird eine Liste von Spielen erstellt. 
+Aus dieser Liste wird die Abschlusstabelle berechnet. 
+Fussballspiele können online abgefragt werden und in einer (MySQL) Datenbank oder auf Festplatte gespeichert werden.
 
 ### Ligen (vollständig)
 * 1. Bundesliga
@@ -31,3 +34,5 @@ Frei Kombinierbar mit Logischen Filtern
 
 ## Lizenz
 * kommt bald
+
+
