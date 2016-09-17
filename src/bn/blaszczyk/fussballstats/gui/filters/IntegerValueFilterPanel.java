@@ -50,6 +50,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		tfValue.setText(Integer.toString(defaultValue));
 		tfValue.setMaximumSize(new Dimension(70,30));
 		tfValue.setInheritsPopupMenu(true);
+		tfValue.setOpaque(false);
 		tfValue.addKeyListener(this);
 		tfValue.addMouseWheelListener(this);
 

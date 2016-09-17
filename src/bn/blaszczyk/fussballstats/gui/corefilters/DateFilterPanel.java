@@ -81,6 +81,7 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 		calendar.setTime(referenceDate);
 		
 		boxOperator.addActionListener(setFilterListener);
+		boxOperator.setSelectedItem(operator);
 
 		boxYear.addActionListener(refreshDateBox);
 		

@@ -54,7 +54,7 @@ public class DayOfWeekFilterPanel extends AbstractFilterPanel<Game>
 	@Override
 	protected void setFilter()
 	{
-		setFilter(GameFilterFactory.createDayOfWeekFilter( boxDayOfWeek.getSelectedIndex()));
+		setFilter(GameFilterFactory.createDayOfWeekFilter( boxDayOfWeek.getSelectedIndex() + 1));
 	}
 	
 

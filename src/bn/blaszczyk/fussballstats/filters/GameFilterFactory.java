@@ -162,7 +162,7 @@ public class GameFilterFactory
 	/*
 	 * DayOfWeek Filter
 	 */
-	public static Filter<Game> createDayOfWeekFilter(int dayOfWeek) // 0 = Sunday ... 6 = Saturday
+	public static Filter<Game> createDayOfWeekFilter(int dayOfWeek) // 1 = Sunday ... 7 = Saturday
 	{
 		final Calendar calendar = new GregorianCalendar();
 		Filter<Game> f = g -> {
