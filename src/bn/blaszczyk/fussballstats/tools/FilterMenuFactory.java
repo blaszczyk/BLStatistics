@@ -160,6 +160,12 @@ public class FilterMenuFactory
 		miRemove.addActionListener(e -> panel.replaceMe(createNoFilterPanel()) );
 		popupMenu.add(miRemove);
 		
+		popupMenu.addSeparator();
+		
+		JMenuItem miSave = new JMenuItem("Speichern");
+		miSave.addActionListener(e -> FilterIO.saveFilter(panel));
+		popupMenu.add(miSave);
+		
 		panel.getPanel().setComponentPopupMenu(popupMenu);
 	}
 	
