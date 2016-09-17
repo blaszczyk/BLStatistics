@@ -24,7 +24,7 @@ public class BiFilterEvent<T,U>
 	 */
 	public BiFilterEvent(BiFilterPanel<T,U> source, BiFilter<T,U> filter, int type)
 	{
-		if(type == SET_PANEL && !(filter instanceof BiFilterPanel ))
+		if(filter != null && type == SET_PANEL && !(filter instanceof BiFilterPanel ))
 			throw new UnsupportedOperationException("Type SET_PANEL requires BiFilterPanel");
 		this.type = type;
 		this.source = source;

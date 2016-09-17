@@ -33,7 +33,7 @@ public class MultiOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 	/*
 	 * Components
 	 */
-	private final JComboBox<String> boxOperator = new MyComboBox<>(OPERATORS,80,false);;
+	private final JComboBox<String> boxOperator = new MyComboBox<>(OPERATORS,80,false);
 	private final List<BiFilterPanel<T,U>> panels = new ArrayList<>();
 	
 	/*

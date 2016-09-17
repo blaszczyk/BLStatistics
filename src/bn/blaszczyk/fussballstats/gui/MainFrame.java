@@ -168,7 +168,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	private void populateMenuBar()
 	{
 		JMenu mainMenu = new JMenu("Fussball Statistiken");
-		mainMenu.setMnemonic('S');
+		mainMenu.setMnemonic('F');
 		menuBar.add(mainMenu);
 		
 		miNewFilter = createMenuItem(mainMenu,"Neuer Filter",'N',KeyEvent.VK_N, NEW_ICON);

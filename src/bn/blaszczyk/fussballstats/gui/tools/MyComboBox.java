@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.gui.tools;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -13,7 +14,10 @@ import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
@@ -57,6 +61,17 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 		this.items = tArray;
 		setMaximumSize(new Dimension(boxWidth,30));
 		setMinimumSize(new Dimension(boxWidth,30));
+		setOpaque(false);
+		inputField.setOpaque(false);
+		if(!editable)
+			setRenderer(new DefaultListCellRenderer(){
+				@Override
+				public Component getListCellRendererComponent(JList<?> list, Object value,
+						int index, boolean isSelected, boolean cellHasFocus) {
+					JComponent result = (JComponent)super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+					result.setOpaque(false);
+					return result;
+				}});
 		addMouseWheelListener(this);
 		addKeyListener(this);
 		addFocusListener(this);

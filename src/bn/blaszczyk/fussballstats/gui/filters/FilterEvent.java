@@ -24,7 +24,7 @@ public class FilterEvent<T>
 	 */
 	public FilterEvent(FilterPanel<T> source, Filter<T> filter, int type)
 	{
-		if(type == SET_PANEL && !(filter instanceof FilterPanel ))
+		if(filter != null && type == SET_PANEL && !(filter instanceof FilterPanel ))
 			throw new UnsupportedOperationException("Type SET_PANEL requires FilterPanel");
 		this.type = type;
 		this.source = source;
