@@ -1,6 +1,7 @@
 package bn.blaszczyk.fussballstats.gui.filters;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -51,6 +52,7 @@ public abstract class IntegerValueFilterPanel<T> extends AbstractFilterPanel<T> 
 		tfValue.setMaximumSize(new Dimension(70,30));
 		tfValue.setInheritsPopupMenu(true);
 		tfValue.setOpaque(false);
+		tfValue.setFont( tfValue.getFont().deriveFont( Font.BOLD ) );
 		tfValue.addKeyListener(this);
 		tfValue.addMouseWheelListener(this);
 

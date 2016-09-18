@@ -1,6 +1,5 @@
 package bn.blaszczyk.fussballstats.gui.corefilters;
 
-import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -55,7 +54,7 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 		int month = boxMonth.getSelectedIndex();
 		int nrOfDays = getNrOfDays(year, month);
 		boxDate.repopulateBox(intSequence(1, nrOfDays));
-		((Component)e.getSource()).requestFocusInWindow();
+		setFilterListener.actionPerformed(e);
 	};
 
 	/*

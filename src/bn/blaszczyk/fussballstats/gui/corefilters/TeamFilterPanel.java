@@ -58,8 +58,6 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 		chbAway.setMaximumSize(new Dimension(50,30));
 		chbAway.setMinimumSize(new Dimension(50,30));
 
-		setMaximumSize(new Dimension(350,30));
-		setMinimumSize(new Dimension(350,30));
 		boxTeam.setSelectedItem(team);
 		chbHome.setSelected(home);
 		chbAway.setSelected(away);		

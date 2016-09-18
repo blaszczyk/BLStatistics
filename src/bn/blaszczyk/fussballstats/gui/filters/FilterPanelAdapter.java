@@ -9,11 +9,6 @@ import javax.swing.JPanel;
 
 public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 {
-
-	/*
-	 * This Method depends on First/Second-Arg Poperty
-	 */
-	public abstract FilterPanel<?> getInnerPanel();
 	
 	/*
 	 * Factory Methods
@@ -28,13 +23,68 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		return new SecondArgAdapter<T,U>(panel);
 	}
 
+	
 	/*
-	 * Adapter Classes
+	 * Components
+	 */
+	protected final List<BiFilterListener<T,U>> listeners = new ArrayList<>();
+
+	/*
+	 * Abstract Methods
+	 */
+	public abstract FilterPanel<?> getInnerPanel();
+
+	/*
+	 * BiFilterPanel Methods
+	 */
+	@Override
+	public void paint()
+	{
+		getInnerPanel().paint();
+	}
+
+	@Override
+	public JPanel getPanel()
+	{
+		return getInnerPanel().getPanel();
+	}
+
+
+	@Override
+	public void setActive(boolean active)
+	{
+		getInnerPanel().setActive(active);
+	}
+
+	@Override
+	public boolean isActive()
+	{
+		return getInnerPanel().isActive();
+	}
+
+	@Override
+	public void replaceMe(BiFilterPanel<T, U> panel)
+	{
+		BiFilterEvent<T, U> e = new BiFilterEvent<>(this, panel, BiFilterEvent.SET_PANEL);
+		List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
+		for(BiFilterListener<T, U> listener : listeners)
+			copy.add(listener);
+		for(BiFilterListener<T, U> listener : copy)
+			listener.filter(e);		
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.valueOf(getInnerPanel());
+	}	
+	
+	/*
+	 * First Argument Adapter Subclass
 	 */
 	public static class FirstArgAdapter<T, U> extends FilterPanelAdapter<T, U>
 	{
 		private final FilterPanel<T> innerPanel;
-		private final List<BiFilterListener<T,U>> listeners = new ArrayList<>();
 		
 		public FirstArgAdapter(FilterPanel<T> panel)
 		{
@@ -48,23 +98,11 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		}
 		
 		@Override
-		public void paint()
-		{
-			innerPanel.paint();
-		}
-
-		@Override
 		public boolean check(T t, U u)
 		{
 			return innerPanel.check(t);
 		}
-
-		@Override
-		public JPanel getPanel()
-		{
-			return innerPanel.getPanel();
-		}
-
+		
 		@Override
 		public void addFilterListener(BiFilterListener<T, U> listener)
 		{
@@ -80,35 +118,6 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 				listeners.remove(i);
 			innerPanel.removeFilterListener( FilterListenerAdapterFactory.createFirstArgAdapter(listener));
 		}
-
-		@Override
-		public void setActive(boolean active)
-		{
-			innerPanel.setActive(active);
-		}
-
-		@Override
-		public boolean isActive()
-		{
-			return innerPanel.isActive();
-		}
-
-		@Override
-		public void replaceMe(BiFilterPanel<T, U> panel)
-		{
-			BiFilterEvent<T, U> e = new BiFilterEvent<>(this, panel, BiFilterEvent.SET_PANEL);
-			List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
-			for(BiFilterListener<T, U> listener : listeners)
-				copy.add(listener);
-			for(BiFilterListener<T, U> listener : copy)
-				listener.filter(e);		
-		}
-
-		@Override
-		public String toString()
-		{
-			return String.valueOf(innerPanel);
-		}
 		
 		@Override
 		public boolean equals(Object obj)
@@ -122,7 +131,9 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		}
 	}
 	
-	
+	/*
+	 * Second Argument Adapter Subclass
+	 */
 	public static class SecondArgAdapter<T, U> extends FilterPanelAdapter<T, U>
 	{
 		private final FilterPanel<U> innerPanel;
@@ -138,23 +149,11 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 		{
 			return innerPanel;
 		}
-		
-		@Override
-		public void paint()
-		{
-			innerPanel.paint();
-		}
 
 		@Override
 		public boolean check(T t, U u)
 		{
 			return innerPanel.check(u);
-		}
-
-		@Override
-		public JPanel getPanel()
-		{
-			return innerPanel.getPanel();
 		}
 
 		@Override
@@ -171,35 +170,6 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 			if( i >= 0 )
 				listeners.remove(i);
 			innerPanel.removeFilterListener( FilterListenerAdapterFactory.createSecondArgAdapter(listener));
-		}
-
-		@Override
-		public void setActive(boolean active)
-		{
-			innerPanel.setActive(active);
-		}
-
-		@Override
-		public boolean isActive()
-		{
-			return innerPanel.isActive();
-		}
-
-		@Override
-		public void replaceMe(BiFilterPanel<T, U> panel)
-		{
-			BiFilterEvent<T, U> e = new BiFilterEvent<>(this, panel, BiFilterEvent.SET_PANEL);
-			List<BiFilterListener<T,U>> copy = new ArrayList<>(listeners.size());
-			for(BiFilterListener<T, U> listener : listeners)
-				copy.add(listener);
-			for(BiFilterListener<T, U> listener : copy)
-				listener.filter(e);		
-		}
-		
-		@Override
-		public String toString()
-		{
-			return String.valueOf(innerPanel);
 		}
 		
 		@Override
