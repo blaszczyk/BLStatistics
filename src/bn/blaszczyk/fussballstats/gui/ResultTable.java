@@ -34,7 +34,7 @@ public class ResultTable extends MyTable<TeamResult>
 	{
 		if( getSelectedRows().length != 0 )
 		{
-			selectedTeams = new ArrayList<>();
+			selectedTeams.clear();
 			for(int row : getSelectedRows())
 				selectedTeams.add(getModel().getValueAt( sorter.convertRowIndexToModel(row)  , 1).toString());
 		}

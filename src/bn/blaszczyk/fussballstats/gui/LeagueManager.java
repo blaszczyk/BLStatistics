@@ -166,7 +166,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		for (League league : leagueItem)
 			for (Season season : league)
 				rows.add(new Object[]{ season.getYear(), season.getTeamCount(), season.getMatchDayCount(), season.getGameCount() });
-		rows.sort((o1, o2) -> Integer.compare((Integer) o1[0], (Integer) o2[0]));
+		rows.sort((o1, o2) -> Integer.compare((Integer) o2[0], (Integer) o1[0]));
 		for (Object[] rowData : rows)
 			tm.addRow(rowData);
 		tableSeasons.setModel(tm);
