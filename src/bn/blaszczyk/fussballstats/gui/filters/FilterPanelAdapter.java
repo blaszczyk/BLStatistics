@@ -137,7 +137,7 @@ public abstract class FilterPanelAdapter<T,U> implements BiFilterPanel<T, U>
 	public static class SecondArgAdapter<T, U> extends FilterPanelAdapter<T, U>
 	{
 		private final FilterPanel<U> innerPanel;
-		private final List<BiFilterListener<T,U>> listeners = new ArrayList<>();
+//		private final List<BiFilterListener<T,U>> listeners = new ArrayList<>();
 		
 		public SecondArgAdapter(FilterPanel<U> panel)
 		{
