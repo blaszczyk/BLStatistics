@@ -104,10 +104,10 @@ public class FilterParser
 				CompareToFilterPanel<?> ctFilter = (CompareToFilterPanel<?>) iFilter;
 				innerBuilder.append(ctFilter.getLabel() + ";" + ctFilter.getOperator() + ";" + ctFilter.getReferenceValString());
 			}
-			else if(iFilter instanceof SingleLeagueFilterPanel)
+			else if(iFilter instanceof LeagueFilterPanel)
 			{
-				SingleLeagueFilterPanel lFilter =  (SingleLeagueFilterPanel) iFilter;
-				innerBuilder.append( SingleLeagueFilterPanel.NAME + ";" + lFilter.getSelectedLeague() + ";" + lFilter.isContains());
+				LeagueFilterPanel lFilter =  (LeagueFilterPanel) iFilter;
+				innerBuilder.append( LeagueFilterPanel.NAME + ";" + lFilter.getSelectedLeague() + ";" + lFilter.isContains());
 			}
 			else if (iFilter instanceof TeamFilterPanel)
 			{
@@ -173,8 +173,8 @@ public class FilterParser
 		case SeasonFilterPanel.NAME:
 			panel = FilterPanelAdapter.createFirstArgAdapter(new SeasonFilterPanel(split[3], Integer.parseInt(split[4])) );
 			break;
-		case SingleLeagueFilterPanel.NAME:
-			panel = FilterPanelAdapter.createFirstArgAdapter(new SingleLeagueFilterPanel(split[3], Boolean.parseBoolean(split[4])) );
+		case LeagueFilterPanel.NAME:
+			panel = FilterPanelAdapter.createFirstArgAdapter(new LeagueFilterPanel(split[3], Boolean.parseBoolean(split[4])) );
 			break;
 		case MatchDayFilterPanel.NAME:
 			panel = FilterPanelAdapter.createSecondArgAdapter(new MatchDayFilterPanel(split[3], Integer.parseInt(split[4])) );

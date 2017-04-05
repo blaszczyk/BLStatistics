@@ -16,7 +16,7 @@ import bn.blaszczyk.fussballstats.core.League;
 import bn.blaszczyk.fussballstats.core.Season;
 import bn.blaszczyk.fussballstats.gui.LeagueManager;
 import bn.blaszczyk.fussballstats.gui.PrefsDialog;
-import bn.blaszczyk.fussballstats.gui.corefilters.SingleLeagueFilterPanel;
+import bn.blaszczyk.fussballstats.gui.corefilters.LeagueFilterPanel;
 import bn.blaszczyk.fussballstats.gui.corefilters.TeamFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.ProgressDialog;
 
@@ -250,7 +250,7 @@ public class Initiator {
 				leagueNames.add(league.getName());
 		}
 		Collections.sort(teams);
-		SingleLeagueFilterPanel.setLeagueList(leagueNames);
+		LeagueFilterPanel.setLeagueList(leagueNames);
 		TeamFilterPanel.setTeamList(teams);
 		return teams.size() != 0;
 	}

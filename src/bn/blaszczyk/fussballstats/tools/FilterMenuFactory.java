@@ -197,7 +197,7 @@ public class FilterMenuFactory
 		JMenu seasonFilters = new JMenu("Saison Filter");
 
 		addMenuItem(seasonFilters,"Liga", 
-			() -> setPanel( FilterPanelAdapter.createFirstArgAdapter( new SingleLeagueFilterPanel()) ));
+			() -> setPanel( FilterPanelAdapter.createFirstArgAdapter( new LeagueFilterPanel()) ));
 		addMenuItem(seasonFilters,"Saison", 
 			() -> setPanel( FilterPanelAdapter.createFirstArgAdapter( new SeasonFilterPanel()) ));
 		addMenuItem(seasonFilters,"Hin-/Rückrunde", 

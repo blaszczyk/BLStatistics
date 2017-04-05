@@ -16,7 +16,7 @@ import bn.blaszczyk.fussballstats.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 
 @SuppressWarnings("serial")
-public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
+public class LeagueFilterPanel extends AbstractFilterPanel<Season>
 {
 	/*
 	 * Constants
@@ -28,17 +28,17 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 	 * Components
 	 */
 	private final JComboBox<String> boxLeagues = new MyComboBox<>(LEAGUE_LIST,250,false);
-	private final JCheckBox chbContains = new JCheckBox("Alle",true);
+	private final JCheckBox chbContains = new JCheckBox("Subligen",true);
 
 	/*
 	 * Constructors
 	 */
-	public SingleLeagueFilterPanel()
+	public LeagueFilterPanel()
 	{
 		this("",true);
 	}
 
-	public SingleLeagueFilterPanel(String league, boolean isContains)
+	public LeagueFilterPanel(String league, boolean isContains)
 	{
 		super(false);
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -75,9 +75,9 @@ public class SingleLeagueFilterPanel extends AbstractFilterPanel<Season>
 	 */
 	public static void setLeagueList(Iterable<String> leagueList)
 	{
-		SingleLeagueFilterPanel.LEAGUE_LIST.clear();
+		LeagueFilterPanel.LEAGUE_LIST.clear();
 		for(String league : leagueList)
-			SingleLeagueFilterPanel.LEAGUE_LIST.add(league);
+			LeagueFilterPanel.LEAGUE_LIST.add(league);
 	}
 	
 	/*

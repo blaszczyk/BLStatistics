@@ -213,9 +213,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 			if (!exists)
 				leagueItems.add(new LeagueItem(league));
 		}
-		LeagueItem[] leagueArray = new LeagueItem[leagues.size()];
-		leagueItems.toArray(leagueArray);
-		return leagueArray;
+		return leagueItems.toArray(new LeagueItem[leagueItems.size()]);
 	}
 	
 	private void requestSeasons(List<Season> seasons)
