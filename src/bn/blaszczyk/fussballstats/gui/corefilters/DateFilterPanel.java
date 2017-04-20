@@ -44,13 +44,13 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 	private final JComboBox<String> boxOperator = new MyComboBox<>(OPERATORS,50,false);
 	private final MyComboBox<Integer> boxDate = new MyComboBox<>( intSequence( 1, getNrOfDays(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH) ) ),50,false );
 	private final MyComboBox<String> 	boxMonth =  new MyComboBox<>(MONTH_NAMES,150,false);
-	private final MyComboBox<Integer> boxYear = new MyComboBox<>( intSequence( League.THIS_SEASON, 1945 ),80,false );
+	private final MyComboBox<Integer> boxYear = new MyComboBox<>( intSequence( TODAY.get(Calendar.YEAR), 1945 ),80,false );
 	
 	/*
 	 * Fills boxDate according to Month and Year
 	 */
 	private ActionListener refreshDateBox = e -> {
-		int year = TODAY.get(Calendar.YEAR) - boxYear.getSelectedIndex() + 1;
+		int year = TODAY.get(Calendar.YEAR) - boxYear.getSelectedIndex();
 		int month = boxMonth.getSelectedIndex();
 		int nrOfDays = getNrOfDays(year, month);
 		boxDate.repopulateBox(intSequence(1, nrOfDays));
@@ -100,7 +100,7 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 	 */
 	private Date getDate() 
 	{
-		int year = TODAY.get(Calendar.YEAR) - boxYear.getSelectedIndex() + 1;
+		int year = TODAY.get(Calendar.YEAR) - boxYear.getSelectedIndex();
 		int month = boxMonth.getSelectedIndex();
 		int date = boxDate.getSelectedIndex() + 1;
 		calendar.set(year, month, date);
