@@ -54,7 +54,7 @@ public class FilterMenuFactory
 		if(panel instanceof MultiOperatorFilterPanel)
 		{
 			MultiOperatorFilterPanel<Season, Game> moPanel = (MultiOperatorFilterPanel<Season, Game>) panel;
-			JMenu miAddFilter = new JMenu("Filter Hinzufügen");
+			JMenu miAddFilter = new JMenu("Filter HinzufÃ¼gen");
 			setPanelAction( () -> moPanel.addPanel(getPanel()));
 			addMenuItems(miAddFilter);
 			popupMenu.add(miAddFilter);
@@ -200,7 +200,7 @@ public class FilterMenuFactory
 			() -> setPanel( FilterPanelAdapter.createFirstArgAdapter( new LeagueFilterPanel()) ));
 		addMenuItem(seasonFilters,"Saison", 
 			() -> setPanel( FilterPanelAdapter.createFirstArgAdapter( new SeasonFilterPanel()) ));
-		addMenuItem(seasonFilters,"Hin-/Rückrunde", 
+		addMenuItem(seasonFilters,"Hin-/RÃ¼ckrunde", 
 			() -> setPanel( new RoundFilterPanel() ));
 
 		/*
@@ -234,7 +234,7 @@ public class FilterMenuFactory
 			()-> setPanel( FilterPanelAdapter.createSecondArgAdapter( GoalFilterPanelFactory.createGoalFilterPanel("=",0) ) ) );
 		addMenuItem(goalFilters,"Heimtore", 
 			()-> setPanel( FilterPanelAdapter.createSecondArgAdapter( GoalFilterPanelFactory.createHomeGoalFilterPanel("=",0) ) ));
-		addMenuItem(goalFilters,"Auswärtstore", 
+		addMenuItem(goalFilters,"AuswÃ¤rtstore", 
 			() -> setPanel( FilterPanelAdapter.createSecondArgAdapter( GoalFilterPanelFactory.createAwayGoalFilterPanel("=",0) ) ));
 		addMenuItem(goalFilters,"Tordifferenz", 
 			() -> setPanel( FilterPanelAdapter.createSecondArgAdapter( GoalFilterPanelFactory.createGoalDiffFilterPanel("=",0) ) ) );

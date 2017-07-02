@@ -47,7 +47,7 @@ public class InfoDialog extends JDialog
 		super(owner, ModalityType.APPLICATION_MODAL);
 		this.owner = owner;
 		
-		setTitle("Über Fussballstats");
+		setTitle("Ãœber Fussballstats");
 		setLayout(null);
 		setSize(470,340);
 		setResizable(false);

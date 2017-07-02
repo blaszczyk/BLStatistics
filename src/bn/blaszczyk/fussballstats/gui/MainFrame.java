@@ -185,7 +185,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 		editMenu.setMnemonic('B');
 		menuBar.add(editMenu);
 
-		miUndo = createMenuItem(editMenu, "Rückgängig", 'R', KeyEvent.VK_Z,UNDO_ICON );
+		miUndo = createMenuItem(editMenu, "RÃ¼ckgÃ¤ngig", 'R', KeyEvent.VK_Z,UNDO_ICON );
 		miUndo.setEnabled(false);
 		miRedo = createMenuItem(editMenu, "Wiederholen", 'W', KeyEvent.VK_Y,REDO_ICON );
 		miRedo.setEnabled(false);

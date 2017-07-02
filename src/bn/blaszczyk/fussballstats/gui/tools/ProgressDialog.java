@@ -15,7 +15,7 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	 */
 	private final JTextArea taInfo = new JTextArea();
 	private final JProgressBar progressBar = new JProgressBar();
-	private final JLabel lblTimeLeft = new JLabel("gesch‰tzte Restzeit: unbekannt");
+	private final JLabel lblTimeLeft = new JLabel("gesch√§tzte Restzeit: unbekannt");
 	private final JButton btnCancel = new JButton("Abbrechen");
 
 	/*
@@ -143,7 +143,7 @@ public class ProgressDialog extends JDialog implements ActionListener {
 	{
 		selfClosable = true;
 		btnCancel.setEnabled(true);
-		btnCancel.setText("Schlieﬂen");
+		btnCancel.setText("Schlie√üen");
 		timerDots.stop();
 		timerSecs.stop();
 		lblTimeLeft.setText("Gesamtdauer: " + (System.currentTimeMillis() - initTimeStamp) / 1000 + " Sekunden");
@@ -172,7 +172,7 @@ public class ProgressDialog extends JDialog implements ActionListener {
 				secsLeft = (int)( (System.currentTimeMillis() - initTimeStamp) * (maxValue - value) / value )/1000;
 			lastValue = value;
 		}
-		lblTimeLeft.setText( String.format( "gesch‰tzte Restzeit: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n") );
+		lblTimeLeft.setText( String.format( "gesch√§tzte Restzeit: %2d Sekunde%s",secsLeft, secsLeft == 1 ? "" : "n") );
 	}
 	
 	/*

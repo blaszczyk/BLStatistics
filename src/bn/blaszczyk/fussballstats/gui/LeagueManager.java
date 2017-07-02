@@ -47,7 +47,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 	private final JList<LeagueItem>	listLeagues;
 	private final JTable tableSeasons;
 	
-	private final JButton btnClose = new JButton("Schlieﬂen");
+	private final JButton btnClose = new JButton("Schlie√üen");
 	private final JButton btnUpdate = new JButton("Aktualisieren");
 	private final JButton btnSeasonRequest = new JButton("Download");
 	
@@ -235,7 +235,7 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 				{
 					if (progressDialog.hasCancelRequest())
 						if ( JOptionPane.showConfirmDialog(progressDialog, "Downloads Abbrechen?",
-								"Abbruch Best‰tigen", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION)
+								"Abbruch Best√§tigen", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION)
 							break;
 						else
 							progressDialog.undoCancelRequest();

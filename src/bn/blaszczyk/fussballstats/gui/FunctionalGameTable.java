@@ -144,9 +144,9 @@ public class FunctionalGameTable extends JPanel
 		addSummaryRow("Spiele", nrGames);
 		addSummaryRow("Tore", nrGoals);
 		addSummaryRow("Heimtore", nrHomeGoals);
-		addSummaryRow("Ausw‰rtstore", nrAwayGoals);
+		addSummaryRow("Ausw√§rtstore", nrAwayGoals);
 		addSummaryRow("Heimsiege", nrHomeWins);
-		addSummaryRow("Ausw‰rtssiege", nrAwayWins);
+		addSummaryRow("Ausw√§rtssiege", nrAwayWins);
 		addSummaryRow("Unentschieden", nrDraws);
 		repaint();
 	}

@@ -13,7 +13,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.core.League;
 import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
 import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.AbstractFilterPanel;
@@ -30,7 +29,7 @@ public class DateFilterPanel extends AbstractFilterPanel<Game> implements Compar
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yy");
 	private static final Calendar TODAY = new GregorianCalendar();
 	private static final String[] MONTH_NAMES =
-		{"Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"};
+		{"Januar","Februar","MÃ¤rz","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"};
 
 	/*
 	 * To deal with Dates

@@ -21,7 +21,7 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 	 * Components
 	 */
 	private final JCheckBox boxFirst = new JCheckBox("Hinrunde",true);
-	private final JCheckBox boxSecond = new JCheckBox("Rückrunde",true);
+	private final JCheckBox boxSecond = new JCheckBox("RÃ¼ckrunde",true);
 
 	/*
 	 * Constructors
@@ -92,6 +92,6 @@ public class RoundFilterPanel extends AbstractBiFilterPanel<Season, Game>
 	@Override
 	public String toString()
 	{
-		return "Hin- / Rückrunde";
+		return "Hin- / RÃ¼ckrunde";
 	}
 }

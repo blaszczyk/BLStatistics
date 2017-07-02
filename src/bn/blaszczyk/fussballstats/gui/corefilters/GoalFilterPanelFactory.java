@@ -14,7 +14,7 @@ public class GoalFilterPanelFactory
 	 */
 	public static final String NAME_GOAL = "Tore";
 	public static final String NAME_HOME_GOAL = "Heimtore";
-	public static final String NAME_AWAY_GOAL = "Ausw‰rtsore";
+	public static final String NAME_AWAY_GOAL = "Ausw√§rtsore";
 	public static final String NAME_GOAL_DIFF = "Tordifferenz";
 	
 	/*

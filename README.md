@@ -25,10 +25,6 @@ Frei Kombinierbar mit Logischen Filtern
 
 * AND,  OR,  XOR,  NOT,  TRUE,  FALSE,  IF_THEN_ELSE
 
-## Externe Resourcen:
-* [HtmlUnit](http://htmlunit.sourceforge.net/)
-* [MySQL-Connector-Java](https://dev.mysql.com/downloads/connector/j/)
-
 ## Autor
 * Michael Blaszczyk
 

@@ -29,7 +29,7 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	private final JLabel header = new JLabel("Tabelle", SwingConstants.CENTER);
 	
 	private final JCheckBox chbHome = new JCheckBox("Heimspiele",true);
-	private final JCheckBox chbAway = new JCheckBox("Ausw‰rtsspiele",true);
+	private final JCheckBox chbAway = new JCheckBox("Ausw√§rtsspiele",true);
 	private final JLabel lblWinPoints = new JLabel("Punkte pro Sieg:",SwingConstants.RIGHT);
 	private final JComboBox<Integer> boxWinPoints = new MyComboBox<>(POINTS_FOR_WIN_OPTIONS,70,false);
 	private final JCheckBox chbWeighted = new JCheckBox("Nach Spielen gewichtet",false);

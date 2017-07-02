@@ -32,7 +32,7 @@ public class FilterIO
 			JOptionPane.showMessageDialog(null, "No Filter to save.", "Save Error!", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		String name = JOptionPane.showInputDialog(null, "Namen für den Filter eingeben:", "Filter Speichern", JOptionPane.QUESTION_MESSAGE);
+		String name = JOptionPane.showInputDialog(null, "Namen fÃ¼r den Filter eingeben:", "Filter Speichern", JOptionPane.QUESTION_MESSAGE);
 		if(name != null && name != "")
 			saveFilter(filter, name);	
 	}

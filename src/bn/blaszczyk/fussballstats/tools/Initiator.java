@@ -66,6 +66,7 @@ public class Initiator {
 			catch(FussballException e)
 			{
 				progressDialog.appendException(e);
+				e.printStackTrace();
 				JOptionPane.showMessageDialog(progressDialog, e.getMessage(), "Keine Verbindung zur Datenbank", JOptionPane.ERROR_MESSAGE);
 			}
 			if(--triesLeft < 0)
@@ -120,7 +121,7 @@ public class Initiator {
 		progressDialog.appendInfo("\nErstelle Listen");
 		if(!initLists(leagues))
 		{
-			int reply = JOptionPane.showConfirmDialog(progressDialog, "Liga Manager öffnen und Spiele Downloaden?", 
+			int reply = JOptionPane.showConfirmDialog(progressDialog, "Liga Manager Ã¶ffnen und Spiele Downloaden?", 
 					"Keine Spiele vorhanden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if(reply == JOptionPane.YES_OPTION)
 			{
