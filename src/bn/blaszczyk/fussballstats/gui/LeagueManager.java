@@ -20,7 +20,6 @@ import javax.swing.table.TableCellRenderer;
 import bn.blaszczyk.fussballstats.FussballStats;
 import bn.blaszczyk.fussballstats.model.*;
 import bn.blaszczyk.fussballstats.gui.tools.ProgressDialog;
-import bn.blaszczyk.fussballstats.tools.FussballException;
 import bn.blaszczyk.fussballstats.tools.WeltFussballRequest;
 import bn.blaszczyk.rose.RoseException;
 import bn.blaszczyk.rosecommon.controller.ModelController;

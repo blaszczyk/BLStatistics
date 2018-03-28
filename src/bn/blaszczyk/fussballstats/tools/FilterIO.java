@@ -90,7 +90,7 @@ public class FilterIO
 			{
 				e.printStackTrace();
 			}
-		return FilterMenuFactory.createNoFilterPanel();
+		return FilterFactory.createNoFilterPanel();
 	}
 
 }

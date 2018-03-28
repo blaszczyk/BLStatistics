@@ -7,8 +7,11 @@ import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.FilterPanel;
 import bn.blaszczyk.fussballstats.gui.filters.IntegerValueFilterPanel;
 
+@SuppressWarnings("serial")
 public class GoalFilterPanelFactory
 {
+	private static final int DEFAULT_VALUE = 0;
+	private static final String DEFAULT_OPERATOR = "=";
 	/*
 	 * Constants
 	 */
@@ -20,7 +23,11 @@ public class GoalFilterPanelFactory
 	/*
 	 * Factory Methods
 	 */
-	@SuppressWarnings("serial")
+	public static FilterPanel<Game> createGoalFilterPanel()
+	{
+		return createGoalFilterPanel(DEFAULT_OPERATOR, DEFAULT_VALUE);
+	}
+	
 	public static FilterPanel<Game> createGoalFilterPanel(String operator, int refInt)
 	{
 		return new IntegerValueFilterPanel<Game>(NAME_GOAL,operator,refInt,0,20)
@@ -48,7 +55,12 @@ public class GoalFilterPanelFactory
 			}
 		};
 	}
-	@SuppressWarnings("serial")
+	
+	public static FilterPanel<Game> createHomeGoalFilterPanel()
+	{
+		return createHomeGoalFilterPanel(DEFAULT_OPERATOR, DEFAULT_VALUE);
+	}
+	
 	public static FilterPanel<Game> createHomeGoalFilterPanel(String operator, int refInt)
 	{
 		return new IntegerValueFilterPanel<Game>(NAME_HOME_GOAL,operator,refInt,0,20)
@@ -76,12 +88,16 @@ public class GoalFilterPanelFactory
 			}
 		};
 	}
-	@SuppressWarnings("serial")
+	
+	public static FilterPanel<Game> createAwayGoalFilterPanel()
+	{
+		return createAwayGoalFilterPanel(DEFAULT_OPERATOR, DEFAULT_VALUE);
+	}
+	
 	public static FilterPanel<Game> createAwayGoalFilterPanel(String operator, int refInt)
 	{
 		return new IntegerValueFilterPanel<Game>(NAME_AWAY_GOAL,operator,refInt,0,20)
 		{
-
 			@Override
 			protected Filter<Game> getFilter()
 			{
@@ -105,7 +121,12 @@ public class GoalFilterPanelFactory
 			}
 		};
 	}
-	@SuppressWarnings("serial")
+
+	public static FilterPanel<Game> createGoalDiffFilterPanel()
+	{
+		return createGoalDiffFilterPanel(DEFAULT_OPERATOR,DEFAULT_VALUE);
+	}
+
 	public static FilterPanel<Game> createGoalDiffFilterPanel(String operator, int refInt)
 	{
 		return new IntegerValueFilterPanel<Game>(NAME_GOAL_DIFF,operator,refInt,-20,20)

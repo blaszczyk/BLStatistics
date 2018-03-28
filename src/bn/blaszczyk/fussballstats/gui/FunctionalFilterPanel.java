@@ -14,9 +14,9 @@ import bn.blaszczyk.fussballstats.filters.BiFilter;
 import bn.blaszczyk.fussballstats.gui.filters.BiFilterEvent;
 import bn.blaszczyk.fussballstats.gui.filters.BiFilterListener;
 import bn.blaszczyk.fussballstats.gui.filters.BiFilterPanel;
+import bn.blaszczyk.fussballstats.tools.FilterFactory;
 import bn.blaszczyk.fussballstats.tools.FilterIO;
 import bn.blaszczyk.fussballstats.tools.FilterLog;
-import bn.blaszczyk.fussballstats.tools.FilterMenuFactory;
 
 @SuppressWarnings("serial")
 public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Season,Game>, BiFilter<Season,Game>
@@ -60,7 +60,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 		if(loadLastFilter)
 			setFilterPanel(FilterIO.loadFilter(LAST_FILTER));
 		else
-			setFilterPanel(FilterMenuFactory.createNoFilterPanel());
+			setFilterPanel(FilterFactory.createNoFilterPanel());
 	}
 
 
@@ -82,7 +82,7 @@ public class FunctionalFilterPanel extends JPanel implements BiFilterListener<Se
 	 */
 	public void newFilter()
 	{
-		BiFilterPanel<Season, Game> newFilter = FilterMenuFactory.createNoFilterPanel();
+		BiFilterPanel<Season, Game> newFilter = FilterFactory.createNoFilterPanel();
 		setFilterPanel(newFilter);
 	}
 

@@ -23,9 +23,9 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	private final JLabel lblThen = new JLabel("THEN");
 	private final JLabel lblElse = new JLabel("ELSE");
 	
-	private BiFilterPanel<T,U> ifFilter;
-	private BiFilterPanel<T,U> thenFilter;
-	private BiFilterPanel<T,U> elseFilter;
+	private BiFilterPanel<T,U> ifPanel;
+	private BiFilterPanel<T,U> thenPanel;
+	private BiFilterPanel<T,U> elsePanel;
 
 	/*
 	 * Constructors
@@ -47,47 +47,62 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	 */
 	public BiFilterPanel<T, U> getIfFilter()
 	{
-		return ifFilter;
+		return ifPanel;
 	}
 
 
 	public BiFilterPanel<T, U> getThenFilter()
 	{
-		return thenFilter;
+		return thenPanel;
 	}
 
 
 	public BiFilterPanel<T, U> getElseFilter()
 	{
-		return elseFilter;
+		return elsePanel;
+	}
+	
+	public void replaceIfPanel(final BiFilterPanel<T, U> ifPanel)
+	{
+		this.ifPanel.replaceMe(ifPanel);
+	}
+	
+	public void replaceThenPanel(final BiFilterPanel<T, U> thenPanel)
+	{
+		this.thenPanel.replaceMe(thenPanel);
+	}
+	
+	public void replaceElsePanel(final BiFilterPanel<T, U> elsePanel)
+	{
+		this.elsePanel.replaceMe(elsePanel);
 	}
 	
 	private void setIfFilter(BiFilterPanel<T,U> newPanel)
 	{
-		if(ifFilter != null)
-			ifFilter.removeFilterListener(this);
+		if(ifPanel != null)
+			ifPanel.removeFilterListener(this);
 		newPanel.addFilterListener(this);
 		newPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
-		ifFilter = newPanel;
+		ifPanel = newPanel;
 		setFilter();
 	}
 	private void setThenFilter(BiFilterPanel<T,U> newPanel)
 	{
-		if(thenFilter != null)
-			thenFilter.removeFilterListener(this);
+		if(thenPanel != null)
+			thenPanel.removeFilterListener(this);
 		newPanel.addFilterListener(this);
 		newPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
-		thenFilter = newPanel;
+		thenPanel = newPanel;
 		setFilter();
 	}
 	
 	private void setElseFilter(BiFilterPanel<T,U> newPanel)
 	{
-		if(elseFilter != null)
-			elseFilter.removeFilterListener(this);
+		if(elsePanel != null)
+			elsePanel.removeFilterListener(this);
 		newPanel.addFilterListener(this);
 		newPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);
-		elseFilter = newPanel;
+		elsePanel = newPanel;
 		setFilter();
 	}
 	
@@ -97,26 +112,26 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 	@Override
 	protected void setFilter()
 	{
-		setFilter( LogicalBiFilterFactory.createIF_THEN_ELSEBiFilter(ifFilter, thenFilter, elseFilter));
+		setFilter( LogicalBiFilterFactory.createIF_THEN_ELSEBiFilter(ifPanel, thenPanel, elsePanel));
 	}
 
 	@Override
 	protected void addComponents()
 	{
 		add(lblIf);
-		add(ifFilter.getPanel());
+		add(ifPanel.getPanel());
 		add(lblThen);
-		add(thenFilter.getPanel());
+		add(thenPanel.getPanel());
 		add(lblElse);
-		add(elseFilter.getPanel());
+		add(elsePanel.getPanel());
 	}
 
 	@Override
 	public void paint()
 	{
-		ifFilter.paint();
-		thenFilter.paint();
-		elseFilter.paint();
+		ifPanel.paint();
+		thenPanel.paint();
+		elsePanel.paint();
 		super.paint();
 	}
 
@@ -135,11 +150,11 @@ public class IfThenElseFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> impl
 		notifyListeners(e);
 		if(e.getType() == BiFilterEvent.SET_PANEL && e.getSource() != null)
 		{
-			if(e.getSource().equals(ifFilter))
+			if(e.getSource().equals(ifPanel))
 				setIfFilter(e.getNewPanel());
-			if(e.getSource().equals(thenFilter))
+			if(e.getSource().equals(thenPanel))
 				setThenFilter(e.getNewPanel());
-			if(e.getSource().equals(elseFilter))
+			if(e.getSource().equals(elsePanel))
 				setElseFilter(e.getNewPanel());
 		}
 	}

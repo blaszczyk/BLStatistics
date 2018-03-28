@@ -42,6 +42,11 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		return innerPanel;
 	}
 	
+	public void replaceInnerPanel(final BiFilterPanel<T, U> innerPanel)
+	{
+		this.innerPanel.replaceMe(innerPanel);
+	}
+	
 	/*
 	 * Internal Methods
 	 */
@@ -53,6 +58,15 @@ public class UnaryOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U> i
 		{
 			replaceMe(((UnaryOperatorFilterPanel<T, U>)innerPanel).getInnerPanel());
 			return;
+		}
+		if(innerPanel instanceof FilterPanelAdapter)
+		{
+			final FilterPanel<?> monoPanel = ((FilterPanelAdapter<?,?>)innerPanel).getInnerPanel();
+			if(monoPanel instanceof IntegerValueFilterPanel)
+			{
+				((IntegerValueFilterPanel<?>)monoPanel).invertOperator();
+				replaceMe(innerPanel);
+			}
 		}
 		innerPanel.addFilterListener(this);
 		innerPanel.getPanel().setAlignmentX(LEFT_ALIGNMENT);

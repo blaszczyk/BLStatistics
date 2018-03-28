@@ -36,6 +36,11 @@ public class AbsoluteOperatorFilterPanel<T,U> extends AbstractBiFilterPanel<T, U
 			label.setText(FALSE_NAME);
 		}
 	}
+	
+	public AbsoluteOperatorFilterPanel()
+	{
+		this(true);
+	}
 
 	/*
 	 * Getter
