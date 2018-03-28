@@ -3,8 +3,8 @@ package bn.blaszczyk.fussballstats.gui.corefilters;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 
-import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.core.Season;
+import bn.blaszczyk.fussballstats.model.Game;
+import bn.blaszczyk.fussballstats.model.Season;
 import bn.blaszczyk.fussballstats.filters.LogicalBiFilterFactory;
 import bn.blaszczyk.fussballstats.filters.SeasonFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.AbstractBiFilterPanel;

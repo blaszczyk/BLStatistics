@@ -3,7 +3,7 @@ package bn.blaszczyk.fussballstats.gui.corefilters;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 
-import bn.blaszczyk.fussballstats.core.Game;
+import bn.blaszczyk.fussballstats.model.Game;
 import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;

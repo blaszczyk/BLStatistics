@@ -5,14 +5,14 @@
 //
 //  2. Liga
 //
-	2. Bundesliga			;	2-bundesliga-%4d-%4d					;	zweiteliga					;	1982;1991;	1993;2010;	2012
-	2. Bundesliga			;	2-bundesliga-%4d-%4d_2					;	zweiteliga					;	2011;2011
-	2. Bundesliga Nord		;	2-bundesliga-%4d-%4d-nord				;	zweiteliga/nord				;	1975;1981;	1992;1992
-	2. Bundesliga Nord		;	2-bundesliga-%4d-%4d-nord-aufstieg		;	zweiteliga/nord/aufstieg	;	1992;1992
-	2. Bundesliga Nord		;	2-bundesliga-%4d-%4d-nord-abstieg		;	zweiteliga/nord/abstieg		;	1992;1992
-	2. Bundesliga Süd		;	2-bundesliga-%4d-%4d-sued				;	zweiteliga/sued				;	1975;1981;	1992;1992
-	2. Bundesliga Süd		;	2-bundesliga-%4d-%4d-sued-aufstieg		;	zweiteliga/sued/aufstieg	;	1992;1992
-	2. Bundesliga Süd		;	2-bundesliga-%4d-%4d-sued-abstieg		;	zweiteliga/sued/abstieg		;	1992;1992
+	2. Bundesliga			;	2-bundesliga-%4d-%4d					;	zweiteliga					;	1982;1992;	1993;2011;	2012
+	2. Bundesliga			;	2-bundesliga-%4d-%4d_2					;	zweiteliga					;	2011;2012
+	2. Bundesliga Nord		;	2-bundesliga-%4d-%4d-nord				;	zweiteliga/nord				;	1975;1982;	1992;1993
+	2. Bundesliga Nord		;	2-bundesliga-%4d-%4d-nord-aufstieg		;	zweiteliga/nord/aufstieg	;	1992;1993
+	2. Bundesliga Nord		;	2-bundesliga-%4d-%4d-nord-abstieg		;	zweiteliga/nord/abstieg		;	1992;1993
+	2. Bundesliga Süd		;	2-bundesliga-%4d-%4d-sued				;	zweiteliga/sued				;	1975;1982;	1992;1993
+	2. Bundesliga Süd		;	2-bundesliga-%4d-%4d-sued-aufstieg		;	zweiteliga/sued/aufstieg	;	1992;1993
+	2. Bundesliga Süd		;	2-bundesliga-%4d-%4d-sued-abstieg		;	zweiteliga/sued/abstieg		;	1992;1993
 //
 //  3. Liga
 //
@@ -24,40 +24,38 @@
 //
 //  West
 //
-	Regionalliga West		;	regionalliga-west-63-74-%4d-%4d			;	regionalliga/west			;	1964;1969
-	Regionalliga West		;	regionalliga-west-1963-1974-%4d-%4d		;	regionalliga/west			;	1970;1974
-	Regionalliga West		;	regionalliga-west-%4d-%4d				;	regionalliga/west			;	2009;2012;	2014
-	Regionalliga West		;	regionalliga-west-%4d-%4d_2				;	regionalliga/west			;	2013;2013
+	Regionalliga West		;	regionalliga-west-63-74-%4d-%4d			;	regionalliga/west			;	1964;1970
+	Regionalliga West		;	regionalliga-west-1963-1974-%4d-%4d		;	regionalliga/west			;	1970;1975
+	Regionalliga West		;	regionalliga-west-%4d-%4d				;	regionalliga/west			;	2009;2013;	2014
+	Regionalliga West		;	regionalliga-west-%4d-%4d_2				;	regionalliga/west			;	2013;2014
 //
 //  Nord
 //
-	Regionalliga Nord		;	regionalliga-nord-1963-1974-%4d-%4d		;	regionalliga/nord			;	1964;1974
-	Regionalliga Nord		;	regionalliga-nord-%4d-%4d				;	regionalliga/nord			;	1995;2012;	2014
-	Regionalliga Nord		;	regionalliga-nord-%4d-%4d_2				;	regionalliga/nord			;	2013;2013
+	Regionalliga Nord		;	regionalliga-nord-1963-1974-%4d-%4d		;	regionalliga/nord			;	1964;1975
+	Regionalliga Nord		;	regionalliga-nord-%4d-%4d				;	regionalliga/nord			;	1995;2013;	2014
+	Regionalliga Nord		;	regionalliga-nord-%4d-%4d_2				;	regionalliga/nord			;	2013;2014
 //
 //  NordOst
 //
-	Regionalliga NO			;	regionalliga-nordost-%4d-%4d			;	regionalliga/nordost		;	1995;2000;	2013
+	Regionalliga NO			;	regionalliga-nordost-%4d-%4d			;	regionalliga/nordost		;	1995;2001;	2013
 //
 //  SüdWest
 //
-	Regionalliga SW			;	regionalliga-suedwest-1963-1974-%4d-%4d	;	regionalliga/suedwest		;	1964;1974
+	Regionalliga SW			;	regionalliga-suedwest-1963-1974-%4d-%4d	;	regionalliga/suedwest		;	1964;1975
 	Regionalliga SW			;	regionalliga-suedwest-%4d-%4d			;	regionalliga/suedwest		;	2013
 //
 //  Bayern
 //
 	Regionalliga Bayern		;	regionalliga-bayern-%4d-%4d				;	regionalliga/bayern			;	2013
 //
-//  S�d
+//  Süd
 //
-	Regionalliga Süd		;	regionalliga-sued-1963-1974-%4d-%4d		;	regionalliga/sued			;	1964;1974
-	Regionalliga Süd		;	regionalliga-sued-%4d-%4d				;	regionalliga/sued			;	1995;2012
+	Regionalliga Süd		;	regionalliga-sued-1963-1974-%4d-%4d		;	regionalliga/sued			;	1964;1975
+	Regionalliga Süd		;	regionalliga-sued-%4d-%4d				;	regionalliga/sued			;	1995;2013
 //
 //  Berlin
 //
-	Regionalliga Berlin		;	regionalliga-berlin-1963-1974-%4d-%4d	;	regionalliga/berlin			;	1964;1974
-	
-	/*
+	Regionalliga Berlin		;	regionalliga-berlin-1963-1974-%4d-%4d	;	regionalliga/berlin			;	1964;1975
 //
 //  Oberligen
 //
@@ -65,43 +63,42 @@
 //
 //  RV Nord
 //	
-	Oberliga Nord			;	oberliga-nord-%4d-%4d					;	oberliga/nord				;	2005;2008
-	Oberliga Niedersachsen Ost;		oberliga-niedersachsen-ost-%4d-%4d	;	oberliga/niedersachsen/ost	;	2009;2010
-	Oberliga Niedersachsen West;	oberliga-niedersachsen-west-%4d-%4d	;	oberliga/niedersachsen/west	;	2009;2010
-	Oberliga Niedersachsen	;	niedersachsenliga-%4d-%4d				;	oberliga/niedersachsen		;	2011;2013
+	Oberliga Nord			;	oberliga-nord-%4d-%4d					;	oberliga/nord				;	2005;2009
+	Oberliga Niedersachsen Ost;		oberliga-niedersachsen-ost-%4d-%4d	;	oberliga/niedersachsen/ost	;	2009;2011
+	Oberliga Niedersachsen West;	oberliga-niedersachsen-west-%4d-%4d	;	oberliga/niedersachsen/west	;	2009;2011
+	Oberliga Niedersachsen	;	niedersachsenliga-%4d-%4d				;	oberliga/niedersachsen		;	2011;2014
 	Oberliga Niedersachsen	;	oberliga-niedersachsen-%4d-%4d			;	oberliga/niedersachsen		;	2014
 	Oberliga Schleswig Holstein;	schleswig-holstein-liga-%4d-%4d		;	oberliga/schleswigholstein	;	2009
-	Oberliga Bremen			;	oberliga-bremen-%4d-%4d					;	oberliga/bremen				;	2009;2009
+	Oberliga Bremen			;	oberliga-bremen-%4d-%4d					;	oberliga/bremen				;	2009;2010
 	Oberliga Bremen			;	bremenliga-%4d-%4d						;	oberliga/bremen				;	2010
 	Oberliga Hamburg		;	oberliga-hamburg-%4d-%4d				;	oberliga/hamburg			;	2009
 //
 //  RV West
 //	
-	Oberliga West			;	oberliga-west-1947-63-%4d-%4d			;	oberliga/west				;	1948;1963
-	Oberliga Westfalen		;	oberliga-westfalen-%4d-%4d				;	oberliga/westfalen			;	1994;2008;	2013
+	Oberliga West			;	oberliga-west-1947-63-%4d-%4d			;	oberliga/west				;	1948;1964
+	Oberliga Westfalen		;	oberliga-westfalen-%4d-%4d				;	oberliga/westfalen			;	1994;2009;	2013
 	Oberliga Mittelrhein	;	oberliga-mittelrhein-%4d-%4d			;	oberliga/mittelrhein		;	2013
 	Oberliga Niederrhein	;	oberliga-niederrhein-%4d-%4d			;	oberliga/niederrhein		;	2013
-	Oberliga Nordrhein		;	oberliga-nordrhein-%4d-%4d				;	oberliga/nordrhein			;	1995;2002;	2005;2008
-	Oberliga NRW			;	nrw-liga-%4d-%4d						;	oberliga/nrw				;	2009;2012
+	Oberliga Nordrhein		;	oberliga-nordrhein-%4d-%4d				;	oberliga/nordrhein			;	1995;2003;	2005;2008
+	Oberliga NRW			;	nrw-liga-%4d-%4d						;	oberliga/nrw				;	2009;2013
 //
-//  RV S�dwest
+//  RV Südwest
 //	
-	Oberliga SW				;	oberliga-suedwest-%4d-%4d				;	oberliga/suedwest			;	1995;2012
+	Oberliga SW				;	oberliga-suedwest-%4d-%4d				;	oberliga/suedwest			;	1995;2013
 	Oberliga RLP Saar		;	oberliga-rheinland-pfalz-saar-%4d-%4d	;	oberliga/rlpsaar			;	2013
 //
-//  RV S�d
+//  RV Süd
 //	
-	Oberliga Süd			;	oberliga-sued-1945-63-%4d-%4d			;	oberliga/sued				;	1946;1963
-	Oberliga Bayern			;	oberliga-bayern-%4d-%4d					;	oberliga/bayern				;	1995;2009
-	Oberliga Bayern			;	bayernliga-%4d-%4d						;	oberliga/bayern				;	2010;2012
+	Oberliga Süd			;	oberliga-sued-1945-63-%4d-%4d			;	oberliga/sued				;	1946;1964
+	Oberliga Bayern			;	oberliga-bayern-%4d-%4d					;	oberliga/bayern				;	1995;2010
+	Oberliga Bayern			;	bayernliga-%4d-%4d						;	oberliga/bayern				;	2010;2013
 	Oberliga Bayern Nord	;	bayernliga-nord-%4d-%4d					;	oberliga/bayern/nord		;	2013
 	Oberliga Bayern Süd		;	bayernliga-sued-%4d-%4d					;	oberliga/bayern/sued		;	2013
-	Oberliga Hessen			;	oberliga-hessen-%4d-%4d					;	oberliga/hessen				;	1995;2009
+	Oberliga Hessen			;	oberliga-hessen-%4d-%4d					;	oberliga/hessen				;	1995;2010
 	Oberliga Hessen			;	hessenliga-%4d-%4d						;	oberliga/hessen				;	2010
-	Oberliga Baden W�rttemberg;	oberliga-baden-wuerttemberg-%4d-%4d		;	oberliga/badenwuerttemberg	;	1995
+	Oberliga Baden Württemberg;	oberliga-baden-wuerttemberg-%4d-%4d		;	oberliga/badenwuerttemberg	;	1995
 //
 //  RV NordOst
 //	
 	Oberliga NOFV Nord		;	oberliga-nofv-nord-%4d-%4d				;	oberliga/nofv/nord			;	1995
 	Oberliga NOFV Süd		;	oberliga-nofv-sued-%4d-%4d				;	oberliga/nofv/sued			;	1995
-	*/

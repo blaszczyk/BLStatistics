@@ -1,6 +1,6 @@
 package bn.blaszczyk.fussballstats.gui.corefilters;
 
-import bn.blaszczyk.fussballstats.core.Game;
+import bn.blaszczyk.fussballstats.model.Game;
 import bn.blaszczyk.fussballstats.filters.Filter;
 import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
 import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;

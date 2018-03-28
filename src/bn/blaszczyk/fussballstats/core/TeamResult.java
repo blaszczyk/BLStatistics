@@ -2,6 +2,9 @@ package bn.blaszczyk.fussballstats.core;
 
 import java.util.Comparator;
 
+import bn.blaszczyk.fussballstats.model.Game;
+import bn.blaszczyk.fussballstats.model.Team;
+
 public class TeamResult
 {	
 	/*
@@ -18,7 +21,7 @@ public class TeamResult
 	/*
 	 * Variables
 	 */
-	private final String team;
+	private final Team team;
 	private int points=0;
 	private int games=0;
 	private int wins=0;
@@ -31,7 +34,7 @@ public class TeamResult
 	/*
 	 * Constructor
 	 */
-	public TeamResult(String team)
+	public TeamResult(Team team)
 	{
 		this.team = team;
 	}
@@ -49,7 +52,7 @@ public class TeamResult
 		this.position = position;
 	}
 
-	public String getTeam()
+	public Team getTeam()
 	{
 		return team;
 	}
@@ -99,45 +102,36 @@ public class TeamResult
 	 */
 	public void consumeGame(Game game, int pointsForWin)
 	{
-		if(team.equals(game.getTeamHAlias()))
+		final int goalsHome = game.getGoalsHome().intValue();
+		final int goalsAway = game.getGoalsAway().intValue();
+		if(team.equals(game.getTeamHome()))
 		{
-			switch(game.getWinner())
-			{
-			case Game.HOME:
-				wins++;
-				points += pointsForWin;
-				break;
-			case Game.DRAW:
-				draws++;
-				points++;
-				break;
-			case Game.AWAY:
-				losses++;
-				break;
-			}
-			games++;
-			teamGoals += game.getGoalsH();
-			opponentGoals += game.getGoalsA();
+			consumeGoals(pointsForWin, goalsHome, goalsAway);
 		}
-		if(team.equals(game.getTeamAAlias()))
+		if(team.equals(game.getTeamAway()))
 		{
-			switch(game.getWinner())
-			{
-			case Game.AWAY:
-				wins++;
-				points += pointsForWin;
-				break;
-			case Game.DRAW:
-				draws++;
-				points++;
-				break;
-			case Game.HOME:
-				losses++;
-				break;
-			}
-			games++;
-			teamGoals += game.getGoalsA();
-			opponentGoals += game.getGoalsH();
+			consumeGoals(pointsForWin, goalsAway, goalsHome);
+		}
+	}
+
+	private void consumeGoals(final int pointsForWin, 	final int goalsTeam, final int goalsOpponent)
+	{
+		games++;
+		teamGoals += goalsTeam;
+		opponentGoals += goalsOpponent;
+		if(goalsTeam > goalsOpponent)
+		{
+			wins++;
+			points += pointsForWin;
+		}
+		else if(goalsTeam < goalsOpponent)
+		{
+			losses++;
+		}
+		else
+		{
+			draws++;
+			points++;
 		}
 	}
 	

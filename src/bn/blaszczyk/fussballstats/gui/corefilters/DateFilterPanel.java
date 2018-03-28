@@ -12,7 +12,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
-import bn.blaszczyk.fussballstats.core.Game;
+import bn.blaszczyk.fussballstats.model.Game;
 import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
 import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.AbstractFilterPanel;

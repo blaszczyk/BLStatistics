@@ -8,7 +8,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
-import bn.blaszczyk.fussballstats.core.Season;
+import bn.blaszczyk.fussballstats.model.Season;
 import bn.blaszczyk.fussballstats.filters.Filter;
 import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;
 import bn.blaszczyk.fussballstats.filters.SeasonFilterFactory;
@@ -110,7 +110,9 @@ public class LeagueFilterPanel extends AbstractFilterPanel<Season>
 	@Override
 	public String toString()
 	{
-		return getSelectedLeague().toString();
+		if(getSelectedLeague() != null)
+			return getSelectedLeague();
+		return "No League Selected";
 	}
 
 }

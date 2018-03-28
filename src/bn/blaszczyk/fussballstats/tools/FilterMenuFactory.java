@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import bn.blaszczyk.fussballstats.core.*;
+import bn.blaszczyk.fussballstats.model.*;
 import bn.blaszczyk.fussballstats.gui.corefilters.*;
 import bn.blaszczyk.fussballstats.gui.filters.*;
 

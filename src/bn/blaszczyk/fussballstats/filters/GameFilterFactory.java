@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import bn.blaszczyk.fussballstats.core.Game;
+import bn.blaszczyk.fussballstats.model.Game;
 
 public class GameFilterFactory
 {
@@ -16,35 +16,42 @@ public class GameFilterFactory
 	 */
 	public static Filter<Game> createGoalFilter(int goals)
 	{
-		Filter<Game> f = g -> g.getGoals() == goals;
+		Filter<Game> f = g -> getGoals(g) == goals;
 		return f;
 	}
+	
 	public static Filter<Game> createGoalMinFilter(int minGoals)
 	{
-		Filter<Game> f = g -> g.getGoals() >= minGoals;
+		Filter<Game> f = g -> getGoals(g) >= minGoals;
 		return f;
 	}
 	public static Filter<Game> createGoalMaxFilter(int maxGoals)
 	{
-		Filter<Game> f = g -> g.getGoals() <= maxGoals;
+		Filter<Game> f = g -> getGoals(g) <= maxGoals;
 		return f;
 	}
+
+	private static int getGoals(Game g)
+	{
+		return g.getGoalsAway() + g.getGoalsHome();
+	}
+	
 	/*
 	 * Home Goal Filters
 	 */
 	public static Filter<Game> createGoalHFilter(int goals)
 	{
-		Filter<Game> f = g -> g.getGoalsH() == goals;
+		Filter<Game> f = g -> g.getGoalsHome() == goals;
 		return f;
 	}
 	public static Filter<Game> createGoalHMinFilter(int minGoals)
 	{
-		Filter<Game> f = g -> g.getGoalsH() >= minGoals;
+		Filter<Game> f = g -> g.getGoalsHome() >= minGoals;
 		return f;
 	}
 	public static Filter<Game> createGoalHMaxFilter(int maxGoals)
 	{
-		Filter<Game> f = g -> g.getGoalsH() <= maxGoals;
+		Filter<Game> f = g -> g.getGoalsHome() <= maxGoals;
 		return f;
 	}
 	/*
@@ -52,17 +59,17 @@ public class GameFilterFactory
 	 */
 	public static Filter<Game> createGoalAFilter(int goals)
 	{
-		Filter<Game> f = g -> g.getGoalsA() == goals;
+		Filter<Game> f = g -> g.getGoalsAway() == goals;
 		return f;
 	}
 	public static Filter<Game> createGoalAMinFilter(int minGoals)
 	{
-		Filter<Game> f = g -> g.getGoalsA() >= minGoals;
+		Filter<Game> f = g -> g.getGoalsAway() >= minGoals;
 		return f;
 	}
 	public static Filter<Game> createGoalAMaxFilter(int maxGoals)
 	{
-		Filter<Game> f = g -> g.getGoalsA() <= maxGoals;
+		Filter<Game> f = g -> g.getGoalsAway() <= maxGoals;
 		return f;
 	}
 	/*
@@ -70,18 +77,22 @@ public class GameFilterFactory
 	 */
 	public static Filter<Game> createGoalDiffFilter(int goals)
 	{
-		Filter<Game> f = g -> g.getDiff() == goals;
+		Filter<Game> f = g -> getDiff(g) == goals;
 		return f;
 	}
 	public static Filter<Game> createGoalDiffMinFilter(int minGoals)
 	{
-		Filter<Game> f = g -> g.getDiff() >= minGoals;
+		Filter<Game> f = g -> getDiff(g) >= minGoals;
 		return f;
 	}
 	public static Filter<Game> createGoalDiffMaxFilter(int maxGoals)
 	{
-		Filter<Game> f = g -> g.getDiff() <= maxGoals;
+		Filter<Game> f = g -> getDiff(g) <= maxGoals;
 		return f;
+	}
+	private static int getDiff(final Game g)
+	{
+		return g.getGoalsHome() - g.getGoalsAway();
 	}
 
 	/*
@@ -89,19 +100,19 @@ public class GameFilterFactory
 	 */
 	public static Filter<Game> createTeamFilter(String team) 
 	{
-		Filter<Game> f = g ->g.getTeamHAlias().equals(team) || g.getTeamAAlias().equals(team);
+		Filter<Game> f = g ->g.getTeamHome().getName().equals(team) || g.getTeamAway().getName().equals(team);
 		return f;
 	}
 	
 	public static Filter<Game> createTeamHomeFilter(String team) 
 	{
-		Filter<Game> f = g -> g.getTeamHAlias().equals(team);
+		Filter<Game> f = g -> g.getTeamHome().getName().equals(team);
 		return f;
 	}
 	
 	public static Filter<Game> createTeamAwayFilter(String team) 
 	{
-		Filter<Game> f = g -> g.getTeamAAlias().equals(team);
+		Filter<Game> f = g -> g.getTeamAway().getName().equals(team);
 		return f;
 	}
 	
@@ -110,7 +121,7 @@ public class GameFilterFactory
 	 */	
 	public static Filter<Game> createSubLeagueFilter(Collection<String> teams)
 	{
-		Filter<Game> f = g -> teams.contains(g.getTeamHAlias()) && teams.contains(g.getTeamAAlias());
+		Filter<Game> f = g -> teams.contains(g.getTeamHome().getName()) && teams.contains(g.getTeamAway().getName());
 		return f;
 	}
 	
@@ -124,17 +135,17 @@ public class GameFilterFactory
 	 */
 	public static Filter<Game> createMatchDayFilter(int matchDay)
 	{
-		Filter<Game> f = g -> g.getMatchDay() == matchDay;
+		Filter<Game> f = g -> g.getMatchday().getCount().intValue() == matchDay;
 		return f;
 	}
 	public static Filter<Game> createMatchDayMinFilter(int matchDay)
 	{
-		Filter<Game> f = g -> g.getMatchDay() >= matchDay;
+		Filter<Game> f = g -> g.getMatchday().getCount().intValue() >= matchDay;
 		return f;
 	}
 	public static Filter<Game> createMatchDayMaxFilter(int matchDay)
 	{
-		Filter<Game> f = g -> g.getMatchDay() <= matchDay;
+		Filter<Game> f = g -> g.getMatchday().getCount().intValue() <= matchDay;
 		return f;
 	}
 

@@ -10,8 +10,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.core.Season;
+import bn.blaszczyk.fussballstats.model.Game;
+import bn.blaszczyk.fussballstats.model.Season;
 import bn.blaszczyk.fussballstats.gui.filters.*;
 
 public class FilterIO

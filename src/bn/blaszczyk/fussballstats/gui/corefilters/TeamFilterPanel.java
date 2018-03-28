@@ -8,7 +8,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
-import bn.blaszczyk.fussballstats.core.Game;
+import bn.blaszczyk.fussballstats.model.Game;
 import bn.blaszczyk.fussballstats.filters.Filter;
 import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
 import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;

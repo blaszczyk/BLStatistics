@@ -14,9 +14,18 @@ leagues-wbf/
 leagues/
 filters/
 lib/
+log/
 *.bls
 *.flt
 
+#
+# rose generated Files
+#
+src/bn/blaszczyk/fussballstats/model
+src/bn/blaszczyk/fussballstats/dto
+src/bn/blaszczyk/fussballstats/resources/*.rose
+src/META-INF/persistence.xml
+sql/
 #
 # Eclipse Files
 #

@@ -6,7 +6,7 @@ import java.util.List;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-import bn.blaszczyk.fussballstats.core.Game;
+import bn.blaszczyk.fussballstats.model.Game;
 
 public class GameTableModel implements TableModel
 {	
@@ -58,15 +58,15 @@ public class GameTableModel implements TableModel
 		case 0:
 			return game.getDate();
 		case 1:
-			return game.getTeamHAlias();
+			return game.getTeamHome().getName();
 		case 2:
-			return game.getGoalsH();
+			return game.getGoalsHome();
 		case 3:
 			return " : ";
 		case 4:
-			return game.getGoalsA();
+			return game.getGoalsAway();
 		case 5:
-			return game.getTeamAAlias();
+			return game.getTeamAway().getName();
 		}
 		return "";
 	}

@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import bn.blaszczyk.fussballstats.core.*;
+import bn.blaszczyk.fussballstats.model.*;
 import bn.blaszczyk.fussballstats.filters.BiFilter;
 import bn.blaszczyk.fussballstats.gui.filters.BiFilterEvent;
 import bn.blaszczyk.fussballstats.gui.filters.BiFilterListener;

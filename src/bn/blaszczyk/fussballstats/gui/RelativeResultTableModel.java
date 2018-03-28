@@ -73,11 +73,9 @@ public class RelativeResultTableModel implements TableModel
 		case 0:
 			return result.getPosition();
 		case 1:
-			return result.getTeam();
+			return result.getTeam().getName();
 		case 2:
 			return result.getGames();
-		case 9:
-			return " : ";		
 		case 3:
 			value =  result.getPoints();
 			break;
@@ -96,6 +94,8 @@ public class RelativeResultTableModel implements TableModel
 		case 8:
 			value =  result.getTeamGoals();
 			break;
+		case 9:
+			return " : ";
 		case 10:
 			value =  result.getOpponentGoals();	
 			break;	

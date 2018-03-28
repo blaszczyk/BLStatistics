@@ -2,18 +2,26 @@ package bn.blaszczyk.fussballstats.tools;
 
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import bn.blaszczyk.fussballstats.FussballStats;
-import bn.blaszczyk.fussballstats.core.League;
-import bn.blaszczyk.fussballstats.core.Season;
+import bn.blaszczyk.fussballstats.model.League;
+import bn.blaszczyk.fussballstats.model.Season;
+import bn.blaszczyk.fussballstats.model.Team;
+import bn.blaszczyk.rose.RoseException;
+import bn.blaszczyk.rosecommon.controller.ModelController;
 import bn.blaszczyk.fussballstats.gui.LeagueManager;
 import bn.blaszczyk.fussballstats.gui.PrefsDialog;
 import bn.blaszczyk.fussballstats.gui.corefilters.LeagueFilterPanel;
@@ -24,145 +32,167 @@ public class Initiator {
 	/*
 	 * Constants
 	 */
-	private static final String	LEAGUES_FILE	= "data/leagues.dat";
+	public static final String	LEAGUES_FILE	= "data/leagues.dat";
 	private static final String	ICON_FILE		= "data/icon.png";
-	
+
 	/*
 	 * Displaying Component
 	 */
-	private static ProgressDialog progressDialog;
+//	private ProgressDialog progressDialog;
 	
+	private final ModelController controller;
+	
+	
+	
+	public Initiator(final ModelController controller)
+	{
+		this.controller = controller;
+	}
+
 	/*
 	 * Full Initialization
 	 */
-	public static boolean initAll(List<League> leagues)
+	public boolean initAll()
 	{
-		List<String> uniqueLeagueNames = new ArrayList<>();
-
 		initUIManager();
-		TeamAlias.loadAliases();		
-		initLeagues(leagues);
-		
-		int seasonCount = 0;
-		for (League league : leagues)
-			seasonCount += league.getSeasonCount();
-		progressDialog = new ProgressDialog(null, seasonCount, "Initiiere FussballStats",
-				Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE)), true);
-		progressDialog.showDialog();
-		
-		progressDialog.appendInfo("Lade Einstellungen");
-		initPrefs();		
-		
-		boolean databaseExists = false;
-		boolean dbMode = LeagueManager.isDbMode();
-		int triesLeft = 3;
-		while((dbMode = LeagueManager.isDbMode()) && ! databaseExists)
-		{
-			try
-			{
-				progressDialog.appendInfo("\nVerbinde mit Datenbank");
-				databaseExists = checkDB();
-			}
-			catch(FussballException e)
-			{
-				progressDialog.appendException(e);
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(progressDialog, e.getMessage(), "Keine Verbindung zur Datenbank", JOptionPane.ERROR_MESSAGE);
-			}
-			if(--triesLeft < 0)
-			{
-				progressDialog.setFinished();
-				return false;
-			}
-			if(!databaseExists)
-				new PrefsDialog(progressDialog).showDialog();
-		}
+		TeamAlias.loadAliases();
 		
 		try
-		{	
-			if(dbMode)
-				DBTools.openMySQLDatabase();
-			for (League league : leagues)
-			{
-				if (!uniqueLeagueNames.contains(league.getName()))
-				{
-					uniqueLeagueNames.add(league.getName());
-					progressDialog.appendInfo("\nLade Liga: " + league.getName());
-				}
-				boolean leagueAvailable = (dbMode ? DBTools.tableExists(league) : FileIO.folderExists(league));
-				if(leagueAvailable)
-					for (Season season : league)
-					{
-						progressDialog.incrementValue();
-						if(dbMode)
-							DBTools.loadSeason(season);
-						else
-							FileIO.loadSeason(season);
-					}
-				else
-				{
-					seasonCount -= league.getSeasonCount();
-					progressDialog.setMaxValue(seasonCount);
-				}
-			}		
-			if (dbMode)
-			{		
-				progressDialog.appendInfo("\nSchliesse Verbindung zu Datenbank");
-				DBConnection.closeConnection();
-			}
-		}
-		catch (FussballException e)
 		{
-			progressDialog.appendException(e);
-			progressDialog.setFinished();
-			return false;
+			final List<League> leagues = initLeagues();
+//			final int seasonCount = leagues.stream().map(League::getSeasons).mapToInt(Collection::size).sum();
+
+//			progressDialog = new ProgressDialog(null, seasonCount, "Initiiere FussballStats",
+//					Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(ICON_FILE)), true);
+//			progressDialog.showDialog();
+//			
+//			progressDialog.appendInfo("Lade Einstellungen");
+//
+//			progressDialog.appendInfo("\nErstelle Listen");
+//			if(!initLists(leagues))
+//			{
+//				int reply = JOptionPane.showConfirmDialog(progressDialog, "Liga Manager öffnen und Spiele Downloaden?", 
+//						"Keine Spiele vorhanden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+//				if(reply == JOptionPane.YES_OPTION)
+//				{
+//					new LeagueManager(progressDialog, controller).showDialog();
+//					initLists(leagues);
+//				}
+//			}
 		}
-				
-		progressDialog.appendInfo("\nErstelle Listen");
-		if(!initLists(leagues))
+		catch (RoseException e)
 		{
-			int reply = JOptionPane.showConfirmDialog(progressDialog, "Liga Manager öffnen und Spiele Downloaden?", 
-					"Keine Spiele vorhanden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-			if(reply == JOptionPane.YES_OPTION)
-			{
-				new LeagueManager(progressDialog, leagues).showDialog();
-				initLists(leagues);
-			}
+//			if(progressDialog != null)
+//			{
+//				progressDialog.appendException(e);
+//				progressDialog.setFinished();
+//			}
+			throw e;
 		}
 		
-		progressDialog.disposeDialog();
-		
+//		progressDialog.disposeDialog();
 		return true;
 	}
 	
 	/*
 	 * Init Known Leagues From Resource
 	 */
-	private static List<League> initLeagues(List<League> leagues)
+	private List<League> initLeagues() throws RoseException
 	{
-		Scanner scanner = new Scanner(FussballStats.class.getResourceAsStream(LEAGUES_FILE));
-		boolean ignore = false;
-		while (scanner.hasNextLine())
+		try
 		{
-			String props[] = scanner.nextLine().split(";");
-			if(props[0].contains("/*"))
-				ignore = true;
-			if(props[0].contains("*/"))
-				ignore = false;
-			if (props[0].startsWith("/") || props.length < 3)
-				continue;
-			if(!ignore)
-			{
-				int[] yearBounds = new int[props.length - 3];
-				for (int i = 0; i < yearBounds.length; i++)
-					yearBounds[i] = Integer.parseInt(props[i + 3].trim());
-				
-				League league = new League(props[0].trim(), props[1].trim(), props[2].trim(), yearBounds);
-				leagues.add(league);
-			}
+			final Path leagueData = Paths.get(FussballStats.class.getResource(LEAGUES_FILE).toURI());
+			for(final String line : Files.readAllLines(leagueData))
+				if(!line.startsWith("//"))
+					ensureLeague(line);
+			return controller.getEntities(League.class);
 		}
-		scanner.close();
-		return leagues;
+		catch(URISyntaxException | IOException e)
+		{
+			throw new RoseException("Error initializig leagues", e);
+		}
+	}
+	
+	private void ensureLeague(final String line) throws RoseException
+	{
+		final String[] split = line.split(";");
+		if(split.length < 3)
+			throw new RoseException("Cannot parse league line: " + line);
+		final String[] chain = split[2].split("\\/");
+		final League root = getRootLeague();
+		final League league = ensureRecursive(root,chain);
+		final String leagueName = split[0].trim();
+		if(!leagueName.equals(league.getName()))
+		{
+			league.setName(leagueName);
+			controller.update(league);
+		}
+		ensureSeasons(league, Arrays.copyOfRange(split, 3,split.length));
+	}
+	
+	private void ensureSeasons(final League	league, final String[] yearBounds) throws RoseException
+	{
+		if(yearBounds.length == 0)
+			return;
+		final List<Integer> bounds = Arrays.stream(yearBounds)
+				.map(String::trim)
+				.map(Integer::parseInt)
+				.collect(Collectors.toList());
+		for(int year = bounds.get(0); year <= FussballStats.THIS_SEASON; year++)
+			if(contains(bounds, year))
+				ensureSeason(league,year);
+	}	
+
+	private void ensureSeason(final League league, final int year) throws RoseException
+	{
+		if(league.getSeasons().stream().mapToInt(Season::getYear).anyMatch(i -> i == year))
+			return;
+		final Season season = controller.createNew(Season.class);
+		season.setYear(year);
+		season.setEntity(Season.LEAGUE, league);
+		controller.update(season);
+	}
+
+	private static boolean contains(final List<Integer> bounds, final int year)
+	{
+		boolean result = false;
+		for(final Integer bound : bounds)
+			if(bound.intValue() <= year)
+				result = !result;
+		return result;
+	}
+	
+	private League ensureRecursive(final League parent, final String[] chain) throws RoseException
+	{
+		if(chain.length == 0)
+			return parent;
+		final String leagueId = chain[0].trim();
+		final String[] subChain = Arrays.copyOfRange(chain, 1, chain.length);
+		
+		League league = parent.getChilds().stream()
+			.filter(l -> l.getLeagueId().equals(leagueId))
+			.findFirst().orElse(null);
+		if(league == null)
+		{
+			league = controller.createNew(League.class);
+			league.setLeagueId(leagueId);
+			league.setEntity(League.PARENT, parent);
+			controller.update(league);
+		}
+		return ensureRecursive(league, subChain);
+	}
+	
+	private League getRootLeague() throws RoseException
+	{
+		for(final League league : controller.getEntities(League.class))
+			if(league.getLeagueId().equals(""))
+				return league;
+		final League root = controller.createNew(League.class);
+		root.setLeagueId("");
+		root.setParent(null);
+		root.setName("Root");
+		controller.update(root);
+		return root;
 	}
 	
 	/*
@@ -201,56 +231,23 @@ public class Initiator {
 	}
 	
 	/*
-	 * Creates DB in Requested
-	 */
-	private static boolean checkDB() throws FussballException
-	{
-		DBTools.connectToSQLServer();
-		boolean exists = DBTools.databaseExists();
-		if(!exists)
-		{
-			int reply = JOptionPane.showConfirmDialog(progressDialog, "Soll die Datenbank '" + DBTools.getDbName() + "' erstellt werden?", 
-					"Datenbank nicht vorhanden.", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-			if(reply == JOptionPane.YES_OPTION)
-			{
-				DBTools.createDatabase();
-				exists = true;
-			}
-		}
-		DBConnection.closeConnection();
-		return exists;
-	}
-	
-	/*
-	 * Init Preferences
-	 */
-	private static void initPrefs()
-	{
-		int triesLeft = 3;
-		while(!PrefsDialog.initPrefs())
-		{
-			if(--triesLeft < 0)
-				return;
-			new PrefsDialog(progressDialog).showDialog();
-		}
-	}
-	
-	/*
 	 * Init Lists for ComboBox Users
 	 */
-	private static boolean initLists(Iterable<League> leagues)
+	private static boolean initLists(final Collection<League> leagues)
 	{
-		List<String> teams = new ArrayList<>();
-		List<String> leagueNames = new ArrayList<>();
-		for (League league : leagues)
-		{
-			for (String team : league.getTeams())
-				if (!teams.contains(team))
-					teams.add(team);
-			if (!leagueNames.contains(league.getName()))
-				leagueNames.add(league.getName());
-		}
-		Collections.sort(teams);
+		final List<String> teams = leagues.stream()
+								.map(League::getSeasons)
+								.flatMap(Collection::stream)
+								.map(Season::getTeams)
+								.flatMap(Collection::stream)
+								.map(Team::getName)
+								.distinct()
+								.sorted()
+								.collect(Collectors.toList());
+		final List<String> leagueNames = leagues.stream()
+								.map(League::getName)
+								.distinct()
+								.collect(Collectors.toList());
 		LeagueFilterPanel.setLeagueList(leagueNames);
 		TeamFilterPanel.setTeamList(teams);
 		return teams.size() != 0;

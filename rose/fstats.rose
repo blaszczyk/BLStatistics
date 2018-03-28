@@ -1,0 +1,66 @@
+set srcpath src/
+set sqlpath sql/
+set resourcepath src/
+
+set usingforeignkeys false
+set usingtimestamp false
+set dbtype mysql
+set dbuser root
+-set dbpassword 
+set dbserver localhost
+set dbport 3306
+set dbname fstats
+
+set resourcepackage bn.blaszczyk.fussballstats.resources
+
+set modelpackage bn.blaszczyk.fussballstats.model
+set dtopackage bn.blaszczyk.fussballstats.dto
+set dtocontainername FussballDtoContainer
+set usinginterfaces true
+set usingannotations true
+
+-set parserpackage bn.blaszczyk.fussballstats.parser
+-set parserformat %sParser
+
+begin entity League : P
+	varchar(50) name "1. Bundesliga"
+	varchar(150) leagueId
+	manytoone League parent child
+	tostring %name
+end entity
+
+begin entity Season :P
+	int year
+	manytoone League
+	manytomany Team
+	tostring %league %year
+end entity
+
+begin entity Matchday : P
+	int count
+	manytoone Season
+	tostring %season %count. Spieltag
+end entity
+
+begin entity Team : P
+	varchar(50) name
+	varchar(50) location
+	tostring %name
+end entity
+
+begin entity Game : P
+	date date
+	int goalsHome
+	int goalsAway
+	manytoone Matchday
+	manytoone Team teamHome gameHome
+	manytoone Team teamAway gameAway
+	tostring %teamHome - %teamAway (%goalsHome : %goalsAway)
+end entity
+
+create sqlcreate
+create persistence
+create javamodels
+create javadtos
+create rosefilecopy
+create javadtocontainer

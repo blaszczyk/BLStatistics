@@ -1,7 +1,6 @@
 package bn.blaszczyk.fussballstats.filters;
 
-import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.core.Season;
+import bn.blaszczyk.fussballstats.model.*;
 
 public class SeasonFilterFactory
 {
@@ -45,13 +44,13 @@ public class SeasonFilterFactory
 
 	public static BiFilter<Season,Game> createFirstRoundFilter()
 	{
-		BiFilter<Season,Game> f = (s,g) -> 2 * g.getMatchDay() <= s.getMatchDayCount();
+		BiFilter<Season,Game> f = (s,g) -> 2 * g.getMatchday().getCount().intValue() <= s.getMatchdays().size();
 		return f;
 	}
 	
 	public static BiFilter<Season,Game> createSecondRoundFilter()
 	{
-		BiFilter<Season,Game> f = (s,g) -> 2 * g.getMatchDay() > s.getMatchDayCount();
+		BiFilter<Season,Game> f = (s,g) -> 2 * g.getMatchday().getCount().intValue() > s.getMatchdays().size();
 		return f;
 	}
 }

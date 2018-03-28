@@ -19,9 +19,10 @@ import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 
 import bn.blaszczyk.fussballstats.FussballStats;
-import bn.blaszczyk.fussballstats.core.*;
+import bn.blaszczyk.fussballstats.model.*;
 import bn.blaszczyk.fussballstats.gui.filters.*;
 import bn.blaszczyk.fussballstats.tools.FilterLog;
+import bn.blaszczyk.rosecommon.controller.ModelController;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, ActionListener
@@ -54,7 +55,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	 * Variables
 	 */
 	private final FilterLog filterLog = new FilterLog();
-	private final List<League> leagues;
+	private final ModelController controller;
 	
 	/*
 	 * Components
@@ -66,10 +67,10 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	/*
 	 * Constructors
 	 */
-	public MainFrame(List<League> leagues)
+	public MainFrame(final ModelController controller)
 	{
 		super("Fussball Statistiken");
-		this.leagues = leagues;
+		this.controller = controller;
 		
 		populateMenuBar();
 		setJMenuBar(menuBar);
@@ -128,7 +129,7 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	 */
 	private void showLeagueManager()
 	{
-		LeagueManager lm = new LeagueManager(this, leagues);
+		LeagueManager lm = new LeagueManager(this, controller);
 		lm.showDialog();
 		resetGameList();
 	}
@@ -204,11 +205,12 @@ public class MainFrame extends JFrame implements BiFilterListener<Season,Game>, 
 	private void resetGameList()
 	{
 		List<Game> gameList = new ArrayList<>();
-		for(League league : leagues)
-			for(Season season : league)
-				for(Game game : season)
-					if(functionalFilterPanel.check(season, game))
-						gameList.add(game);
+		for(League league : controller.getEntities(League.class))
+			for(Season season : league.getSeasons())
+				for(Matchday matchday : season.getMatchdays())
+					for(Game game : matchday.getGames())
+						if(functionalFilterPanel.check(season, game))
+							gameList.add(game);
 		functionalGameTable.setGames(gameList);
 		functionalResultTable.setGames(gameList);
 	}

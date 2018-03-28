@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 
 import bn.blaszczyk.fussballstats.core.*;
+import bn.blaszczyk.fussballstats.model.*;
 import bn.blaszczyk.fussballstats.filters.*;
 import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
 
@@ -137,9 +138,8 @@ public class FunctionalResultTable extends JPanel implements ItemListener
 	private void setTable()
 	{
 		Table table = new Table(games, filter,(Integer)boxWinPoints.getSelectedItem());
-		table.sort();	
 		resultTable.setRelativeTable(chbWeighted.isSelected());
-		resultTable.setSource(table);
+		resultTable.setSource(table.getSortedResults());
 	}
 
 	/*

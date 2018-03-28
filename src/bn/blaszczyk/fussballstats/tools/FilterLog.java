@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.core.Season;
+import bn.blaszczyk.fussballstats.model.Game;
+import bn.blaszczyk.fussballstats.model.Season;
 import bn.blaszczyk.fussballstats.gui.filters.*;
 
 public class FilterLog

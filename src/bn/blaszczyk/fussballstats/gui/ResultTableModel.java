@@ -69,7 +69,7 @@ public class ResultTableModel implements TableModel
 		case 0:
 			return result.getPosition();
 		case 1:
-			return result.getTeam();
+			return result.getTeam().getName();
 		case 2:
 			return result.getGames();
 		case 3:

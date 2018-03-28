@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 
-import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.core.Season;
+import bn.blaszczyk.fussballstats.model.Game;
+import bn.blaszczyk.fussballstats.model.Season;
 import bn.blaszczyk.fussballstats.gui.corefilters.*;
 import bn.blaszczyk.fussballstats.gui.filters.*;
 

@@ -1,19 +1,33 @@
 package bn.blaszczyk.fussballstats.tools;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
 
-import bn.blaszczyk.fussballstats.core.Game;
-import bn.blaszczyk.fussballstats.core.Season;
+import bn.blaszczyk.fussballstats.FussballStats;
+import bn.blaszczyk.fussballstats.model.Game;
+import bn.blaszczyk.fussballstats.model.League;
+import bn.blaszczyk.fussballstats.model.Matchday;
+import bn.blaszczyk.fussballstats.model.Season;
+import bn.blaszczyk.fussballstats.model.Team;
+import bn.blaszczyk.rose.RoseException;
+import bn.blaszczyk.rosecommon.controller.ModelController;
+
 
 public class WeltFussballRequest
 {
@@ -24,20 +38,22 @@ public class WeltFussballRequest
 	private static final String	BASE_URL = "http://www.weltfussball.de/alle_spiele";
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
-	/*
-	 * Variables
-	 */
-	private int matchDay;
-	private Date date;
 
 	private final WebClient webClient = new WebClient();
 	private HtmlTableBody tableBody;
 	
+	private final ModelController controller;
+
+	private final Map<String,Team> teams;
 	/*
 	 * Constructor
 	 */
-	public WeltFussballRequest()
+	public WeltFussballRequest(final ModelController controller)
 	{
+		this.controller = controller;
+		teams = controller.getEntities(Team.class).stream()
+				.collect(Collectors.toMap(Team::getName, UnaryOperator.identity()));
+		
 		webClient.getOptions().setAppletEnabled(false);
 		webClient.getOptions().setCssEnabled(false);
 		webClient.getOptions().setJavaScriptEnabled(false);
@@ -47,9 +63,9 @@ public class WeltFussballRequest
 	/*
 	 * Request Data From Webpage
 	 */
-	public void requestData(Season season) throws FussballException
+	public void requestData(final Season season) throws RoseException
 	{
-		String urlPath = String.format(season.getLeague().getURLFormat(), season.getYear()-1, season.getYear());
+		String urlPath = getPathForSeason(season);
 		String url = String.format("%s/%s/", BASE_URL, urlPath);
 		try
 		{
@@ -65,6 +81,7 @@ public class WeltFussballRequest
 			domElement = getChildElement(domElement, 0);
 			domElement = getChildElement(domElement, 0);
 			tableBody = (HtmlTableBody) getChildElement(domElement, 0);
+			update(season);
 				
 		}
 		catch (FailingHttpStatusCodeException | IOException | NullPointerException | ClassCastException e)
@@ -72,13 +89,69 @@ public class WeltFussballRequest
 			throw new FussballException("Fehler beim Download von Saison " + season,e);
 		}
 	}
+
+	private String getPathForSeason(Season season) throws FussballException
+	{
+		final League league = season.getLeague();
+		final int year = season.getYear();
+		try
+		{
+			final URI leaguesUri = FussballStats.class.getResource(Initiator.LEAGUES_FILE).toURI();
+			final String urlFormat = Files.lines(Paths.get(leaguesUri))
+					.filter(s -> !s.startsWith("////"))
+					.map(s -> s.split(";"))
+					.filter(s -> contains(s,league))
+					.filter(s -> contains(s,year))
+					.map(s -> s[1].trim())
+					.findFirst()
+					.orElse(""); // TODO expection
+			return String.format(urlFormat, year-1, year);
+		}
+		catch (IOException | URISyntaxException e)
+		{
+			throw new FussballException("Cannot construct url path for season " + season, e);
+		}
+			
+	}
 	
+	private static boolean contains(final String[] row, final League league)
+	{
+		if(row.length < 3)
+			return false;
+		final String fullLeagueId = "/" + row[2].trim();
+		return fullLeagueId.equals(fullLeagueId(league).toString());
+	}
+	
+	private static StringBuilder fullLeagueId(final League league)
+	{
+		if(league.getParent() == null)
+			return new StringBuilder(league.getLeagueId());
+		else
+		{
+			return fullLeagueId(league.getParent()).append("/").append(league.getLeagueId());
+		}
+	}
+	
+	private static boolean contains(final String[] row, final int year)
+	{
+		boolean result = false;
+		int bound = Integer.MIN_VALUE;
+		int i = 3;
+		while(i < row.length && bound < year)
+		{
+			bound = Integer.parseInt(row[i].trim());
+			result = !result;
+			i++;
+		}
+		return result;
+	}
 	/*
 	 * Extract GameList From Requested Data
 	 */
-	public List<Game> getGames() throws FussballException
+	public void update(final Season season) throws FussballException, RoseException
 	{
-		List<Game> games = new ArrayList<>();
+		Matchday matchday = null;
+		Date date = null;
 		for(HtmlTableRow row :  tableBody.getRows())
 		{
 			List<HtmlTableCell> cells = row.getCells();
@@ -87,7 +160,14 @@ public class WeltFussballRequest
 			 * MatchDay
 			 */
 			if(cells.size() == 1)
-				matchDay = Integer.parseInt( ((HtmlAnchor)cells.get(0).getFirstElementChild()).getHrefAttribute().split("/")[3].trim() );
+			{
+				final int matchDay = Integer.parseInt( ((HtmlAnchor)cells.get(0).getFirstElementChild()).getHrefAttribute().split("/")[3].trim() );
+				matchday = season.getMatchdays().stream()
+						.filter(m -> m.getCount().intValue() == matchDay)
+						.findFirst().orElse(null);
+				if(matchday == null)
+					matchday = newMatchday(matchDay,season);
+			}
 			else if(cells.size() == 8)
 			{		
 				
@@ -147,16 +227,54 @@ public class WeltFussballRequest
 				{
 					throw new FussballException("Falsches Ergebnis Format in " + result, e);
 				}
-				
-				/*
-				 * Create Game
-				 */
-				games.add(new Game(matchDay, date, teamH, teamA, goalsH, goalsA));
+				createGame(date, getTeam(teamH), getTeam(teamA), goalsH, goalsA, matchday);
 			}
 		}
-		return games;
+		season.getMatchdays().stream()
+			.map(Matchday::getGames)
+			.flatMap(Collection::stream)
+			.map(Game::getTeamHome)
+			.forEach(season.getTeams()::add);
+		season.getMatchdays().stream()
+			.map(Matchday::getGames)
+			.flatMap(Collection::stream)
+			.map(Game::getTeamAway)
+			.forEach(season.getTeams()::add);
+		controller.update(season);
 	}
 	
+	private Team getTeam(final String teamName) throws RoseException
+	{
+		if(teams.containsKey(teamName))
+			return teams.get(teamName);
+		final Team team = controller.createNew(Team.class);
+		team.setName(teamName);
+		controller.update(team);
+		teams.put(team.getName(), team);
+		return team;
+	}
+	
+	private void createGame(Date date, final Team teamHome, final Team teamAway, int goalsHome, int goalsAway, Matchday matchday) throws RoseException
+	{
+		final Game game = controller.createNew(Game.class);
+		game.setDate(date);
+		game.setGoalsHome(goalsHome);
+		game.setGoalsAway(goalsAway);
+		game.setTeamHome(teamHome);
+		game.setTeamAway(teamAway);
+		game.setEntity(Game.MATCHDAY, matchday);
+		controller.update(game);
+	}
+
+	private Matchday newMatchday(int count, Season season) throws RoseException
+	{
+		final Matchday matchday = controller.createNew(Matchday.class);
+		matchday.setCount(count);
+		matchday.setEntity(Matchday.SEASON, season);
+		controller.update(matchday);
+		return matchday;
+	}
+
 	/*
 	 * Close Browser on Destruction
 	 */

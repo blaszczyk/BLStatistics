@@ -2,14 +2,18 @@ package bn.blaszczyk.fussballstats.core;
 
 import java.util.*;
 import bn.blaszczyk.fussballstats.filters.*;
+import bn.blaszczyk.fussballstats.model.Game;
+import bn.blaszczyk.fussballstats.model.Team;
 
-public class Table implements Iterable<TeamResult>
+public class Table
 {
+	
+	private static final Comparator<Team> BY_NAME = (t1,t2) -> t1.getName().compareTo(t2.getName());
 	
 	/*
 	 * Variables
 	 */
-	private final List<TeamResult> teamResults = new ArrayList<>();
+	private final Map<Team,TeamResult> teamResults = new HashMap<>();
 	private final int pointsForWin;
 
 	/*
@@ -32,32 +36,13 @@ public class Table implements Iterable<TeamResult>
 	/*
 	 * Getters, Delegates
 	 */
-
-	public int getTeamCount()
-	{
-		return teamResults.size();
-	}
 	
-	public TeamResult getTeamResult(int index)
+	public List<Team> getTeamList()
 	{
-		return teamResults.get(index);
-	}
-
-
-	private int getTeamIndex(String team)
-	{
-		for(int i = 0; i < teamResults.size(); i++)
-			if( teamResults.get(i).getTeam().equals(team))
-				return i;
-		return -1;
-	}
-	
-	public List<String> getTeamList()
-	{
-		List<String> teamList = new ArrayList<>();
-		for(TeamResult tr : this)
+		List<Team> teamList = new ArrayList<>();
+		for(TeamResult tr : teamResults.values())
 			teamList.add(tr.getTeam());
-		Collections.sort(teamList);
+		Collections.sort(teamList,BY_NAME);
 		return teamList;
 	}
 	
@@ -65,38 +50,42 @@ public class Table implements Iterable<TeamResult>
 	 * Special Methods
 	 */
 	
-	public void sort()
+	public List<TeamResult> getSortedResults()
 	{
-		if(teamResults == null || teamResults.isEmpty())
-			return;
-		teamResults.sort( TeamResult.COMPARE_POSITION );
+		if(teamResults.isEmpty())
+			return Collections.emptyList();
+		final List<TeamResult> sortedResults = new ArrayList<>(teamResults.values());
+		sortedResults.sort( TeamResult.COMPARE_POSITION );
 		int lastPos = 1;
-		teamResults.get(0).setPosition(1);
-		for(int i = 1; i < getTeamCount(); i++)
-			if(TeamResult.COMPARE_POSITION.compare(getTeamResult(i), getTeamResult(i-1)) == 0)
-				getTeamResult(i).setPosition(lastPos);
+		sortedResults.get(0).setPosition(1);
+		for(int i = 1; i < sortedResults.size(); i++)
+		{
+			final TeamResult current = sortedResults.get(i);
+			final TeamResult previous = sortedResults.get(i-1);
+			if(TeamResult.COMPARE_POSITION.compare(current, previous) == 0)
+				current.setPosition(lastPos);
 			else
-				getTeamResult(i).setPosition(lastPos = i + 1);	
+				current.setPosition(lastPos = i + 1);
+		}
+		return sortedResults;
 	}
 	
 	private void consumeGame(Game game, BiFilter<TeamResult,Game> teamResultFilter)
 	{
-		if(getTeamIndex(game.getTeamHAlias())<0)
-			teamResults.add( new TeamResult(game.getTeamHAlias()));
-		if(getTeamIndex(game.getTeamAAlias())<0)
-			teamResults.add( new TeamResult(game.getTeamAAlias()));
-		for(TeamResult t : teamResults)
-			if(teamResultFilter.check(t, game))
-				t.consumeGame(game,pointsForWin);
+		final Team teamHome = game.getTeamHome();
+		consumeByTeam(game, teamResultFilter, teamHome);
+		
+		final Team teamAway = game.getTeamAway();
+		consumeByTeam(game, teamResultFilter, teamAway);
 	}
-	
-	/*
-	 * Iterator Method
-	 */
-	@Override
-	public Iterator<TeamResult> iterator()
+
+	private void consumeByTeam(final Game game, final BiFilter<TeamResult, Game> teamResultFilter, final Team team)
 	{
-		return teamResults.iterator();
+		if(!teamResults.containsKey(team))
+			teamResults.put(team, new TeamResult(team));
+		final TeamResult result = teamResults.get(team);
+		if(teamResultFilter.check(result, game))
+			result.consumeGame(game, pointsForWin);
 	}
 
 }

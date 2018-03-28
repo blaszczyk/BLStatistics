@@ -1,7 +1,9 @@
 package bn.blaszczyk.fussballstats.tools;
 
+import bn.blaszczyk.rose.RoseException;
+
 @SuppressWarnings("serial")
-public class FussballException extends Exception
+public class FussballException extends RoseException
 {
 	public FussballException(String errorMessage)
 	{

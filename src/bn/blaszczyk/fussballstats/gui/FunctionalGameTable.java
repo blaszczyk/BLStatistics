@@ -12,7 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionListener;
 
-import bn.blaszczyk.fussballstats.core.Game;
+import bn.blaszczyk.fussballstats.model.Game;
 
 @SuppressWarnings("serial")
 public class FunctionalGameTable extends JPanel
@@ -118,22 +118,19 @@ public class FunctionalGameTable extends JPanel
 
 	private void addToStatistics(Game game)
 	{
+		final int goalsHome = game.getGoalsHome().intValue();
+		final int goalsAway = game.getGoalsAway().intValue();
+		
 		nrGames++;
-		nrGoals += game.getGoals();
-		nrHomeGoals += game.getGoalsH();
-		nrAwayGoals += game.getGoalsA();
-		switch(game.getWinner())
-		{
-		case Game.HOME:
+		nrGoals += goalsHome + goalsAway;
+		nrHomeGoals += goalsHome;
+		nrAwayGoals += game.getGoalsAway();
+		if(goalsHome > goalsAway)
 			nrHomeWins++;
-			break;
-		case Game.AWAY:
+		else if(goalsHome < goalsAway)
 			nrAwayWins++;
-			break;
-		case Game.DRAW:
+		else
 			nrDraws++;
-			break;
-		}
 	}
 	
 	private void drawSummaryPanel()

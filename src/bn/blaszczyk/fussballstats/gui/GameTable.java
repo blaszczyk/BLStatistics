@@ -10,7 +10,7 @@ import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableModel;
 
-import bn.blaszczyk.fussballstats.core.Game;
+import bn.blaszczyk.fussballstats.model.Game;
 import bn.blaszczyk.fussballstats.gui.tools.MyTable;
 
 @SuppressWarnings("serial")
