@@ -2,12 +2,14 @@ package bn.blaszczyk.fussballstats.gui.corefilters;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
+import bn.blaszczyk.fussballstats.model.League;
 import bn.blaszczyk.fussballstats.model.Season;
 import bn.blaszczyk.fussballstats.filters.Filter;
 import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;
@@ -22,12 +24,12 @@ public class LeagueFilterPanel extends AbstractFilterPanel<Season>
 	 * Constants
 	 */
 	public static final String NAME = "Liga";
-	private static final  List<String> LEAGUE_LIST = new ArrayList<>();
+	private static final  List<League> LEAGUE_LIST = new ArrayList<>();
 	
 	/*
 	 * Components
 	 */
-	private final JComboBox<String> boxLeagues = new MyComboBox<>(LEAGUE_LIST,250,false);
+	private final JComboBox<League> boxLeagues = new MyComboBox<>(LEAGUE_LIST,250,false,League[]::new);
 	private final JCheckBox chbContains = new JCheckBox("Subligen",true);
 
 	/*
@@ -60,9 +62,9 @@ public class LeagueFilterPanel extends AbstractFilterPanel<Season>
 	/*
 	 * Getters
 	 */
-	public String getSelectedLeague()
+	public League getSelectedLeague()
 	{
-		return (String) boxLeagues.getSelectedItem();
+		return (League) boxLeagues.getSelectedItem();
 	}
 
 	public boolean isContains()
@@ -73,11 +75,10 @@ public class LeagueFilterPanel extends AbstractFilterPanel<Season>
 	/*
 	 * Static Setter
 	 */
-	public static void setLeagueList(Iterable<String> leagueList)
+	public static void setLeagues(Collection<League> leagues)
 	{
 		LeagueFilterPanel.LEAGUE_LIST.clear();
-		for(String league : leagueList)
-			LeagueFilterPanel.LEAGUE_LIST.add(league);
+		LEAGUE_LIST.addAll(leagues);
 	}
 	
 	/*
@@ -86,7 +87,7 @@ public class LeagueFilterPanel extends AbstractFilterPanel<Season>
 	@Override
 	protected void setFilter()
 	{
-		String league = (String) boxLeagues.getSelectedItem();
+		League league = (League) boxLeagues.getSelectedItem();
 		Filter<Season> filter;
 		if(league == null)
 			filter = LogicalFilterFactory.createTRUEFilter();
@@ -111,7 +112,7 @@ public class LeagueFilterPanel extends AbstractFilterPanel<Season>
 	public String toString()
 	{
 		if(getSelectedLeague() != null)
-			return getSelectedLeague();
+			return getSelectedLeague().getName();
 		return "No League Selected";
 	}
 

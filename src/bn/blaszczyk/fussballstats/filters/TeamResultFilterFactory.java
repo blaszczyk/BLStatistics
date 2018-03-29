@@ -11,13 +11,13 @@ public class TeamResultFilterFactory
 	
 	public static BiFilter<TeamResult,Game> createHomeGameFilter()
 	{
-		BiFilter<TeamResult,Game> f = (tr,g) ->tr.getTeam().equals(g.getTeamHome().getName());
+		BiFilter<TeamResult,Game> f = (tr,g) ->tr.getTeam().equals(g.getTeamHome());
 		return f;
 	}
 	
 	public static BiFilter<TeamResult,Game> createAwayGameFilter()
 	{
-		BiFilter<TeamResult,Game> f = (tr,g) ->tr.getTeam().equals(g.getTeamAway().getName());
+		BiFilter<TeamResult,Game> f = (tr,g) ->tr.getTeam().equals(g.getTeamAway());
 		return f;
 	}
 	

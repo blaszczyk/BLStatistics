@@ -12,7 +12,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.IntFunction;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -45,13 +47,12 @@ public class MyComboBox<T> extends JComboBox<T> implements MouseWheelListener, K
 	/*
 	 * Constructors
 	 */
-	@SuppressWarnings("unchecked")
-	public MyComboBox(List<T> tList, int boxWidth, boolean editable)
+	public MyComboBox(Collection<T> tList, int boxWidth, boolean editable, IntFunction<T[]> arrayConstructor)
 	{
-		this( (T[]) new Object[0], boxWidth,  editable);
+		this(arrayConstructor.apply(0) , boxWidth,  editable);
+		items = tList.toArray(arrayConstructor.apply(tList.size()));
 		for(T t : tList)
 			addItem(t);
-		this.items = toArray(tList);
 	}
 	
 	public MyComboBox(T[] tArray, int boxWidth, boolean editable)

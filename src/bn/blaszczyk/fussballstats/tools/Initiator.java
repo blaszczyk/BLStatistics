@@ -60,6 +60,7 @@ public class Initiator {
 		try
 		{
 			final List<League> leagues = initLeagues();
+			initLists(leagues);
 //			final int seasonCount = leagues.stream().map(League::getSeasons).mapToInt(Collection::size).sum();
 
 //			progressDialog = new ProgressDialog(null, seasonCount, "Initiiere FussballStats",
@@ -235,21 +236,15 @@ public class Initiator {
 	 */
 	private static boolean initLists(final Collection<League> leagues)
 	{
-		final List<String> teams = leagues.stream()
+		final List<Team> teams = leagues.stream()
 								.map(League::getSeasons)
 								.flatMap(Collection::stream)
 								.map(Season::getTeams)
 								.flatMap(Collection::stream)
-								.map(Team::getName)
-								.distinct()
-								.sorted()
+								.sorted((t1,t2) -> t1.getName().compareTo(t2.getName()))
 								.collect(Collectors.toList());
-		final List<String> leagueNames = leagues.stream()
-								.map(League::getName)
-								.distinct()
-								.collect(Collectors.toList());
-		LeagueFilterPanel.setLeagueList(leagueNames);
-		TeamFilterPanel.setTeamList(teams);
+		LeagueFilterPanel.setLeagues(leagues);
+		TeamFilterPanel.setTeams(teams);
 		return teams.size() != 0;
 	}
 	

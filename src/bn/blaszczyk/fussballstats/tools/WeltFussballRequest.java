@@ -234,12 +234,12 @@ public class WeltFussballRequest
 			.map(Matchday::getGames)
 			.flatMap(Collection::stream)
 			.map(Game::getTeamHome)
-			.forEach(season.getTeams()::add);
+			.forEach(t -> season.addEntity(Season.TEAMS,t));
 		season.getMatchdays().stream()
 			.map(Matchday::getGames)
 			.flatMap(Collection::stream)
 			.map(Game::getTeamAway)
-			.forEach(season.getTeams()::add);
+			.forEach(t -> season.addEntity(Season.TEAMS,t));
 		controller.update(season);
 	}
 	

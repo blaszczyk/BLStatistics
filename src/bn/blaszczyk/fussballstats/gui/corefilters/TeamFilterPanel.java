@@ -1,14 +1,16 @@
 package bn.blaszczyk.fussballstats.gui.corefilters;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
 import bn.blaszczyk.fussballstats.model.Game;
+import bn.blaszczyk.fussballstats.model.Team;
 import bn.blaszczyk.fussballstats.filters.Filter;
 import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
 import bn.blaszczyk.fussballstats.filters.LogicalFilterFactory;
@@ -22,12 +24,12 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	 * Constants
 	 */
 	public static final String NAME = "Verein";
-	private static final List<String> TEAM_LIST = new ArrayList<>();
+	private static final Map<String,Team> TEAM_MAP = new HashMap<>();
 	
 	/*
 	 * Components
 	 */
-	private final JComboBox<String> boxTeam = new MyComboBox<>(TEAM_LIST,250,true);
+	private final JComboBox<Team> boxTeam = new MyComboBox<>(TEAM_MAP.values(),250,true,Team[]::new);
 	private final JCheckBox chbHome = new JCheckBox("H",true);
 	private final JCheckBox chbAway = new JCheckBox("A",true);
 	
@@ -67,9 +69,14 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	/*
 	 * Getters
 	 */
-	public String getTeam()
+	public Team getTeam()
 	{
-		return (String) boxTeam.getSelectedItem();
+		final Object selectedItem = boxTeam.getSelectedItem();
+		if(selectedItem instanceof Team)
+			return (Team) selectedItem;
+		if(selectedItem instanceof String)
+			return TEAM_MAP.get(selectedItem);
+		return null;
 	}
 
 	public boolean isHome()
@@ -85,16 +92,14 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	/*
 	 * Static Methods for TeamList
 	 */
-	public static void setTeamList(Iterable<String> teamList)
+	public static void setTeams(Collection<Team> teamList)
 	{
-		TEAM_LIST.clear();
-		for(String team : teamList)
-			TEAM_LIST.add(team);
+		teamList.forEach(t -> TEAM_MAP.put(t.getName(), t));
 	}
 	
-	public static List<String> getTeamList()
+	public static Collection<Team> getTeams()
 	{
-		return TeamFilterPanel.TEAM_LIST;
+		return TEAM_MAP.values();
 	}
 	
 	/*
@@ -103,17 +108,16 @@ public class TeamFilterPanel extends AbstractFilterPanel<Game>
 	@Override
 	protected void setFilter()
 	{
-		String team = (String) boxTeam.getSelectedItem();
-		Filter<Game> filter = LogicalFilterFactory.createFALSEFilter();
-		if(chbHome.isSelected())
-			if(chbAway.isSelected())
-				filter = GameFilterFactory.createTeamFilter(team);
-			else
-				filter = GameFilterFactory.createTeamHomeFilter(team);
+		final Team team = getTeam();
+		if(team != null)
+		{
+			final Filter<Game> filter = isHome() ?
+				( isAway() ? GameFilterFactory.createTeamFilter(team) : GameFilterFactory.createTeamHomeFilter(team) ) :
+				( isAway() ? GameFilterFactory.createTeamAwayFilter(team) : LogicalFilterFactory.createFALSEFilter() ) ;
+			setFilter(filter);
+		}
 		else
-			if(chbAway.isSelected())
-				filter = GameFilterFactory.createTeamAwayFilter(team);
-		setFilter(filter);
+			setFilter(LogicalFilterFactory.createTRUEFilter());
 	}
 	
 	@Override

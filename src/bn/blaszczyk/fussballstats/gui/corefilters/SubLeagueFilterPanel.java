@@ -13,6 +13,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import bn.blaszczyk.fussballstats.model.Game;
+import bn.blaszczyk.fussballstats.model.Team;
 import bn.blaszczyk.fussballstats.filters.GameFilterFactory;
 import bn.blaszczyk.fussballstats.gui.filters.AbstractFilterPanel;
 import bn.blaszczyk.fussballstats.gui.tools.MyComboBox;
@@ -30,7 +31,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	 * Components
 	 */
 	private final JLabel label = new JLabel("Direkter Vergleich");
-	private final List<JComboBox<String>> teamBoxes = new ArrayList<>();
+	private final List<JComboBox<Team>> teamBoxes = new ArrayList<>();
 	private final JButton btnNewTeam = new JButton("Verein Hinzufügen");
 
 	/*
@@ -84,9 +85,9 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	/*
 	 * Internal Methods
 	 */
-	private JComboBox<String> addTeamBox(String team)
+	private JComboBox<Team> addTeamBox(String team)
 	{
-		JComboBox<String> box =  new MyComboBox<>(TeamFilterPanel.getTeamList(),250,true);
+		JComboBox<Team> box =  new MyComboBox<>(TeamFilterPanel.getTeams(),250,true,Team[]::new);
 		box.addActionListener(setFilterListener);
 		box.setAlignmentX(LEFT_ALIGNMENT);
 		if(team != null)
@@ -97,7 +98,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 		return box;
 	}
 
-	private void removeTeam(JComboBox<String> box)
+	private void removeTeam(JComboBox<Team> box)
 	{
 		teamBoxes.remove(box);
 		setFilter();
@@ -106,7 +107,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	private void setRemoveMenu()
 	{
 		menuRemoveTeam.removeAll();
-		for(JComboBox<String> box : teamBoxes)
+		for(JComboBox<Team> box : teamBoxes)
 		{
 			JMenuItem remove = new JMenuItem(box.getSelectedItem().toString());
 			remove.addActionListener( e -> removeTeam(box));
@@ -120,10 +121,10 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	@Override
 	protected void setFilter()
 	{
-		List<String> teams = new ArrayList<>();
-		for(JComboBox<String> box : teamBoxes)
+		List<Team> teams = new ArrayList<>(teamBoxes.size());
+		for(JComboBox<Team> box : teamBoxes)
 			if(box.getSelectedItem() != null )
-				teams.add(box.getSelectedItem().toString());
+				teams.add((Team) box.getSelectedItem());
 		setRemoveMenu();
 		setFilter(GameFilterFactory.createSubLeagueFilter(teams));
 	}
@@ -132,7 +133,7 @@ public class SubLeagueFilterPanel extends AbstractFilterPanel<Game> {
 	protected void addComponents()
 	{
 		add(label);
-		for(JComboBox<String> box : teamBoxes)
+		for(JComboBox<Team> box : teamBoxes)
 			add(box);
 		add(btnNewTeam);			
 	}

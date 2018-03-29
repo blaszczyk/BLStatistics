@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import bn.blaszczyk.fussballstats.model.Game;
+import bn.blaszczyk.fussballstats.model.Team;
 
 public class GameFilterFactory
 {
@@ -98,34 +99,34 @@ public class GameFilterFactory
 	/*
 	 * Basic Team Filters
 	 */
-	public static Filter<Game> createTeamFilter(String team) 
+	public static Filter<Game> createTeamFilter(Team team) 
 	{
-		Filter<Game> f = g ->g.getTeamHome().getName().equals(team) || g.getTeamAway().getName().equals(team);
+		Filter<Game> f = g ->g.getTeamHome().equals(team) || g.getTeamAway().equals(team);
 		return f;
 	}
 	
-	public static Filter<Game> createTeamHomeFilter(String team) 
+	public static Filter<Game> createTeamHomeFilter(Team team) 
 	{
-		Filter<Game> f = g -> g.getTeamHome().getName().equals(team);
+		Filter<Game> f = g -> g.getTeamHome().equals(team);
 		return f;
 	}
 	
-	public static Filter<Game> createTeamAwayFilter(String team) 
+	public static Filter<Game> createTeamAwayFilter(Team team) 
 	{
-		Filter<Game> f = g -> g.getTeamAway().getName().equals(team);
+		Filter<Game> f = g -> g.getTeamAway().equals(team);
 		return f;
 	}
 	
 	/*
 	 * SubLeague Filters
 	 */	
-	public static Filter<Game> createSubLeagueFilter(Collection<String> teams)
+	public static Filter<Game> createSubLeagueFilter(Collection<Team> teams)
 	{
-		Filter<Game> f = g -> teams.contains(g.getTeamHome().getName()) && teams.contains(g.getTeamAway().getName());
+		Filter<Game> f = g -> teams.contains(g.getTeamHome()) && teams.contains(g.getTeamAway());
 		return f;
 	}
 	
-	public static Filter<Game> createSubLeagueFilter(String... teams)
+	public static Filter<Game> createSubLeagueFilter(Team... teams)
 	{
 		return createSubLeagueFilter(Arrays.asList(teams));
 	}

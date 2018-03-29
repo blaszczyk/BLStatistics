@@ -17,7 +17,7 @@ public class FussballStats
 	{
 		TypeManager.parseRoseFile("bn/blaszczyk/fussballstats/resources/fstats.rose");
 		Preferences.setMainClass(FussballStats.class);
-		final ModelController controller = ControllerBuilder.forDataBase().withCache().withConsistencyCheck().build();
+		final ModelController controller = ControllerBuilder.forDataBase().withConsistencyCheck().build();
 		if(new Initiator(controller).initAll())
 		{
 			MainFrame mf = new MainFrame(controller);

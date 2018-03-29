@@ -26,15 +26,24 @@ public class SeasonFilterFactory
 	/*
 	 * League Filters
 	 */
-	public static Filter<Season> createLeagueFilter(String leagueName)
+	public static Filter<Season> createLeagueFilter(League league)
 	{
-		Filter<Season> f = s -> s.getLeague().getName().equals(leagueName);
+		Filter<Season> f = s -> s.getLeague().equals(league);
 		return f;
 	}
 
-	public static Filter<Season> createLeagueContainsFilter(String leagueName)
+	public static Filter<Season> createLeagueContainsFilter(final League league)
 	{
-		Filter<Season> f = s -> s.getLeague().getName().startsWith(leagueName);
+		Filter<Season> f = s -> {
+			League l = s.getLeague();
+			while(l != null)
+			{
+				if(l.equals(league))
+					return true;
+				l = l.getParent();
+			}
+			return false;
+		};
 		return f;
 	}
 	
