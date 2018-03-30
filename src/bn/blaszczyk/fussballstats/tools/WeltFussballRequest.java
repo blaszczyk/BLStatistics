@@ -1,5 +1,6 @@
 package bn.blaszczyk.fussballstats.tools;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,7 +30,7 @@ import bn.blaszczyk.rose.RoseException;
 import bn.blaszczyk.rosecommon.controller.ModelController;
 
 
-public class WeltFussballRequest
+public class WeltFussballRequest implements Closeable
 {
 
 	/*
@@ -44,6 +45,7 @@ public class WeltFussballRequest
 	
 	private final ModelController controller;
 
+	private final TeamAlias alias = new TeamAlias();
 	private final Map<String,Team> teams;
 	/*
 	 * Constructor
@@ -145,6 +147,7 @@ public class WeltFussballRequest
 		}
 		return result;
 	}
+	
 	/*
 	 * Extract GameList From Requested Data
 	 */
@@ -155,92 +158,87 @@ public class WeltFussballRequest
 		for(HtmlTableRow row :  tableBody.getRows())
 		{
 			List<HtmlTableCell> cells = row.getCells();
-			
-			/*
-			 * MatchDay
-			 */
 			if(cells.size() == 1)
 			{
-				final int matchDay = Integer.parseInt( ((HtmlAnchor)cells.get(0).getFirstElementChild()).getHrefAttribute().split("/")[3].trim() );
-				matchday = season.getMatchdays().stream()
-						.filter(m -> m.getCount().intValue() == matchDay)
-						.findFirst().orElse(null);
-				if(matchday == null)
-					matchday = newMatchday(matchDay,season);
+				matchday = extractMatchDay(cells.get(0), season);
 			}
 			else if(cells.size() == 8)
-			{		
-				
-				/*
-				 * Date
-				 */
-				DomElement tempElement = cells.get(0).getFirstElementChild();
-				if(tempElement instanceof HtmlAnchor)
-				{
-					String temp =  ((HtmlAnchor)tempElement).getAttribute("title");
-					try
-					{
-						date = DATE_FORMAT.parse(temp.substring(temp.lastIndexOf(' ')).trim());
-					}
-					catch (ParseException e)
-					{
-						throw new FussballException("Falsches Datum Format in " + temp,e);
-					}
-				}
-				
-				/*
-				 * Teams
-				 */
-				String teamH = null;
-				tempElement = cells.get(2).getFirstElementChild();
-				if(tempElement instanceof HtmlAnchor)
-					teamH =  ((HtmlAnchor)tempElement).getAttribute("title");
-				else
-					throw new FussballException("Falsches Verein Format in " + tempElement);
-
-				String teamA = null;
-				tempElement = cells.get(4).getFirstElementChild();
-				if(tempElement instanceof HtmlAnchor)
-					teamA =  ((HtmlAnchor)tempElement).getAttribute("title");
-				else
-					throw new FussballException("Falsches Verein Format in " + tempElement);
-				
-				/*
-				 * Result
-				 */	
-				HtmlTableDataCell dataCell = (HtmlTableDataCell) cells.get(5);
-				String result = dataCell.getTextContent().trim();
-				if(result.lastIndexOf("(") >= 0)
-					result = result.substring(0, result.lastIndexOf("("));
-				if(result.lastIndexOf("Wert.") >= 0)
-					result = result.substring(0, result.lastIndexOf("Wert."));
-				if(result.equals("-:-") || result.equals("annull.") || result.equals("n.gesp.") || result.equals( "verl.") || result.equals("abgebr."))
-					continue;
-				String[] split = result.split(":");
-				int goalsH, goalsA;
-				try
-				{
-					goalsH = Integer.parseInt(split[0].trim());
-					goalsA = Integer.parseInt(split[1].trim());
-				}
-				catch(NumberFormatException | IndexOutOfBoundsException e)
-				{
-					throw new FussballException("Falsches Ergebnis Format in " + result, e);
-				}
-				createGame(date, getTeam(teamH), getTeam(teamA), goalsH, goalsA, matchday);
+			{
+				date = extractDate(cells.get(0),date);
+				final String teamH = extractTeamName(cells.get(2));
+				final String teamA = extractTeamName(cells.get(4));
+				final int[] goals = extractGoals(cells.get(5));
+				if(goals != null)
+					createGame(date, getTeam(teamH), getTeam(teamA), goals[0], goals[1], matchday);
 			}
 		}
-		season.getMatchdays().stream()
-			.map(Matchday::getGames)
-			.flatMap(Collection::stream)
-			.map(Game::getTeamHome)
-			.forEach(t -> season.addEntity(Season.TEAMS,t));
-		season.getMatchdays().stream()
-			.map(Matchday::getGames)
-			.flatMap(Collection::stream)
-			.map(Game::getTeamAway)
-			.forEach(t -> season.addEntity(Season.TEAMS,t));
+		linkSeasonTeams(season);
 		controller.update(season);
+	}
+
+	private Matchday extractMatchDay(final HtmlTableCell cell, final Season season)
+	{
+		final int matchDayCount = Integer.parseInt( ((HtmlAnchor)cell.getFirstElementChild()).getHrefAttribute().split("/")[3].trim() );
+		final Matchday matchday = season.getMatchdays().stream()
+				.filter(m -> m.getCount().intValue() == matchDayCount)
+				.findFirst().orElse(null);
+		if(matchday != null)
+			return matchday;
+		else
+			return newMatchday(matchDayCount,season);
+	}
+
+	private Date extractDate(final HtmlTableCell cell, final Date date) {
+		DomElement tempElement = cell.getFirstElementChild();
+		if(tempElement instanceof HtmlAnchor)
+		{
+			String temp =  ((HtmlAnchor)tempElement).getAttribute("title");
+			try
+			{
+				return DATE_FORMAT.parse(temp.substring(temp.lastIndexOf(' ')).trim());
+			}
+			catch (ParseException e)
+			{
+				throw new FussballException("Falsches Datum Format in " + temp,e);
+			}
+		}
+		return date;
+	}
+	
+	private String extractTeamName(final HtmlTableCell htmlTableCell)
+	{
+		final DomElement tempElement = htmlTableCell.getFirstElementChild();
+		if(tempElement instanceof HtmlAnchor)
+		{
+			final String teamAlias = ((HtmlAnchor)tempElement).getAttribute("title");
+			return alias.getTeamName(teamAlias);
+		}
+		else
+			throw new FussballException("Falsches Verein Format in " + tempElement);
+		
+	}
+	
+	private int[] extractGoals(final HtmlTableCell cell)
+	{
+		String result = ((HtmlTableDataCell) cell).getTextContent().trim();
+		if(result.lastIndexOf("(") >= 0)
+			result = result.substring(0, result.lastIndexOf("("));
+		if(result.lastIndexOf("Wert.") >= 0)
+			result = result.substring(0, result.lastIndexOf("Wert."));
+		if(result.equals("-:-") || result.equals("annull.") || result.equals("n.gesp.") || result.equals( "verl.") || result.equals("abgebr."))
+			return null;
+		String[] split = result.split(":");
+		int goalsH, goalsA;
+		try
+		{
+			goalsH = Integer.parseInt(split[0].trim());
+			goalsA = Integer.parseInt(split[1].trim());
+			return new int[] {goalsH,goalsA};
+		}
+		catch(NumberFormatException | IndexOutOfBoundsException e)
+		{
+			throw new FussballException("Falsches Ergebnis Format in " + result, e);
+		}
 	}
 	
 	private Team getTeam(final String teamName) throws RoseException
@@ -252,6 +250,19 @@ public class WeltFussballRequest
 		controller.update(team);
 		teams.put(team.getName(), team);
 		return team;
+	}
+
+	private void linkSeasonTeams(final Season season) {
+		season.getMatchdays().stream()
+			.map(Matchday::getGames)
+			.flatMap(Collection::stream)
+			.map(Game::getTeamHome)
+			.forEach(t -> season.addEntity(Season.TEAMS,t));
+		season.getMatchdays().stream()
+			.map(Matchday::getGames)
+			.flatMap(Collection::stream)
+			.map(Game::getTeamAway)
+			.forEach(t -> season.addEntity(Season.TEAMS,t));
 	}
 	
 	private void createGame(Date date, final Team teamHome, final Team teamAway, int goalsHome, int goalsAway, Matchday matchday) throws RoseException
@@ -274,12 +285,9 @@ public class WeltFussballRequest
 		controller.update(matchday);
 		return matchday;
 	}
-
-	/*
-	 * Close Browser on Destruction
-	 */
+	
 	@Override
-	protected void finalize() throws Throwable
+	public void close()
 	{
 		webClient.close();
 	}

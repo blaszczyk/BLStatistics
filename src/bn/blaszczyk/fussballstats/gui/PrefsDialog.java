@@ -15,7 +15,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import bn.blaszczyk.fussballstats.FussballStats;
-import bn.blaszczyk.fussballstats.tools.TeamAlias;
 import bn.blaszczyk.rosecommon.tools.CommonPreference;
 import bn.blaszczyk.rosecommon.tools.Preference;
 import bn.blaszczyk.rosecommon.tools.Preferences;
@@ -36,7 +35,6 @@ public class PrefsDialog extends JDialog
 	private final JRadioButton rbHardDrive = new JRadioButton();
 	private final JRadioButton rbDataBase = new JRadioButton();
 	
-	private final JCheckBox chbAliases = new JCheckBox();
 	private final JCheckBox chbLoadLastFilter = new JCheckBox();
 
 	private final JButton btnSave = new JButton("Speichern");
@@ -85,8 +83,7 @@ public class PrefsDialog extends JDialog
 		tfPassword = createTextFieldRow("Passwort", CommonPreference.DB_PASSWORD,'W', 7, true);
 		setDbAccessDataEnabled(dbMode);
 		
-		addButtonRow(chbAliases,"Vereinsumbenennungen beachten", TeamAlias.isUseAliases(), 'U',8, 350);
-		addButtonRow(chbLoadLastFilter,"Letzten Filter beim Start laden", FunctionalFilterPanel.isLoadLastFilter(),'L', 9, 300);
+		addButtonRow(chbLoadLastFilter,"Letzten Filter beim Start laden", FunctionalFilterPanel.isLoadLastFilter(),'L', 8, 300);
 		
 		btnSave.addActionListener(e -> save());
 		btnSave.setMnemonic('S');
@@ -156,9 +153,6 @@ public class PrefsDialog extends JDialog
 		String dbName = tfDbName.getText();
 		String user = tfUser.getText();
 		String password = tfPassword.getText();
-
-		boolean useAliases = chbAliases.isSelected();
-		TeamAlias.setUseAliases( useAliases );
 		
 		boolean saveLastFilter = chbLoadLastFilter.isSelected();
 		FunctionalFilterPanel.setLoadLastFilter(saveLastFilter);

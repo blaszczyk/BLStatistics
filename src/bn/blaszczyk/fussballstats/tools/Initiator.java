@@ -55,8 +55,6 @@ public class Initiator {
 	public boolean initAll()
 	{
 		initUIManager();
-		TeamAlias.loadAliases();
-		
 		try
 		{
 			final List<League> leagues = initLeagues();

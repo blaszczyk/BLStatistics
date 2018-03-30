@@ -1,5 +1,10 @@
 package bn.blaszczyk.fussballstats.tools;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import bn.blaszczyk.fussballstats.FussballStats;
@@ -15,42 +20,29 @@ public class TeamAlias
 	/*
 	 * Variables
 	 */
-	private static final Map<String,String> ALIAS_MAP = new HashMap<>();
-	private static boolean useAliases;
+	private final Map<String,String> aliases = new HashMap<>();
 	
-	/*
-	 * Init
-	 */
-	public static void loadAliases()
+	public TeamAlias()
 	{
-		Scanner scanner = new Scanner( FussballStats.class.getResourceAsStream(ALIAS_FILE) );
-		while(scanner.hasNextLine())
+		Path aliasDataPath;
+		try
 		{
-			String team[] = scanner.nextLine().split(";");
-			if(team[0].startsWith("/") || team.length < 2)
-				continue;
-			ALIAS_MAP.put(team[0].trim(), team[1].trim());
+			aliasDataPath = Paths.get(FussballStats.class.getResource(ALIAS_FILE).toURI());
+			Files.lines(aliasDataPath)
+				.map(l -> l.split(";"))
+				.filter(s -> s.length > 1)
+				.forEach(s -> aliases.put(s[0].trim(), s[1].trim()));
 		}
-		scanner.close();
+		catch (URISyntaxException | IOException e)
+		{
+			throw new FussballException("error loading alias data", e);
+		}
 	}
 
-	/*
-	 * Global Getters, Setters
-	 */
-	public static String getAlias(String team)
+	public String getTeamName(final String team)
 	{
-		if(useAliases && ALIAS_MAP.containsKey(team))
-			return ALIAS_MAP.get(team);
+		if(aliases.containsKey(team))
+			return aliases.get(team);
 		return team;
-	}
-
-	public static boolean isUseAliases()
-	{
-		return useAliases;
-	}
-
-	public static void setUseAliases(boolean useAliases)
-	{
-		TeamAlias.useAliases = useAliases;
 	}
 }

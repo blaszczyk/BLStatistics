@@ -197,10 +197,9 @@ public class LeagueManager extends JDialog implements ListSelectionListener, Act
 		new Thread(() -> {
 			Image icon = Toolkit.getDefaultToolkit().getImage(FussballStats.class.getResource(DL_ICON_FILE));
 			ProgressDialog progressDialog = new ProgressDialog(this, seasons.size(), "Download", icon, true);
-			WeltFussballRequest request = new WeltFussballRequest(controller);
 			SwingUtilities.invokeLater(() -> progressDialog.showDialog());//possible bug location
 			progressDialog.appendInfo("Starte Download");
-			try
+			try(final WeltFussballRequest request = new WeltFussballRequest(controller))
 			{
 				for (Season season : seasons)
 				{

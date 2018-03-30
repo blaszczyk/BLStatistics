@@ -77,7 +77,7 @@ public class LeagueFilterPanel extends AbstractFilterPanel<Season>
 	 */
 	public static void setLeagues(Collection<League> leagues)
 	{
-		LeagueFilterPanel.LEAGUE_LIST.clear();
+		LEAGUE_LIST.clear();
 		LEAGUE_LIST.addAll(leagues);
 	}
 	
