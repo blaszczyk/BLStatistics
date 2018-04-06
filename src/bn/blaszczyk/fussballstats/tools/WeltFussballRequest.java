@@ -252,7 +252,8 @@ public class WeltFussballRequest implements Closeable
 		return team;
 	}
 
-	private void linkSeasonTeams(final Season season) {
+	private void linkSeasonTeams(final Season season)
+	{
 		season.getMatchdays().stream()
 			.map(Matchday::getGames)
 			.flatMap(Collection::stream)
@@ -267,6 +268,8 @@ public class WeltFussballRequest implements Closeable
 	
 	private void createGame(Date date, final Team teamHome, final Team teamAway, int goalsHome, int goalsAway, Matchday matchday) throws RoseException
 	{
+		if(matchday.getGames().stream().anyMatch(g -> gameEquals(g, teamHome, teamAway, goalsHome, goalsAway)))
+			return;
 		final Game game = controller.createNew(Game.class);
 		game.setDate(date);
 		game.setGoalsHome(goalsHome);
@@ -275,6 +278,14 @@ public class WeltFussballRequest implements Closeable
 		game.setTeamAway(teamAway);
 		game.setEntity(Game.MATCHDAY, matchday);
 		controller.update(game);
+	}
+	
+	private boolean gameEquals(final Game game, final Team teamHome, final Team teamAway, int goalsHome, int goalsAway )
+	{
+		return game.getTeamHome().equals(teamHome)
+				&& game.getTeamAway().equals(teamAway)
+				&& game.getGoalsHome().intValue() == goalsHome
+				&& game.getGoalsAway().intValue() == goalsAway;
 	}
 
 	private Matchday newMatchday(int count, Season season) throws RoseException

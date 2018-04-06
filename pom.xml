@@ -19,9 +19,9 @@
       <version>2.29</version>
     </dependency>
     <dependency>
-      <groupId>bn.blaszczyk</groupId>
-      <artifactId>rose-common</artifactId>
-      <version>0.47</version>
+    	<groupId>bn.blaszczyk</groupId>
+    	<artifactId>rose-service</artifactId>
+    	<version>0.48</version>
     </dependency>
   </dependencies>
   <build>
@@ -60,6 +60,12 @@
             <program>
               <mainClass>bn.blaszczyk.fussballstats.FussballStats</mainClass>
               <name>fussballstats</name>
+            </program>
+          </programs>
+          <programs>
+            <program>
+              <mainClass>bn.blaszczyk.fussballstats.FussballStatsService</mainClass>
+              <name>service</name>
             </program>
           </programs>
         </configuration>
